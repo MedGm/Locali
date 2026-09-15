@@ -32,6 +32,22 @@ candidates:
       q4_k_m: Qwen3.5-2B-Q4_K_M.gguf
       q8_0: Qwen3.5-2B-Q8_0.gguf
 
+second_finetune:
+  # Decision D1 (docs/research-design.md). First item on the cut list if behind schedule.
+  id: phi-4-mini
+  hf_repo: microsoft/Phi-4-mini-instruct
+  revision: cfbefacb99257ffa30c83adab238a50856ac3083
+  params_b: 3.84
+  license: mit
+  architecture: dense (32 layers, GQA 8 KV heads)
+
+teacher:
+  # Decision D2: phrases diagnosis/review messages; never decides labels. INT4 on T4, thinking off.
+  id: qwen3.5-9b
+  hf_repo: Qwen/Qwen3.5-9B
+  revision: c202236235762e1c871ad0ccb60c8ee5ba337b9a
+  license: apache-2.0
+
 benchmark_only:
   - id: qwen3.5-4b
     hf_repo: Qwen/Qwen3.5-4B
@@ -39,12 +55,6 @@ benchmark_only:
     params_b: 4.66
     license: apache-2.0
     architecture: hybrid (24 linear + 8 full attention), multimodal
-  - id: phi-4-mini
-    hf_repo: microsoft/Phi-4-mini-instruct
-    revision: cfbefacb99257ffa30c83adab238a50856ac3083
-    params_b: 3.84
-    license: mit
-    architecture: dense (32 layers, GQA 8 KV heads)
 
 reference:
   # "Larger general-purpose model" the brief compares against. Run on T4 only.

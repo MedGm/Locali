@@ -22,17 +22,29 @@ def build(script: Path) -> Path:
             ),
         ),
         ("code", f"%%writefile /kaggle/working/{script.name}\n{source}"),
-        ("code", f"!python /kaggle/working/{script.name}"),
+        # `!python` output is buffered until the cell ends in Kaggle batch runs; stream it instead.
+        (
+            "code",
+            (
+                "import subprocess, sys\n"
+                f"proc = subprocess.Popen([sys.executable, '-u', '/kaggle/working/{script.name}'],\n"
+                "                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)\n"
+                "for line in proc.stdout:\n"
+                "    print(line, end='', flush=True)\n"
+                "print('exit code', proc.wait())"
+            ),
+        ),
     ]
     notebook = {
         "cells": [
             {
                 "cell_type": kind,
+                "id": f"cell-{i}",
                 "metadata": {},
                 "source": text.splitlines(keepends=True),
                 **({"outputs": [], "execution_count": None} if kind == "code" else {}),
             }
-            for kind, text in cells
+            for i, (kind, text) in enumerate(cells)
         ],
         "metadata": {
             "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},

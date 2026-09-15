@@ -80,7 +80,7 @@ Phi-4-mini needs about 10× the KV memory of Qwen3.5-2B per token. That differen
 
 ### 2.5 Risks to test in W1
 
-- Qwen3.5 linear-attention kernels (Triton-based) and vLLM support on a T4 (Turing, compute capability 7.5, no bf16, no FlashAttention-2).
+- Qwen3.5 linear-attention kernels (Triton-based) and vLLM support on a T4 (Turing, compute capability 7.5, no bf16, no FlashAttention-2). Unsloth warns these kernels compile slowly on T4 and that Qwen3.5 requires transformers v5.
 - Unsloth support for Qwen3.5 training on a T4.
 - Promotion rule: Qwen3.5-2B replaces Qwen2.5-Coder-1.5B as fine-tune #1 only if it passes both T4 spikes and scores higher on the W2 baseline.
 
@@ -92,7 +92,7 @@ Phi-4-mini needs about 10× the KV memory of Qwen3.5-2B per token. That differen
 |---|---|---|
 | Full fine-tuning | Rejected | 1.5B with AdamW needs ≈16 bytes/param ≈ 25 GB; a T4 has 16 GB |
 | **QLoRA** (4-bit NF4 base + LoRA adapters) | **Main method** | Fits every studied model on one T4; the method the brief names |
-| LoRA on 16-bit base | Comparison run (main model only) | Measures the quality/memory/speed cost of 4-bit base quantization |
+| LoRA on 16-bit base | Comparison run (main model); **required method for Qwen3.5** | Measures the quality/memory/speed cost of 4-bit base quantization. Unsloth's Qwen3.5 guide advises against QLoRA for all Qwen3.5 models "due to higher than normal quantization differences"; if Qwen3.5-2B is promoted, it trains with 16-bit LoRA (≈5 GB VRAM) |
 | DoRA or rsLoRA | One "other PEFT" run, if the W1 spike confirms Unsloth support | Cheap variant covering the brief's "other PEFT techniques" |
 | Preference or RL training (DPO, GRPO with execution reward) | Out of scope; stretch goal | Multiplies GPU cost; solo time budget |
 | Rejection-sampling fine-tuning (keep self-generated outputs that pass tests) | Stretch goal | Execution-verified, cheaper than RL |

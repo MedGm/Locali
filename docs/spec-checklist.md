@@ -16,7 +16,7 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 
 | # | Requirement | Solo minimum | Location | Week | Status |
 |---|---|---|---|---|---|
-| C1 | SLM benchmarking: code generation, completion, bug detection, explanation, refactoring, test generation | 3 models × 6 tasks on benchmark subsets | `evaluation/`, `experiments/` | W1–2 | todo |
+| C1 | SLM benchmarking: code generation, completion, bug detection, explanation, refactoring, test generation | 3 models × 6 tasks on benchmark subsets | `evaluation/`, `experiments/` | W1–2 | wip (all 10 tasks built and validated; model runs pending) |
 | C2 | Efficient fine-tuning with Unsloth, LoRA/QLoRA, other PEFT | 1 model, QLoRA + LoRA runs on Kaggle T4 | `training/` | W3–5 | todo |
 | C3 | Quantization 4/8-bit | FP16 / INT8 / INT4 on T4 and laptop CPU | `experiments/` | W6–7 | todo |
 | C4 | KV cache, efficient attention, batching | Prefix caching on/off, batch 1/4/16, SDPA vs eager | `experiments/` | W6–7 | todo |
@@ -55,19 +55,19 @@ Pipeline: SLM → Fine-tuning → Quantization → Token optimization → Agenti
 
 | Metric | Source | Status |
 |---|---|---|
-| Code correctness, pass@k | EvalPlus (HumanEval+/MBPP+) | todo |
-| Unit-test pass rate | pytest runs in sandbox | todo |
-| Test coverage | pytest-cov | todo |
-| Bug-detection precision/recall/F1 | HumanEvalPack / labelled set | todo |
-| Code-quality metrics | Ruff, Radon | todo |
-| Vulnerability detection | Labelled vulnerable snippets + Bandit/Semgrep | todo |
-| Compilation/execution success | Harness | todo |
+| Code correctness, pass@k | EvalPlus (HumanEval+/MBPP+) | wip (harness done; first baseline run) |
+| Unit-test pass rate | pytest runs in sandbox | done (harness) |
+| Test coverage | pytest-cov | done (harness: line + branch, `testgen`) |
+| Bug-detection precision/recall/F1 | HumanEvalPack / labelled set | done (harness: `bugdetect`) |
+| Code-quality metrics | Ruff, Radon | done (harness: `refactor`) |
+| Vulnerability detection | Labelled vulnerable snippets + Bandit/Semgrep | wip (`vulndetect`, `securecodegen` with Bandit; Semgrep todo) |
+| Compilation/execution success | Harness | done (status: passed/failed/timeout/crashed) |
 | Hallucination/error rate | Invalid APIs, unparseable output | todo |
-| Inference latency, TTFT, tokens/s | Metrics logger | todo |
+| Inference latency, TTFT, tokens/s | Metrics logger | done (harness) |
 | GPU/CPU memory | nvidia-smi / psutil | todo |
-| Input/output tokens | Tokenizer counts | todo |
+| Input/output tokens | Tokenizer counts | done (server usage counts) |
 | Cost per task | GPU-hour and CPU-hour pricing model | todo |
-| Energy | Intel RAPL on laptop; nvidia-smi power on T4 | todo |
+| Energy | Intel RAPL on laptop; nvidia-smi power on T4 | wip (RAPL done; GPU power todo) |
 
 | Ablation | Status |
 |---|---|

@@ -35,7 +35,8 @@ Solo, 15 weeks, ~20 h/week. Deadline 01/01/2027, target submission 30/12/2026.
 - [x] Spike: one MCP tool called from LangGraph — `mcp_servers/repo_server.py`, 10 tests; tool-calling check: Qwen2.5-Coder-1.5B 0/10 native calls, Qwen3.5-2B 10/10 → fixed routing
 - [x] Harness: client, results JSON schema, metrics logger (tokens, TTFT, tok/s, energy; memory still todo) — `evaluation/`, 53 tests
 - [x] Harness validation: all reference solutions pass (163 HumanEval+, 377 MBPP+ after 2 documented exclusions)
-- [ ] Tasks: ~~EvalPlus~~ (done), HumanEvalPack, SAFIM, CRUXEval, SecurityEval, test generation + refactoring harness
+- [x] Tasks (10, all validated): HumanEval+, MBPP+, HumanEvalFix, bug detection, CRUXEval-O, test generation, refactoring, completion (infilling, replaces SAFIM), SecurityEval insecure generation, vulnerability detection — [validation](experiments/results/harness_validation/README.md)
+- [x] Unattended laptop baseline script with energy: `experiments/scripts/laptop_baselines.sh`
 - [ ] Locali-Fresh: first 30 contamination-free tasks
 - [ ] `demo_repo/`: bugs, vulnerabilities, fake secret, missing tests, malicious README
 - [ ] Baselines for 3 models

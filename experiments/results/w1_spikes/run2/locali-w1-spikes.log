@@ -1,0 +1,47 @@
+[{"stream_name":"stderr","time":7.481946468,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.4820138400000005,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.482018879,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.482022058,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.082358878,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.082389601,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.082394285,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.082397951,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.15941411,"data":"Writing /kaggle/working/w1_spikes.py\n"}
+,{"stream_name":"stdout","time":9.258125706,"data":"[09:09:14] installing unsloth (log: logs/install.log)\n"}
+,{"stream_name":"stdout","time":36.289269174,"data":"[09:09:41] install: {'returncode': 0, 'seconds': 27.0}\n"}
+,{"stream_name":"stdout","time":36.290045408,"data":"[09:09:41] --- env (timeout 600s)\n"}
+,{"stream_name":"stdout","time":43.221764382,"data":"[09:09:48] env: ok\n"}
+,{"stream_name":"stdout","time":43.222619116,"data":"[09:09:48] --- qwen25_qlora (timeout 1500s)\n"}
+,{"stream_name":"stdout","time":191.567355427,"data":"[09:12:16] qwen25_qlora: ok\n"}
+,{"stream_name":"stdout","time":191.568397764,"data":"[09:12:16] --- qwen35_2b_lora16 (timeout 2700s)\n"}
+,{"stream_name":"stdout","time":407.485474394,"data":"[09:15:52] qwen35_2b_lora16: failed\n"}
+,{"stream_name":"stdout","time":407.486248906,"data":"[09:15:52] --- phi4mini_qlora (timeout 2400s)\n"}
+,{"stream_name":"stdout","time":474.363289103,"data":"[09:16:59] phi4mini_qlora: failed\n"}
+,{"stream_name":"stdout","time":474.364116532,"data":"[09:16:59] --- teacher_vllm (timeout 3300s)\n"}
+,{"stream_name":"stdout","time":1203.46598556,"data":"[09:29:08] teacher_vllm: ok\n"}
+,{"stream_name":"stdout","time":1203.466975707,"data":"{\n"}
+,{"stream_name":"stdout","time":1203.467550147,"data":"  \"started\": \"2026-09-15 09:09:14\",\n"}
+,{"stream_name":"stdout","time":1203.468588846,"data":"  \"install\": {\n"}
+,{"stream_name":"stdout","time":1203.469525765,"data":"    \"returncode\": 0,\n"}
+,{"stream_name":"stdout","time":1203.470394856,"data":"    \"seconds\": 27.0\n"}
+,{"stream_name":"stdout","time":1203.471292454,"data":"  },\n"}
+,{"stream_name":"stdout","time":1203.472140335,"data":"  \"spikes\": {\n"}
+,{"stream_name":"stdout","time":1203.472958197,"data":"    \"env\": \"ok\",\n"}
+,{"stream_name":"stdout","time":1203.473824046,"data":"    \"qwen25_qlora\": \"ok\",\n"}
+,{"stream_name":"stdout","time":1203.474658754,"data":"    \"qwen35_2b_lora16\": \"failed\",\n"}
+,{"stream_name":"stdout","time":1203.475501821,"data":"    \"phi4mini_qlora\": \"failed\",\n"}
+,{"stream_name":"stdout","time":1203.476471366,"data":"    \"teacher_vllm\": \"ok\",\n"}
+,{"stream_name":"stdout","time":1203.477353452,"data":"    \"teacher_llamacpp\": \"skipped (vLLM teacher works)\"\n"}
+,{"stream_name":"stdout","time":1203.478175882,"data":"  },\n"}
+,{"stream_name":"stdout","time":1203.478926837,"data":"  \"finished\": \"2026-09-15 09:29:08\"\n"}
+,{"stream_name":"stdout","time":1203.479793549,"data":"}\n"}
+,{"stream_name":"stdout","time":1203.480616589,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":1206.138722414,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1206.138769279,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1206.411248702,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1206.411283701,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1207.845118324,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":1208.135327287,"data":"[NbConvertApp] Writing 38963 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":1210.396302785,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1211.566777341,"data":"[NbConvertApp] Writing 416997 bytes to __results__.html\n"}
+]

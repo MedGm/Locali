@@ -1,0 +1,24 @@
+This model config has set a `rope_parameters['original_max_position_embeddings']` field, to be used together with `max_position_embeddings` to determine a scaling factor. Please set the `factor` field of `rope_parameters`with this ratio instead -- we recommend the use of this field over `original_max_position_embeddings`, as it is compatible with most model architectures.
+🦥 Unsloth: Will patch your computer to enable 2x faster free finetuning.
+🦥 Unsloth Zoo will now patch everything to make training faster!
+==((====))==  Unsloth 2026.9.4: Fast Phi3 patching. Transformers: 5.5.0.
+   \\   /|    Tesla T4. Num GPUs = 2. Max memory: 14.562 GB. Platform: Linux.
+O^O/ \_/ \    Torch: 2.10.0+cu128. CUDA: 7.5. CUDA Toolkit: 12.8. Triton: 3.6.0
+\        /    Bfloat16 = FALSE. FA [Xformers = 0.0.35. FA2 = False]
+ "-____-"     Free license: http://github.com/unslothai/unsloth
+Unsloth: Fast downloading is enabled - ignore downloading bars which are red colored!
+total weights      : 2.645 GiB
+no_split classes   : ['Phi3DecoderLayer']
+output head        : lm_head -> cuda:1
+head headroom      : 0.393 GiB
+activation reserve : 11.456 GiB requested
+tied to head       : ['model.embed_tokens']
+  cuda:0  budget  12.95 GiB  weights  1.453 GiB  free 11.501 GiB  reserve 11.456 GiB
+  cuda:1  budget  13.00 GiB  weights  1.192 GiB  free 11.805 GiB  reserve 11.281 GiB   <- output head
+note: Bnb4BitHfQuantizer.adjust_max_memory lowered the budget on cuda:0 14.393 -> 12.954 GiB, cuda:1 14.440 -> 12.996 GiB (memory the quantiser keeps for its own load-time buffers)
+note: tied embeddings: model.embed_tokens pinned with the head so accelerate does not have to mirror the weight across devices
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/194 [00:00<?, ?it/s]Loading weights:   1%|          | 1/194 [00:01<03:50,  1.19s/it]Loading weights:   2%|▏         | 3/194 [00:01<01:11,  2.68it/s]Loading weights:   2%|▏         | 4/194 [00:01<00:53,  3.58it/s]Loading weights:   5%|▌         | 10/194 [00:01<00:16, 11.14it/s]Loading weights:   8%|▊         | 16/194 [00:01<00:10, 17.71it/s]Loading weights:  11%|█▏        | 22/194 [00:01<00:07, 23.18it/s]Loading weights:  14%|█▍        | 28/194 [00:02<00:06, 27.40it/s]Loading weights:  18%|█▊        | 34/194 [00:02<00:05, 30.58it/s]Loading weights:  21%|██        | 40/194 [00:02<00:04, 33.03it/s]Loading weights:  24%|██▎       | 46/194 [00:02<00:04, 34.81it/s]Loading weights:  27%|██▋       | 52/194 [00:02<00:04, 35.32it/s]Loading weights:  30%|██▉       | 58/194 [00:02<00:03, 35.02it/s]Loading weights:  33%|███▎      | 64/194 [00:03<00:03, 34.80it/s]Loading weights:  36%|███▌      | 70/194 [00:03<00:03, 34.15it/s]Loading weights:  39%|███▉      | 76/194 [00:03<00:03, 34.03it/s]Loading weights:  42%|████▏     | 82/194 [00:03<00:03, 33.56it/s]Loading weights:  45%|████▌     | 88/194 [00:03<00:03, 33.59it/s]Loading weights:  48%|████▊     | 94/194 [00:03<00:02, 33.56it/s]Loading weights:  52%|█████▏    | 100/194 [00:04<00:02, 32.83it/s]Loading weights:  55%|█████▍    | 106/194 [00:04<00:02, 32.19it/s]Loading weights:  58%|█████▊    | 112/194 [00:04<00:02, 31.98it/s]Loading weights:  61%|██████    | 118/194 [00:04<00:02, 31.94it/s]Loading weights:  64%|██████▍   | 124/194 [00:04<00:02, 31.77it/s]Loading weights:  67%|██████▋   | 130/194 [00:05<00:02, 31.77it/s]Loading weights:  70%|███████   | 136/194 [00:05<00:01, 31.80it/s]Loading weights:  73%|███████▎  | 142/194 [00:05<00:01, 31.79it/s]Loading weights:  76%|███████▋  | 148/194 [00:05<00:01, 31.65it/s]Loading weights:  79%|███████▉  | 154/194 [00:05<00:01, 31.59it/s]Loading weights:  82%|████████▏ | 160/194 [00:06<00:01, 31.66it/s]Loading weights:  86%|████████▌ | 166/194 [00:06<00:00, 31.54it/s]Loading weights:  89%|████████▊ | 172/194 [00:06<00:00, 31.54it/s]Loading weights:  92%|█████████▏| 178/194 [00:06<00:00, 31.28it/s]Loading weights:  95%|█████████▍| 184/194 [00:06<00:00, 31.15it/s]Loading weights:  97%|█████████▋| 189/194 [00:06<00:00, 33.85it/s]Loading weights:  99%|█████████▉| 193/194 [00:07<00:00, 32.45it/s]Loading weights: 100%|██████████| 194/194 [00:07<00:00, 27.43it/s]
+Unsloth: microsoft/Phi-4-mini-instruct had a bad pad_token (<|endoftext|>). Using pad_token = <｜PAD▁TOKEN｜>.
+Unsloth: microsoft/Phi-4-mini-instruct had a bad pad_token (<|endoftext|>). Using pad_token = <｜PAD▁TOKEN｜>.
+[09:16:57] phi4mini_qlora: failed in 64.6s

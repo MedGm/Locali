@@ -1,0 +1,32 @@
+{
+  "spike": "teacher_vllm",
+  "status": "ok",
+  "vllm_version": "0.29.0",
+  "install_s": 49.4,
+  "repo": "Qwen/Qwen3.5-9B",
+  "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "gpu_count": 2,
+  "config": {
+    "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+    "dtype": "half",
+    "tensor_parallel_size": 2,
+    "max_model_len": 4096,
+    "gpu_memory_utilization": 0.9,
+    "enforce_eager": true,
+    "seed": 3407,
+    "limit_mm_per_prompt": {
+      "image": 0,
+      "video": 0
+    }
+  },
+  "load_s": 614.8,
+  "requests": 32,
+  "gen_s": 32.44,
+  "output_tokens": 3282,
+  "throughput_tok_per_s": 101.2,
+  "samples": [
+    "The mutation incorrectly uses `x >= hi` instead of `x > hi`, causing the function to return `hi` when `x` equals `hi` rather than passing `x` through. This breaks the boundary condition where the input should be clamped only when it strictly exceeds the upper limit. The fix is to change the condition back to `if x > hi:`.",
+    "The mutation incorrectly changes the condition `x > hi` to `x < hi`, causing the function to return `hi` whenever `x` is less than the upper bound, even when it should be returned as-is. This breaks the logic for values within the valid range, such as `5` in the range `[0, 10]`, which the test expects to remain unchanged.\n\nFix: `if x > hi:`"
+  ],
+  "duration_s": 729.0
+}

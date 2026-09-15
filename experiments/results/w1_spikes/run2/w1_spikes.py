@@ -25,9 +25,7 @@ LOGS = WORK / "logs"
 PINS = {
     "qwen2.5-coder-1.5b": ("Qwen/Qwen2.5-Coder-1.5B-Instruct", "2e1fd397ee46e1388853d2af2c993145b0f1098a"),
     "qwen3.5-2b": ("Qwen/Qwen3.5-2B", "15852e8c16360a2fea060d615a32b45270f8a8fc"),
-    # Weights byte-identical to microsoft/Phi-4-mini-instruct@cfbefac (same safetensors SHA-256);
-    # Unsloth copy fixes the tokenizer (real pad token, eos <|end|>). Official repo fails to load (run 2).
-    "phi-4-mini": ("unsloth/Phi-4-mini-instruct", "75becc471c56fc34761ec998615ca6f8535c5a61"),
+    "phi-4-mini": ("microsoft/Phi-4-mini-instruct", "cfbefacb99257ffa30c83adab238a50856ac3083"),
     "qwen3.5-9b": ("Qwen/Qwen3.5-9B", "c202236235762e1c871ad0ccb60c8ee5ba337b9a"),
 }
 SEQ_LEN = 2048
@@ -45,16 +43,14 @@ SPIKES = {
     "qwen25_qlora": 1500,
     "qwen35_2b_lora16": 2700,
     "phi4mini_qlora": 2400,
-    "qwen35_2b_bf16": 2400,
-    "qwen35_2b_fp32": 2400,
     "peft_rslora": 1200,
     "peft_dora": 1500,
     "teacher_vllm": 3300,
     "teacher_llamacpp": 3000,  # fallback, runs only if teacher_vllm fails
     "teacher_hf4bit": 2100,  # run 1: 4.4 tok/s, too slow for dataset generation
 }
-# Run 3 repeats only what failed in run 2 (see experiments/results/w1_spikes/).
-DEFAULT_RUN = ["env", "phi4mini_qlora", "qwen35_2b_bf16", "qwen35_2b_fp32"]
+# Run 2 repeats only what failed or changed in run 1 (see experiments/results/w1_spikes/).
+DEFAULT_RUN = ["env", "qwen25_qlora", "qwen35_2b_lora16", "phi4mini_qlora", "teacher_vllm", "teacher_llamacpp"]
 
 
 def log(msg: str) -> None:
@@ -80,7 +76,7 @@ def peak_gb() -> dict:
     }
 
 
-def load_model(key: str, *, four_bit: bool, sixteen_bit: bool = False, dtype=None):
+def load_model(key: str, *, four_bit: bool, sixteen_bit: bool = False):
     import torch
     from unsloth import FastLanguageModel
 
@@ -93,7 +89,7 @@ def load_model(key: str, *, four_bit: bool, sixteen_bit: bool = False, dtype=Non
         "use_exact_model_name": True,
         "max_seq_length": SEQ_LEN,
         "load_in_4bit": four_bit,
-        "dtype": dtype or torch.float16,
+        "dtype": torch.float16,
     }
     if sixteen_bit:
         kwargs["load_in_16bit"] = True
@@ -160,7 +156,7 @@ def build_texts(tok, n: int = 400, chat_kwargs: dict | None = None):
     return texts, lens
 
 
-def train_run(model, tok, texts, lens, *, steps: int, batch: int, parts=None, precision: str = "fp16") -> dict:
+def train_run(model, tok, texts, lens, *, steps: int, batch: int, parts=None) -> dict:
     import inspect
 
     import torch
@@ -180,8 +176,7 @@ def train_run(model, tok, texts, lens, *, steps: int, batch: int, parts=None, pr
         "lr_scheduler_type": "cosine",
         "optim": "adamw_8bit",
         "weight_decay": 0.01,
-        # "none": no autocast; weights train in their load dtype (used for pure bf16 / fp32 runs).
-        "fp16": precision == "fp16",
+        "fp16": True,
         "bf16": False,
         "logging_steps": 1,
         "save_strategy": "no",
@@ -231,7 +226,6 @@ def train_run(model, tok, texts, lens, *, steps: int, batch: int, parts=None, pr
     return {
         "steps": steps,
         "batch": batch,
-        "precision": precision,
         "seq_len_cap": SEQ_LEN,
         "avg_sample_tokens": round(avg_tokens),
         "first_step_s": round(timer.times[0], 2),
@@ -245,7 +239,7 @@ def train_run(model, tok, texts, lens, *, steps: int, batch: int, parts=None, pr
     }
 
 
-def long_seq_probe(model, tok, texts, parts, chat_kwargs=None, candidates=(4, 2, 1), precision="fp16") -> dict:
+def long_seq_probe(model, tok, texts, parts, chat_kwargs=None, candidates=(4, 2, 1)) -> dict:
     """Largest batch of ~2048-token samples that trains through the real trainer path.
 
     Run 1 called model(labels=...) directly, which materializes full-vocabulary logits and
@@ -265,7 +259,7 @@ def long_seq_probe(model, tok, texts, parts, chat_kwargs=None, candidates=(4, 2,
     lens = [min(len(ttok(t)["input_ids"]), SEQ_LEN) for t in long_texts]
     for b in candidates:
         try:
-            r = train_run(model, tok, long_texts, lens, steps=3, batch=b, parts=parts, precision=precision)
+            r = train_run(model, tok, long_texts, lens, steps=3, batch=b, parts=parts)
             return {"max_batch_at_2048": b, "long_seq_step_s": r["mean_step_s"], "long_seq_peak": r["train_peak"]}
         except torch.cuda.OutOfMemoryError:
             torch.cuda.empty_cache()
@@ -359,35 +353,6 @@ def spike_qwen35_2b_lora16() -> dict:
         **result,
         **probe,
     }
-
-
-def _qwen35_2b(dtype_name: str) -> dict:
-    import torch
-
-    dtype = {"bf16": torch.bfloat16, "fp32": torch.float32}[dtype_name]
-    model, tok, meta = load_model("qwen3.5-2b", four_bit=False, sixteen_bit=dtype_name == "bf16", dtype=dtype)
-    dtypes = sorted({str(p.dtype) for p in model.parameters()})
-    model = add_lora(model, QWEN_TARGETS)
-    chat_kwargs = {"enable_thinking": False}
-    texts, lens = build_texts(tok, chat_kwargs=chat_kwargs)
-    result = train_run(model, tok, texts, lens, steps=30, batch=4, parts=QWEN_PARTS, precision="none")
-    probe = long_seq_probe(model, tok, texts, QWEN_PARTS, chat_kwargs=chat_kwargs, precision="none")
-    return {
-        **meta,
-        "method": f"lora_{dtype_name}_r16, no autocast (fp16 path crashes on T4, runs 1-2)",
-        "param_dtypes_after_load": dtypes,
-        "bf16_supported_natively": torch.cuda.is_bf16_supported(including_emulation=False),
-        **result,
-        **probe,
-    }
-
-
-def spike_qwen35_2b_bf16() -> dict:
-    return _qwen35_2b("bf16")
-
-
-def spike_qwen35_2b_fp32() -> dict:
-    return _qwen35_2b("fp32")
 
 
 def spike_phi4mini_qlora() -> dict:

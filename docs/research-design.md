@@ -94,6 +94,15 @@ Consequences:
 - **Phi-4-mini pin:** `unsloth/Phi-4-mini-instruct@75becc4`, whose weights are byte-identical to the Microsoft release; only tokenizer/config fixes differ.
 - Training jobs pin a single GPU; the second Kaggle T4 runs evaluation in parallel.
 
+### 2.6 Tool-calling check (W1, laptop CPU, Q4_K_M, 10 requests against the MCP repo tools)
+
+| Model | Native tool call correct | Right tool and path if JSON in plain text is also accepted | Invented tool names |
+|---|---|---|---|
+| Qwen2.5-Coder-1.5B | 0 / 10 | 5 / 10 | 2 / 10 |
+| Qwen3.5-2B (thinking off) | 10 / 10 | 10 / 10 | 0 / 10 |
+
+Qwen2.5-Coder-1.5B writes tool calls as markdown JSON instead of its native tool-call format, and invents tools (`add`, `test_calc`). Consequence for the agent design: **the LangGraph graph decides which tool runs; the model only fills node outputs in fixed JSON schemas**, which the T1–T3 fine-tuning targets directly. Model-driven routing with Qwen3.5-2B is a candidate extra arm for RQ6. The sample is small (n = 10 per model); treat the numbers as indicative. Data: `experiments/results/w1_tool_calling_*.json`.
+
 ## 3. Training method
 
 ### 3.1 Choice: supervised fine-tuning with QLoRA

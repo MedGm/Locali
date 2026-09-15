@@ -17,6 +17,8 @@ dev = ["ruff", "pytest"]
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+# Result folders hold frozen copies of the scripts that produced them.
+extend-exclude = ["experiments/results"]
 
 [tool.ruff.lint.per-file-ignores]
 # Spike/job scripts deliberately catch every exception so one failure is recorded, not fatal.

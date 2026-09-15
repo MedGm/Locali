@@ -29,7 +29,7 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 | C11 | Regression tests | Tests generated for fixed bugs, kept in suite | `backend/` | W8–10 | todo |
 | C12 | Detect failing tests, propose fixes | Debug loop, max 3 attempts, human approval | `backend/` | W8–10 | todo |
 | C13 | LangGraph agents: Code Analysis, Test Generation, Debugging, Documentation, Code Review, DevOps | 6 nodes, deterministic routing | `backend/` | W8–10 | todo |
-| C14 | MCP access to tools, repos, docs, databases, issue trackers, test frameworks, DevOps | 3 servers: repo (read-only), test runner, static analysis | `mcp_servers/` | W6–10 | todo |
+| C14 | MCP access to tools, repos, docs, databases, issue trackers, test frameworks, DevOps | 3 servers: repo (read-only), test runner, static analysis | `mcp_servers/` | W6–10 | wip (repo server done) |
 | C15 | Git/GitHub + CI/CD: review, tests, quality, docs, deployment assistance | 1 GitHub Action on pull requests | `.github/workflows/` | W11–12 | todo |
 | C16 | LLMOps: model versions, prompts, datasets, performance, tokens, agent trajectories, eval results | MLflow runs + JSONL traces | `experiments/`, `backend/` | W1–12 | todo |
 | C17 | React/TypeScript web app + FastAPI backend, visualize quality and DevOps results | 3 pages: run, results/approval, metrics | `frontend/`, `backend/` | W11–12 | todo |
@@ -42,8 +42,8 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 | S2 | Jailbreaking | System-prompt hardening + output policy check | Jailbreak prompt set | W8–13 | todo |
 | S3 | Data leakage (code, credentials, API keys) | Secret scanning + redaction before model and in outputs | Fake keys in `demo_repo/` | W3–13 | todo |
 | S4 | Malicious code, unsafe commands | Command allow-list, output validation | Generated `rm -rf`, `curl \| bash` | W8–13 | todo |
-| S5 | MCP/tool security, excessive permissions | Least-privilege servers, per-tool allow-list | Call to non-allowed tool | W6–13 | todo |
-| S6 | Supply-chain, repository poisoning | Dependency pinning, no install from untrusted repo, sandbox | Poisoned `requirements.txt` | W8–13 | todo |
+| S5 | MCP/tool security, excessive permissions | Least-privilege servers, per-tool allow-list | Call to non-allowed tool | W6–13 | wip (repo server: 2 tools, path confinement tested) |
+| S6 | Supply-chain, repository poisoning | Dependency pinning, no install from untrusted repo, sandbox | Poisoned `requirements.txt` | W8–13 | wip (sandbox: no network, read-only, limits tested) |
 | S7 | Insecure output handling, generated-code vulnerabilities | Semgrep/Bandit on generated code before acceptance | Vulnerable patch | W8–13 | todo |
 | S8 | Excessive agent autonomy | Human approval for writes, iteration limits | Agent attempts unapproved write | W8–13 | todo |
 

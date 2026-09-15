@@ -26,7 +26,7 @@ Solo, 15 weeks, ~20 h/week. Deadline 01/01/2027, target submission 30/12/2026.
 - [ ] Kaggle account with phone verification (GPU access)
 - [ ] Hugging Face account + token
 - [x] Choose and pin model versions (`experiments/configs/models.yaml`)
-- [ ] Local inference smoke test (llama.cpp server, OpenAI-compatible)
+- [x] Local inference smoke test (llama.cpp server, OpenAI-compatible)
 
 ### W1–2 · Sep 21–Oct 4 · Risk tests + evaluation harness
 - [ ] Spike: Unsloth tiny run on Kaggle T4

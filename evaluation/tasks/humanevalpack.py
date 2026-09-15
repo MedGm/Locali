@@ -115,20 +115,47 @@ class FixTask:
 
 
 _THINK = re.compile(r"<think>.*?</think>", re.DOTALL)
-_VERDICT = re.compile(r'"?has_bug"?\s*[:=]\s*(true|false)', re.IGNORECASE)
 
 
-def parse_has_bug(text: str) -> bool | None:
+def parse_verdict(text: str, key: str) -> bool | None:
+    """Boolean `key` from the first JSON object that has it, else from `key: true/false` text."""
     text = _THINK.sub("", text)
     for match in re.finditer(r"\{[^{}]*\}", text):
         try:
-            value = json.loads(match.group(0)).get("has_bug")
+            value = json.loads(match.group(0)).get(key)
         except (json.JSONDecodeError, AttributeError):
             continue
         if isinstance(value, bool):
             return value
-    match = _VERDICT.search(text)
+    match = re.search(rf'"?{re.escape(key)}"?\s*[:=]\s*(true|false)', text, re.IGNORECASE)
     return match.group(1).lower() == "true" if match else None
+
+
+def parse_has_bug(text: str) -> bool | None:
+    return parse_verdict(text, "has_bug")
+
+
+def binary_detection_metrics(records: list[dict]) -> dict:
+    """Precision/recall/F1 with label True as the positive class.
+
+    Unparseable answers (predicted None) count as "nothing reported": never a true or false
+    positive, a false negative on positive items, and always wrong for accuracy.
+    """
+    tp = sum(r["label"] and r["predicted"] is True for r in records)
+    fp = sum(not r["label"] and r["predicted"] is True for r in records)
+    fn = sum(r["label"] and r["predicted"] is not True for r in records)
+    correct = sum(r["predicted"] is not None and r["predicted"] == r["label"] for r in records)
+    n = len(records)
+    precision = tp / (tp + fp) if tp + fp else 0.0
+    recall = tp / (tp + fn) if tp + fn else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+    return {
+        "accuracy": round(correct / n, 4) if n else None,
+        "precision": round(precision, 4),
+        "recall": round(recall, 4),
+        "f1": round(f1, 4),
+        "invalid_rate": round(sum(r["predicted"] is None for r in records) / n, 4) if n else None,
+    }
 
 
 class BugDetectTask:
@@ -164,22 +191,7 @@ class BugDetectTask:
         return {"status": status, "label": item.label, "predicted": predicted, "bug_type": item.bug_type}
 
     def metrics(self, records: list[dict]) -> dict:
-        # Unparseable answers count as "no bug reported": never a true or false positive.
-        tp = sum(r["label"] and r["predicted"] is True for r in records)
-        fp = sum(not r["label"] and r["predicted"] is True for r in records)
-        fn = sum(r["label"] and r["predicted"] is not True for r in records)
-        correct = sum(r["predicted"] is not None and r["predicted"] == r["label"] for r in records)
-        n = len(records)
-        precision = tp / (tp + fp) if tp + fp else 0.0
-        recall = tp / (tp + fn) if tp + fn else 0.0
-        f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
-        return {
-            "accuracy": round(correct / n, 4) if n else None,
-            "precision": round(precision, 4),
-            "recall": round(recall, 4),
-            "f1": round(f1, 4),
-            "invalid_rate": round(sum(r["predicted"] is None for r in records) / n, 4) if n else None,
-        }
+        return binary_detection_metrics(records)
 
     def reference(self, item: DetectItem) -> str:
         return json.dumps({"has_bug": item.label, "reason": "reference label"})

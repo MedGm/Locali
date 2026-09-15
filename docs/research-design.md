@@ -212,11 +212,12 @@ Rejected: Magicoder-OSS-Instruct-75K and CodeFeedback (outputs of proprietary Op
 |---|---|---|---|---|
 | Code generation | EvalPlus HumanEval+ / MBPP+ | Apache-2.0 | 164 / 378 | pass@1, pass@10 |
 | Bug detection, repair, explanation | HumanEvalPack Python (human-written bugs, bug type labels) | MIT | 164 | Detection P/R/F1 (buggy vs canonical), repair pass@1 |
-| Code completion | SAFIM (fill-in-the-middle) | CC-BY-4.0 | Python subset | Exact/execution match |
+| Code completion | Infilling built from HumanEval+ (masked middle span ≤ 3 lines; replaces SAFIM, which needs model-specific FIM tokens that Qwen3.5/Phi chat models lack) | Apache-2.0 | 163 | pass@1 on plus tests |
 | Code reasoning | CRUXEval | MIT | 800 | Output-prediction accuracy |
 | Test generation | HumanEval+ functions, own harness | — | 164 | Pass rate on canonical, line/branch coverage, mutation score |
 | Refactoring | HumanEval+ solutions, own harness | — | 164 | Tests still pass; Radon complexity and Ruff violation deltas |
-| Vulnerability detection | SecurityEval (license not stated — cite, research use) | — | 121 | Detection rate vs Bandit/Semgrep ground truth |
+| Insecure code generation | SecurityEval (license not stated — cite, research use) | — | 121 | Bandit-flagged rate (lower bound: Bandit flags only 27 % of the benchmark's own insecure examples) |
+| Vulnerability detection | CyberNative DPO, Python pairs where both versions parse | Apache-2.0 | 712 | Precision/recall/F1 (indicative: label noise measured) |
 | Contamination-free check | **Locali-Fresh**: 60–100 tasks written after Sep 2026 | own | 60–100 | Same metrics as above |
 | End-to-end workflow | `demo_repo/` seeded bugs, vulnerabilities, missing tests | own | — | Bugs fixed, coverage gain, findings P/R |
 

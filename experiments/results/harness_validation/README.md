@@ -69,3 +69,25 @@ The reference coverage is the practical ceiling for generated tests.
 | Masked reference lines as the model's fill (163 items) | **163 / 163 pass**; full-function answers 0 |
 
 Masked span sizes (lines, including blank lines inside the span): 3 → 86 items, 1 → 68, 2 → 8, 4 → 1. One-line spans come from short function bodies.
+
+## Security
+
+### `securecodegen` — SecurityEval `s2e-lab/SecurityEval@d1b6f68` (121 prompts, 69 CWEs)
+
+| Check | Result |
+|---|---|
+| Benchmark's insecure reference as the model's completion | Bandit (≥ medium severity and confidence) flags **33 / 121 (27.3 %)**; with the prompt's own CWE **17 / 121 (14.1 %)**; 24 of 69 CWEs flagged at least once; 0 unparseable |
+
+Consequence: Bandit's `insecure_rate` is a **lower bound** on insecure generations — it misses about three quarters of known-insecure code. Semgrep is to be added alongside Bandit (W3 static-analysis tooling) and results must carry this caveat.
+
+### `vulndetect` — CyberNative `Code_Vulnerability_Security_DPO@81aeacf`, Python subset
+
+| Check | Result |
+|---|---|
+| Python pairs in dataset | 424 |
+| Unparseable snippets | 61 "secure", 10 "vulnerable" → pairs with any unparseable side **excluded** (a model could otherwise infer the label from syntax) |
+| Pairs kept | **356 (712 items)** |
+| Reference labels as verdicts | accuracy, precision, recall, F1 all **1.000**; invalid rate 0 |
+| Label-noise probe: Bandit flags | "vulnerable" 279 / 356 (78.4 %), "secure" 219 / 356 (61.5 %) |
+
+The small Bandit gap between the two classes means either many "secure" versions are still vulnerable or Bandit over-reports; the two cannot be separated here. Treat `vulndetect` scores as **indicative**, not definitive.

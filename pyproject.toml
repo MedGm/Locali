@@ -1,0 +1,17 @@
+[project]
+name = "locali"
+version = "0.1.0"
+description = "Efficient small language models for software engineering, testing and DevOps"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[dependency-groups]
+dev = ["ruff", "pytest"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["evaluation", "backend", "security"]

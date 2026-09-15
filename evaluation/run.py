@@ -31,6 +31,7 @@ from evaluation.energy import RaplMeter
 from evaluation.extract import extract_code
 from evaluation.passk import pass_at_k
 from evaluation.tasks.codegen import (
+    EXCLUDED,
     HUMANEVAL_PLUS,
     MBPP_PLUS,
     Problem,
@@ -39,6 +40,8 @@ from evaluation.tasks.codegen import (
     load_humaneval_plus,
     load_mbpp_plus,
 )
+
+_EXCLUDE_PREFIX = {"humaneval_plus": "HumanEval/", "mbpp_plus": "Mbpp/"}
 
 BENCHMARKS = {
     "humaneval_plus": (load_humaneval_plus, HUMANEVAL_PLUS),
@@ -60,7 +63,7 @@ class RunConfig:
     seed: int = 3407
     limit: int | None = None
     workers: int = 1
-    eval_timeout_s: float = 30
+    eval_timeout_s: float = 60  # Mbpp/599 reference needs ~37 s
     prompt_variant: str = "evalplus-instruct"
     dataset: str | None = None
     dataset_revision: str | None = None
@@ -148,6 +151,7 @@ def run_benchmark(
         "config": asdict(config),
         "environment": env,
         "metrics": aggregate(records),
+        "excluded": {k: v for k, v in EXCLUDED.items() if k.startswith(_EXCLUDE_PREFIX.get(config.benchmark, "\0"))},
         "this_session": {"generated": len(todo), "resumed": len(done), "wall_s": round(wall_s, 1)},
     }
     (out_dir / "summary.json").write_text(json.dumps(summary, indent=2))

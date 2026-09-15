@@ -16,6 +16,13 @@ from security.sandbox import run_pytest
 HUMANEVAL_PLUS = ("evalplus/humanevalplus", "d32357cf319e50e9c8d8dab5ea876c72b0fd321b")
 MBPP_PLUS = ("evalplus/mbppplus", "b2d74c91837c3f2a20c1299ae98133cbe7cfa077")
 
+# Problems whose official reference solution cannot pass under this harness. Excluded for every
+# model so scores stay comparable. Evidence: experiments/results/harness_validation/README.md
+EXCLUDED = {
+    "HumanEval/32": "HF test calls _poly(*candidate(*inp), inp), unpacking a float: TypeError for any solution",
+    "Mbpp/255": "one input yields 1.66M tuples of length 77; reference comparison needs >2 GiB, above the sandbox limit",
+}
+
 INSTRUCTION = (
     "Please provide a self-contained Python script that solves the following problem "
     "in a markdown code block:"
@@ -56,7 +63,7 @@ def build_program(problem: Problem, code: str) -> str:
     return f"{code}\n\n{problem.test}\n"
 
 
-def evaluate_solution(problem: Problem, code: str, timeout_s: float = 30) -> Outcome:
+def evaluate_solution(problem: Problem, code: str, timeout_s: float = 60) -> Outcome:
     """Run one candidate against the benchmark tests in the sandbox.
 
     The whole program is executed inside a single pytest function, so syntax errors and
@@ -93,6 +100,7 @@ def _load(repo_revision: tuple[str, str], limit: int | None):
 
     repo, revision = repo_revision
     rows = load_dataset(repo, revision=revision, split="test")
+    # limit applies before exclusion, so a limited run may hold one fewer problem
     return rows.select(range(min(limit, len(rows)))) if limit else rows
 
 
@@ -107,6 +115,7 @@ def load_humaneval_plus(limit: int | None = None) -> list[Problem]:
             reference_solution=r["prompt"] + r["canonical_solution"],
         )
         for r in _load(HUMANEVAL_PLUS, limit)
+        if r["task_id"] not in EXCLUDED
     ]
 
 
@@ -121,6 +130,8 @@ def _mbpp_entry_point(code: str, first_assert: str) -> str:
 def load_mbpp_plus(limit: int | None = None) -> list[Problem]:
     problems = []
     for r in _load(MBPP_PLUS, limit):
+        if f"Mbpp/{r['task_id']}" in EXCLUDED:
+            continue
         tests = r["test_list"]
         first_assert = (ast.literal_eval(tests) if isinstance(tests, str) else tests)[0]
         problems.append(

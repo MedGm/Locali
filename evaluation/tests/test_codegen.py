@@ -103,3 +103,15 @@ def test_reference_solutions_of_real_benchmarks_pass(loader):
     for problem in problems:
         outcome = evaluate_solution(problem, problem.reference_solution)
         assert outcome.passed, (problem.task_id, outcome.detail)
+
+
+@needs_hub
+def test_loaders_skip_problems_that_fail_harness_validation():
+    from evaluation.tasks.codegen import EXCLUDED
+
+    he_ids = {p.task_id for p in load_humaneval_plus()}
+    mbpp_ids = {p.task_id for p in load_mbpp_plus()}
+
+    assert "HumanEval/32" in EXCLUDED and "Mbpp/255" in EXCLUDED
+    assert not (he_ids | mbpp_ids) & set(EXCLUDED)
+    assert (len(he_ids), len(mbpp_ids)) == (163, 377)

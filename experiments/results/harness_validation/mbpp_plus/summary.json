@@ -1,0 +1,57 @@
+{
+  "config": {
+    "benchmark": "mbpp_plus",
+    "model_id": "reference",
+    "runtime": "none",
+    "max_tokens": 768,
+    "model_revision": null,
+    "quantization": null,
+    "base_url": null,
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 4,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "evalplus/mbppplus",
+    "dataset_revision": "b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+    "notes": ""
+  },
+  "environment": {
+    "started_at": "2026-09-15T10:39:29+00:00",
+    "git_commit": "26a9dba6d05dcec8955bd0a646491d122c0eefcf",
+    "git_dirty": true,
+    "host": "medgm-HP-EliteBook-840-G7-Notebook-PC",
+    "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "cpu": "Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz",
+    "ram_gb": 15.4,
+    "gpus": [],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 377,
+    "pass@1": 1.0,
+    "status_counts": {
+      "passed": 377
+    },
+    "truncated": 0,
+    "mean_input_tokens": null,
+    "mean_output_tokens": null,
+    "mean_ttft_s": 0.0,
+    "median_ttft_s": 0.0,
+    "mean_total_s": 0.0,
+    "mean_decode_tok_per_s": null,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "excluded": {
+    "Mbpp/255": "one input yields 1.66M tuples of length 77; reference comparison needs >2 GiB, above the sandbox limit"
+  },
+  "this_session": {
+    "generated": 377,
+    "resumed": 0,
+    "wall_s": 148.8
+  }
+}

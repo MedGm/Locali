@@ -93,3 +93,17 @@ def test_resumes_without_regenerating_recorded_problems(tmp_path, config):
 
     assert asked == ["toy/bad"]
     assert summary["metrics"]["n"] == 2
+
+
+def test_default_eval_timeout_fits_slowest_reference_solution():
+    # Mbpp/599's reference needs ~37 s on one sandbox CPU (harness validation, 2026-09-15).
+    assert RunConfig(benchmark="x", model_id="x", runtime="x", max_tokens=1).eval_timeout_s >= 60
+
+
+def test_summary_lists_excluded_problems_for_the_benchmark(tmp_path):
+    config = RunConfig(benchmark="humaneval_plus", model_id="fake-model", runtime="test", max_tokens=64)
+    problems = [replace(HUMANEVAL_STYLE, task_id="toy/good")]
+
+    summary = run_benchmark(config, problems, fake_generate({"toy/good": (GOOD, "stop")}), tmp_path / "out")
+
+    assert list(summary["excluded"]) == ["HumanEval/32"]

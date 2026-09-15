@@ -1,0 +1,28 @@
+{
+  "spike": "peft_rslora",
+  "status": "ok",
+  "repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "revision": "2e1fd397ee46e1388853d2af2c993145b0f1098a",
+  "revision_applied": true,
+  "resolved_name": "unsloth/qwen2.5-coder-1.5b-instruct-bnb-4bit",
+  "load_s": 11.8,
+  "load_peak_allocated_gb": 0.69,
+  "method": "qlora_rslora_r16",
+  "stack": "unsloth",
+  "steps": 15,
+  "batch": 4,
+  "seq_len_cap": 2048,
+  "avg_sample_tokens": 321,
+  "first_step_s": 5.16,
+  "mean_step_s": 1.158,
+  "approx_train_tokens_per_s": 1111,
+  "loss_first": 0.7608,
+  "loss_last": 0.4497,
+  "completion_only_loss": true,
+  "trainable_params": 18464768,
+  "train_peak": {
+    "peak_allocated_gb": 1.13,
+    "peak_reserved_gb": 1.78
+  },
+  "duration_s": 70.1
+}

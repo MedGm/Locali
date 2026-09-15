@@ -35,8 +35,6 @@ QWEN_PARTS = ("<|im_start|>user\n", "<|im_start|>assistant\n")
 PHI_PARTS = ("<|user|>", "<|assistant|>")
 DATASET = "bigcode/self-oss-instruct-sc2-exec-filter-50k"
 
-LLAMA_GGUF = ("unsloth/Qwen3.5-9B-GGUF", "3885219b6810b007914f3a7950a8d1b469d598a5", "Qwen3.5-9B-Q4_K_M.gguf")
-
 # name -> timeout in seconds. Order is priority order.
 SPIKES = {
     "env": 600,
@@ -46,11 +44,8 @@ SPIKES = {
     "peft_rslora": 1200,
     "peft_dora": 1500,
     "teacher_vllm": 3300,
-    "teacher_llamacpp": 3000,  # fallback, runs only if teacher_vllm fails
-    "teacher_hf4bit": 2100,  # run 1: 4.4 tok/s, too slow for dataset generation
+    "teacher_hf4bit": 2100,  # fallback, runs only if teacher_vllm fails
 }
-# Run 2 repeats only what failed or changed in run 1 (see experiments/results/w1_spikes/).
-DEFAULT_RUN = ["env", "qwen25_qlora", "qwen35_2b_lora16", "phi4mini_qlora", "teacher_vllm", "teacher_llamacpp"]
 
 
 def log(msg: str) -> None:
@@ -81,27 +76,23 @@ def load_model(key: str, *, four_bit: bool, sixteen_bit: bool = False):
     from unsloth import FastLanguageModel
 
     repo, rev = PINS[key]
-    # use_exact_model_name: without it Unsloth swaps in its own pre-quantized mirror
-    # (e.g. "unsloth-bnb-4bit" dynamic quants) and silently drops `revision` (W1 run 1).
-    kwargs = {
-        "model_name": repo,
-        "revision": rev,
-        "use_exact_model_name": True,
-        "max_seq_length": SEQ_LEN,
-        "load_in_4bit": four_bit,
-        "dtype": torch.float16,
-    }
+    kwargs = {"model_name": repo, "max_seq_length": SEQ_LEN, "load_in_4bit": four_bit, "dtype": torch.float16}
     if sixteen_bit:
         kwargs["load_in_16bit"] = True
     reset_peak()
     t0 = time.perf_counter()
-    model, tok = FastLanguageModel.from_pretrained(**kwargs)
-    resolved = getattr(model.config, "_name_or_path", None)
+    try:
+        model, tok = FastLanguageModel.from_pretrained(revision=rev, **kwargs)
+        pinned = True
+    except Exception as e:  # revision kwarg unsupported or not found: record and load unpinned
+        log(f"pinned load failed ({type(e).__name__}: {e}); retrying without revision")
+        model, tok = FastLanguageModel.from_pretrained(**kwargs)
+        pinned = False
     return model, tok, {
         "repo": repo,
         "revision": rev,
-        "resolved_name": resolved,
-        "exact_model_loaded": resolved == repo,
+        "revision_applied": pinned,
+        "resolved_name": getattr(model.config, "_name_or_path", None),
         "load_s": round(time.perf_counter() - t0, 1),
         "load_peak_allocated_gb": peak_gb()["peak_allocated_gb"],
     }
@@ -239,43 +230,24 @@ def train_run(model, tok, texts, lens, *, steps: int, batch: int, parts=None) ->
     }
 
 
-def long_seq_probe(model, tok, texts, parts, chat_kwargs=None, candidates=(4, 2, 1)) -> dict:
-    """Largest batch of ~2048-token samples that trains through the real trainer path.
-
-    Run 1 called model(labels=...) directly, which materializes full-vocabulary logits and
-    overstated memory; the trainer path uses Unsloth's chunked loss like real training does.
-    """
+def max_batch_probe(model, tok, candidates=(8, 4, 2, 1)) -> dict:
+    """Largest batch of full-length (2048) sequences that survives forward + backward."""
     import torch
 
-    ttok = text_tokenizer(tok)
-    responses = "\n\n".join(texts)
-    ids = ttok(responses)["input_ids"]
-    chunk = SEQ_LEN - 64
-    long_texts = []
-    for i in range(8):
-        body = ttok.decode(ids[i * chunk:(i + 1) * chunk])
-        msgs = [{"role": "user", "content": "Continue."}, {"role": "assistant", "content": body}]
-        long_texts.append(ttok.apply_chat_template(msgs, tokenize=False, **(chat_kwargs or {})))
-    lens = [min(len(ttok(t)["input_ids"]), SEQ_LEN) for t in long_texts]
+    vocab = text_tokenizer(tok).vocab_size
+    model.train()
     for b in candidates:
+        reset_peak()
         try:
-            r = train_run(model, tok, long_texts, lens, steps=3, batch=b, parts=parts)
-            return {"max_batch_at_2048": b, "long_seq_step_s": r["mean_step_s"], "long_seq_peak": r["train_peak"]}
+            ids = torch.randint(100, vocab - 1, (b, SEQ_LEN), device="cuda")
+            loss = model(input_ids=ids, labels=ids).loss
+            loss.backward()
+            model.zero_grad(set_to_none=True)
+            return {"max_batch_at_2048": b, "probe_peak": peak_gb()}
         except torch.cuda.OutOfMemoryError:
+            model.zero_grad(set_to_none=True)
             torch.cuda.empty_cache()
     return {"max_batch_at_2048": 0}
-
-
-def cast_bf16_to_fp16(model) -> int:
-    """T4 has no native bf16; convert any bf16 tensors left after loading. Returns count."""
-    import torch
-
-    n = 0
-    for t in list(model.parameters()) + list(model.buffers()):
-        if t.dtype == torch.bfloat16:
-            t.data = t.data.to(torch.float16)
-            n += 1
-    return n
 
 
 # ---------------------------------------------------------------- spikes
@@ -324,8 +296,7 @@ def spike_qwen25_qlora() -> dict:
     model = add_lora(model, QWEN_TARGETS)
     texts, lens = build_texts(tok)
     result = train_run(model, tok, texts, lens, steps=30, batch=4, parts=QWEN_PARTS)
-    probe = long_seq_probe(model, tok, texts, QWEN_PARTS)
-    return {**meta, "method": "qlora_nf4_r16", "targets": QWEN_TARGETS, **result, **probe}
+    return {**meta, "method": "qlora_nf4_r16", "targets": QWEN_TARGETS, **result, **max_batch_probe(model, tok)}
 
 
 def spike_qwen35_2b_lora16() -> dict:
@@ -337,21 +308,16 @@ def spike_qwen35_2b_lora16() -> dict:
         except Exception as e:
             fast[mod] = f"{type(e).__name__}"
     model, tok, meta = load_model("qwen3.5-2b", four_bit=False, sixteen_bit=True)
-    # Run 1 crashed in the linear-attention in_proj: bf16 activations vs fp16 weights.
-    bf16_cast = cast_bf16_to_fp16(model)
     model = add_lora(model, QWEN_TARGETS)
-    chat_kwargs = {"enable_thinking": False}
-    texts, lens = build_texts(tok, chat_kwargs=chat_kwargs)
+    texts, lens = build_texts(tok, chat_kwargs={"enable_thinking": False})
     result = train_run(model, tok, texts, lens, steps=30, batch=4, parts=QWEN_PARTS)
-    probe = long_seq_probe(model, tok, texts, QWEN_PARTS, chat_kwargs=chat_kwargs)
     return {
         **meta,
         "method": "lora16_fp16_r16 (QLoRA not recommended for Qwen3.5 by Unsloth)",
         "targets": QWEN_TARGETS,
-        "bf16_tensors_cast_to_fp16": bf16_cast,
         "linear_attention_fast_paths": fast,
         **result,
-        **probe,
+        **max_batch_probe(model, tok),
     }
 
 
@@ -361,8 +327,7 @@ def spike_phi4mini_qlora() -> dict:
     model = add_lora(model, targets)
     texts, lens = build_texts(tok)
     result = train_run(model, tok, texts, lens, steps=30, batch=4, parts=PHI_PARTS)
-    probe = long_seq_probe(model, tok, texts, PHI_PARTS)
-    return {**meta, "method": "qlora_nf4_r16", "targets": targets, **result, **probe}
+    return {**meta, "method": "qlora_nf4_r16", "targets": targets, **result, **max_batch_probe(model, tok)}
 
 
 def _peft_variant(name: str, extra: dict) -> dict:
@@ -423,41 +388,33 @@ TEACHER_CASES = [
     ("<=", "x > hi -> x <= hi", "3", "3"),
 ]
 
-# Run 1 failed: no __main__ guard, and torch.cuda init forced vLLM to use spawn, which
-# re-imports this file. Count GPUs via nvidia-smi so CUDA stays uninitialized here.
 VLLM_INNER = r'''
-import json, subprocess, sys, time
+import json, sys, time
+import torch
+from vllm import LLM, SamplingParams
 
-
-def main():
-    from vllm import LLM, SamplingParams
-
-    repo, rev, out_path, prompts = sys.argv[1], sys.argv[2], sys.argv[3], json.loads(sys.argv[4])
-    n = len(subprocess.run(["nvidia-smi", "-L"], capture_output=True, text=True).stdout.strip().splitlines())
-    kwargs = dict(model=repo, revision=rev, dtype="half", tensor_parallel_size=n, max_model_len=4096,
-                  gpu_memory_utilization=0.90, enforce_eager=True, seed=3407,
-                  limit_mm_per_prompt={"image": 0, "video": 0})
-    if n < 2:
-        kwargs["quantization"] = "bitsandbytes"
-    t0 = time.perf_counter()
-    llm = LLM(**kwargs)
-    load_s = time.perf_counter() - t0
-    convs = [[{"role": "user", "content": p}] for p in prompts]
-    sp = SamplingParams(temperature=0.7, top_p=0.8, top_k=20, max_tokens=200)
-    t1 = time.perf_counter()
-    outs = llm.chat(convs, sp, chat_template_kwargs={"enable_thinking": False})
-    gen_s = time.perf_counter() - t1
-    out_tokens = sum(len(o.outputs[0].token_ids) for o in outs)
-    json.dump({
-        "gpu_count": n, "config": {k: v for k, v in kwargs.items() if k != "model"},
-        "load_s": round(load_s, 1), "requests": len(prompts), "gen_s": round(gen_s, 2),
-        "output_tokens": out_tokens, "throughput_tok_per_s": round(out_tokens / gen_s, 1),
-        "samples": [o.outputs[0].text[:700] for o in outs[:2]],
-    }, open(out_path, "w"), indent=2)
-
-
-if __name__ == "__main__":
-    main()
+repo, rev, out_path, prompts = sys.argv[1], sys.argv[2], sys.argv[3], json.loads(sys.argv[4])
+n = torch.cuda.device_count()
+kwargs = dict(model=repo, revision=rev, dtype="half", tensor_parallel_size=n, max_model_len=4096,
+              gpu_memory_utilization=0.90, enforce_eager=True, seed=3407,
+              limit_mm_per_prompt={"image": 0, "video": 0})
+if n < 2:
+    kwargs["quantization"] = "bitsandbytes"
+t0 = time.perf_counter()
+llm = LLM(**kwargs)
+load_s = time.perf_counter() - t0
+convs = [[{"role": "user", "content": p}] for p in prompts]
+sp = SamplingParams(temperature=0.7, top_p=0.8, top_k=20, max_tokens=200)
+t1 = time.perf_counter()
+outs = llm.chat(convs, sp, chat_template_kwargs={"enable_thinking": False})
+gen_s = time.perf_counter() - t1
+out_tokens = sum(len(o.outputs[0].token_ids) for o in outs)
+json.dump({
+    "gpu_count": n, "config": {k: v for k, v in kwargs.items() if k != "model"},
+    "load_s": round(load_s, 1), "requests": len(prompts), "gen_s": round(gen_s, 2),
+    "output_tokens": out_tokens, "throughput_tok_per_s": round(out_tokens / gen_s, 1),
+    "samples": [o.outputs[0].text[:700] for o in outs[:2]],
+}, open(out_path, "w"), indent=2)
 '''
 
 
@@ -500,89 +457,6 @@ def spike_teacher_vllm() -> dict:
         raise RuntimeError(f"vLLM run failed rc={proc.returncode}: {proc.stderr[-1500:]}")
     return {"vllm_version": version.stdout.strip(), "install_s": install_s, "repo": repo, "revision": rev,
             **json.loads(out.read_text())}
-
-
-def spike_teacher_llamacpp() -> dict:
-    import shutil
-    import threading
-    import urllib.request
-
-    from huggingface_hub import hf_hub_download
-
-    nvcc = shutil.which("nvcc") or next(
-        (c for c in ("/usr/local/cuda/bin/nvcc",) if Path(c).exists()), None
-    )
-    if not nvcc:
-        raise RuntimeError("nvcc not found: cannot build llama.cpp with CUDA")
-    src = Path("/tmp/llama.cpp")
-    t0 = time.perf_counter()
-    with open(LOGS / "teacher_llamacpp_build.log", "w") as fh:
-        for cmd in [
-            ["git", "clone", "--depth", "1", "https://github.com/ggml-org/llama.cpp", str(src)],
-            ["cmake", "-S", str(src), "-B", str(src / "build"), "-DGGML_CUDA=ON", "-DCMAKE_CUDA_ARCHITECTURES=75",
-             "-DLLAMA_CURL=OFF", "-DCMAKE_BUILD_TYPE=Release", f"-DCMAKE_CUDA_COMPILER={nvcc}"],
-            ["cmake", "--build", str(src / "build"), "-j", "4", "--target", "llama-server"],
-        ]:
-            rc = subprocess.run(cmd, stdout=fh, stderr=subprocess.STDOUT, check=False).returncode
-            if rc != 0:
-                raise RuntimeError(f"build step failed rc={rc}: {' '.join(cmd[:3])}")
-    build_s = round(time.perf_counter() - t0, 1)
-
-    repo, rev, fname = LLAMA_GGUF
-    gguf = hf_hub_download(repo, fname, revision=rev)
-    n_parallel = 16
-    with open(LOGS / "teacher_llamacpp_server.log", "w") as server_log:
-        server = subprocess.Popen(
-            [str(src / "build" / "bin" / "llama-server"), "-m", gguf, "-ngl", "99", "-c", str(1024 * n_parallel),
-             "--parallel", str(n_parallel), "--host", "127.0.0.1", "--port", "8081"],
-            stdout=server_log, stderr=subprocess.STDOUT,
-        )
-        try:
-            t1 = time.perf_counter()
-            while time.perf_counter() - t1 < 600:
-                try:
-                    urllib.request.urlopen("http://127.0.0.1:8081/health", timeout=5)
-                    break
-                except Exception:
-                    if server.poll() is not None:
-                        raise RuntimeError("llama-server exited during startup") from None
-                    time.sleep(3)
-            load_s = round(time.perf_counter() - t1, 1)
-
-            prompts = teacher_prompts(32)
-            tokens = [0] * len(prompts)
-            samples = [""] * len(prompts)
-
-            def call(i: int) -> None:
-                body = {
-                    "messages": [{"role": "user", "content": prompts[i]}],
-                    "max_tokens": 200, "temperature": 0.7, "top_p": 0.8, "top_k": 20,
-                    "chat_template_kwargs": {"enable_thinking": False},
-                }
-                req = urllib.request.Request(
-                    "http://127.0.0.1:8081/v1/chat/completions", data=json.dumps(body).encode(),
-                    headers={"Content-Type": "application/json"},
-                )
-                d = json.load(urllib.request.urlopen(req, timeout=900))
-                tokens[i] = d["usage"]["completion_tokens"]
-                samples[i] = d["choices"][0]["message"]["content"]
-
-            threads = [threading.Thread(target=call, args=(i,)) for i in range(len(prompts))]
-            t2 = time.perf_counter()
-            for t in threads:
-                t.start()
-            for t in threads:
-                t.join()
-            gen_s = time.perf_counter() - t2
-        finally:
-            server.terminate()
-    return {
-        "method": f"llama.cpp CUDA, Q4_K_M, {n_parallel} parallel slots, all GPUs",
-        "gguf": {"repo": repo, "revision": rev, "file": fname},
-        "build_s": build_s, "load_s": load_s, "requests": len(prompts), "gen_s": round(gen_s, 2),
-        "output_tokens": sum(tokens), "throughput_tok_per_s": round(sum(tokens) / gen_s, 1),
-        "samples": [x[:700] for x in samples[:2]],
-    }
 
 
 def spike_teacher_hf4bit() -> dict:
@@ -648,7 +522,7 @@ def run_driver(selected: list[str], skip_install: bool) -> None:
         summary["install"] = install()
         log(f"install: {summary['install']}")
     for name in selected:
-        if name in ("teacher_llamacpp", "teacher_hf4bit") and summary["spikes"].get("teacher_vllm") == "ok":
+        if name == "teacher_hf4bit" and summary["spikes"].get("teacher_vllm") == "ok":
             summary["spikes"][name] = "skipped (vLLM teacher works)"
             continue
         log(f"--- {name} (timeout {SPIKES[name]}s)")
@@ -677,7 +551,7 @@ def run_driver(selected: list[str], skip_install: bool) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--spike", help="worker mode: run one spike in this process")
-    parser.add_argument("--spikes", default=",".join(DEFAULT_RUN), help="driver mode: comma-separated subset")
+    parser.add_argument("--spikes", default=",".join(SPIKES), help="driver mode: comma-separated subset")
     parser.add_argument("--skip-install", action="store_true")
     args = parser.parse_args()
     RESULTS.mkdir(parents=True, exist_ok=True)

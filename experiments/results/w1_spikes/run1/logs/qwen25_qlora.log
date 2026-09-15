@@ -1,0 +1,69 @@
+[unsloth_zoo.log|WARNING]Unsloth: Ignoring revision = `2e1fd397ee46e1388853d2af2c993145b0f1098a` since `Qwen/Qwen2.5-Coder-1.5B-Instruct` resolved to `unsloth/qwen2.5-coder-1.5b-instruct-bnb-4bit`, which does not have that revision. Pass `use_exact_model_name = True` to load your repo as-is.
+🦥 Unsloth: Will patch your computer to enable 2x faster free finetuning.
+🦥 Unsloth Zoo will now patch everything to make training faster!
+==((====))==  Unsloth 2026.9.4: Fast Qwen2 patching. Transformers: 5.5.0.
+   \\   /|    Tesla T4. Num GPUs = 2. Max memory: 14.562 GB. Platform: Linux.
+O^O/ \_/ \    Torch: 2.10.0+cu128. CUDA: 7.5. CUDA Toolkit: 12.8. Triton: 3.6.0
+\        /    Bfloat16 = FALSE. FA [Xformers = 0.0.35. FA2 = False]
+ "-____-"     Free license: http://github.com/unslothai/unsloth
+Unsloth: Fast downloading is enabled - ignore downloading bars which are red colored!
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+total weights      : 1.045 GiB
+no_split classes   : ['Qwen2DecoderLayer']
+output head        : lm_head -> cuda:1
+head headroom      : 0.359 GiB
+activation reserve : 12.273 GiB requested
+tied to head       : ['model.embed_tokens']
+  cuda:0  budget  12.95 GiB  weights  0.610 GiB  free 12.344 GiB  reserve 12.273 GiB
+  cuda:1  budget  13.00 GiB  weights  0.435 GiB  free 12.562 GiB  reserve 12.115 GiB   <- output head
+note: Bnb4BitHfQuantizer.adjust_max_memory lowered the budget on cuda:0 14.393 -> 12.954 GiB, cuda:1 14.440 -> 12.996 GiB (memory the quantiser keeps for its own load-time buffers)
+note: tied embeddings: model.embed_tokens pinned with the head so accelerate does not have to mirror the weight across devices
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<01:18,  4.28it/s]Loading weights:  17%|█▋        | 56/338 [00:00<00:01, 210.31it/s]Loading weights:  35%|███▍      | 117/338 [00:00<00:00, 349.01it/s]Loading weights:  52%|█████▏    | 177/338 [00:00<00:00, 425.89it/s]Loading weights:  68%|██████▊   | 229/338 [00:00<00:00, 453.04it/s]Loading weights:  86%|████████▋ | 292/338 [00:00<00:00, 508.07it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 449.65it/s]
+Unsloth 2026.9.4 patched 28 layers with 28 QKV layers, 28 O layers and 28 MLP layers.
+Generating train split:   0%|          | 0/50661 [00:00<?, ? examples/s]Generating train split:   2%|▏         | 1000/50661 [00:00<00:07, 6222.27 examples/s]Generating train split:  20%|█▉        | 10000/50661 [00:00<00:00, 43510.53 examples/s]Generating train split:  38%|███▊      | 19000/50661 [00:00<00:00, 58679.49 examples/s]Generating train split:  57%|█████▋    | 29000/50661 [00:00<00:00, 71566.93 examples/s]Generating train split:  77%|███████▋  | 39000/50661 [00:00<00:00, 77102.49 examples/s]Generating train split:  97%|█████████▋| 49000/50661 [00:00<00:00, 83013.33 examples/s]Generating train split: 100%|██████████| 50661/50661 [00:00<00:00, 69664.95 examples/s]
+Unsloth: Tokenizing ["text"] (num_proc=2):   0%|          | 0/400 [00:00<?, ? examples/s]Unsloth: Tokenizing ["text"] (num_proc=2):  50%|█████     | 200/400 [00:03<00:03, 64.90 examples/s]Unsloth: Tokenizing ["text"] (num_proc=2): 100%|██████████| 400/400 [00:04<00:00, 86.09 examples/s]Unsloth: Tokenizing ["text"] (num_proc=2): 100%|██████████| 400/400 [00:05<00:00, 79.57 examples/s]
+🦥 Unsloth: Padding-free auto-enabled, enabling faster training.
+Map:   0%|          | 0/400 [00:00<?, ? examples/s]Map: 100%|██████████| 400/400 [00:00<00:00, 3715.45 examples/s]Map: 100%|██████████| 400/400 [00:00<00:00, 3584.33 examples/s]
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None}.
+==((====))==  Unsloth - 2x faster free finetuning | Num GPUs used = 2
+   \\   /|    Num examples = 400 | Num Epochs = 1 | Total steps = 30
+O^O/ \_/ \    Batch size per device = 4 | Gradient accumulation steps = 1
+\        /    Data Parallel GPUs = 1 | Total batch size (4 x 1 x 1) = 4
+ "-____-"     Trainable parameters = 18,464,768 of 1,562,179,072 (1.18% trained)
+  0%|          | 0/30 [00:00<?, ?it/s]`use_return_dict` is deprecated! Use `return_dict` instead!
+  3%|▎         | 1/30 [00:14<06:59, 14.47s/it]                                                3%|▎         | 1/30 [00:14<06:59, 14.47s/it]  7%|▋         | 2/30 [00:17<03:42,  7.95s/it]                                                7%|▋         | 2/30 [00:17<03:42,  7.95s/it] 10%|█         | 3/30 [00:19<02:11,  4.86s/it]                                               10%|█         | 3/30 [00:19<02:11,  4.86s/it] 13%|█▎        | 4/30 [00:19<01:25,  3.28s/it]                                               13%|█▎        | 4/30 [00:19<01:25,  3.28s/it] 17%|█▋        | 5/30 [00:20<01:01,  2.47s/it]                                               17%|█▋        | 5/30 [00:20<01:01,  2.47s/it] 20%|██        | 6/30 [00:22<00:48,  2.01s/it]                                               20%|██        | 6/30 [00:22<00:48,  2.01s/it] 23%|██▎       | 7/30 [00:23<00:38,  1.67s/it]                                               23%|██▎       | 7/30 [00:23<00:38,  1.67s/it] 27%|██▋       | 8/30 [00:24<00:32,  1.46s/it]                                               27%|██▋       | 8/30 [00:24<00:32,  1.46s/it] 30%|███       | 9/30 [00:25<00:27,  1.31s/it]                                               30%|███       | 9/30 [00:25<00:27,  1.31s/it] 33%|███▎      | 10/30 [00:26<00:25,  1.28s/it]                                                33%|███▎      | 10/30 [00:26<00:25,  1.28s/it] 37%|███▋      | 11/30 [00:27<00:22,  1.20s/it]                                                37%|███▋      | 11/30 [00:27<00:22,  1.20s/it] 40%|████      | 12/30 [00:29<00:25,  1.39s/it]                                                40%|████      | 12/30 [00:29<00:25,  1.39s/it] 43%|████▎     | 13/30 [00:30<00:22,  1.32s/it]                                                43%|████▎     | 13/30 [00:30<00:22,  1.32s/it] 47%|████▋     | 14/30 [00:31<00:19,  1.23s/it]                                                47%|████▋     | 14/30 [00:31<00:19,  1.23s/it] 50%|█████     | 15/30 [00:32<00:16,  1.12s/it]                                                50%|█████     | 15/30 [00:32<00:16,  1.12s/it] 53%|█████▎    | 16/30 [00:33<00:14,  1.07s/it]                                                53%|█████▎    | 16/30 [00:33<00:14,  1.07s/it] 57%|█████▋    | 17/30 [00:34<00:15,  1.20s/it]                                                57%|█████▋    | 17/30 [00:34<00:15,  1.20s/it] 60%|██████    | 18/30 [00:35<00:14,  1.20s/it]                                                60%|██████    | 18/30 [00:35<00:14,  1.20s/it] 63%|██████▎   | 19/30 [00:37<00:13,  1.25s/it]                                                63%|██████▎   | 19/30 [00:37<00:13,  1.25s/it] 67%|██████▋   | 20/30 [00:38<00:12,  1.23s/it]                                                67%|██████▋   | 20/30 [00:38<00:12,  1.23s/it] 70%|███████   | 21/30 [00:39<00:10,  1.11s/it]                                                70%|███████   | 21/30 [00:39<00:10,  1.11s/it] 73%|███████▎  | 22/30 [00:40<00:08,  1.11s/it]                                                73%|███████▎  | 22/30 [00:40<00:08,  1.11s/it] 77%|███████▋  | 23/30 [00:41<00:07,  1.08s/it]                                                77%|███████▋  | 23/30 [00:41<00:07,  1.08s/it] 80%|████████  | 24/30 [00:42<00:06,  1.06s/it]                                                80%|████████  | 24/30 [00:42<00:06,  1.06s/it] 83%|████████▎ | 25/30 [00:43<00:05,  1.03s/it]                                                83%|████████▎ | 25/30 [00:43<00:05,  1.03s/it] 87%|████████▋ | 26/30 [00:44<00:04,  1.02s/it]                                                87%|████████▋ | 26/30 [00:44<00:04,  1.02s/it] 90%|█████████ | 27/30 [00:45<00:03,  1.11s/it]                                                90%|█████████ | 27/30 [00:45<00:03,  1.11s/it] 93%|█████████▎| 28/30 [00:46<00:02,  1.07s/it]                                                93%|█████████▎| 28/30 [00:46<00:02,  1.07s/it] 97%|█████████▋| 29/30 [00:47<00:01,  1.04s/it]                                                97%|█████████▋| 29/30 [00:47<00:01,  1.04s/it]100%|██████████| 30/30 [00:48<00:00,  1.03s/it]                                               100%|██████████| 30/30 [00:48<00:00,  1.03s/it]                                               100%|██████████| 30/30 [00:48<00:00,  1.03s/it]100%|██████████| 30/30 [00:48<00:00,  1.62s/it]
+Unsloth: Will smartly offload gradients to save VRAM!
+{'loss': '0.7599', 'grad_norm': '0.4909', 'learning_rate': '0', 'epoch': '0.01'}
+Unsloth: Double buffering enabled (parallel H2D + compute) for backward pass.
+{'loss': '0.7286', 'grad_norm': '0.507', 'learning_rate': '6.667e-05', 'epoch': '0.02'}
+{'loss': '0.6672', 'grad_norm': '0.4239', 'learning_rate': '0.0001333', 'epoch': '0.03'}
+{'loss': '0.6503', 'grad_norm': '0.506', 'learning_rate': '0.0002', 'epoch': '0.04'}
+{'loss': '0.6581', 'grad_norm': '0.3574', 'learning_rate': '0.0001993', 'epoch': '0.05'}
+{'loss': '0.5235', 'grad_norm': '0.2584', 'learning_rate': '0.0001973', 'epoch': '0.06'}
+{'loss': '0.47', 'grad_norm': '0.2849', 'learning_rate': '0.000194', 'epoch': '0.07'}
+{'loss': '0.5707', 'grad_norm': '0.3535', 'learning_rate': '0.0001894', 'epoch': '0.08'}
+{'loss': '0.5012', 'grad_norm': '0.2707', 'learning_rate': '0.0001835', 'epoch': '0.09'}
+{'loss': '0.6818', 'grad_norm': '0.3007', 'learning_rate': '0.0001766', 'epoch': '0.1'}
+{'loss': '0.3942', 'grad_norm': '0.2492', 'learning_rate': '0.0001686', 'epoch': '0.11'}
+{'loss': '0.4387', 'grad_norm': '0.2805', 'learning_rate': '0.0001597', 'epoch': '0.12'}
+{'loss': '0.4151', 'grad_norm': '0.3085', 'learning_rate': '0.00015', 'epoch': '0.13'}
+{'loss': '0.4996', 'grad_norm': '0.3341', 'learning_rate': '0.0001396', 'epoch': '0.14'}
+{'loss': '0.5005', 'grad_norm': '0.3551', 'learning_rate': '0.0001287', 'epoch': '0.15'}
+{'loss': '0.496', 'grad_norm': '0.3783', 'learning_rate': '0.0001174', 'epoch': '0.16'}
+{'loss': '0.4523', 'grad_norm': '0.2523', 'learning_rate': '0.0001058', 'epoch': '0.17'}
+{'loss': '0.4062', 'grad_norm': '0.2542', 'learning_rate': '9.419e-05', 'epoch': '0.18'}
+{'loss': '0.3936', 'grad_norm': '0.2474', 'learning_rate': '8.264e-05', 'epoch': '0.19'}
+{'loss': '0.5727', 'grad_norm': '0.2801', 'learning_rate': '7.132e-05', 'epoch': '0.2'}
+{'loss': '0.5344', 'grad_norm': '0.3554', 'learning_rate': '6.039e-05', 'epoch': '0.21'}
+{'loss': '0.4751', 'grad_norm': '0.32', 'learning_rate': '5e-05', 'epoch': '0.22'}
+{'loss': '0.4865', 'grad_norm': '0.2772', 'learning_rate': '4.028e-05', 'epoch': '0.23'}
+{'loss': '0.4952', 'grad_norm': '0.3077', 'learning_rate': '3.138e-05', 'epoch': '0.24'}
+{'loss': '0.457', 'grad_norm': '0.2645', 'learning_rate': '2.34e-05', 'epoch': '0.25'}
+{'loss': '0.4371', 'grad_norm': '0.2506', 'learning_rate': '1.645e-05', 'epoch': '0.26'}
+{'loss': '0.4474', 'grad_norm': '0.2395', 'learning_rate': '1.064e-05', 'epoch': '0.27'}
+{'loss': '0.546', 'grad_norm': '0.2731', 'learning_rate': '6.031e-06', 'epoch': '0.28'}
+{'loss': '0.5417', 'grad_norm': '0.2755', 'learning_rate': '2.696e-06', 'epoch': '0.29'}
+{'loss': '0.6357', 'grad_norm': '0.294', 'learning_rate': '6.762e-07', 'epoch': '0.3'}
+{'train_runtime': '48.51', 'train_samples_per_second': '2.474', 'train_steps_per_second': '0.618', 'train_loss': '0.5279', 'epoch': '0.3'}
+[08:42:28] qwen25_qlora: ok in 154.8s

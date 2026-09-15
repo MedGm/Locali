@@ -1,0 +1,23 @@
+{
+  "spike": "teacher_hf4bit",
+  "status": "ok",
+  "repo": "Qwen/Qwen3.5-9B",
+  "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "revision_applied": true,
+  "resolved_name": "Qwen/Qwen3.5-9B",
+  "load_s": 159.5,
+  "load_peak_allocated_gb": 5.75,
+  "method": "unsloth 4-bit, batch 8, HF generate",
+  "gen_s": 189.8,
+  "output_tokens": 835,
+  "throughput_tok_per_s": 4.4,
+  "gen_peak": {
+    "peak_allocated_gb": 4.27,
+    "peak_reserved_gb": 4.31
+  },
+  "samples": [
+    "The mutation incorrectly changes the boundary check from `x > hi` (which is logically sound for returning `hi` when `x` exceeds the upper limit) to `x >= hi`, causing the function to return `hi` prematurely when `x` equals `hi`. This breaks the requirement that the function should only clamp values strictly greater than `hi`. The fix is to revert the condition back to `x > hi`.\n",
+    "The bug is that the second condition incorrectly checks `x < hi` instead of `x > hi`, causing the function to return the upper bound when the input should remain unchanged. This logic error prevents the function from correctly clamping values that fall within the valid range `[lo, hi]`.\n\nFix: Change `x < hi` to `x > hi`.\n"
+  ],
+  "duration_s": 371.7
+}

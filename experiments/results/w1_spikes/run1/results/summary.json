@@ -1,0 +1,18 @@
+{
+  "started": "2026-09-15 08:39:04",
+  "install": {
+    "returncode": 0,
+    "seconds": 36.3
+  },
+  "spikes": {
+    "env": "ok",
+    "qwen25_qlora": "ok",
+    "qwen35_2b_lora16": "failed",
+    "phi4mini_qlora": "ok",
+    "peft_rslora": "ok",
+    "peft_dora": "ok",
+    "teacher_vllm": "failed",
+    "teacher_hf4bit": "ok"
+  },
+  "finished": "2026-09-15 09:02:55"
+}

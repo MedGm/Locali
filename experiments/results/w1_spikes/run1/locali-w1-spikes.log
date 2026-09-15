@@ -1,0 +1,56 @@
+[{"stream_name":"stderr","time":10.744773533,"data":"/usr/local/lib/python3.12/dist-packages/nbformat/__init__.py:96: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":10.744875655,"data":"  validate(nb)\n"}
+,{"stream_name":"stderr","time":12.227827425,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":12.227863005,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":12.227869173,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":12.227874025,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":13.082569203,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":13.082605947,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":13.082613898,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":13.082621697,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":14.608580125,"data":"Writing /kaggle/working/w1_spikes.py\n"}
+,{"stream_name":"stdout","time":14.781725994,"data":"[08:39:04] installing unsloth (log: logs/install.log)\r\n"}
+,{"stream_name":"stdout","time":51.060326779,"data":"[08:39:40] install: {'returncode': 0, 'seconds': 36.3}\r\n"}
+,{"stream_name":"stdout","time":51.060364707,"data":"[08:39:40] --- env (timeout 600s)\r\n"}
+,{"stream_name":"stdout","time":64.134518241,"data":"[08:39:54] env: ok\r\n"}
+,{"stream_name":"stdout","time":64.134582469,"data":"[08:39:54] --- qwen25_qlora (timeout 1500s)\r\n"}
+,{"stream_name":"stdout","time":223.378762977,"data":"[08:42:33] qwen25_qlora: ok\r\n"}
+,{"stream_name":"stdout","time":223.378803454,"data":"[08:42:33] --- qwen35_2b_lora16 (timeout 2700s)\r\n"}
+,{"stream_name":"stdout","time":487.159465702,"data":"[08:46:57] qwen35_2b_lora16: failed\r\n"}
+,{"stream_name":"stdout","time":487.159664631,"data":"[08:46:57] --- phi4mini_qlora (timeout 2400s)\r\n"}
+,{"stream_name":"stdout","time":748.050577554,"data":"[08:51:17] phi4mini_qlora: ok\r\n"}
+,{"stream_name":"stdout","time":748.050620241,"data":"[08:51:17] --- peft_rslora (timeout 1200s)\r\n"}
+,{"stream_name":"stdout","time":822.219674961,"data":"[08:52:32] peft_rslora: ok\r\n"}
+,{"stream_name":"stdout","time":822.219714532,"data":"[08:52:32] --- peft_dora (timeout 1500s)\r\n"}
+,{"stream_name":"stdout","time":928.774940567,"data":"[08:54:18] peft_dora: ok\r\n"}
+,{"stream_name":"stdout","time":928.774994267,"data":"[08:54:18] --- teacher_vllm (timeout 3300s)\r\n"}
+,{"stream_name":"stdout","time":1067.541101188,"data":"[08:56:37] teacher_vllm: failed\r\n"}
+,{"stream_name":"stdout","time":1067.54114141,"data":"[08:56:37] --- teacher_hf4bit (timeout 2100s)\r\n"}
+,{"stream_name":"stdout","time":1445.162973543,"data":"[09:02:55] teacher_hf4bit: ok\r\n"}
+,{"stream_name":"stdout","time":1445.165300088,"data":"{\r\n"}
+,{"stream_name":"stdout","time":1445.16532136,"data":"  \"started\": \"2026-09-15 08:39:04\",\r\n"}
+,{"stream_name":"stdout","time":1445.165328809,"data":"  \"install\": {\r\n"}
+,{"stream_name":"stdout","time":1445.165334797,"data":"    \"returncode\": 0,\r\n"}
+,{"stream_name":"stdout","time":1445.165352675,"data":"    \"seconds\": 36.3\r\n"}
+,{"stream_name":"stdout","time":1445.165357963,"data":"  },\r\n"}
+,{"stream_name":"stdout","time":1445.165361866,"data":"  \"spikes\": {\r\n"}
+,{"stream_name":"stdout","time":1445.165365857,"data":"    \"env\": \"ok\",\r\n"}
+,{"stream_name":"stdout","time":1445.165369926,"data":"    \"qwen25_qlora\": \"ok\",\r\n"}
+,{"stream_name":"stdout","time":1445.16537622,"data":"    \"qwen35_2b_lora16\": \"failed\",\r\n"}
+,{"stream_name":"stdout","time":1445.165383655,"data":"    \"phi4mini_qlora\": \"ok\",\r\n"}
+,{"stream_name":"stdout","time":1445.16540136,"data":"    \"peft_rslora\": \"ok\",\r\n"}
+,{"stream_name":"stdout","time":1445.165406342,"data":"    \"peft_dora\": \"ok\",\r\n"}
+,{"stream_name":"stdout","time":1445.165411124,"data":"    \"teacher_vllm\": \"failed\",\r\n"}
+,{"stream_name":"stdout","time":1445.165415978,"data":"    \"teacher_hf4bit\": \"ok\"\r\n"}
+,{"stream_name":"stdout","time":1445.165420879,"data":"  },\r\n"}
+,{"stream_name":"stdout","time":1445.165425415,"data":"  \"finished\": \"2026-09-15 09:02:55\"\r\n"}
+,{"stream_name":"stdout","time":1445.165429872,"data":"}\r\n"}
+,{"stream_name":"stderr","time":1449.014680996,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1449.014730439,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1449.454520268,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1449.454581029,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1450.422258333,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":1450.787926171,"data":"[NbConvertApp] Writing 31897 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":1453.783323361,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1455.369224368,"data":"[NbConvertApp] Writing 388291 bytes to __results__.html\n"}
+]

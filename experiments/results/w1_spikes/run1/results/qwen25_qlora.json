@@ -1,0 +1,41 @@
+{
+  "spike": "qwen25_qlora",
+  "status": "ok",
+  "repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "revision": "2e1fd397ee46e1388853d2af2c993145b0f1098a",
+  "revision_applied": true,
+  "resolved_name": "unsloth/qwen2.5-coder-1.5b-instruct-bnb-4bit",
+  "load_s": 20.7,
+  "load_peak_allocated_gb": 0.69,
+  "method": "qlora_nf4_r16",
+  "targets": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "steps": 30,
+  "batch": 4,
+  "seq_len_cap": 2048,
+  "avg_sample_tokens": 306,
+  "first_step_s": 14.31,
+  "mean_step_s": 1.085,
+  "approx_train_tokens_per_s": 1129,
+  "loss_first": 0.7599,
+  "loss_last": 0.6357,
+  "completion_only_loss": true,
+  "trainable_params": 18464768,
+  "train_peak": {
+    "peak_allocated_gb": 1.2,
+    "peak_reserved_gb": 1.86
+  },
+  "max_batch_at_2048": 2,
+  "probe_peak": {
+    "peak_allocated_gb": 11.67,
+    "peak_reserved_gb": 11.74
+  },
+  "duration_s": 154.8
+}

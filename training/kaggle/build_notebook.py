@@ -26,7 +26,8 @@ def build(script: Path) -> Path:
         (
             "code",
             (
-                "import subprocess, sys\n"
+                "import subprocess\n"
+                "import sys\n\n"
                 f"proc = subprocess.Popen([sys.executable, '-u', '/kaggle/working/{script.name}'],\n"
                 "                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)\n"
                 "for line in proc.stdout:\n"

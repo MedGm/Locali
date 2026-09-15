@@ -1,0 +1,38 @@
+{
+  "spike": "phi4mini_qlora",
+  "status": "ok",
+  "repo": "microsoft/Phi-4-mini-instruct",
+  "revision": "cfbefacb99257ffa30c83adab238a50856ac3083",
+  "revision_applied": true,
+  "resolved_name": "unsloth/phi-4-mini-instruct-unsloth-bnb-4bit",
+  "load_s": 31.6,
+  "load_peak_allocated_gb": 1.67,
+  "method": "qlora_nf4_r16",
+  "targets": [
+    "down_proj",
+    "gate_up_proj",
+    "o_proj",
+    "qkv_proj"
+  ],
+  "steps": 30,
+  "batch": 4,
+  "seq_len_cap": 2048,
+  "avg_sample_tokens": 277,
+  "first_step_s": 82.16,
+  "mean_step_s": 2.27,
+  "approx_train_tokens_per_s": 488,
+  "loss_first": 0.7234,
+  "loss_last": 0.6463,
+  "completion_only_loss": true,
+  "trainable_params": 23068672,
+  "train_peak": {
+    "peak_allocated_gb": 2.32,
+    "peak_reserved_gb": 2.4
+  },
+  "max_batch_at_2048": 1,
+  "probe_peak": {
+    "peak_allocated_gb": 10.25,
+    "peak_reserved_gb": 10.32
+  },
+  "duration_s": 254.6
+}

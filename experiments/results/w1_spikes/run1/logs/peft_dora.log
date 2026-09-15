@@ -1,0 +1,55 @@
+[unsloth_zoo.log|WARNING]Unsloth: Ignoring revision = `2e1fd397ee46e1388853d2af2c993145b0f1098a` since `Qwen/Qwen2.5-Coder-1.5B-Instruct` resolved to `unsloth/qwen2.5-coder-1.5b-instruct-bnb-4bit`, which does not have that revision. Pass `use_exact_model_name = True` to load your repo as-is.
+🦥 Unsloth: Will patch your computer to enable 2x faster free finetuning.
+🦥 Unsloth Zoo will now patch everything to make training faster!
+==((====))==  Unsloth 2026.9.4: Fast Qwen2 patching. Transformers: 5.5.0.
+   \\   /|    Tesla T4. Num GPUs = 2. Max memory: 14.562 GB. Platform: Linux.
+O^O/ \_/ \    Torch: 2.10.0+cu128. CUDA: 7.5. CUDA Toolkit: 12.8. Triton: 3.6.0
+\        /    Bfloat16 = FALSE. FA [Xformers = 0.0.35. FA2 = False]
+ "-____-"     Free license: http://github.com/unslothai/unsloth
+Unsloth: Fast downloading is enabled - ignore downloading bars which are red colored!
+total weights      : 1.045 GiB
+no_split classes   : ['Qwen2DecoderLayer']
+output head        : lm_head -> cuda:1
+head headroom      : 0.359 GiB
+activation reserve : 12.273 GiB requested
+tied to head       : ['model.embed_tokens']
+  cuda:0  budget  12.95 GiB  weights  0.610 GiB  free 12.344 GiB  reserve 12.273 GiB
+  cuda:1  budget  13.00 GiB  weights  0.435 GiB  free 12.562 GiB  reserve 12.115 GiB   <- output head
+note: Bnb4BitHfQuantizer.adjust_max_memory lowered the budget on cuda:0 14.393 -> 12.954 GiB, cuda:1 14.440 -> 12.996 GiB (memory the quantiser keeps for its own load-time buffers)
+note: tied embeddings: model.embed_tokens pinned with the head so accelerate does not have to mirror the weight across devices
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<02:17,  2.46it/s]Loading weights:  19%|█▉        | 64/338 [00:00<00:01, 165.44it/s]Loading weights:  41%|████▏     | 140/338 [00:00<00:00, 326.14it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 523.33it/s]
+Not an error, but Unsloth cannot patch MLP layers with our manual autograd engine since either LoRA adapters
+are not enabled or a bias term (like in Qwen) is used.
+Not an error, but Unsloth cannot patch O projection layer with our manual autograd engine since either LoRA adapters
+are not enabled or a bias term (like in Qwen) is used.
+Unsloth 2026.9.4 patched 28 layers with 28 QKV layers, 0 O layers and 0 MLP layers.
+Unsloth: Tokenizing ["text"] (num_proc=2):   0%|          | 0/200 [00:00<?, ? examples/s]Unsloth: Tokenizing ["text"] (num_proc=2):  50%|█████     | 100/200 [00:02<00:02, 34.06 examples/s]Unsloth: Tokenizing ["text"] (num_proc=2): 100%|██████████| 200/200 [00:04<00:00, 44.58 examples/s]Unsloth: Tokenizing ["text"] (num_proc=2): 100%|██████████| 200/200 [00:04<00:00, 41.19 examples/s]
+🦥 Unsloth: Padding-free auto-enabled, enabling faster training.
+Map:   0%|          | 0/200 [00:00<?, ? examples/s]Map: 100%|██████████| 200/200 [00:00<00:00, 3327.93 examples/s]
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None}.
+==((====))==  Unsloth - 2x faster free finetuning | Num GPUs used = 2
+   \\   /|    Num examples = 200 | Num Epochs = 1 | Total steps = 15
+O^O/ \_/ \    Batch size per device = 4 | Gradient accumulation steps = 1
+\        /    Data Parallel GPUs = 1 | Total batch size (4 x 1 x 1) = 4
+ "-____-"     Trainable parameters = 19,109,888 of 1,562,824,192 (1.22% trained)
+  0%|          | 0/15 [00:00<?, ?it/s]`use_return_dict` is deprecated! Use `return_dict` instead!
+  7%|▋         | 1/15 [00:08<01:56,  8.33s/it]                                                7%|▋         | 1/15 [00:08<01:56,  8.33s/it] 13%|█▎        | 2/15 [00:11<01:07,  5.15s/it]                                               13%|█▎        | 2/15 [00:11<01:07,  5.15s/it] 20%|██        | 3/15 [00:14<00:49,  4.11s/it]                                               20%|██        | 3/15 [00:14<00:49,  4.11s/it] 27%|██▋       | 4/15 [00:17<00:40,  3.70s/it]                                               27%|██▋       | 4/15 [00:17<00:40,  3.70s/it] 33%|███▎      | 5/15 [00:20<00:34,  3.41s/it]                                               33%|███▎      | 5/15 [00:20<00:34,  3.41s/it] 40%|████      | 6/15 [00:23<00:30,  3.34s/it]                                               40%|████      | 6/15 [00:23<00:30,  3.34s/it] 47%|████▋     | 7/15 [00:26<00:26,  3.37s/it]                                               47%|████▋     | 7/15 [00:26<00:26,  3.37s/it] 53%|█████▎    | 8/15 [00:30<00:24,  3.48s/it]                                               53%|█████▎    | 8/15 [00:30<00:24,  3.48s/it] 60%|██████    | 9/15 [00:34<00:21,  3.64s/it]                                               60%|██████    | 9/15 [00:34<00:21,  3.64s/it] 67%|██████▋   | 10/15 [00:37<00:17,  3.47s/it]                                                67%|██████▋   | 10/15 [00:37<00:17,  3.47s/it] 73%|███████▎  | 11/15 [00:41<00:14,  3.54s/it]                                                73%|███████▎  | 11/15 [00:41<00:14,  3.54s/it] 80%|████████  | 12/15 [00:44<00:10,  3.36s/it]                                                80%|████████  | 12/15 [00:44<00:10,  3.36s/it] 87%|████████▋ | 13/15 [00:47<00:06,  3.33s/it]                                                87%|████████▋ | 13/15 [00:47<00:06,  3.33s/it] 93%|█████████▎| 14/15 [00:50<00:03,  3.29s/it]                                                93%|█████████▎| 14/15 [00:50<00:03,  3.29s/it]100%|██████████| 15/15 [00:53<00:00,  3.25s/it]                                               100%|██████████| 15/15 [00:53<00:00,  3.25s/it]                                               100%|██████████| 15/15 [00:53<00:00,  3.25s/it]100%|██████████| 15/15 [00:53<00:00,  3.59s/it]
+Unsloth: Will smartly offload gradients to save VRAM!
+{'loss': '0.761', 'grad_norm': '0.7407', 'learning_rate': '0', 'epoch': '0.02'}
+Unsloth: Double buffering enabled (parallel H2D + compute) for backward pass.
+{'loss': '0.6698', 'grad_norm': '0.5319', 'learning_rate': '6.667e-05', 'epoch': '0.04'}
+{'loss': '0.7338', 'grad_norm': '0.5552', 'learning_rate': '0.0001333', 'epoch': '0.06'}
+{'loss': '0.6618', 'grad_norm': '0.4755', 'learning_rate': '0.0002', 'epoch': '0.08'}
+{'loss': '0.6029', 'grad_norm': '0.4124', 'learning_rate': '0.0001966', 'epoch': '0.1'}
+{'loss': '0.5375', 'grad_norm': '0.3354', 'learning_rate': '0.0001866', 'epoch': '0.12'}
+{'loss': '0.5731', 'grad_norm': '0.2859', 'learning_rate': '0.0001707', 'epoch': '0.14'}
+{'loss': '0.5335', 'grad_norm': '0.2802', 'learning_rate': '0.00015', 'epoch': '0.16'}
+{'loss': '0.5451', 'grad_norm': '0.2505', 'learning_rate': '0.0001259', 'epoch': '0.18'}
+{'loss': '0.3542', 'grad_norm': '0.2663', 'learning_rate': '0.0001', 'epoch': '0.2'}
+{'loss': '0.4098', 'grad_norm': '0.2832', 'learning_rate': '7.412e-05', 'epoch': '0.22'}
+{'loss': '0.6557', 'grad_norm': '0.3542', 'learning_rate': '5e-05', 'epoch': '0.24'}
+{'loss': '0.5282', 'grad_norm': '0.3564', 'learning_rate': '2.929e-05', 'epoch': '0.26'}
+{'loss': '0.4937', 'grad_norm': '0.348', 'learning_rate': '1.34e-05', 'epoch': '0.28'}
+{'loss': '0.4628', 'grad_norm': '0.2553', 'learning_rate': '3.407e-06', 'epoch': '0.3'}
+{'train_runtime': '53.79', 'train_samples_per_second': '1.115', 'train_steps_per_second': '0.279', 'train_loss': '0.5682', 'epoch': '0.3'}
+[08:54:14] peft_dora: ok in 102.5s

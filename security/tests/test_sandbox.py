@@ -68,6 +68,29 @@ def test_reports_line_coverage_of_project_code(tmp_path):
     assert 0 < result.coverage_percent < 100
 
 
+def test_coverage_can_target_one_module_with_branches(tmp_path):
+    project = write_project(tmp_path, {
+        "solution.py": """
+            def sign(x):
+                if x < 0:
+                    return -1
+                return 1
+        """,
+        "test_solution.py": """
+            from solution import sign
+
+            def test_positive():
+                assert sign(5) == 1
+        """,
+    })
+
+    result = run_pytest(project, coverage="solution")
+
+    # 3 of 4 statements run, 1 of 2 branches taken: (3 + 1) / (4 + 2) = 66.7 %.
+    # The fully executed test file must not be counted.
+    assert result.coverage_percent == pytest.approx(66.7, abs=0.1)
+
+
 def test_coverage_can_be_disabled(tmp_path):
     project = write_project(tmp_path, {
         "test_one.py": """

@@ -44,8 +44,9 @@ def run_pytest(
     memory: str = "512m",
     pids: int = 128,
     cpus: str = "1",
-    coverage: bool = True,
+    coverage: bool | str = True,
 ) -> SandboxResult:
+    """coverage: False, True (whole project, lines), or a module name (that module, lines + branches)."""
     ensure_image()
     name = f"locali-sbx-{uuid.uuid4().hex[:12]}"
     with tempfile.TemporaryDirectory(prefix="locali-sbx-") as tmp:
@@ -74,7 +75,9 @@ def run_pytest(
             IMAGE,
             "python", "-m", "pytest", "-q", "-p", "no:cacheprovider", "--junitxml=/out/junit.xml",
         ]
-        if coverage:
+        if isinstance(coverage, str):
+            cmd += [f"--cov={coverage}", "--cov-branch", "--cov-report=json:/out/coverage.json"]
+        elif coverage:
             cmd += ["--cov=.", "--cov-report=json:/out/coverage.json"]
         start = time.perf_counter()
         try:

@@ -47,3 +47,11 @@ No exclusions needed.
 | Ground-truth output as the model's completed assertion (800 problems) | **800 / 800 pass** |
 
 No exclusions needed.
+
+## Test generation (`testgen`, items from HumanEvalPack Python)
+
+| Check | Result |
+|---|---|
+| Benchmark's own `check()` suite as the model's test file (164 items) | valid 164 / 164, caught the real bug 164 / 164, mean line + branch coverage of `solution.py` **99.14 %** |
+
+The reference coverage is the practical ceiling for generated tests.

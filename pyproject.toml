@@ -4,7 +4,12 @@ version = "0.1.0"
 description = "Efficient small language models for software engineering, testing and DevOps"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = [
+    "langchain-mcp-adapters>=0.3.2",
+    "langchain-openai>=1.6.2",
+    "langgraph>=1.2.11",
+    "mcp>=1.30.0",
+]
 
 [dependency-groups]
 dev = ["ruff", "pytest"]
@@ -18,5 +23,5 @@ target-version = "py312"
 "training/kaggle/**" = ["BLE001"]
 
 [tool.pytest.ini_options]
-testpaths = ["evaluation", "backend", "security"]
+testpaths = ["evaluation", "backend", "security", "mcp_servers"]
 pythonpath = ["."]

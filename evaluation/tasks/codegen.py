@@ -8,9 +8,13 @@ Solutions run inside the Docker sandbox, never on the host.
 import ast
 import re
 import tempfile
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
+from evaluation.client import Completion
+from evaluation.extract import extract_code
+from evaluation.passk import pass_at_k
 from security.sandbox import run_pytest
 
 HUMANEVAL_PLUS = ("evalplus/humanevalplus", "d32357cf319e50e9c8d8dab5ea876c72b0fd321b")
@@ -146,3 +150,44 @@ def load_mbpp_plus(limit: int | None = None) -> list[Problem]:
             )
         )
     return problems
+
+
+@dataclass
+class CodegenTask:
+    """HumanEval+ / MBPP+: generate a solution, run the benchmark tests in the sandbox."""
+
+    name: str
+    dataset: tuple[str, str]
+    loader: Callable[[int | None], list[Problem]]
+    id_prefix: str
+
+    @property
+    def excluded(self) -> dict[str, str]:
+        return {k: v for k, v in EXCLUDED.items() if k.startswith(self.id_prefix)}
+
+    def load(self, limit: int | None = None) -> list[Problem]:
+        return self.loader(limit)
+
+    def messages(self, item: Problem) -> list[dict]:
+        return build_messages(item)
+
+    def score(self, item: Problem, completion: Completion, eval_timeout_s: float) -> dict:
+        code = extract_code(completion.text, entry_point=item.entry_point)
+        outcome = evaluate_solution(item, code, timeout_s=eval_timeout_s)
+        return {
+            "status": outcome.status,
+            "passed": outcome.passed,
+            "code": code,
+            "eval_duration_s": outcome.duration_s,
+        }
+
+    def metrics(self, records: list[dict]) -> dict:
+        n, passed = len(records), sum(r["passed"] for r in records)
+        return {"pass@1": round(pass_at_k(n, passed, 1), 4) if n else None}
+
+    def reference(self, item: Problem) -> str:
+        return f"```python\n{item.reference_solution}\n```"
+
+
+HUMANEVAL_PLUS_TASK = CodegenTask("humaneval_plus", HUMANEVAL_PLUS, load_humaneval_plus, "HumanEval/")
+MBPP_PLUS_TASK = CodegenTask("mbpp_plus", MBPP_PLUS, load_mbpp_plus, "Mbpp/")

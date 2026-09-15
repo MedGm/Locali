@@ -7,6 +7,7 @@ import pytest
 
 from evaluation.client import Completion
 from evaluation.run import RunConfig, run_benchmark
+from evaluation.tasks.codegen import HUMANEVAL_PLUS_TASK
 from evaluation.tests.test_codegen import HUMANEVAL_STYLE
 
 pytestmark = pytest.mark.skipif(
@@ -35,7 +36,7 @@ def config():
 def run_two(tmp_path, config):
     problems = [replace(HUMANEVAL_STYLE, task_id="toy/good"), replace(HUMANEVAL_STYLE, task_id="toy/bad")]
     generate = fake_generate({"toy/good": (GOOD, "stop"), "toy/bad": (BAD, "length")})
-    return run_benchmark(config, problems, generate, tmp_path / "out")
+    return run_benchmark(config, HUMANEVAL_PLUS_TASK, problems, generate, tmp_path / "out")
 
 
 def test_summary_reports_pass_at_1_and_status_counts(tmp_path, config):
@@ -89,7 +90,7 @@ def test_resumes_without_regenerating_recorded_problems(tmp_path, config):
         asked.append(problem.task_id)
         return Completion(BAD, "", 50, 20, 0.5, 2.5, "stop")
 
-    summary = run_benchmark(config, problems, generate, out)
+    summary = run_benchmark(config, HUMANEVAL_PLUS_TASK, problems, generate, out)
 
     assert asked == ["toy/bad"]
     assert summary["metrics"]["n"] == 2
@@ -104,6 +105,8 @@ def test_summary_lists_excluded_problems_for_the_benchmark(tmp_path):
     config = RunConfig(benchmark="humaneval_plus", model_id="fake-model", runtime="test", max_tokens=64)
     problems = [replace(HUMANEVAL_STYLE, task_id="toy/good")]
 
-    summary = run_benchmark(config, problems, fake_generate({"toy/good": (GOOD, "stop")}), tmp_path / "out")
+    summary = run_benchmark(
+        config, HUMANEVAL_PLUS_TASK, problems, fake_generate({"toy/good": (GOOD, "stop")}), tmp_path / "out"
+    )
 
     assert list(summary["excluded"]) == ["HumanEval/32"]

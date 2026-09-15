@@ -28,25 +28,10 @@ from pathlib import Path
 
 from evaluation.client import ChatClient, Completion
 from evaluation.energy import RaplMeter
-from evaluation.extract import extract_code
-from evaluation.passk import pass_at_k
-from evaluation.tasks.codegen import (
-    EXCLUDED,
-    HUMANEVAL_PLUS,
-    MBPP_PLUS,
-    Problem,
-    build_messages,
-    evaluate_solution,
-    load_humaneval_plus,
-    load_mbpp_plus,
-)
+from evaluation.tasks.base import Task
+from evaluation.tasks.codegen import HUMANEVAL_PLUS_TASK, MBPP_PLUS_TASK
 
-_EXCLUDE_PREFIX = {"humaneval_plus": "HumanEval/", "mbpp_plus": "Mbpp/"}
-
-BENCHMARKS = {
-    "humaneval_plus": (load_humaneval_plus, HUMANEVAL_PLUS),
-    "mbpp_plus": (load_mbpp_plus, MBPP_PLUS),
-}
+TASKS: dict[str, Task] = {task.name: task for task in [HUMANEVAL_PLUS_TASK, MBPP_PLUS_TASK]}
 
 
 @dataclass
@@ -105,27 +90,25 @@ def _read_lines(path: str) -> list[str]:
 
 def run_benchmark(
     config: RunConfig,
-    problems: list[Problem],
-    generate: Callable[[Problem], Completion],
+    task: Task,
+    items: list,
+    generate: Callable[[object], Completion],
     out_dir: Path,
 ) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     samples_path = out_dir / "samples.jsonl"
     done = {json.loads(line)["task_id"] for line in _read_lines(str(samples_path)) if line.strip()}
-    todo = [p for p in problems if p.task_id not in done]
+    todo = [item for item in items if item.task_id not in done]
     env = environment()
     meter = RaplMeter()
     lock = threading.Lock()
 
-    def solve(problem: Problem) -> None:
+    def solve(item) -> None:
         with meter.measure() as energy:
-            completion = generate(problem)
-        code = extract_code(completion.text, entry_point=problem.entry_point)
-        outcome = evaluate_solution(problem, code, timeout_s=config.eval_timeout_s)
+            completion = generate(item)
         record = {
-            "task_id": problem.task_id,
-            "status": outcome.status,
-            "passed": outcome.passed,
+            "task_id": item.task_id,
+            **task.score(item, completion, config.eval_timeout_s),
             "input_tokens": completion.input_tokens,
             "output_tokens": completion.output_tokens,
             "ttft_s": completion.ttft_s,
@@ -133,8 +116,6 @@ def run_benchmark(
             "finish_reason": completion.finish_reason,
             # Per-call energy is only meaningful when calls do not overlap.
             "energy_j": energy.joules if config.workers == 1 else None,
-            "eval_duration_s": outcome.duration_s,
-            "code": code,
             "completion": completion.text,
             "reasoning": completion.reasoning,
         }
@@ -150,8 +131,8 @@ def run_benchmark(
     summary = {
         "config": asdict(config),
         "environment": env,
-        "metrics": aggregate(records),
-        "excluded": {k: v for k, v in EXCLUDED.items() if k.startswith(_EXCLUDE_PREFIX.get(config.benchmark, "\0"))},
+        "metrics": {**aggregate(records), **task.metrics(records)},
+        "excluded": task.excluded,
         "this_session": {"generated": len(todo), "resumed": len(done), "wall_s": round(wall_s, 1)},
     }
     (out_dir / "summary.json").write_text(json.dumps(summary, indent=2))
@@ -160,7 +141,6 @@ def run_benchmark(
 
 def aggregate(records: list[dict]) -> dict:
     n = len(records)
-    passed = sum(r["passed"] for r in records)
 
     def mean(key: str) -> float | None:
         values = [r[key] for r in records if r.get(key) is not None]
@@ -174,7 +154,6 @@ def aggregate(records: list[dict]) -> dict:
     energy = [r["energy_j"] for r in records if r.get("energy_j") is not None]
     return {
         "n": n,
-        "pass@1": round(pass_at_k(n, passed, 1), 4) if n else None,
         "status_counts": dict(Counter(r["status"] for r in records)),
         "truncated": sum(r.get("finish_reason") == "length" for r in records),
         "mean_input_tokens": mean("input_tokens"),
@@ -188,13 +167,9 @@ def aggregate(records: list[dict]) -> dict:
     }
 
 
-def reference_generator(problem: Problem) -> Completion:
-    return Completion(f"```python\n{problem.reference_solution}\n```", "", None, None, 0.0, 0.0, "stop")
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--benchmark", choices=BENCHMARKS, required=True)
+    parser.add_argument("--benchmark", choices=TASKS, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--reference", action="store_true", help="evaluate official solutions (harness check)")
     parser.add_argument("--model-id", default="reference")
@@ -210,29 +185,31 @@ def main() -> None:
     parser.add_argument("--notes", default="")
     args = parser.parse_args()
 
-    loader, (dataset, dataset_revision) = BENCHMARKS[args.benchmark]
+    task = TASKS[args.benchmark]
+    dataset, dataset_revision = task.dataset or (None, None)
     config = RunConfig(
         benchmark=args.benchmark, model_id=args.model_id, runtime=args.runtime, max_tokens=args.max_tokens,
         model_revision=args.model_revision, quantization=args.quantization, base_url=args.base_url,
         thinking=args.thinking, temperature=args.temperature, limit=args.limit, workers=args.workers,
         dataset=dataset, dataset_revision=dataset_revision, notes=args.notes,
     )
-    problems = loader(limit=args.limit)
+    items = task.load(limit=args.limit)
 
     if args.reference:
-        generate = reference_generator
+        def generate(item) -> Completion:
+            return Completion(task.reference(item), "", None, None, 0.0, 0.0, "stop")
     else:
         if not args.base_url:
             parser.error("--base-url is required unless --reference is set")
         client = ChatClient(args.base_url, extra_body={"chat_template_kwargs": {"enable_thinking": args.thinking}})
 
-        def generate(problem: Problem) -> Completion:
+        def generate(item) -> Completion:
             return client.complete(
-                build_messages(problem), max_tokens=config.max_tokens,
+                task.messages(item), max_tokens=config.max_tokens,
                 temperature=config.temperature, seed=config.seed,
             )
 
-    summary = run_benchmark(config, problems, generate, args.out)
+    summary = run_benchmark(config, task, items, generate, args.out)
     print(json.dumps({"metrics": summary["metrics"], "this_session": summary["this_session"]}, indent=2))
 
 

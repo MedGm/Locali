@@ -1,0 +1,54 @@
+# Pinned model versions. Change a revision only on purpose, and note why in the commit.
+# Snapshot taken 2026-09-15.
+
+main:
+  # Dense transformer, code-specialized, widest kernel support (T4, vLLM, llama.cpp, Unsloth).
+  # Promotion rule: if Qwen3.5-2B passes the W1 T4 spikes AND beats this model on the W2
+  # baseline, it becomes the main model.
+  id: qwen2.5-coder-1.5b
+  hf_repo: Qwen/Qwen2.5-Coder-1.5B-Instruct
+  revision: 2e1fd397ee46e1388853d2af2c993145b0f1098a
+  params_b: 1.54
+  license: apache-2.0
+  architecture: dense (28 layers, GQA 2 KV heads)
+  gguf:
+    repo: Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF
+    revision: f86cb2c1fa58255f8052cc32aeede1b7482d4361
+    q4_k_m: qwen2.5-coder-1.5b-instruct-q4_k_m.gguf
+    q8_0: qwen2.5-coder-1.5b-instruct-q8_0.gguf
+
+candidates:
+  - id: qwen3.5-2b
+    hf_repo: Qwen/Qwen3.5-2B
+    revision: 15852e8c16360a2fea060d615a32b45270f8a8fc
+    params_b: 2.27  # includes vision encoder
+    license: apache-2.0
+    # Hybrid attention: 18 linear-attention + 6 full-attention layers -> KV cache on 6/24 layers.
+    # Risks to spike on T4: linear-attention kernels, vLLM support, thinking-mode token overhead.
+    architecture: hybrid (18 linear + 6 full attention), multimodal
+    gguf:
+      repo: unsloth/Qwen3.5-2B-GGUF
+      revision: f6d5376be1edb4d416d56da11e5397a961aca8ae
+      q4_k_m: Qwen3.5-2B-Q4_K_M.gguf
+      q8_0: Qwen3.5-2B-Q8_0.gguf
+
+benchmark_only:
+  - id: qwen3.5-4b
+    hf_repo: Qwen/Qwen3.5-4B
+    revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    params_b: 4.66
+    license: apache-2.0
+    architecture: hybrid (24 linear + 8 full attention), multimodal
+  - id: phi-4-mini
+    hf_repo: microsoft/Phi-4-mini-instruct
+    revision: cfbefacb99257ffa30c83adab238a50856ac3083
+    params_b: 3.84
+    license: mit
+    architecture: dense (32 layers, GQA 8 KV heads)
+
+reference:
+  # "Larger general-purpose model" the brief compares against. Run on T4 only.
+  - id: qwen3.5-9b
+    hf_repo: Qwen/Qwen3.5-9B
+    revision: c202236235762e1c871ad0ccb60c8ee5ba337b9a
+    license: apache-2.0

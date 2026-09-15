@@ -1,0 +1,43 @@
+{
+  "experiment": "w0_smoke_inference",
+  "date": "2026-09-15",
+  "hardware": "i5-10210U, 4 threads, 15 GB RAM, no GPU",
+  "runtime": "llama.cpp server (commit 987498f), CPU, ctx 4096-8192",
+  "task": "is_palindrome, single prompt, temperature 0",
+  "runs": [
+    {
+      "model": "qwen2.5-coder-1.5b",
+      "quantization": "Q4_K_M",
+      "thinking": null,
+      "input_tokens": 58,
+      "output_tokens": 74,
+      "ttft_ms": 963,
+      "prompt_tok_per_s": 62.9,
+      "gen_tok_per_s": 16.5,
+      "answer_produced": true
+    },
+    {
+      "model": "qwen3.5-2b",
+      "quantization": "Q4_K_M",
+      "thinking": true,
+      "input_tokens": 39,
+      "output_tokens": 1024,
+      "ttft_ms": 90418,
+      "prompt_tok_per_s": 35.6,
+      "gen_tok_per_s": 11.5,
+      "answer_produced": false,
+      "note": "Hit max_tokens=1024 while still reasoning; no final content."
+    },
+    {
+      "model": "qwen3.5-2b",
+      "quantization": "Q4_K_M",
+      "thinking": false,
+      "input_tokens": 41,
+      "output_tokens": 44,
+      "prompt_tok_per_s": 23.7,
+      "gen_tok_per_s": 11.1,
+      "answer_produced": true,
+      "note": "Prompt speed unreliable: 35 of 41 prompt tokens served from cache."
+    }
+  ]
+}

@@ -33,8 +33,9 @@ Solo, 15 weeks, ~20 h/week. Deadline 01/01/2027, target submission 30/12/2026.
 - [x] Spike: vLLM serving on T4 — Qwen3.5-9B teacher, TP=2, 101 tok/s
 - [x] Spike: pytest inside Docker, no network — `security/sandbox.py`, 9 probe tests (network, read-only, non-root, env, timeout kill, memory, pids)
 - [x] Spike: one MCP tool called from LangGraph — `mcp_servers/repo_server.py`, 10 tests; tool-calling check: Qwen2.5-Coder-1.5B 0/10 native calls, Qwen3.5-2B 10/10 → fixed routing
-- [ ] Harness: client, results JSON schema, metrics logger (tokens, TTFT, tok/s, memory, energy)
-- [ ] Tasks: EvalPlus, HumanEvalPack, SAFIM, CRUXEval, SecurityEval, test generation + refactoring harness
+- [x] Harness: client, results JSON schema, metrics logger (tokens, TTFT, tok/s, energy; memory still todo) — `evaluation/`, 53 tests
+- [x] Harness validation: all reference solutions pass (163 HumanEval+, 377 MBPP+ after 2 documented exclusions)
+- [ ] Tasks: ~~EvalPlus~~ (done), HumanEvalPack, SAFIM, CRUXEval, SecurityEval, test generation + refactoring harness
 - [ ] Locali-Fresh: first 30 contamination-free tasks
 - [ ] `demo_repo/`: bugs, vulnerabilities, fake secret, missing tests, malicious README
 - [ ] Baselines for 3 models

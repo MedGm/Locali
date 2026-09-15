@@ -21,7 +21,7 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 | C3 | Quantization 4/8-bit | FP16 / INT8 / INT4 on T4 and laptop CPU | `experiments/` | W6–7 | todo |
 | C4 | KV cache, efficient attention, batching | Prefix caching on/off, batch 1/4/16, SDPA vs eager | `experiments/` | W6–7 | todo |
 | C5 | Context compression, prompt optimization, token reduction | AST slicing + compact prompts, tokens before/after | `evaluation/`, `backend/` | W6–7 | todo |
-| C6 | Measure latency, throughput, memory, cost | Shared metrics logger in harness | `evaluation/` | W1–2 | todo |
+| C6 | Measure latency, throughput, memory, cost | Shared metrics logger in harness | `evaluation/` | W1–2 | wip (tokens, TTFT, decode tok/s, energy done; memory, cost todo) |
 | C7 | Code quality, maintainability, complexity, vulnerabilities, standards, technical debt | Ruff, Radon, Bandit, Semgrep + LLM summary | `backend/` | W3–5 | todo |
 | C8 | Static-analysis tool integration | Same tools exposed via MCP | `mcp_servers/` | W6–7 | todo |
 | C9 | Generate unit, integration, API tests | Test-generation agent on `demo_repo/` | `backend/` | W8–10 | todo |

@@ -29,7 +29,7 @@ Facts verified against Hugging Face model configs, model cards and dataset cards
 
 | | Qwen2.5-Coder-1.5B-Instruct | Qwen3.5-2B | Phi-4-mini-instruct | Qwen3.5-4B | Qwen3.5-9B |
 |---|---|---|---|---|---|
-| Role | **Fine-tune #1 (main)** | Benchmark; promotion candidate | **Fine-tune #2** | Benchmark | Reference "larger LLM" |
+| Role | **Fine-tune #1 (main)** | Benchmark only (training blocked on T4, see 2.5) | **Fine-tune #2** | Benchmark | Reference "larger LLM"; teacher |
 | Release | Sep 2024 | Feb 2026 | Feb 2025 | Feb 2026 | Feb 2026 |
 | License | Apache-2.0 | Apache-2.0 | MIT | Apache-2.0 | Apache-2.0 |
 | Parameters | 1.54 B | 2.27 B (incl. vision encoder) | 3.84 B | 4.66 B (incl. vision) | 9.65 B (incl. vision) |
@@ -78,11 +78,21 @@ Phi-4-mini needs about 10× the KV memory of Qwen3.5-2B per token. That differen
 - Laptop CPU, llama.cpp Q4_K_M: Qwen2.5-Coder-1.5B generates 16.5 tok/s; Qwen3.5-2B 11.1 tok/s ([results](../experiments/results/w0_smoke_laptop_cpu.json)).
 - The Unsloth GGUF of Qwen3.5-2B started in thinking mode, even though the model card says non-thinking is the default for 2B. With thinking on, it used 1024 tokens without producing an answer. Thinking mode must therefore be set explicitly in every run and recorded in results.
 
-### 2.5 Risks to test in W1
+### 2.5 W1 risk spikes on Kaggle T4 (resolved 2026-09-15)
 
-- Qwen3.5 linear-attention kernels (Triton-based) and vLLM support on a T4 (Turing, compute capability 7.5, no bf16, no FlashAttention-2). Unsloth warns these kernels compile slowly on T4 and that Qwen3.5 requires transformers v5.
-- Unsloth support for Qwen3.5 training on a T4.
-- Promotion rule: Qwen3.5-2B replaces Qwen2.5-Coder-1.5B as fine-tune #1 only if it passes both T4 spikes and scores higher on the W2 baseline.
+Full data: [experiments/results/w1_spikes/README.md](../experiments/results/w1_spikes/README.md).
+
+| Risk | Outcome |
+|---|---|
+| QLoRA on Qwen2.5-Coder-1.5B and Phi-4-mini on a T4 | Works: 1,188 and 482 train tokens/s; 4 × 2048-token batches fit |
+| Qwen3.5 training on a T4 | **Fails** with Unsloth 2026.9.4 in fp16, bf16 and fp32 (dtype mismatch inside the linear-attention layer) |
+| Serving Qwen3.5 on a T4 | Works with vLLM 0.29.0 (Qwen3.5-9B, tensor parallel 2, 101 tok/s) |
+| Loading exactly the pinned weights | Requires `use_exact_model_name=True`; Unsloth otherwise substitutes its own mirror and drops `revision` |
+
+Consequences:
+- **Promotion rule resolved:** Qwen3.5-2B could not pass the training spike, so Qwen2.5-Coder-1.5B stays fine-tune #1 and Qwen3.5-2B is benchmark-only. This is itself a finding for RQ5: the newest hybrid architecture is not yet trainable on the low-resource GPU tier.
+- **Phi-4-mini pin:** `unsloth/Phi-4-mini-instruct@75becc4`, whose weights are byte-identical to the Microsoft release; only tokenizer/config fixes differ.
+- Training jobs pin a single GPU; the second Kaggle T4 runs evaluation in parallel.
 
 ## 3. Training method
 
@@ -92,8 +102,9 @@ Phi-4-mini needs about 10× the KV memory of Qwen3.5-2B per token. That differen
 |---|---|---|
 | Full fine-tuning | Rejected | 1.5B with AdamW needs ≈16 bytes/param ≈ 25 GB; a T4 has 16 GB |
 | **QLoRA** (4-bit NF4 base + LoRA adapters) | **Main method** | Fits every studied model on one T4; the method the brief names |
-| LoRA on 16-bit base | Comparison run (main model); **required method for Qwen3.5** | Measures the quality/memory/speed cost of 4-bit base quantization. Unsloth's Qwen3.5 guide advises against QLoRA for all Qwen3.5 models "due to higher than normal quantization differences"; if Qwen3.5-2B is promoted, it trains with 16-bit LoRA (≈5 GB VRAM) |
-| DoRA or rsLoRA | One "other PEFT" run, if the W1 spike confirms Unsloth support | Cheap variant covering the brief's "other PEFT techniques" |
+| LoRA on 16-bit base | Comparison run (main model) | Measures the quality/memory/speed cost of 4-bit base quantization. (Unsloth advises 16-bit LoRA rather than QLoRA for Qwen3.5, but Qwen3.5 training is blocked on T4 — see 2.5.) |
+| **rsLoRA** | "Other PEFT" run on the full dataset | Supported in Unsloth at the same speed as LoRA (W1: 1,111 vs 1,188 tok/s) |
+| DoRA | Optional, on a 20 % data subset only | Supported, but 3× slower (W1: 390 tok/s, ≈5 h/epoch on the full set) |
 | Preference or RL training (DPO, GRPO with execution reward) | Out of scope; stretch goal | Multiplies GPU cost; solo time budget |
 | Rejection-sampling fine-tuning (keep self-generated outputs that pass tests) | Stretch goal | Execution-verified, cheaper than RL |
 
@@ -136,7 +147,7 @@ Code generation, completion, explanation, refactoring and documentation are **no
 3. **Decontaminated.** Remove exact and 13-gram overlaps with every evaluation set.
 4. **Grouped splits.** All samples derived from one seed function stay in the same split.
 5. **Python only.**
-6. **Budget.** ≈16k examples, ≈7M tokens: about 1.5–2 T4-hours per epoch for 1.5B, 4–5 for Phi-4-mini.
+6. **Budget.** ≈16k examples, ≈7M tokens: ≈1.2–1.6 T4-hours per epoch for 1.5B and ≈3.7–4.0 for Phi-4-mini (measured in W1).
 
 ### 4.2 Sources (verified 2026-09-15)
 
@@ -207,5 +218,5 @@ Contamination note: Qwen3.5 (Feb 2026) postdates all public benchmarks listed. T
 | # | Decision | Alternative rejected | Rationale |
 |---|---|---|---|
 | D1 | **Fine-tune #2 is Phi-4-mini** | Qwen3.5-2B | The brief names Phi; a dense model with ~10× the KV cost of Qwen3.5-2B gives a strong architectural contrast. Qwen3.5-2B stays in the baseline and can still replace fine-tune #1 under the promotion rule. Phi fine-tuning remains first on the cut list. |
-| D2 | **Teacher: Qwen3.5-9B** (INT4 on Kaggle T4, thinking off) writes natural-language diagnosis and review messages | Templates only | More natural targets at an open license. Budget ≈5–10 GPU-hours. Labels (bug location, failing tests, tool findings) stay execution- or tool-verified; the teacher only phrases them, and messages that contradict the label are discarded. |
+| D2 | **Teacher: Qwen3.5-9B** (vLLM, FP16, tensor parallel over Kaggle's 2 × T4, thinking off) writes natural-language diagnosis and review messages | Templates only | More natural targets at an open license. W1 measured 101 tok/s, so ≈1.6M teacher tokens cost ≈4.4 GPU-hours. Labels (bug location, failing tests, tool findings) stay execution- or tool-verified; the teacher only phrases them, and messages that contradict the label are discarded. |
 | D3 | **Human review comments only if the license is verified** | Synthetic only | Trace the original Microsoft CodeReviewer license before any use. If permissive, add ≤1,000 Python samples to T3; otherwise T3 stays fully synthetic. |

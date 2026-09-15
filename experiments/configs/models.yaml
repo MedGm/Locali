@@ -1,10 +1,13 @@
 # Pinned model versions. Change a revision only on purpose, and note why in the commit.
-# Snapshot taken 2026-09-15.
+# Snapshot taken 2026-09-15. W1 T4 spike results: experiments/results/w1_spikes/README.md
+#
+# Loading rule for Unsloth: always pass use_exact_model_name=True and assert the resolved name,
+# otherwise Unsloth swaps in its own mirror and silently drops `revision`.
 
 main:
   # Dense transformer, code-specialized, widest kernel support (T4, vLLM, llama.cpp, Unsloth).
-  # Promotion rule: if Qwen3.5-2B passes the W1 T4 spikes AND beats this model on the W2
-  # baseline, it becomes the main model.
+  # Promotion rule resolved in W1: Qwen3.5-2B cannot be trained on T4 with Unsloth, so this stays main.
+  # W1 (T4, QLoRA r16): 1,188 train tok/s; batch 4 x 2048 tokens fits.
   id: qwen2.5-coder-1.5b
   hf_repo: Qwen/Qwen2.5-Coder-1.5B-Instruct
   revision: 2e1fd397ee46e1388853d2af2c993145b0f1098a
@@ -17,38 +20,47 @@ main:
     q4_k_m: qwen2.5-coder-1.5b-instruct-q4_k_m.gguf
     q8_0: qwen2.5-coder-1.5b-instruct-q8_0.gguf
 
-candidates:
+second_finetune:
+  # Decision D1 (docs/research-design.md). First item on the cut list if behind schedule.
+  # Pinned to the Unsloth copy: safetensors SHA-256 identical to
+  # microsoft/Phi-4-mini-instruct@cfbefacb99257ffa30c83adab238a50856ac3083; only the tokenizer and
+  # config differ (pad id 200029, eos <|end|> id 200020). The official tokenizer (pad == eos)
+  # is rejected by Unsloth. Use this tokenizer for baseline, fine-tuning and inference alike.
+  # W1 (T4, QLoRA r16): 482 train tok/s; batch 4 x 2048 tokens fits.
+  id: phi-4-mini
+  hf_repo: unsloth/Phi-4-mini-instruct
+  revision: 75becc471c56fc34761ec998615ca6f8535c5a61
+  upstream:
+    hf_repo: microsoft/Phi-4-mini-instruct
+    revision: cfbefacb99257ffa30c83adab238a50856ac3083
+  params_b: 3.84
+  license: mit
+  architecture: dense (32 layers, GQA 8 KV heads)
+
+teacher:
+  # Decision D2: phrases diagnosis/review messages; never decides labels. Thinking off.
+  # W1: vLLM 0.29.0, FP16, tensor parallel 2 on Kaggle 2xT4, eager mode: 101 tok/s.
+  # HF/Unsloth 4-bit generate reached only 4.4 tok/s and is not used.
+  id: qwen3.5-9b
+  hf_repo: Qwen/Qwen3.5-9B
+  revision: c202236235762e1c871ad0ccb60c8ee5ba337b9a
+  license: apache-2.0
+  serving: vllm-tp2-fp16
+
+benchmark_only:
   - id: qwen3.5-2b
     hf_repo: Qwen/Qwen3.5-2B
     revision: 15852e8c16360a2fea060d615a32b45270f8a8fc
     params_b: 2.27  # includes vision encoder
     license: apache-2.0
     # Hybrid attention: 18 linear-attention + 6 full-attention layers -> KV cache on 6/24 layers.
-    # Risks to spike on T4: linear-attention kernels, vLLM support, thinking-mode token overhead.
+    # W1: LoRA training on T4 fails in Unsloth 2026.9.4 (fp16, bf16 and fp32 alike).
     architecture: hybrid (18 linear + 6 full attention), multimodal
     gguf:
       repo: unsloth/Qwen3.5-2B-GGUF
       revision: f6d5376be1edb4d416d56da11e5397a961aca8ae
       q4_k_m: Qwen3.5-2B-Q4_K_M.gguf
       q8_0: Qwen3.5-2B-Q8_0.gguf
-
-second_finetune:
-  # Decision D1 (docs/research-design.md). First item on the cut list if behind schedule.
-  id: phi-4-mini
-  hf_repo: microsoft/Phi-4-mini-instruct
-  revision: cfbefacb99257ffa30c83adab238a50856ac3083
-  params_b: 3.84
-  license: mit
-  architecture: dense (32 layers, GQA 8 KV heads)
-
-teacher:
-  # Decision D2: phrases diagnosis/review messages; never decides labels. INT4 on T4, thinking off.
-  id: qwen3.5-9b
-  hf_repo: Qwen/Qwen3.5-9B
-  revision: c202236235762e1c871ad0ccb60c8ee5ba337b9a
-  license: apache-2.0
-
-benchmark_only:
   - id: qwen3.5-4b
     hf_repo: Qwen/Qwen3.5-4B
     revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a

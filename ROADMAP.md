@@ -29,8 +29,8 @@ Solo, 15 weeks, ~20 h/week. Deadline 01/01/2027, target submission 30/12/2026.
 - [x] Local inference smoke test (llama.cpp server, OpenAI-compatible)
 
 ### W1–2 · Sep 21–Oct 4 · Risk tests + evaluation harness
-- [ ] Spike: Unsloth tiny run on Kaggle T4
-- [ ] Spike: vLLM (or fallback) serving on T4
+- [x] Spike: Unsloth tiny run on Kaggle T4 — Qwen2.5-Coder-1.5B and Phi-4-mini QLoRA work; Qwen3.5-2B training blocked ([results](experiments/results/w1_spikes/README.md))
+- [x] Spike: vLLM serving on T4 — Qwen3.5-9B teacher, TP=2, 101 tok/s
 - [ ] Spike: pytest inside Docker, no network
 - [ ] Spike: one MCP tool called from LangGraph
 - [ ] Harness: client, results JSON schema, metrics logger (tokens, TTFT, tok/s, memory, energy)
@@ -45,7 +45,7 @@ Design: [docs/research-design.md](docs/research-design.md)
 - [ ] Data pipelines: T1 mutation bugs, T2 tests, T3 tool-grounded reviews, replay set
 - [ ] Teacher messages with Qwen3.5-9B (≈5–10 GPU-h); verify CodeReviewer license
 - [ ] Decontaminate (exact + 13-gram) against all eval sets; grouped split
-- [ ] Unsloth QLoRA run + LoRA run + one DoRA/rsLoRA run on Qwen2.5-Coder-1.5B
+- [ ] Unsloth QLoRA run + LoRA run + rsLoRA run on Qwen2.5-Coder-1.5B (DoRA optional, 20 % subset: 3× slower)
 - [ ] QLoRA run on Phi-4-mini (cut first if behind)
 - [ ] Push adapter to HF, evaluate with harness
 - [ ] During GPU waits: FastAPI skeleton, static-analysis wrappers, Docker sandbox, secret scanner

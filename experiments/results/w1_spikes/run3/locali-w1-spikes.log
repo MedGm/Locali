@@ -1,0 +1,43 @@
+[{"stream_name":"stderr","time":11.502607695,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":11.502654185,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":11.502658409,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":11.50266108,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":12.298280201,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":12.298310895,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":12.298318034,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":12.298325939,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":13.749926132,"data":"Writing /kaggle/working/w1_spikes.py\n"}
+,{"stream_name":"stdout","time":13.846621999,"data":"[09:33:11] installing unsloth (log: logs/install.log)\n"}
+,{"stream_name":"stdout","time":45.489776377,"data":"[09:33:42] install: {'returncode': 0, 'seconds': 31.6}\n"}
+,{"stream_name":"stdout","time":45.490635787,"data":"[09:33:42] --- env (timeout 600s)\n"}
+,{"stream_name":"stdout","time":58.484412264,"data":"[09:33:55] env: ok\n"}
+,{"stream_name":"stdout","time":58.485249242,"data":"[09:33:55] --- phi4mini_qlora (timeout 2400s)\n"}
+,{"stream_name":"stdout","time":365.023869182,"data":"[09:39:02] phi4mini_qlora: ok\n"}
+,{"stream_name":"stdout","time":365.02473947,"data":"[09:39:02] --- qwen35_2b_bf16 (timeout 2400s)\n"}
+,{"stream_name":"stdout","time":590.944128726,"data":"[09:42:48] qwen35_2b_bf16: failed\n"}
+,{"stream_name":"stdout","time":590.945220202,"data":"[09:42:48] --- qwen35_2b_fp32 (timeout 2400s)\n"}
+,{"stream_name":"stdout","time":750.856169176,"data":"[09:45:28] qwen35_2b_fp32: failed\n"}
+,{"stream_name":"stdout","time":750.856706104,"data":"{\n"}
+,{"stream_name":"stdout","time":750.857606502,"data":"  \"started\": \"2026-09-15 09:33:11\",\n"}
+,{"stream_name":"stdout","time":750.858546903,"data":"  \"install\": {\n"}
+,{"stream_name":"stdout","time":750.859374408,"data":"    \"returncode\": 0,\n"}
+,{"stream_name":"stdout","time":750.860042821,"data":"    \"seconds\": 31.6\n"}
+,{"stream_name":"stdout","time":750.860749264,"data":"  },\n"}
+,{"stream_name":"stdout","time":750.861505436,"data":"  \"spikes\": {\n"}
+,{"stream_name":"stdout","time":750.86226633,"data":"    \"env\": \"ok\",\n"}
+,{"stream_name":"stdout","time":750.862946072,"data":"    \"phi4mini_qlora\": \"ok\",\n"}
+,{"stream_name":"stdout","time":750.863717764,"data":"    \"qwen35_2b_bf16\": \"failed\",\n"}
+,{"stream_name":"stdout","time":750.864567276,"data":"    \"qwen35_2b_fp32\": \"failed\"\n"}
+,{"stream_name":"stdout","time":750.865380284,"data":"  },\n"}
+,{"stream_name":"stdout","time":750.866180668,"data":"  \"finished\": \"2026-09-15 09:45:28\"\n"}
+,{"stream_name":"stdout","time":750.866872199,"data":"}\n"}
+,{"stream_name":"stdout","time":750.87052188,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":753.605822,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":753.605862798,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":753.841382892,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":753.841450201,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":754.529530096,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":754.823471317,"data":"[NbConvertApp] Writing 40642 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":757.127994795,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":758.015470323,"data":"[NbConvertApp] Writing 424130 bytes to __results__.html\n"}
+]

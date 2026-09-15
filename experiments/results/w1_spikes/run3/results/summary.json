@@ -1,0 +1,14 @@
+{
+  "started": "2026-09-15 09:33:11",
+  "install": {
+    "returncode": 0,
+    "seconds": 31.6
+  },
+  "spikes": {
+    "env": "ok",
+    "phi4mini_qlora": "ok",
+    "qwen35_2b_bf16": "failed",
+    "qwen35_2b_fp32": "failed"
+  },
+  "finished": "2026-09-15 09:45:28"
+}

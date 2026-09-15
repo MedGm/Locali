@@ -1,0 +1,35 @@
+[unsloth_zoo.log|WARNING]Device does not support bfloat16. Will change to float16.
+🦥 Unsloth: Will patch your computer to enable 2x faster free finetuning.
+🦥 Unsloth Zoo will now patch everything to make training faster!
+==((====))==  Unsloth 2026.9.4: Fast Qwen3_5 patching. Transformers: 5.5.0.
+   \\   /|    Tesla T4. Num GPUs = 2. Max memory: 14.562 GB. Platform: Linux.
+O^O/ \_/ \    Torch: 2.10.0+cu128. CUDA: 7.5. CUDA Toolkit: 12.8. Triton: 3.6.0
+\        /    Bfloat16 = FALSE. FA [Xformers = 0.0.35. FA2 = False]
+ "-____-"     Free license: http://github.com/unslothai/unsloth
+Unsloth: Fast downloading is enabled - ignore downloading bars which are red colored!
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Unsloth: Using float16 precision for qwen3_5 won't work! Using float32.
+total weights      : 4.122 GiB
+no_split classes   : ['Qwen3_5DecoderLayer', 'Qwen3_5VisionBlock']
+output head        : lm_head -> cuda:1
+head headroom      : 0.428 GiB
+activation reserve : 12.142 GiB requested
+tied to head       : ['model.language_model.embed_tokens']
+  cuda:0  budget  14.39 GiB  weights  2.225 GiB  free 12.168 GiB  reserve 12.142 GiB
+  cuda:1  budget  14.44 GiB  weights  1.898 GiB  free 12.543 GiB  reserve 11.951 GiB   <- output head
+note: tied embeddings: model.language_model.embed_tokens pinned with the head so accelerate does not have to mirror the weight across devices
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/617 [00:00<?, ?it/s]Loading weights:   7%|▋         | 42/617 [00:00<00:01, 397.82it/s]Loading weights:  13%|█▎        | 82/617 [00:00<00:01, 392.44it/s]Loading weights:  20%|█▉        | 122/617 [00:00<00:01, 389.09it/s]Loading weights:  26%|██▌       | 161/617 [00:00<00:01, 383.62it/s]Loading weights:  32%|███▏      | 200/617 [00:00<00:01, 383.55it/s]Loading weights:  39%|███▉      | 240/617 [00:00<00:00, 384.96it/s]Loading weights:  45%|████▌     | 279/617 [00:00<00:00, 381.00it/s]Loading weights:  52%|█████▏    | 318/617 [00:00<00:00, 379.89it/s]Loading weights:  72%|███████▏  | 442/617 [00:00<00:00, 640.55it/s]Loading weights:  90%|█████████ | 556/617 [00:01<00:00, 791.42it/s]Loading weights: 100%|██████████| 617/617 [00:01<00:00, 564.88it/s]
+Unsloth: Explicit target_modules are constrained by the finetune_(vision|language|attention|mlp) filters; adapters attach only where both select.
+Unsloth: Switching to float32 training since model cannot work with float16
+Unsloth: Tokenizing ["text"] (num_proc=2):   0%|          | 0/400 [00:00<?, ? examples/s]Unsloth: Tokenizing ["text"] (num_proc=2):  50%|█████     | 200/400 [00:01<00:01, 118.49 examples/s]Unsloth: Tokenizing ["text"] (num_proc=2): 100%|██████████| 400/400 [00:01<00:00, 257.30 examples/s]Unsloth: Tokenizing ["text"] (num_proc=2): 100%|██████████| 400/400 [00:01<00:00, 201.82 examples/s]
+Map:   0%|          | 0/400 [00:00<?, ? examples/s]Map: 100%|██████████| 400/400 [00:00<00:00, 4007.72 examples/s]
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 248046}.
+==((====))==  Unsloth - 2x faster free finetuning | Num GPUs used = 2
+   \\   /|    Num examples = 400 | Num Epochs = 1 | Total steps = 30
+O^O/ \_/ \    Batch size per device = 4 | Gradient accumulation steps = 1
+\        /    Data Parallel GPUs = 1 | Total batch size (4 x 1 x 1) = 4
+ "-____-"     Trainable parameters = 10,911,744 of 2,224,153,408 (0.49% trained)
+  0%|          | 0/30 [00:00<?, ?it/s]Unsloth: Will smartly offload gradients to save VRAM!
+[09:42:43] qwen35_2b_bf16: failed in 220.9s
+  0%|          | 0/30 [02:24<?, ?it/s]

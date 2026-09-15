@@ -1,0 +1,40 @@
+{
+  "spike": "phi4mini_qlora",
+  "status": "ok",
+  "repo": "unsloth/Phi-4-mini-instruct",
+  "revision": "75becc471c56fc34761ec998615ca6f8535c5a61",
+  "resolved_name": "unsloth/Phi-4-mini-instruct",
+  "exact_model_loaded": true,
+  "load_s": 53.3,
+  "load_peak_allocated_gb": 1.6,
+  "method": "qlora_nf4_r16",
+  "targets": [
+    "down_proj",
+    "gate_up_proj",
+    "o_proj",
+    "qkv_proj"
+  ],
+  "steps": 30,
+  "batch": 4,
+  "precision": "fp16",
+  "seq_len_cap": 2048,
+  "avg_sample_tokens": 277,
+  "first_step_s": 61.39,
+  "mean_step_s": 2.302,
+  "approx_train_tokens_per_s": 482,
+  "loss_first": 0.6826,
+  "loss_last": 0.6459,
+  "completion_only_loss": true,
+  "trainable_params": 23068672,
+  "train_peak": {
+    "peak_allocated_gb": 2.17,
+    "peak_reserved_gb": 2.3
+  },
+  "max_batch_at_2048": 4,
+  "long_seq_step_s": 15.463,
+  "long_seq_peak": {
+    "peak_allocated_gb": 2.91,
+    "peak_reserved_gb": 3.27
+  },
+  "duration_s": 301.7
+}

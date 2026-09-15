@@ -61,3 +61,11 @@ The reference coverage is the practical ceiling for generated tests.
 | Check | Result |
 |---|---|
 | Unchanged reference solution as the model's refactoring (163 items) | behaviour preserved 163 / 163; mean deltas in complexity, maintainability index and Ruff violations all **0.0**; improved 0 / 163 (as expected) |
+
+## Completion by infilling (`completion`, items from HumanEval+)
+
+| Check | Result |
+|---|---|
+| Masked reference lines as the model's fill (163 items) | **163 / 163 pass**; full-function answers 0 |
+
+Masked span sizes (lines, including blank lines inside the span): 3 → 86 items, 1 → 68, 2 → 8, 4 → 1. One-line spans come from short function bodies.

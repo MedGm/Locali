@@ -1,0 +1,58 @@
+{
+  "config": {
+    "benchmark": "completion",
+    "model_id": "reference",
+    "runtime": "none",
+    "max_tokens": 768,
+    "model_revision": null,
+    "quantization": null,
+    "base_url": null,
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 4,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "evalplus/humanevalplus",
+    "dataset_revision": "d32357cf319e50e9c8d8dab5ea876c72b0fd321b",
+    "notes": ""
+  },
+  "environment": {
+    "started_at": "2026-09-15T16:03:18+00:00",
+    "git_commit": "0c7184079a13ee4bc792ddb3c1bf96d34b8f43ea",
+    "git_dirty": true,
+    "host": "medgm-HP-EliteBook-840-G7-Notebook-PC",
+    "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "cpu": "Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz",
+    "ram_gb": 15.4,
+    "gpus": [],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 163,
+    "status_counts": {
+      "passed": 163
+    },
+    "truncated": 0,
+    "mean_input_tokens": null,
+    "mean_output_tokens": null,
+    "mean_ttft_s": 0.0,
+    "median_ttft_s": 0.0,
+    "mean_total_s": 0.0,
+    "mean_decode_tok_per_s": null,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "pass@1": 1.0,
+    "full_function_rate": 0.0
+  },
+  "excluded": {
+    "HumanEval/32": "HF test calls _poly(*candidate(*inp), inp), unpacking a float: TypeError for any solution"
+  },
+  "this_session": {
+    "generated": 163,
+    "resumed": 0,
+    "wall_s": 62.3
+  }
+}

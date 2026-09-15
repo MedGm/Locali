@@ -115,4 +115,4 @@ def test_summary_lists_excluded_problems_for_the_benchmark(tmp_path):
 def test_runner_registers_all_benchmark_tasks():
     from evaluation.run import TASKS
 
-    assert {"humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect", "cruxeval_o", "testgen", "refactor"} <= set(TASKS)
+    assert {"humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect", "cruxeval_o", "testgen", "refactor", "completion"} <= set(TASKS)

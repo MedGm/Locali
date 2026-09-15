@@ -55,3 +55,9 @@ No exclusions needed.
 | Benchmark's own `check()` suite as the model's test file (164 items) | valid 164 / 164, caught the real bug 164 / 164, mean line + branch coverage of `solution.py` **99.14 %** |
 
 The reference coverage is the practical ceiling for generated tests.
+
+## Refactoring (`refactor`, items from HumanEval+)
+
+| Check | Result |
+|---|---|
+| Unchanged reference solution as the model's refactoring (163 items) | behaviour preserved 163 / 163; mean deltas in complexity, maintainability index and Ruff violations all **0.0**; improved 0 / 163 (as expected) |

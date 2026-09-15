@@ -32,10 +32,11 @@ from evaluation.tasks.base import Task
 from evaluation.tasks.codegen import HUMANEVAL_PLUS_TASK, MBPP_PLUS_TASK
 from evaluation.tasks.cruxeval import CRUX_OUTPUT_TASK
 from evaluation.tasks.humanevalpack import BUG_DETECT_TASK, FIX_TASK
+from evaluation.tasks.refactor import REFACTOR_TASK
 from evaluation.tasks.testgen import TESTGEN_TASK
 
 TASKS: dict[str, Task] = {
-    task.name: task for task in [HUMANEVAL_PLUS_TASK, MBPP_PLUS_TASK, FIX_TASK, BUG_DETECT_TASK, CRUX_OUTPUT_TASK, TESTGEN_TASK]
+    task.name: task for task in [HUMANEVAL_PLUS_TASK, MBPP_PLUS_TASK, FIX_TASK, BUG_DETECT_TASK, CRUX_OUTPUT_TASK, TESTGEN_TASK, REFACTOR_TASK]
 }
 
 

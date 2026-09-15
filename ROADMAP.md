@@ -23,8 +23,8 @@ Solo, 15 weeks, ~20 h/week. Deadline 01/01/2027, target submission 30/12/2026.
 - [x] Free disk space
 - [x] Repo skeleton, spec checklist, roadmap
 - [x] Install uv, build llama.cpp
-- [ ] Kaggle account with phone verification (GPU access)
-- [ ] Hugging Face account + token
+- [x] Kaggle account + CLI access token (`~/.kaggle/access_token`)
+- [x] Hugging Face account + write token
 - [x] Choose and pin model versions (`experiments/configs/models.yaml`)
 - [x] Local inference smoke test (llama.cpp server, OpenAI-compatible)
 

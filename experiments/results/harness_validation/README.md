@@ -29,3 +29,13 @@ Exclusions live in `evaluation/tasks/codegen.py::EXCLUDED`, apply to every model
 | MBPP+ | 377 | **1.000** (377/377) |
 
 Scores in this project are therefore reported on 163 HumanEval+ and 377 MBPP+ problems. They are not directly identical to leaderboard numbers computed on 164 / 378.
+
+## HumanEvalPack (Python), `bigcode/humanevalpack@9a41762`
+
+| Task | Check | Result |
+|---|---|---|
+| humanevalfix | Canonical solution as the model's fix | **164 / 164 pass** |
+| humanevalfix | Original buggy solution as the model's fix (inverse check: every item must be a real bug) | **0 / 164 pass** (161 failed, 2 timeout, 1 crashed) |
+| bugdetect | Reference labels as the model's verdict (328 items: buggy + correct per problem) | accuracy, precision, recall, F1 all **1.000**; invalid rate 0 |
+
+No exclusions needed.

@@ -110,3 +110,9 @@ def test_summary_lists_excluded_problems_for_the_benchmark(tmp_path):
     )
 
     assert list(summary["excluded"]) == ["HumanEval/32"]
+
+
+def test_runner_registers_all_benchmark_tasks():
+    from evaluation.run import TASKS
+
+    assert {"humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect"} <= set(TASKS)

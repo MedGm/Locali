@@ -68,12 +68,16 @@ def build_program(problem: Problem, code: str) -> str:
 
 
 def evaluate_solution(problem: Problem, code: str, timeout_s: float = 60) -> Outcome:
-    """Run one candidate against the benchmark tests in the sandbox.
+    """Run one candidate against the benchmark tests in the sandbox."""
+    return run_program(build_program(problem, code), timeout_s)
+
+
+def run_program(program: str, timeout_s: float = 60) -> Outcome:
+    """Execute a complete program (solution + tests) in the sandbox.
 
     The whole program is executed inside a single pytest function, so syntax errors and
     module-level assertion failures count as a failed test rather than a collection error.
     """
-    program = build_program(problem, code)
     test_file = (
         f"PROGRAM = {program!r}\n\n\n"
         "def test_problem():\n"

@@ -39,3 +39,11 @@ Scores in this project are therefore reported on 163 HumanEval+ and 377 MBPP+ pr
 | bugdetect | Reference labels as the model's verdict (328 items: buggy + correct per problem) | accuracy, precision, recall, F1 all **1.000**; invalid rate 0 |
 
 No exclusions needed.
+
+## CRUXEval-O, `cruxeval-org/cruxeval@b96af04`
+
+| Check | Result |
+|---|---|
+| Ground-truth output as the model's completed assertion (800 problems) | **800 / 800 pass** |
+
+No exclusions needed.

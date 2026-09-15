@@ -1,0 +1,55 @@
+{
+  "config": {
+    "benchmark": "cruxeval_o",
+    "model_id": "reference",
+    "runtime": "none",
+    "max_tokens": 768,
+    "model_revision": null,
+    "quantization": null,
+    "base_url": null,
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 4,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "cruxeval-org/cruxeval",
+    "dataset_revision": "b96af0450242eb4da433032b90998f25588a5d0f",
+    "notes": ""
+  },
+  "environment": {
+    "started_at": "2026-09-15T15:50:28+00:00",
+    "git_commit": "a42e93fafa34d1f74b1cd78671802e7ba89a87af",
+    "git_dirty": true,
+    "host": "medgm-HP-EliteBook-840-G7-Notebook-PC",
+    "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "cpu": "Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz",
+    "ram_gb": 15.4,
+    "gpus": [],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 800,
+    "status_counts": {
+      "passed": 800
+    },
+    "truncated": 0,
+    "mean_input_tokens": null,
+    "mean_output_tokens": null,
+    "mean_ttft_s": 0.0,
+    "median_ttft_s": 0.0,
+    "mean_total_s": 0.0,
+    "mean_decode_tok_per_s": null,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "pass@1": 1.0
+  },
+  "excluded": {},
+  "this_session": {
+    "generated": 800,
+    "resumed": 0,
+    "wall_s": 181.8
+  }
+}

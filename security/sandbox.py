@@ -1,5 +1,6 @@
 """Run pytest on untrusted code inside a locked-down Docker container."""
 
+import hashlib
 import json
 import shutil
 import subprocess
@@ -10,8 +11,9 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
 
-IMAGE = "locali-sandbox:py312"
 DOCKERFILE = Path(__file__).with_name("sandbox.Dockerfile")
+# Tag by Dockerfile content so any change to the image definition forces a rebuild.
+IMAGE = f"locali-sandbox:{hashlib.sha256(DOCKERFILE.read_bytes()).hexdigest()[:12]}"
 
 
 @dataclass
@@ -36,7 +38,13 @@ def ensure_image() -> None:
 
 
 def run_pytest(
-    project: Path, *, timeout_s: float = 60, memory: str = "512m", pids: int = 128, cpus: str = "1"
+    project: Path,
+    *,
+    timeout_s: float = 60,
+    memory: str = "512m",
+    pids: int = 128,
+    cpus: str = "1",
+    coverage: bool = True,
 ) -> SandboxResult:
     ensure_image()
     name = f"locali-sbx-{uuid.uuid4().hex[:12]}"
@@ -64,9 +72,10 @@ def run_pytest(
             "-v", f"{out}:/out:rw",
             "-w", "/work",
             IMAGE,
-            "python", "-m", "pytest", "-q", "-p", "no:cacheprovider",
-            "--junitxml=/out/junit.xml", "--cov=.", "--cov-report=json:/out/coverage.json",
+            "python", "-m", "pytest", "-q", "-p", "no:cacheprovider", "--junitxml=/out/junit.xml",
         ]
+        if coverage:
+            cmd += ["--cov=.", "--cov-report=json:/out/coverage.json"]
         start = time.perf_counter()
         try:
             proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_s, check=False)

@@ -68,6 +68,35 @@ def test_reports_line_coverage_of_project_code(tmp_path):
     assert 0 < result.coverage_percent < 100
 
 
+def test_coverage_can_be_disabled(tmp_path):
+    project = write_project(tmp_path, {
+        "test_one.py": """
+            def test_ok():
+                assert True
+        """,
+    })
+
+    result = run_pytest(project, coverage=False)
+
+    assert result.passed == 1
+    assert result.coverage_percent is None
+
+
+def test_numpy_is_available_for_benchmark_tests(tmp_path):
+    project = write_project(tmp_path, {
+        "test_np.py": """
+            import numpy as np
+
+            def test_allclose():
+                assert np.allclose([1.0], [1.0 + 1e-9])
+        """,
+    })
+
+    result = run_pytest(project, coverage=False)
+
+    assert (result.passed, result.failed, result.errors) == (1, 0, 0), result.output
+
+
 def run_single_probe(tmp_path, body: str, **kwargs):
     """Run one in-sandbox test; the probe passes only if the sandbox blocks the action."""
     project = write_project(tmp_path, {"test_probe.py": body})

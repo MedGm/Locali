@@ -8,7 +8,7 @@ import tempfile
 import time
 import uuid
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 DOCKERFILE = Path(__file__).with_name("sandbox.Dockerfile")
@@ -26,6 +26,7 @@ class SandboxResult:
     coverage_percent: float | None
     output: str
     duration_s: float
+    passed_tests: list[str] = field(default_factory=list)  # pytest node ids
 
 
 def ensure_image() -> None:
@@ -45,8 +46,11 @@ def run_pytest(
     pids: int = 128,
     cpus: str = "1",
     coverage: bool | str = True,
+    select: list[str] | None = None,
 ) -> SandboxResult:
-    """coverage: False, True (whole project, lines), or a module name (that module, lines + branches)."""
+    """coverage: False, True (whole project, lines), or a module name (that module, lines + branches).
+    select: pytest node ids to run instead of the whole project.
+    """
     ensure_image()
     name = f"locali-sbx-{uuid.uuid4().hex[:12]}"
     with tempfile.TemporaryDirectory(prefix="locali-sbx-") as tmp:
@@ -79,6 +83,7 @@ def run_pytest(
             cmd += [f"--cov={coverage}", "--cov-branch", "--cov-report=json:/out/coverage.json"]
         elif coverage:
             cmd += ["--cov=.", "--cov-report=json:/out/coverage.json"]
+        cmd += select or []
         start = time.perf_counter()
         try:
             proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_s, check=False)
@@ -90,6 +95,7 @@ def run_pytest(
             output = _text(e.stdout) + _text(e.stderr)
         duration = time.perf_counter() - start
         passed, failed, errors = _junit_counts(out / "junit.xml")
+        passed_tests = _junit_passed_node_ids(out / "junit.xml", work)
         return SandboxResult(
             exit_code=exit_code,
             timed_out=timed_out,
@@ -99,6 +105,7 @@ def run_pytest(
             coverage_percent=_coverage_percent(out / "coverage.json"),
             output=output,
             duration_s=round(duration, 2),
+            passed_tests=passed_tests,
         )
 
 
@@ -116,6 +123,23 @@ def _junit_counts(path: Path) -> tuple[int, int, int]:
     tests, failures = int(suite.get("tests", 0)), int(suite.get("failures", 0))
     errors, skipped = int(suite.get("errors", 0)), int(suite.get("skipped", 0))
     return tests - failures - errors - skipped, failures, errors
+
+
+def _junit_passed_node_ids(path: Path, work: Path) -> list[str]:
+    """Rebuild pytest node ids (file.py::Class::test[param]) of passing test cases."""
+    if not path.exists():
+        return []
+    ids = []
+    for case in ET.parse(path).getroot().iter("testcase"):
+        if any(case.find(tag) is not None for tag in ("failure", "error", "skipped")):
+            continue
+        parts = case.get("classname", "").split(".")
+        for k in range(len(parts), 0, -1):
+            module = Path(*parts[:k]).with_suffix(".py")
+            if (work / module).exists():
+                ids.append("::".join([module.as_posix(), *parts[k:], case.get("name", "")]))
+                break
+    return ids
 
 
 def _coverage_percent(path: Path) -> float | None:

@@ -20,8 +20,8 @@
     "generate_only": false
   },
   "environment": {
-    "started_at": "2026-10-12T07:05:02+00:00",
-    "git_commit": "481532878fc87c6c5660f051692170027218d595",
+    "started_at": "2026-10-12T07:15:57+00:00",
+    "git_commit": "3431c53f73661b936d38d75d307f420ced5c3cd0",
     "git_dirty": true,
     "host": "medgm-HP-EliteBook-840-G7-Notebook-PC",
     "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
@@ -34,7 +34,7 @@
   "metrics": {
     "n": 164,
     "status_counts": {
-      "valid_caught_bug": 164
+      "caught_bug": 164
     },
     "truncated": 0,
     "mean_input_tokens": null,
@@ -45,10 +45,12 @@
     "mean_decode_tok_per_s": null,
     "total_energy_j": null,
     "mean_energy_j_per_task": null,
-    "valid_rate": 1.0,
+    "strict_valid_rate": 1.0,
+    "test_pass_rate": 1.0,
+    "any_valid_test_rate": 1.0,
     "bug_detection_rate": 1.0,
-    "bug_detection_rate_among_valid": 1.0,
     "mean_coverage_valid": 99.14,
+    "mean_coverage_all": 99.14,
     "mean_tests_collected": 1.0,
     "multi_block_rate": 0.0
   },
@@ -56,6 +58,6 @@
   "this_session": {
     "generated": 164,
     "resumed": 0,
-    "wall_s": 151.8
+    "wall_s": 187.7
   }
 }

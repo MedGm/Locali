@@ -105,3 +105,18 @@ The small Bandit gap between the two classes means either many "secure" versions
 | Completion | 163 / 163 |
 
 A first version of the sanitizer re-joined kept code with single blank lines, which made Ruff report import-formatting violations (I001) on unchanged code; the refactoring tests caught it, and the sanitizer now deletes dropped lines only.
+
+## Test generation scoring revised after the Kaggle pilot (2026-10-12)
+
+Pilot (3 items per task, 4 models): under the original rule — every test in the file must pass on the correct code — **0 of 12** generated files were valid, so the metric could not separate models. Causes, from re-running each file: (1) a single wrong expected value (e.g. `truncate_number(1.001) == 0.001`, float equality) voided whole files; (2) answers split one file across several markdown blocks; (3) files cut off at the 768-token limit failed to parse.
+
+Changes, applied identically to every model and recorded per sample:
+
+| Change | Recorded as |
+|---|---|
+| All Python blocks of an answer are joined | `multi_block` |
+| A truncated tail is trimmed to the last complete statement | `trimmed` |
+| Test functions with several top-level asserts are split into one test per assert (setup statements kept) | `asserts_split` |
+| Tests failing on the correct code are discarded; the surviving suite measures coverage and is run against the buggy version | `tests_passed_on_correct`, `strict_valid` keeps the old all-pass rule |
+
+Reference suites after the change: 164 / 164 caught the bug, strict-valid rate 1.0, test pass rate 1.0, mean coverage 99.14 %. Pilot test pass rates after the change: Qwen2.5-Coder 50 %, Qwen3.5-2B 60 %, Phi-4-mini 69 %, Qwen3.5-4B 76 % (3 items each — indicative only).

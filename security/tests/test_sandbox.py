@@ -91,6 +91,41 @@ def test_coverage_can_target_one_module_with_branches(tmp_path):
     assert result.coverage_percent == pytest.approx(66.7, abs=0.1)
 
 
+MIXED_TESTS = """
+    import pytest
+
+    def test_ok():
+        assert True
+
+    def test_bad():
+        assert False
+
+    @pytest.mark.parametrize("x", [1, 2])
+    def test_p(x):
+        assert x == 1
+
+    class TestK:
+        def test_m(self):
+            assert True
+"""
+
+
+def test_reports_node_ids_of_passing_tests(tmp_path):
+    project = write_project(tmp_path, {"test_x.py": MIXED_TESTS})
+
+    result = run_pytest(project, coverage=False)
+
+    assert sorted(result.passed_tests) == ["test_x.py::TestK::test_m", "test_x.py::test_ok", "test_x.py::test_p[1]"]
+
+
+def test_runs_only_selected_tests(tmp_path):
+    project = write_project(tmp_path, {"test_x.py": MIXED_TESTS})
+
+    result = run_pytest(project, coverage=False, select=["test_x.py::test_ok", "test_x.py::test_p[1]"])
+
+    assert (result.passed, result.failed, result.errors) == (2, 0, 0)
+
+
 def test_coverage_can_be_disabled(tmp_path):
     project = write_project(tmp_path, {
         "test_one.py": """

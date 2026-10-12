@@ -30,5 +30,5 @@ extend-exclude = ["experiments/results", "training/kaggle/**/*.ipynb"]
 "training/kaggle/**" = ["BLE001"]
 
 [tool.pytest.ini_options]
-testpaths = ["evaluation", "backend", "security", "mcp_servers"]
+testpaths = ["evaluation", "backend", "security", "mcp_servers", "training"]
 pythonpath = ["."]

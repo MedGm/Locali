@@ -37,7 +37,8 @@
   "metrics": {
     "n": 712,
     "status_counts": {
-      "unscored": 712
+      "correct": 441,
+      "incorrect": 271
     },
     "truncated": 0,
     "mean_input_tokens": 159.639,
@@ -47,7 +48,12 @@
     "mean_total_s": 6.2894,
     "mean_decode_tok_per_s": 8.66,
     "total_energy_j": null,
-    "mean_energy_j_per_task": null
+    "mean_energy_j_per_task": null,
+    "accuracy": 0.6194,
+    "precision": 0.5788,
+    "recall": 0.8764,
+    "f1": 0.6972,
+    "invalid_rate": 0.0
   },
   "excluded": {
     "cybernative-unparseable-pairs": "Python pairs where either version is not valid Python (61 of 424 'secure' and 10 of 424 'vulnerable' snippets); kept out so syntax alone cannot reveal the label"
@@ -67,5 +73,24 @@
     "j_per_task": 52.71,
     "peak_memory_mib_per_gpu": 13749.0,
     "method": "trapezoidal integral of nvidia-smi power.draw at 1 s, whole board"
+  },
+  "rescored": {
+    "at": "2026-10-12T15:28:29+00:00",
+    "harness_commit": "d7396ea16e895d1b91118b5fade8badc368e7879",
+    "previous_metrics": {
+      "n": 712,
+      "status_counts": {
+        "unscored": 712
+      },
+      "truncated": 0,
+      "mean_input_tokens": 159.639,
+      "mean_output_tokens": 50.1685,
+      "mean_ttft_s": 0.4877,
+      "median_ttft_s": 0.4367,
+      "mean_total_s": 6.2894,
+      "mean_decode_tok_per_s": 8.66,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
   }
 }

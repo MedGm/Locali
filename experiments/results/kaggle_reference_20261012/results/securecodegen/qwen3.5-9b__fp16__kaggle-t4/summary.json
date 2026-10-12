@@ -37,7 +37,9 @@
   "metrics": {
     "n": 121,
     "status_counts": {
-      "unscored": 121
+      "flagged": 29,
+      "clean": 90,
+      "unparseable": 2
     },
     "truncated": 2,
     "mean_input_tokens": 87.5455,
@@ -47,7 +49,10 @@
     "mean_total_s": 19.5585,
     "mean_decode_tok_per_s": 9.6,
     "total_energy_j": null,
-    "mean_energy_j_per_task": null
+    "mean_energy_j_per_task": null,
+    "insecure_rate": 0.2397,
+    "unparseable_rate": 0.0165,
+    "target_cwe_rate": 0.0826
   },
   "excluded": {},
   "this_session": {
@@ -65,5 +70,24 @@
     "j_per_task": 194.32,
     "peak_memory_mib_per_gpu": 13749.0,
     "method": "trapezoidal integral of nvidia-smi power.draw at 1 s, whole board"
+  },
+  "rescored": {
+    "at": "2026-10-12T15:25:05+00:00",
+    "harness_commit": "d7396ea16e895d1b91118b5fade8badc368e7879",
+    "previous_metrics": {
+      "n": 121,
+      "status_counts": {
+        "unscored": 121
+      },
+      "truncated": 2,
+      "mean_input_tokens": 87.5455,
+      "mean_output_tokens": 182.2727,
+      "mean_ttft_s": 0.5267,
+      "median_ttft_s": 0.3714,
+      "mean_total_s": 19.5585,
+      "mean_decode_tok_per_s": 9.6,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
   }
 }

@@ -1,6 +1,7 @@
 """Build the model-comparison tables (markdown) from scored run summaries.
 
-    uv run python experiments/scripts/baseline_table.py experiments/results/kaggle_baselines_20261012/results
+    uv run python experiments/scripts/baseline_table.py experiments/results/kaggle_baselines_20261012/results \
+        [more result roots ...]
 """
 
 import json
@@ -93,7 +94,10 @@ def efficiency_table(runs: dict) -> str:
 
 
 if __name__ == "__main__":
-    data = load(Path(sys.argv[1]))
+    data: dict[str, dict[str, dict]] = {}
+    for root in sys.argv[1:]:
+        for model, tasks in load(Path(root)).items():
+            data.setdefault(model, {}).update(tasks)
     print("## Quality (%)\n")
     print(quality_table(data))
     print("\n## Efficiency (Kaggle T4, FP16, vLLM, 16 concurrent requests)\n")

@@ -39,7 +39,8 @@ Solo, 15 weeks, ~20 h/week. Deadline 01/01/2027, target submission 30/12/2026.
 - [x] Unattended laptop baseline script with energy: `experiments/scripts/laptop_baselines.sh`
 - [ ] Locali-Fresh: first 30 contamination-free tasks
 - [ ] `demo_repo/`: bugs, vulnerabilities, fake secret, missing tests, malicious README
-- [ ] Baselines for 3 models
+- [x] Laptop CPU baselines with energy, HumanEval+ and MBPP+: Qwen2.5-Coder-1.5B, Qwen3.5-2B ([results](experiments/results/baselines/README.md))
+- [ ] Full baselines on Kaggle (all 10 tasks × 4 models, vLLM)
 - **Gate:** baseline table reproducible from one command
 
 ### W3–5 · Oct 5–25 · Fine-tuning

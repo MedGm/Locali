@@ -120,3 +120,13 @@ Changes, applied identically to every model and recorded per sample:
 | Tests failing on the correct code are discarded; the surviving suite measures coverage and is run against the buggy version | `tests_passed_on_correct`, `strict_valid` keeps the old all-pass rule |
 
 Reference suites after the change: 164 / 164 caught the bug, strict-valid rate 1.0, test pass rate 1.0, mean coverage 99.14 %. Pilot test pass rates after the change: Qwen2.5-Coder 50 %, Qwen3.5-2B 60 %, Phi-4-mini 69 %, Qwen3.5-4B 76 % (3 items each — indicative only).
+
+## Internal tasks on the mixture's held-out test split (2026-10-13)
+
+| Task | Reference answers | Result |
+|---|---|---|
+| internal_t1 (repair, T1 format) | 164 | pass@1, exact fix, bug location, format all **1.000** |
+| internal_t2 (tests, T2 format) | 134 | every reference file valid; injected faults caught **87.8 %** — the builder's own figure; the regenerated faults match the builder's on **134 / 134** items |
+| internal_t3 (review, T3 format) | 164 | bug recall, clean specificity, pair accuracy, tool line recall, format all **1.000** |
+
+Building internal_t1 exposed a parser bug: the T1 diagnosis was located with a regex that assumed no braces inside the JSON, so explanations quoting a dict literal failed to parse. The parser now decodes JSON from every brace; all 3,745 T1 training targets parse. No earlier result used this parser.

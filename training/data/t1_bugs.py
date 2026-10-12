@@ -43,6 +43,14 @@ class Seed:
     tests: str
 
 
+def best_suite(row) -> str | None:
+    """The unittest suite used for a CodeRM problem: FRR = 0, lowest FAR, then lowest ut_id."""
+    suites = [s for s in json.loads(row["unit_tests"]) if s.get("FRR") == 0]
+    if not suites:
+        return None
+    return min(suites, key=lambda s: (s.get("FAR", 1.0), s["ut_id"]))["code"]
+
+
 def select_seeds(rows, n: int, seed: int = 3407, max_lines: int = 40) -> list[Seed]:
     """Up to n seeds: parseable functions of at most max_lines lines with an FRR = 0 suite."""
     candidates = []
@@ -56,11 +64,10 @@ def select_seeds(rows, n: int, seed: int = 3407, max_lines: int = 40) -> list[Se
             continue
         if not any(isinstance(node, ast.FunctionDef) for node in tree.body):
             continue
-        suites = [s for s in json.loads(r["unit_tests"]) if s.get("FRR") == 0]
-        if not suites:
+        best = best_suite(r)
+        if best is None:
             continue
-        best = min(suites, key=lambda s: (s.get("FAR", 1.0), s["ut_id"]))
-        candidates.append(Seed(str(r["task_id"]), r["question"], code, best["code"]))
+        candidates.append(Seed(str(r["task_id"]), r["question"], code, best))
     rng = random.Random(seed)
     return rng.sample(candidates, min(n, len(candidates)))
 

@@ -49,9 +49,10 @@ def t1_messages(example: dict, explanation: str) -> list[dict]:
 def parse_repair_answer(text: str) -> tuple[dict | None, str]:
     """(diagnosis or None, fixed code) from a T1-format answer."""
     diagnosis = None
-    for match in re.finditer(r"\{[^{}\n]*\}", text):
+    decoder = json.JSONDecoder()
+    for match in re.finditer(r"\{", text):  # decode from every brace: values may contain braces
         try:
-            candidate = json.loads(match.group(0))
+            candidate, _ = decoder.raw_decode(text, match.start())
         except json.JSONDecodeError:
             continue
         if isinstance(candidate, dict) and "bug_location" in candidate:

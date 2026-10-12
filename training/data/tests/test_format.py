@@ -48,3 +48,10 @@ def test_parse_repair_answer_tolerates_missing_diagnosis():
 def test_diagnosis_is_valid_single_line_json():
     first_line = t1_messages(EXAMPLE, 'quote " and newline\n inside')[1]["content"].splitlines()[0]
     assert json.loads(first_line)["explanation"] == 'quote " and newline\n inside'
+
+
+def test_parse_repair_answer_handles_braces_inside_the_explanation():
+    text = json.dumps({"bug_location": "    d = {1: 'a'}", "bug_type": "t", "explanation": "uses {1: 'a'} not {1: 'b'}"}) + "\n```python\nx = 1\n```"
+    diagnosis, code = parse_repair_answer(text)
+    assert diagnosis["explanation"] == "uses {1: 'a'} not {1: 'b'}"
+    assert code == "x = 1"

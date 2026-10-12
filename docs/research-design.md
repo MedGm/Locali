@@ -214,6 +214,25 @@ Rejected: Magicoder-OSS-Instruct-75K and CodeFeedback (outputs of proprietary Op
 | Replay: general code instructions | 2,000 | 13 % |
 | **Total** | **16,000** | train 90 % / validation 5 % / internal test 5 % |
 
+### 4.4.1 As built — mixture v1 (W3, 2026-10-12)
+
+Code: `training/data/` (builders, each with tests). Final counts are written by `training.data.build_mix` to `stats.json`.
+
+| Component | Built from | Verification | Approx. examples |
+|---|---|---|---|
+| T1 bug repair | 2,788 CodeRM seeds, one injected fault each (5 operators, in-place token edits) | Original passes its FRR=0 suite; mutant fails ≥1 test in the sandbox; equivalent and timeout cases dropped | ≈3,800 (75 % of the 5,036-example pool) |
+| T3 bug/clean pairs | The other 25 % of the T1 pool (by seed) | Same as T1; the verified original is the "no bug" example | 2 × 1,000 |
+| T3 tool findings | self-oss-instruct (odd ids) | Bandit ≥ medium, Ruff F/E7/E9/B; 500 security / 250 quality-only / 250 clean | ≈1,000 |
+| T2 test generation | CodeRM suites converted unittest → pytest | Converted tests pass on the original; greedy set cover keeps 3–8 tests catching the most injected faults; exact target file re-run | ≈3,000 |
+| Replay | self-oss-instruct (even ids) | Execution-validated by the dataset authors | 2,000 |
+
+Changes from the plan above, with reasons:
+- **Real bug-fix commits (CommitPackFT) are not in v1** — schedule (W2 ended a week late). T1 transfer to human-written bugs is still measured on HumanEvalFix.
+- **T1 answer format**: one JSON line (`bug_location` = buggy line verbatim, `bug_type`, `explanation`) followed by the fixed function in a ```python block — not code inside JSON, which small models escape badly; the line text instead of a line number, which small models count badly.
+- **T3 is contrastive**: every injected-bug item has its verified original as a "no findings" item, plus a clean share in the tool-labelled part — a direct response to the baseline "yes-bias" (§2.7).
+- **Explanations**: Qwen3.5-9B phrases T1/T3 bug explanations; accepted only if they cite the buggy or correct code and do not mention how the example was built, otherwise a template is used. Labels never come from the teacher.
+- **Leakage controls**: 13-gram decontamination against every evaluation set (T1 dropped 1.3 %); splits by seed problem across all tasks, checked in `stats.json` (`groups_in_more_than_one_split` must be 0).
+
 ### 4.5 Known limitations
 
 - CodeRM-UnitTest problems are competitive-programming style, not application code. CommitPackFT and self-oss-instruct balance this.

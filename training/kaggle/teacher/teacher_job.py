@@ -15,7 +15,7 @@ REPO = "https://github.com/MedGm/Locali.git"
 COMMIT = "__LOCALI_COMMIT__"  # replaced when the notebook is built
 CODE = Path("/tmp/locali")
 WORK = Path("/kaggle/working")
-INPUT = Path("/kaggle/input/locali-teacher-inputs/t1.jsonl")
+INPUT_ROOT = Path("/kaggle/input")  # dataset mount layout varies; the file is located by name
 TEACHER = ("Qwen/Qwen3.5-9B", "c202236235762e1c871ad0ccb60c8ee5ba337b9a")
 PORT = 8000
 
@@ -39,7 +39,12 @@ def main() -> None:
         wait_healthy,
     )
 
-    examples = [json.loads(line) for line in INPUT.read_text().splitlines() if line.strip()]
+    found = sorted(INPUT_ROOT.rglob("t1.jsonl"))
+    if not found:
+        listing = "\n".join(str(p) for p in INPUT_ROOT.rglob("*"))
+        raise FileNotFoundError(f"t1.jsonl not found under {INPUT_ROOT}:\n{listing}")
+    log(f"input: {found[0]}")
+    examples = [json.loads(line) for line in found[0].read_text().splitlines() if line.strip()]
     log(f"{len(examples)} examples")
     install_vllm(logs / "setup.log")
     power = start_power_log(WORK / "gpu_power.csv")

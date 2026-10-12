@@ -27,6 +27,7 @@ class SandboxResult:
     output: str
     duration_s: float
     passed_tests: list[str] = field(default_factory=list)  # pytest node ids
+    container: str = ""  # docker container name of this run
 
 
 def ensure_image() -> None:
@@ -106,6 +107,7 @@ def run_pytest(
             output=output,
             duration_s=round(duration, 2),
             passed_tests=passed_tests,
+            container=name,
         )
 
 

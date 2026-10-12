@@ -205,8 +205,9 @@ def test_stops_tests_that_exceed_timeout(tmp_path):
             time.sleep(120)
     """, timeout_s=8)
 
+    # Check this run's own container only: other sandbox runs may be active concurrently.
     running = subprocess.run(
-        ["docker", "ps", "-q", "--filter", "label=locali.sandbox"],
+        ["docker", "ps", "-aq", "--filter", f"name=^{result.container}$"],
         capture_output=True, text=True, check=True,
     ).stdout.strip()
     assert result.timed_out

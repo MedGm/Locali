@@ -30,9 +30,37 @@ def _squash(text: str) -> str:
     return re.sub(r"[\s`]+", "", text)
 
 
+MIN_CHARS, MAX_CHARS = 20, 400
+
+
 def accept_explanation(example: dict, text: str) -> bool:
     text = text.strip()
-    if not 20 <= len(text) <= 400 or _LEAKS.search(text):
+    if not MIN_CHARS <= len(text) <= MAX_CHARS or _LEAKS.search(text):
         return False
     flat = _squash(text)
     return _squash(example["mutated_snippet"]) in flat or _squash(example["original_snippet"]) in flat
+
+
+def _sentences(text: str) -> list[str]:
+    """Split at . ! ? followed by whitespace or the end, ignoring punctuation inside `code`."""
+    out, start, in_code = [], 0, False
+    for i, ch in enumerate(text):
+        if ch == "`":
+            in_code = not in_code
+        elif ch in ".!?" and not in_code and (i + 1 == len(text) or text[i + 1].isspace()):
+            out.append(text[start : i + 1].strip())
+            start = i + 1
+    rest = text[start:].strip()
+    return [s for s in [*out, rest] if s]
+
+
+def condense(text: str, cut: bool) -> str:
+    """Shorten a teacher answer: drop an unfinished last sentence (cut at the token limit) and keep
+    only the first sentence when the answer is longer than the acceptance limit."""
+    sentences = _sentences(text.strip())
+    if cut and len(sentences) > 1:
+        sentences = sentences[:-1]
+    joined = " ".join(sentences)
+    if len(joined) > MAX_CHARS and sentences:
+        return sentences[0]
+    return joined

@@ -37,13 +37,14 @@ def main() -> None:
 
     from datasets import load_dataset
 
-    teacher = {r["id"]: r.get("text") for r in _jsonl(args.explanations)} if args.explanations else {}
+    teacher = {r["id"]: r for r in _jsonl(args.explanations)} if args.explanations else {}
     origins = collections.Counter()
     examples: list[dict] = []
 
     t3_pairs = 0
     for ex in _jsonl(args.t1):
-        explanation, origin = explanation_for(ex, teacher.get(ex["id"]))
+        row = teacher.get(ex["id"], {})
+        explanation, origin = explanation_for(ex, row.get("text"), cut=row.get("finish_reason") == "length")
         origins[origin] += 1
         if reserved_for_t3(ex["source"]):
             if t3_pairs >= args.t3_pairs:

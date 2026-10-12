@@ -8,7 +8,7 @@ use SHA-256 (Python's hash() is salted per process and would not be reproducible
 import hashlib
 
 from training.data.format import template_explanation
-from training.data.teacher import accept_explanation
+from training.data.teacher import accept_explanation, condense
 
 
 def _bucket(salt: str, group: str, modulo: int) -> int:
@@ -26,8 +26,13 @@ def reserved_for_t3(group: str) -> bool:
     return _bucket("t3", group, 4) == 0
 
 
-def explanation_for(example: dict, teacher_text: str | None) -> tuple[str, str]:
-    """(explanation, origin): the teacher's text if accepted, otherwise the template."""
-    if teacher_text and accept_explanation(example, teacher_text):
-        return teacher_text.strip(), "teacher"
+def explanation_for(example: dict, teacher_text: str | None, cut: bool = False) -> tuple[str, str]:
+    """(explanation, origin): the condensed teacher text if accepted, otherwise the template.
+
+    cut: the teacher stopped at its token limit, so the last sentence may be unfinished.
+    """
+    if teacher_text:
+        text = condense(teacher_text, cut)
+        if accept_explanation(example, text):
+            return text, "teacher"
     return template_explanation(example), "template"

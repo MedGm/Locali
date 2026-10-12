@@ -1,0 +1,107 @@
+== laptop baselines 2026-10-12T01:12:00+02:00, llama.cpp 987498f
+-- 2026-10-12T01:12:00+02:00 starting llama-server for qwen2.5-coder-1.5b
+-- 2026-10-12T01:12:04+02:00 qwen2.5-coder-1.5b / humaneval_plus
+{
+  "metrics": {
+    "n": 163,
+    "status_counts": {
+      "passed": 110,
+      "failed": 51,
+      "timeout": 2
+    },
+    "truncated": 1,
+    "mean_input_tokens": 183.4724,
+    "mean_output_tokens": 209.2638,
+    "mean_ttft_s": 2.0302,
+    "median_ttft_s": 1.7972,
+    "mean_total_s": 14.6339,
+    "mean_decode_tok_per_s": 16.77,
+    "total_energy_j": 36519.2,
+    "mean_energy_j_per_task": 224.04,
+    "pass@1": 0.6748
+  },
+  "this_session": {
+    "generated": 163,
+    "resumed": 0,
+    "wall_s": 2654.9
+  }
+}
+-- 2026-10-12T01:56:22+02:00 qwen2.5-coder-1.5b / mbpp_plus
+{
+  "metrics": {
+    "n": 377,
+    "status_counts": {
+      "passed": 228,
+      "failed": 148,
+      "timeout": 1
+    },
+    "truncated": 1,
+    "mean_input_tokens": 102.3979,
+    "mean_output_tokens": 99.4536,
+    "mean_ttft_s": 0.7373,
+    "median_ttft_s": 0.6266,
+    "mean_total_s": 6.5558,
+    "mean_decode_tok_per_s": 17.25,
+    "total_energy_j": 38463.5,
+    "mean_energy_j_per_task": 102.03,
+    "pass@1": 0.6048
+  },
+  "this_session": {
+    "generated": 377,
+    "resumed": 0,
+    "wall_s": 2831.7
+  }
+}
+-- 2026-10-12T02:43:37+02:00 starting llama-server for qwen3.5-2b
+-- 2026-10-12T02:43:40+02:00 qwen3.5-2b / humaneval_plus
+{
+  "metrics": {
+    "n": 163,
+    "status_counts": {
+      "passed": 79,
+      "failed": 84
+    },
+    "truncated": 4,
+    "mean_input_tokens": 174.2331,
+    "mean_output_tokens": 262.8037,
+    "mean_ttft_s": 3.643,
+    "median_ttft_s": 3.2812,
+    "mean_total_s": 25.2351,
+    "mean_decode_tok_per_s": 12.21,
+    "total_energy_j": 62173.2,
+    "mean_energy_j_per_task": 381.43,
+    "pass@1": 0.4847
+  },
+  "this_session": {
+    "generated": 163,
+    "resumed": 0,
+    "wall_s": 4253.0
+  }
+}
+-- 2026-10-12T03:54:35+02:00 qwen3.5-2b / mbpp_plus
+{
+  "metrics": {
+    "n": 377,
+    "status_counts": {
+      "passed": 141,
+      "failed": 235,
+      "timeout": 1
+    },
+    "truncated": 34,
+    "mean_input_tokens": 88.7931,
+    "mean_output_tokens": 299.1751,
+    "mean_ttft_s": 1.871,
+    "median_ttft_s": 1.7224,
+    "mean_total_s": 26.478,
+    "mean_decode_tok_per_s": 12.23,
+    "total_energy_j": 150543.2,
+    "mean_energy_j_per_task": 399.32,
+    "pass@1": 0.374
+  },
+  "this_session": {
+    "generated": 377,
+    "resumed": 0,
+    "wall_s": 10298.5
+  }
+}
+== done 2026-10-12T06:46:18+02:00

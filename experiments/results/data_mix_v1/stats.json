@@ -1,0 +1,40 @@
+{
+  "counts": {
+    "train": {
+      "T1": 3384,
+      "T3": 2588,
+      "T2": 2619,
+      "replay": 1794
+    },
+    "test": {
+      "T1": 164,
+      "T3": 164,
+      "T2": 134,
+      "replay": 113
+    },
+    "val": {
+      "T3": 125,
+      "T1": 197,
+      "T2": 148,
+      "replay": 86
+    }
+  },
+  "total": 11516,
+  "explanations": {
+    "teacher": 4651,
+    "template": 385
+  },
+  "t3_balance": {
+    "with_bug": 1000,
+    "without_any_finding": 1130,
+    "total": 2877
+  },
+  "decontamination_dropped": {
+    "T3-corpus": 3,
+    "replay": 7
+  },
+  "groups_in_more_than_one_split": 0,
+  "post_build_fixes": [
+    "T2 user prompts re-rendered with the fence-newline fix (2901 rows)"
+  ]
+}

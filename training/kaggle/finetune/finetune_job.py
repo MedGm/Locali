@@ -11,6 +11,7 @@ Environment variables (set through build_notebook.py):
     METHOD=qlora (4-bit NF4 base) | lora16 (16-bit base) | rslora (QLoRA + rank-stabilised LoRA)
     EPOCHS=2   MAX_STEPS=   (MAX_STEPS set => short smoke run, e.g. 30)
     SKIP_GENERATE=1         (train only)
+    LIMIT=3                 (items per task during generation; smoke runs)
 """
 
 import json
@@ -161,7 +162,8 @@ def generate(model_id: str, method: str) -> None:
                      "--model-id", f"{model_id}-ft-{method}", "--model-revision", spec["revision"],
                      "--quantization", "fp16", "--runtime", "vLLM T4x1 eager + LoRA adapter",
                      "--base-url", "http://127.0.0.1:8000/v1", "--served-model", "adapter", "--out", str(out),
-                     "--notes", f"fine-tuned ({method}) adapter at commit {COMMIT}"],
+                     "--notes", f"fine-tuned ({method}) adapter at commit {COMMIT}",
+                     *(["--limit", os.environ["LIMIT"]] if os.environ.get("LIMIT") else [])],
                     cwd=CODE, stdout=gen_log, stderr=subprocess.STDOUT, check=False,
                 ).returncode
             if rc == 0 and (out / "summary.json").exists():

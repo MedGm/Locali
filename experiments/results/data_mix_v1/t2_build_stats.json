@@ -1,0 +1,12 @@
+{
+  "seeds_unconvertible": 22,
+  "seeds_tests_fail": 25,
+  "seeds_weak_suite": 129,
+  "seeds_used": 2924,
+  "examples": 2924,
+  "seeds_selected": 3100,
+  "wall_s": 6945.5,
+  "source": "KAKA22/CodeRM-UnitTest",
+  "revision": "98879a4b7d98a66d8c0da9567b8c7eabe4e1f411",
+  "sample_seed": 11
+}

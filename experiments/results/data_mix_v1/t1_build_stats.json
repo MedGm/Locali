@@ -1,0 +1,13 @@
+{
+  "seeds_original_failed": 12,
+  "seeds_used": 2788,
+  "mutants_tried": 6232,
+  "mutants_equivalent": 992,
+  "mutants_timeout": 111,
+  "mutants_crashed": 24,
+  "examples": 5216,
+  "seeds_selected": 2800,
+  "wall_s": 3786.0,
+  "source": "KAKA22/CodeRM-UnitTest",
+  "revision": "98879a4b7d98a66d8c0da9567b8c7eabe4e1f411"
+}

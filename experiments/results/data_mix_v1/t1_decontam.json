@@ -1,0 +1,10 @@
+{
+  "input": 5103,
+  "kept": 5036,
+  "dropped_by_source": {
+    "mbpp_plus": 40,
+    "humanevalpack": 27,
+    "humaneval_plus": 8
+  },
+  "n": 13
+}

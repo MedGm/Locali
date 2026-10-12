@@ -31,8 +31,8 @@ checkpoints/
 outputs/
 adapters/
 
-# Data (raw/processed datasets are rebuilt by scripts)
-data/
+# Generated datasets at the repo root (rebuilt by scripts, published to the Hugging Face Hub)
+/data/
 
 # Experiment tracking
 mlruns/

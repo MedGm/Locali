@@ -103,6 +103,19 @@ Consequences:
 
 Qwen2.5-Coder-1.5B writes tool calls as markdown JSON instead of its native tool-call format, and invents tools (`add`, `test_calc`). Consequence for the agent design: **the LangGraph graph decides which tool runs; the model only fills node outputs in fixed JSON schemas**, which the T1–T3 fine-tuning targets directly. Model-driven routing with Qwen3.5-2B is a candidate extra arm for RQ6. The sample is small (n = 10 per model); treat the numbers as indicative. Data: `experiments/results/w1_tool_calling_*.json`.
 
+### 2.7 Baseline outcome (W2, 2026-10-12)
+
+Full results: [experiments/results/kaggle_baselines_20261012/README.md](../experiments/results/kaggle_baselines_20261012/README.md).
+
+| Model | Role confirmed | Evidence |
+|---|---|---|
+| Qwen2.5-Coder-1.5B | Fine-tune #1 | Cheapest per correct solution (54 J vs 98–116 J); weakest on the T1–T3 targets (bug repair 25 %, bugs caught by its tests 46 %, behaviour-preserving refactors 70 %): the most room for fine-tuning to show gains |
+| Phi-4-mini | Fine-tune #2 | Second overall; 90 % bugs caught by its tests, 43 % repair; trainable on T4 |
+| Qwen3.5-4B | Benchmark ceiling | Best headline score on 9 of 10 tasks; not trainable on T4 |
+| Qwen3.5-2B | Benchmark | Least efficient (116 J per correct HumanEval+ solution), weakest on generation |
+
+Two observations feed the training data design: (1) all Qwen models answer "bug present" for almost every snippet (recall 88–98 %, precision ≈ 52 %), so T3 data needs balanced, verified positive and negative examples; (2) Qwen-family models ignore given function names and output formats more often than Phi-4-mini, so T1–T3 targets use strict schemas.
+
 ## 3. Training method
 
 ### 3.1 Choice: supervised fine-tuning with QLoRA

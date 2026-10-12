@@ -58,3 +58,9 @@ def test_messages_use_the_shared_testgen_prompt_and_a_code_block_answer():
 
     assert user["content"].startswith("Write pytest unit tests for the function `clamp` below.")
     assert assistant["content"] == "```python\n" + example["tests"] + "```"
+
+
+def test_code_without_trailing_newline_still_closes_the_fence_on_its_own_line():
+    example = {"entry_point": "f", "code": "def f():\n    return 1", "tests": "def test_a():\n    assert f() == 1\n"}
+    user = t2_messages(example)[0]["content"]
+    assert user.endswith("    return 1\n```")

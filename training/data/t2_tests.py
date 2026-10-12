@@ -245,6 +245,7 @@ def build_t2_examples(seeds, workers: int = 4, seed: int = 3407, timeout_s: floa
 
 def t2_messages(example: dict) -> list[dict]:
     return [
-        {"role": "user", "content": testgen_prompt(example["entry_point"], example["code"])},
+        # testgen_prompt keeps the baseline layout (code + closing fence); CodeRM code has no final newline
+        {"role": "user", "content": testgen_prompt(example["entry_point"], example["code"].rstrip("\n") + "\n")},
         {"role": "assistant", "content": f"```python\n{example['tests']}```"},
     ]

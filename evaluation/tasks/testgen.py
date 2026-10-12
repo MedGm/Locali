@@ -27,6 +27,17 @@ from evaluation.tasks.humanevalpack import HUMANEVALPACK, PackItem, load_humanev
 from security.sandbox import run_pytest
 
 
+def testgen_prompt(entry_point: str, code: str) -> str:
+    """Test-generation prompt shared by evaluation, T2 training data and the test agent."""
+    return (
+        f"Write pytest unit tests for the function `{entry_point}` below. "
+        f"It lives in `solution.py`; import it with `from solution import {entry_point}`. "
+        "Test the behaviour described in the docstring, including edge cases. "
+        "Return a single Python test file in a markdown code block.\n\n"
+        f"```python\n{code}```"  # byte-identical to the prompt used for the baselines
+    )
+
+
 def _solution_module(item: PackItem, body: str) -> str:
     return f"{item.imports}\n{item.prompt}{body}"
 
@@ -51,14 +62,7 @@ class TestGenTask:
         return load_humanevalpack(limit)
 
     def messages(self, item: PackItem) -> list[dict]:
-        content = (
-            f"Write pytest unit tests for the function `{item.entry_point}` below. "
-            f"It lives in `solution.py`; import it with `from solution import {item.entry_point}`. "
-            "Test the behaviour described in the docstring, including edge cases. "
-            "Return a single Python test file in a markdown code block.\n\n"
-            f"```python\n{item.prompt}{item.canonical_solution}```"
-        )
-        return [{"role": "user", "content": content}]
+        return [{"role": "user", "content": testgen_prompt(item.entry_point, item.prompt + item.canonical_solution)}]
 
     def score(self, item: PackItem, completion: Completion, eval_timeout_s: float) -> dict:
         # Test files may be split over several blocks or cut off at the token limit: join the

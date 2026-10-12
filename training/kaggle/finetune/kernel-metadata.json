@@ -1,0 +1,16 @@
+{
+  "id": "elgorrimmohamed/locali-finetune",
+  "title": "locali-finetune",
+  "code_file": "finetune_job.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "machine_shape": "NvidiaTeslaT4",
+  "dataset_sources": ["elgorrimmohamed/locali-mix-v1"],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

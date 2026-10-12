@@ -190,6 +190,8 @@ def main() -> None:
     parser.add_argument("--quantization")
     parser.add_argument("--runtime", default="none")
     parser.add_argument("--base-url")
+    parser.add_argument("--served-model", default="local",
+                        help="model name sent in requests (vLLM LoRA adapters are addressed by name)")
     parser.add_argument("--thinking", action="store_true")
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--max-tokens", type=int, default=768)
@@ -216,7 +218,7 @@ def main() -> None:
     else:
         if not args.base_url:
             parser.error("--base-url is required unless --reference is set")
-        client = ChatClient(args.base_url, extra_body={"chat_template_kwargs": {"enable_thinking": args.thinking}})
+        client = ChatClient(args.base_url, model=args.served_model, extra_body={"chat_template_kwargs": {"enable_thinking": args.thinking}})
 
         def generate(item) -> Completion:
             return client.complete(

@@ -90,3 +90,13 @@ def test_fix_reference_passes_and_buggy_code_fails():
 
         assert fixed["passed"], (item.task_id, fixed)
         assert not unfixed["passed"], item.task_id
+
+
+@needs_docker
+@needs_hub
+def test_fix_ignores_model_written_asserts():
+    item = FIX_TASK.load(limit=1)[0]
+    fixed = FIX_TASK.reference(item).replace("```python\n", "").replace("```", "")
+    text = f"```python\n{fixed}\nassert has_close_elements([1.0], 0.5) is True\n```"
+
+    assert FIX_TASK.score(item, answer(text), eval_timeout_s=60)["passed"]

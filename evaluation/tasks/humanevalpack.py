@@ -14,7 +14,7 @@ import re
 from dataclasses import dataclass
 
 from evaluation.client import Completion
-from evaluation.extract import extract_code
+from evaluation.extract import extract_code, sanitize
 from evaluation.passk import pass_at_k
 from evaluation.tasks.codegen import run_program
 
@@ -86,7 +86,8 @@ class FixTask:
         return [{"role": "user", "content": content}]
 
     def score(self, item: PackItem, completion: Completion, eval_timeout_s: float) -> dict:
-        code = extract_code(completion.text, entry_point=item.entry_point)
+        raw = extract_code(completion.text, entry_point=item.entry_point)
+        code = sanitize(raw)
         program = (
             f"{item.imports}\n{_import_lines(item.declaration)}\n{item.test_setup}\n\n"
             f"{code}\n\n{item.test}\n"
@@ -97,6 +98,7 @@ class FixTask:
             "passed": outcome.passed,
             "bug_type": item.bug_type,
             "code": code,
+            "raw_code": raw,
             "eval_duration_s": outcome.duration_s,
         }
 

@@ -15,7 +15,7 @@ import re
 from dataclasses import dataclass
 
 from evaluation.client import Completion
-from evaluation.extract import extract_code
+from evaluation.extract import extract_code, sanitize
 from evaluation.passk import pass_at_k
 from evaluation.tasks.codegen import (
     EXCLUDED,
@@ -101,7 +101,7 @@ class CompletionTask:
         answer = extract_code(completion.text, entry_point=item.entry_point)
         full_function = re.search(rf"^\s*def\s+{re.escape(item.entry_point)}\s*\(", answer, re.MULTILINE) is not None
         if full_function:
-            program = answer
+            program = sanitize(answer)
         else:
             first_masked = next(line for line in infill.middle.splitlines() if line.strip())
             fill = reindent(answer, " " * _indent(first_masked))

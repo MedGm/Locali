@@ -91,3 +91,17 @@ Consequence: Bandit's `insecure_rate` is a **lower bound** on insecure generatio
 | Label-noise probe: Bandit flags | "vulnerable" 279 / 356 (78.4 %), "secure" 219 / 356 (61.5 %) |
 
 The small Bandit gap between the two classes means either many "secure" versions are still vulnerable or Bandit over-reports; the two cannot be separated here. Treat `vulndetect` scores as **indicative**, not definitive.
+
+## Re-validation after adding answer sanitization (2026-10-12)
+
+`evaluation/extract.py::sanitize` now removes model-written top-level statements (asserts, prints, `__main__` blocks) before execution and trims truncated tails. Reference answers re-run through the new path:
+
+| Task | Result |
+|---|---|
+| HumanEval+ | 163 / 163 |
+| MBPP+ | 377 / 377 |
+| HumanEvalFix | 164 / 164 |
+| Refactoring | 163 / 163 preserved, all quality deltas 0.0 |
+| Completion | 163 / 163 |
+
+A first version of the sanitizer re-joined kept code with single blank lines, which made Ruff report import-formatting violations (I001) on unchanged code; the refactoring tests caught it, and the sanitizer now deletes dropped lines only.

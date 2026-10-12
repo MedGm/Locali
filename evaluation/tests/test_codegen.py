@@ -115,3 +115,26 @@ def test_loaders_skip_problems_that_fail_harness_validation():
     assert "HumanEval/32" in EXCLUDED and "Mbpp/255" in EXCLUDED
     assert not (he_ids | mbpp_ids) & set(EXCLUDED)
     assert (len(he_ids), len(mbpp_ids)) == (163, 377)
+
+
+@needs_docker
+def test_correct_solution_with_wrong_self_written_assert_passes():
+    from evaluation.client import Completion
+    from evaluation.tasks.codegen import HUMANEVAL_PLUS_TASK
+
+    text = "```python\ndef circle_area(r):\n    return math.pi * r * r\n\n# Test cases\nassert circle_area(1) == 3\n```"
+    scored = HUMANEVAL_PLUS_TASK.score(HUMANEVAL_STYLE, Completion(text, "", 1, 1, 0, 0, "stop"), 60)
+
+    assert scored["passed"], scored
+    assert "assert circle_area(1) == 3" in scored["raw_code"]
+
+
+@needs_docker
+def test_truncated_answer_with_complete_function_passes():
+    from evaluation.client import Completion
+    from evaluation.tasks.codegen import HUMANEVAL_PLUS_TASK
+
+    text = "```python\ndef circle_area(r):\n    return math.pi * r * r\n\nassert circle_area(2) == math.pi * 4\nassert circle_are"
+    scored = HUMANEVAL_PLUS_TASK.score(HUMANEVAL_STYLE, Completion(text, "", 1, 1, 0, 0, "length"), 60)
+
+    assert scored["passed"], scored

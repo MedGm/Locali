@@ -16,7 +16,7 @@ from radon.metrics import mi_visit
 from radon.raw import analyze
 
 from evaluation.client import Completion
-from evaluation.extract import extract_code
+from evaluation.extract import extract_code, sanitize
 from evaluation.tasks.codegen import (
     EXCLUDED,
     HUMANEVAL_PLUS,
@@ -69,7 +69,8 @@ class RefactorTask:
         return [{"role": "user", "content": content}]
 
     def score(self, item: Problem, completion: Completion, eval_timeout_s: float) -> dict:
-        code = extract_code(completion.text, entry_point=item.entry_point)
+        raw = extract_code(completion.text, entry_point=item.entry_point)
+        code = sanitize(raw)
         outcome = evaluate_solution(item, code, timeout_s=eval_timeout_s)
         before, after = quality_metrics(item.reference_solution), quality_metrics(code)
         deltas = {
@@ -91,6 +92,7 @@ class RefactorTask:
             "quality_after": after,
             **deltas,
             "code": code,
+            "raw_code": raw,
             "eval_duration_s": outcome.duration_s,
         }
 

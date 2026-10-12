@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from evaluation.client import Completion
-from evaluation.extract import extract_code
+from evaluation.extract import extract_code, sanitize
 from evaluation.passk import pass_at_k
 from security.sandbox import run_pytest
 
@@ -176,12 +176,14 @@ class CodegenTask:
         return build_messages(item)
 
     def score(self, item: Problem, completion: Completion, eval_timeout_s: float) -> dict:
-        code = extract_code(completion.text, entry_point=item.entry_point)
+        raw = extract_code(completion.text, entry_point=item.entry_point)
+        code = sanitize(raw)
         outcome = evaluate_solution(item, code, timeout_s=eval_timeout_s)
         return {
             "status": outcome.status,
             "passed": outcome.passed,
             "code": code,
+            "raw_code": raw,
             "eval_duration_s": outcome.duration_s,
         }
 

@@ -116,3 +116,30 @@ def test_runner_registers_all_benchmark_tasks():
     from evaluation.run import TASKS
 
     assert {"humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect", "cruxeval_o", "testgen", "refactor", "completion", "securecodegen", "vulndetect"} <= set(TASKS)
+
+
+def test_generate_only_records_answers_without_scoring(tmp_path, config):
+    problems = [replace(HUMANEVAL_STYLE, task_id="toy/good")]
+    gen_only = replace(config, generate_only=True)
+
+    summary = run_benchmark(gen_only, HUMANEVAL_PLUS_TASK, problems,
+                            fake_generate({"toy/good": (GOOD, "stop")}), tmp_path / "out")
+
+    record = json.loads((tmp_path / "out" / "samples.jsonl").read_text())
+    assert record["status"] == "unscored"
+    assert record["completion"] == GOOD
+    assert "pass@1" not in summary["metrics"]
+    assert summary["metrics"]["mean_output_tokens"] == 20
+
+
+def test_generate_only_run_can_be_scored_later(tmp_path, config):
+    from evaluation.rescore import rescore_run
+
+    problems = [replace(HUMANEVAL_STYLE, task_id="toy/good"), replace(HUMANEVAL_STYLE, task_id="toy/bad")]
+    out = tmp_path / "out"
+    run_benchmark(replace(config, generate_only=True), HUMANEVAL_PLUS_TASK, problems,
+                  fake_generate({"toy/good": (GOOD, "stop"), "toy/bad": (BAD, "stop")}), out)
+
+    summary = rescore_run(out, HUMANEVAL_PLUS_TASK, problems)
+
+    assert summary["metrics"]["pass@1"] == 0.5

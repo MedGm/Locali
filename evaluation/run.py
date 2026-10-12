@@ -62,6 +62,9 @@ class RunConfig:
     dataset: str | None = None
     dataset_revision: str | None = None
     notes: str = ""
+    # Record answers only; score later with evaluation.rescore (e.g. generated on Kaggle,
+    # scored in the local Docker sandbox).
+    generate_only: bool = False
 
 
 def environment() -> dict:
@@ -117,7 +120,8 @@ def run_benchmark(
             completion = generate(item)
         record = {
             "task_id": item.task_id,
-            **task.score(item, completion, config.eval_timeout_s),
+            **({"status": "unscored"} if config.generate_only
+               else task.score(item, completion, config.eval_timeout_s)),
             "input_tokens": completion.input_tokens,
             "output_tokens": completion.output_tokens,
             "ttft_s": completion.ttft_s,
@@ -140,7 +144,7 @@ def run_benchmark(
     summary = {
         "config": asdict(config),
         "environment": env,
-        "metrics": {**aggregate(records), **task.metrics(records)},
+        "metrics": {**aggregate(records), **({} if config.generate_only else task.metrics(records))},
         "excluded": task.excluded,
         "this_session": {"generated": len(todo), "resumed": len(done), "wall_s": round(wall_s, 1)},
     }
@@ -192,6 +196,7 @@ def main() -> None:
     parser.add_argument("--limit", type=int)
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--notes", default="")
+    parser.add_argument("--generate-only", action="store_true", help="record answers, score later")
     args = parser.parse_args()
 
     task = TASKS[args.benchmark]
@@ -201,6 +206,7 @@ def main() -> None:
         model_revision=args.model_revision, quantization=args.quantization, base_url=args.base_url,
         thinking=args.thinking, temperature=args.temperature, limit=args.limit, workers=args.workers,
         dataset=dataset, dataset_revision=dataset_revision, notes=args.notes,
+        generate_only=args.generate_only,
     )
     items = task.load(limit=args.limit)
 

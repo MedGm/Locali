@@ -78,3 +78,24 @@ def test_sanitize_returns_unparseable_code_unchanged():
 def test_sanitize_preserves_original_formatting_of_kept_code():
     code = "import math\n\n\ndef f(x):\n    return math.sqrt(x)\n"
     assert sanitize(code) == code.strip()
+
+
+from evaluation.extract import extract_all_code, trim_to_parseable
+
+
+def test_extract_all_code_joins_python_blocks_and_skips_other_fences():
+    text = (
+        "```markdown\n# Tests\n\n```python\nfrom solution import f\n```\n\nThen:\n"
+        "```python\ndef test_a():\n    assert f(1) == 1\n```\n"
+    )
+    assert extract_all_code(text) == "from solution import f\n\ndef test_a():\n    assert f(1) == 1"
+
+
+def test_extract_all_code_includes_unclosed_last_block():
+    text = "```python\nimport x\n```\n```python\ndef test_b():\n    assert x"
+    assert extract_all_code(text) == "import x\n\ndef test_b():\n    assert x"
+
+
+def test_trim_to_parseable_keeps_every_complete_statement():
+    code = "def test_a():\n    assert 1\n\nassert 2 == 2\n\ndef test_b():\n    assert f(['a', 'b"
+    assert trim_to_parseable(code) == "def test_a():\n    assert 1\n\nassert 2 == 2"

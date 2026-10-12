@@ -63,3 +63,35 @@ def sanitize(code: str) -> str:
             kept.pop(0)
         return "\n".join(kept)
     return code
+
+
+def python_blocks(text: str) -> list[str]:
+    """All Python (or unlabelled) fenced blocks in order, plus a trailing unclosed one."""
+    text = _THINK.sub("", text)
+    blocks, end = [], 0
+    for match in _FENCE.finditer(text):
+        blocks.append(match.group(1).strip("\n"))
+        end = match.end()
+    unclosed = _OPEN_FENCE.search(text, end)
+    if unclosed:
+        blocks.append(unclosed.group(1).strip("\n"))
+    return [b for b in blocks if b.strip()]
+
+
+def extract_all_code(text: str) -> str:
+    """Join every Python block: for answers that split one file over several blocks."""
+    blocks = python_blocks(text)
+    return "\n\n".join(blocks) if blocks else extract_code(text)
+
+
+def trim_to_parseable(code: str) -> str:
+    """Drop lines from the end until the code parses; keep every complete statement."""
+    lines = code.splitlines()
+    for end in range(len(lines), 0, -1):
+        candidate = "\n".join(lines[:end]).rstrip()
+        try:
+            ast.parse(candidate)
+        except SyntaxError:
+            continue
+        return candidate
+    return code

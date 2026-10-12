@@ -75,3 +75,33 @@ def test_metrics_separate_validity_bug_detection_and_coverage():
     assert m["bug_detection_rate"] == 0.25
     assert m["bug_detection_rate_among_valid"] == 0.5
     assert m["mean_coverage_valid"] == 75.0
+
+
+@needs_docker
+@needs_hub
+def test_tests_split_over_several_blocks_are_joined_and_flagged(item):
+    text = (
+        "Import first:\n```python\nfrom solution import has_close_elements\n```\n"
+        "Then a test:\n```python\ndef test_close():\n    assert has_close_elements([1.0, 1.05], 0.1) is True\n"
+        "    assert has_close_elements([1.0, 2.0], 0.5) is False\n```"
+    )
+
+    scored = TESTGEN_TASK.score(item, answer(text), eval_timeout_s=60)
+
+    assert scored["valid"], scored
+    assert scored["multi_block"] is True
+
+
+@needs_docker
+@needs_hub
+def test_truncated_test_file_keeps_complete_tests(item):
+    text = (
+        "```python\nfrom solution import has_close_elements\n\n"
+        "def test_close():\n    assert has_close_elements([1.0, 1.05], 0.1) is True\n\n"
+        "def test_far():\n    assert has_close_elements([1.0, 2.0"
+    )
+
+    scored = TESTGEN_TASK.score(item, Completion(text, "", 10, 10, 0.1, 0.2, "length"), eval_timeout_s=60)
+
+    assert scored["valid"], scored
+    assert scored["trimmed"] is True

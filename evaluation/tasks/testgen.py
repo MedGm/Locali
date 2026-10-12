@@ -14,7 +14,7 @@ import tempfile
 from pathlib import Path
 
 from evaluation.client import Completion
-from evaluation.extract import extract_code
+from evaluation.extract import extract_all_code, python_blocks, trim_to_parseable
 from evaluation.tasks.humanevalpack import HUMANEVALPACK, PackItem, load_humanevalpack
 from security.sandbox import run_pytest
 
@@ -53,7 +53,11 @@ class TestGenTask:
         return [{"role": "user", "content": content}]
 
     def score(self, item: PackItem, completion: Completion, eval_timeout_s: float) -> dict:
-        tests = extract_code(completion.text)
+        # Test files may be split over several blocks or cut off at the token limit: join the
+        # blocks and keep every complete statement (both recorded, applied to all models).
+        joined = extract_all_code(completion.text)
+        tests = trim_to_parseable(joined)
+        multi_block = len(python_blocks(completion.text)) > 1
         on_correct = _run_tests(
             _solution_module(item, item.canonical_solution), tests, "solution", eval_timeout_s
         )
@@ -84,6 +88,8 @@ class TestGenTask:
             "caught_bug": caught,
             "tests_collected": collected,
             "coverage_percent": on_correct.coverage_percent,
+            "multi_block": multi_block,
+            "trimmed": tests != joined.rstrip(),
             "bug_type": item.bug_type,
             "code": tests,
             "eval_duration_s": on_correct.duration_s,
@@ -100,6 +106,7 @@ class TestGenTask:
             "bug_detection_rate_among_valid": round(caught / len(valid), 4) if valid else None,
             "mean_coverage_valid": round(sum(coverage) / len(coverage), 2) if coverage else None,
             "mean_tests_collected": round(sum(r["tests_collected"] for r in records) / n, 2) if n else None,
+            "multi_block_rate": round(sum(bool(r.get("multi_block")) for r in records) / n, 4) if n else None,
         }
 
     def reference(self, item: PackItem) -> str:

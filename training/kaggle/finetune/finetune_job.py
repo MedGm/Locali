@@ -30,10 +30,8 @@ WORK = Path("/kaggle/working")
 INPUT_ROOT = Path("/kaggle/input")
 
 MODELS = {
-    "qwen2.5-coder-1.5b": {"repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct", "revision": "2e1fd397ee46e1388853d2af2c993145b0f1098a",
-                           "parts": ("<|im_start|>user\n", "<|im_start|>assistant\n")},
-    "phi-4-mini": {"repo": "unsloth/Phi-4-mini-instruct", "revision": "75becc471c56fc34761ec998615ca6f8535c5a61",
-                   "parts": ("<|user|>", "<|assistant|>")},
+    "qwen2.5-coder-1.5b": {"repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct", "revision": "2e1fd397ee46e1388853d2af2c993145b0f1098a"},
+    "phi-4-mini": {"repo": "unsloth/Phi-4-mini-instruct", "revision": "75becc471c56fc34761ec998615ca6f8535c5a61"},
 }
 TASKS = ["humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect", "cruxeval_o",
          "testgen", "refactor", "completion", "securecodegen", "vulndetect"]
@@ -72,7 +70,6 @@ def train(model_id: str, method: str, epochs: float, max_steps: int | None) -> d
     # isort: off
     import torch
     from unsloth import FastLanguageModel
-    from unsloth.chat_templates import train_on_responses_only
     from datasets import Dataset
     from trl import SFTConfig, SFTTrainer
     # isort: on
@@ -91,14 +88,18 @@ def train(model_id: str, method: str, epochs: float, max_steps: int | None) -> d
     )
 
     def render(rows: list[dict]) -> tuple[Dataset, int]:
-        texts, too_long = [], 0
+        """Conversational prompt/completion pairs: TRL computes the loss on the completion only,
+        for training and validation alike (W4 smoke run: masking applied to training data only
+        left validation loss at 4.4 against 0.5 for training)."""
+        prompts, completions, too_long = [], [], 0
         for row in rows:
             text = tok.apply_chat_template(row["messages"], tokenize=False)
             if len(tok(text)["input_ids"]) > SEQ_LEN:
                 too_long += 1
                 continue
-            texts.append(text)
-        return Dataset.from_dict({"text": texts}), too_long
+            prompts.append(row["messages"][:-1])
+            completions.append(row["messages"][-1:])
+        return Dataset.from_dict({"prompt": prompts, "completion": completions}), too_long
 
     train_ds, train_dropped = render(load_split("train"))
     val_ds, val_dropped = render(load_split("val"))
@@ -112,10 +113,19 @@ def train(model_id: str, method: str, epochs: float, max_steps: int | None) -> d
         eval_steps=100 if not max_steps else max(10, max_steps // 3), save_strategy="steps",
         save_steps=100 if not max_steps else max(10, max_steps // 3), save_total_limit=2,
         load_best_model_at_end=True, metric_for_best_model="eval_loss", greater_is_better=False,
-        report_to="none", seed=SEED, dataset_text_field="text", max_length=SEQ_LEN, packing=False,
+        report_to="none", seed=SEED, max_length=SEQ_LEN, packing=False, completion_only_loss=True,
     )
     trainer = SFTTrainer(model=model, processing_class=tok, train_dataset=train_ds, eval_dataset=val_ds, args=config)
-    trainer = train_on_responses_only(trainer, instruction_part=spec["parts"][0], response_part=spec["parts"][1])
+
+    def supervised_fraction(loader) -> float:
+        labels = next(iter(loader))["labels"]
+        return round(float((labels != -100).float().mean()), 3)
+
+    masking = {"train": supervised_fraction(trainer.get_train_dataloader()),
+               "val": supervised_fraction(trainer.get_eval_dataloader())}
+    log(f"fraction of supervised tokens in one batch: {masking}")
+    if not 0.02 < masking["val"] < 0.9 or abs(masking["train"] - masking["val"]) > 0.3:
+        raise RuntimeError(f"loss masking looks wrong: {masking}")
     start = time.time()
     result = trainer.train()
     adapter_dir = WORK / "adapter"
@@ -127,6 +137,7 @@ def train(model_id: str, method: str, epochs: float, max_steps: int | None) -> d
         "train_loss": result.training_loss, "best_eval_loss": trainer.state.best_metric,
         "best_checkpoint": trainer.state.best_model_checkpoint, "log_history": trainer.state.log_history,
         "peak_memory_gb": round(torch.cuda.max_memory_reserved() / 2**30, 2), "commit": COMMIT,
+        "supervised_token_fraction": masking,
     }
     (WORK / "train_report.json").write_text(json.dumps(report, indent=2))
     return report
@@ -146,7 +157,8 @@ def generate(model_id: str, method: str) -> None:
     install_vllm(logs / "setup.log")
     power = start_power_log(WORK / "gpu_power.csv")
     adapter = str(WORK / "adapter")
-    server = start_server(spec["repo"], spec["revision"], gpus=[0], port=8000, logfile=logs / "vllm.log",
+    # GPU 1: the training process still holds memory on GPU 0 (W4 smoke run: vLLM refused to start).
+    server = start_server(spec["repo"], spec["revision"], gpus=[1], port=8000, logfile=logs / "vllm.log",
                           extra=["--enable-lora", "--max-lora-rank", "16", "--lora-modules", f"adapter={adapter}"])
     try:
         if not wait_healthy(8000, server):
@@ -167,7 +179,7 @@ def generate(model_id: str, method: str) -> None:
                     cwd=CODE, stdout=gen_log, stderr=subprocess.STDOUT, check=False,
                 ).returncode
             if rc == 0 and (out / "summary.json").exists():
-                energy = attach_gpu_energy(out, (WORK / "gpu_power.csv").read_text(), [0], start, time.time())
+                energy = attach_gpu_energy(out, (WORK / "gpu_power.csv").read_text(), [1], start, time.time())
                 log(f"{task}: done, GPU energy {energy['total_j']} J")
             else:
                 log(f"{task}: FAILED rc={rc}")

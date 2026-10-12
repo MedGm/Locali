@@ -24,6 +24,9 @@ OUTCOME = {
     "bugdetect": lambda r: r["status"] == "correct",
     "vulndetect": lambda r: r["status"] == "correct",
     "securecodegen": lambda r: r["status"] == "clean",
+    "internal_t1": lambda r: r["passed"],
+    "internal_t2": lambda r: r["correct"],  # every injected fault caught
+    "internal_t3": lambda r: r["correct"],
 }
 
 

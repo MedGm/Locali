@@ -1,0 +1,46 @@
+[{"stream_name":"stderr","time":7.187898923,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.18796053,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.187965943,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.187968815,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.850934377,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.850969998,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.850981468,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.85098452,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.038041547,"data":"Writing /kaggle/working/evalgen_job.py\n"}
+,{"stream_name":"stdout","time":9.147567596,"data":"Cloning into '/tmp/locali'...\n"}
+,{"stream_name":"stdout","time":11.129291741,"data":"Note: switching to 'f13b863f7c50e98612df866388dba231fe976cb6'.\n"}
+,{"stream_name":"stdout","time":11.130510647,"data":"\n"}
+,{"stream_name":"stdout","time":11.131498802,"data":"You are in 'detached HEAD' state. You can look around, make experimental\n"}
+,{"stream_name":"stdout","time":11.132623533,"data":"changes and commit them, and you can discard any commits you make in this\n"}
+,{"stream_name":"stdout","time":11.133614616,"data":"state without impacting any branches by switching back to a branch.\n"}
+,{"stream_name":"stdout","time":11.134864049,"data":"\n"}
+,{"stream_name":"stdout","time":11.13589339,"data":"If you want to create a new branch to retain commits you create, you may\n"}
+,{"stream_name":"stdout","time":11.137107854,"data":"do so (now or later) by using -c with the switch command. Example:\n"}
+,{"stream_name":"stdout","time":11.138291029,"data":"\n"}
+,{"stream_name":"stdout","time":11.139407239,"data":"  git switch -c \u003cnew-branch-name\u003e\n"}
+,{"stream_name":"stdout","time":11.1404522,"data":"\n"}
+,{"stream_name":"stdout","time":11.141515342,"data":"Or undo this operation with:\n"}
+,{"stream_name":"stdout","time":11.142517267,"data":"\n"}
+,{"stream_name":"stdout","time":11.143573139,"data":"  git switch -\n"}
+,{"stream_name":"stdout","time":11.1446042,"data":"\n"}
+,{"stream_name":"stdout","time":11.145655282,"data":"Turn off this advice by setting config variable advice.detachedHead to false\n"}
+,{"stream_name":"stdout","time":11.146663895,"data":"\n"}
+,{"stream_name":"stdout","time":11.147830751,"data":"HEAD is now at f13b863 feat: Kaggle job generating base and adapter answers side by side\n"}
+,{"stream_name":"stdout","time":16.654967811,"data":"[22:25:22] adapter /kaggle/input/datasets/elgorrimmohamed/locali-adapter-qwen25-qlora-v1, mixture /kaggle/input/datasets/elgorrimmohamed/locali-mix-v1\n"}
+,{"stream_name":"stdout","time":259.222635554,"data":"[22:29:25] qwen2.5-coder-1.5b/internal_t1: done, GPU energy 3698.6 J\n"}
+,{"stream_name":"stdout","time":474.764265372,"data":"[22:33:00] qwen2.5-coder-1.5b/internal_t2: done, GPU energy 14458.1 J\n"}
+,{"stream_name":"stdout","time":517.434509089,"data":"[22:33:43] qwen2.5-coder-1.5b-ft-qlora/internal_t1: done, GPU energy 18439.8 J\n"}
+,{"stream_name":"stdout","time":529.617485367,"data":"[22:33:55] qwen2.5-coder-1.5b/internal_t3: done, GPU energy 3641.9 J\n"}
+,{"stream_name":"stdout","time":665.878018736,"data":"[22:36:12] qwen2.5-coder-1.5b-ft-qlora/internal_t2: done, GPU energy 9652.8 J\n"}
+,{"stream_name":"stdout","time":743.467261573,"data":"[22:37:29] qwen2.5-coder-1.5b-ft-qlora/internal_t3: done, GPU energy 5096.0 J\n"}
+,{"stream_name":"stdout","time":744.128449669,"data":"[22:37:30] done\n"}
+,{"stream_name":"stdout","time":744.14843076,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":746.876730528,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":746.876758867,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":747.065095582,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":747.065123926,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":747.985610652,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":748.070582078,"data":"[NbConvertApp] Writing 10506 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":750.816407395,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":751.390247383,"data":"[NbConvertApp] Writing 300100 bytes to __results__.html\n"}
+]

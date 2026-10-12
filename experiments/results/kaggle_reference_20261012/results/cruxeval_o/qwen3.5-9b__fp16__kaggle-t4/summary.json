@@ -1,0 +1,69 @@
+{
+  "config": {
+    "benchmark": "cruxeval_o",
+    "model_id": "qwen3.5-9b",
+    "runtime": "vLLM 0.29.0 T4x2 eager",
+    "max_tokens": 768,
+    "model_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+    "quantization": "fp16",
+    "base_url": "http://127.0.0.1:8000/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "cruxeval-org/cruxeval",
+    "dataset_revision": "b96af0450242eb4da433032b90998f25588a5d0f",
+    "notes": "Kaggle generate-only; scored locally in Docker sandbox",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-10-12T12:23:26+00:00",
+    "git_commit": "083f9f96f5ead62d37da0fd0b730bed28282752f",
+    "git_dirty": false,
+    "host": "c05888726040",
+    "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 800,
+    "status_counts": {
+      "unscored": 800
+    },
+    "truncated": 3,
+    "mean_input_tokens": 272.9675,
+    "mean_output_tokens": 37.48,
+    "mean_ttft_s": 0.6731,
+    "median_ttft_s": 0.5881,
+    "mean_total_s": 6.0584,
+    "mean_decode_tok_per_s": 7.01,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "excluded": {},
+  "this_session": {
+    "generated": 800,
+    "resumed": 0,
+    "wall_s": 345.3
+  },
+  "gpu_energy": {
+    "gpus": [
+      0,
+      1
+    ],
+    "window_s": 347.9,
+    "total_j": 45346.8,
+    "j_per_task": 56.68,
+    "peak_memory_mib_per_gpu": 13749.0,
+    "method": "trapezoidal integral of nvidia-smi power.draw at 1 s, whole board"
+  }
+}

@@ -1,0 +1,34 @@
+[{"stream_name":"stderr","time":7.828307513,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.828379844,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.828387392,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.828392798,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.518192593,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.51822925,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.518235757,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.518247369000001,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.757882745,"data":"Writing /kaggle/working/kaggle_baselines.py\n"}
+,{"stream_name":"stdout","time":80.228575833,"data":"[11:43:31] setup done\n"}
+,{"stream_name":"stdout","time":80.230446423,"data":"[11:43:31] qwen3.5-9b: starting vLLM on GPU [0, 1]\n"}
+,{"stream_name":"stdout","time":815.403332104,"data":"[11:55:47] qwen3.5-9b: server ready\n"}
+,{"stream_name":"stdout","time":1265.118020785,"data":"[12:03:16] qwen3.5-9b/humaneval_plus: 163 answers in 450s, GPU energy 57668.0 J\n"}
+,{"stream_name":"stdout","time":2058.32799396,"data":"[12:16:29] qwen3.5-9b/mbpp_plus: 377 answers in 793s, GPU energy 104511.4 J\n"}
+,{"stream_name":"stdout","time":2268.704456466,"data":"[12:20:00] qwen3.5-9b/humanevalfix: 164 answers in 210s, GPU energy 27104.7 J\n"}
+,{"stream_name":"stdout","time":2472.692591488,"data":"[12:23:24] qwen3.5-9b/bugdetect: 328 answers in 204s, GPU energy 26707.0 J\n"}
+,{"stream_name":"stdout","time":2820.766916164,"data":"[12:29:12] qwen3.5-9b/cruxeval_o: 800 answers in 348s, GPU energy 45346.8 J\n"}
+,{"stream_name":"stdout","time":3626.71138633,"data":"[12:42:38] qwen3.5-9b/testgen: 164 answers in 806s, GPU energy 107661.1 J\n"}
+,{"stream_name":"stdout","time":3927.038769267,"data":"[12:47:38] qwen3.5-9b/refactor: 163 answers in 300s, GPU energy 39506.1 J\n"}
+,{"stream_name":"stdout","time":3990.835134217,"data":"[12:48:42] qwen3.5-9b/completion: 163 answers in 64s, GPU energy 8157.1 J\n"}
+,{"stream_name":"stdout","time":4168.797330055,"data":"[12:51:40] qwen3.5-9b/securecodegen: 121 answers in 178s, GPU energy 23512.3 J\n"}
+,{"stream_name":"stdout","time":4454.483800618,"data":"[12:56:26] qwen3.5-9b/vulndetect: 712 answers in 286s, GPU energy 37528.2 J\n"}
+,{"stream_name":"stdout","time":4455.699379238,"data":"[12:56:27] qwen3.5-9b: server stopped\n"}
+,{"stream_name":"stdout","time":4455.700369497,"data":"[12:56:27] all queues done\n"}
+,{"stream_name":"stdout","time":4455.719837585,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":4458.449801145,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":4458.449829233,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":4458.661473649,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":4458.66150148,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":4459.456479678,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":4459.536382285,"data":"[NbConvertApp] Writing 13902 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":4462.074028448,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":4462.815474873,"data":"[NbConvertApp] Writing 314049 bytes to __results__.html\n"}
+]

@@ -1,0 +1,230 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 141.3333,
+    "mean_output_tokens": 196.3333,
+    "mean_ttft_s": 4.2172,
+    "median_ttft_s": 4.239,
+    "mean_total_s": 13.0937,
+    "mean_decode_tok_per_s": 21.97,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 17.7
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 89.3333,
+    "mean_output_tokens": 239.3333,
+    "mean_ttft_s": 0.2423,
+    "median_ttft_s": 0.2572,
+    "mean_total_s": 11.2892,
+    "mean_decode_tok_per_s": 21.59,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 15.6
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 293.0,
+    "mean_output_tokens": 99.3333,
+    "mean_ttft_s": 0.3881,
+    "median_ttft_s": 0.4416,
+    "mean_total_s": 4.905,
+    "mean_decode_tok_per_s": 22.02,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 7.3
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 6,
+    "status_counts": {
+      "unscored": 6
+    },
+    "truncated": 0,
+    "mean_input_tokens": 219.5,
+    "mean_output_tokens": 36.1667,
+    "mean_ttft_s": 0.6246,
+    "median_ttft_s": 0.6843,
+    "mean_total_s": 2.3233,
+    "mean_decode_tok_per_s": 21.38,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 6,
+    "resumed": 0,
+    "wall_s": 2.5
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 270.0,
+    "mean_output_tokens": 29.6667,
+    "mean_ttft_s": 0.3799,
+    "median_ttft_s": 0.4317,
+    "mean_total_s": 1.7158,
+    "mean_decode_tok_per_s": 21.97,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 2.7
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 1,
+    "mean_input_tokens": 235.3333,
+    "mean_output_tokens": 506.0,
+    "mean_ttft_s": 0.3497,
+    "median_ttft_s": 0.3914,
+    "mean_total_s": 23.7747,
+    "mean_decode_tok_per_s": 21.47,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 35.4
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 208.0,
+    "mean_output_tokens": 200.0,
+    "mean_ttft_s": 0.3206,
+    "median_ttft_s": 0.3416,
+    "mean_total_s": 9.631,
+    "mean_decode_tok_per_s": 21.47,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 12.2
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 182.6667,
+    "mean_output_tokens": 28.3333,
+    "mean_ttft_s": 0.3056,
+    "median_ttft_s": 0.3431,
+    "mean_total_s": 1.582,
+    "mean_decode_tok_per_s": 22.41,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 2.2
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 75.6667,
+    "mean_output_tokens": 82.6667,
+    "mean_ttft_s": 0.2471,
+    "median_ttft_s": 0.2619,
+    "mean_total_s": 4.04,
+    "mean_decode_tok_per_s": 21.79,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 4.9
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 6,
+    "status_counts": {
+      "unscored": 6
+    },
+    "truncated": 0,
+    "mean_input_tokens": 239.1667,
+    "mean_output_tokens": 41.6667,
+    "mean_ttft_s": 0.6021,
+    "median_ttft_s": 0.6516,
+    "mean_total_s": 2.6025,
+    "mean_decode_tok_per_s": 20.89,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 6,
+    "resumed": 0,
+    "wall_s": 3.0
+  }
+}

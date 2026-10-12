@@ -99,3 +99,17 @@ def test_extract_all_code_includes_unclosed_last_block():
 def test_trim_to_parseable_keeps_every_complete_statement():
     code = "def test_a():\n    assert 1\n\nassert 2 == 2\n\ndef test_b():\n    assert f(['a', 'b"
     assert trim_to_parseable(code) == "def test_a():\n    assert 1\n\nassert 2 == 2"
+
+
+def test_closing_fence_of_another_language_does_not_open_a_code_block():
+    text = "Install:\n```bash\npip install x\n```\nCode:\n```python\ndef f():\n    return 1\n```"
+    assert extract_code(text) == "def f():\n    return 1"
+
+
+def test_markdown_tutorial_yields_only_its_python_blocks():
+    text = (
+        "```markdown\n# Tests\n\n## Setup\n\n```bash\npip install pytest\n```\n\n## Run\n\n```bash\npytest\n```\n\n"
+        "### Case 1\n\n```python\ndef test_a():\n    assert f([]) == []\n```\n\n### Case 2\n\n"
+        "```python\ndef test_b():\n    assert f(['a']) == ['a']\n```\n```"
+    )
+    assert extract_all_code(text) == "def test_a():\n    assert f([]) == []\n\ndef test_b():\n    assert f(['a']) == ['a']"

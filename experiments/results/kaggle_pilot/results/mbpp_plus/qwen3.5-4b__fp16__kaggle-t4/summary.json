@@ -1,0 +1,90 @@
+{
+  "config": {
+    "benchmark": "mbpp_plus",
+    "model_id": "qwen3.5-4b",
+    "runtime": "vLLM 0.29.0 T4x1 eager",
+    "max_tokens": 768,
+    "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "quantization": "fp16",
+    "base_url": "http://127.0.0.1:8001/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": 3,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "evalplus/mbppplus",
+    "dataset_revision": "b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+    "notes": "Kaggle generate-only; scored locally in Docker sandbox",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-10-12T06:56:16+00:00",
+    "git_commit": "481532878fc87c6c5660f051692170027218d595",
+    "git_dirty": false,
+    "host": "3433848cc9bf",
+    "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "passed": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 89.3333,
+    "mean_output_tokens": 277.6667,
+    "mean_ttft_s": 0.3881,
+    "median_ttft_s": 0.4385,
+    "mean_total_s": 17.9687,
+    "mean_decode_tok_per_s": 15.94,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "pass@1": 1.0
+  },
+  "excluded": {
+    "Mbpp/255": "one input yields 1.66M tuples of length 77; reference comparison needs >2 GiB, above the sandbox limit"
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 22.3
+  },
+  "gpu_energy": {
+    "gpus": [
+      1
+    ],
+    "window_s": 24.9,
+    "total_j": 1528.9,
+    "j_per_task": 509.63,
+    "peak_memory_mib_per_gpu": 13477.0,
+    "method": "trapezoidal integral of nvidia-smi power.draw at 1 s, whole board"
+  },
+  "rescored": {
+    "at": "2026-10-12T07:01:43+00:00",
+    "harness_commit": "481532878fc87c6c5660f051692170027218d595",
+    "previous_metrics": {
+      "n": 3,
+      "status_counts": {
+        "unscored": 3
+      },
+      "truncated": 0,
+      "mean_input_tokens": 89.3333,
+      "mean_output_tokens": 277.6667,
+      "mean_ttft_s": 0.3881,
+      "median_ttft_s": 0.4385,
+      "mean_total_s": 17.9687,
+      "mean_decode_tok_per_s": 15.94,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
+  }
+}

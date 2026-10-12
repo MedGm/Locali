@@ -1,0 +1,236 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating test split:   0%|          | 0/164 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 164/164 [00:00<00:00, 716.75 examples/s]Generating test split: 100%|██████████| 164/164 [00:00<00:00, 704.68 examples/s]
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 153.0,
+    "mean_output_tokens": 172.0,
+    "mean_ttft_s": 2.1125,
+    "median_ttft_s": 2.1244,
+    "mean_total_s": 8.0879,
+    "mean_decode_tok_per_s": 28.9,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 10.0
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating test split:   0%|          | 0/378 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 378/378 [00:00<00:00, 9321.88 examples/s]
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 102.6667,
+    "mean_output_tokens": 88.6667,
+    "mean_ttft_s": 0.2028,
+    "median_ttft_s": 0.214,
+    "mean_total_s": 3.2941,
+    "mean_decode_tok_per_s": 28.98,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 4.4
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating test split:   0%|          | 0/164 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 164/164 [00:00<00:00, 20661.60 examples/s]
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 297.0,
+    "mean_output_tokens": 86.6667,
+    "mean_ttft_s": 0.3309,
+    "median_ttft_s": 0.3691,
+    "mean_total_s": 3.2848,
+    "mean_decode_tok_per_s": 29.55,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 5.6
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 6,
+    "status_counts": {
+      "unscored": 6
+    },
+    "truncated": 0,
+    "mean_input_tokens": 225.3333,
+    "mean_output_tokens": 27.3333,
+    "mean_ttft_s": 0.3473,
+    "median_ttft_s": 0.3709,
+    "mean_total_s": 1.308,
+    "mean_decode_tok_per_s": 28.5,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 6,
+    "resumed": 0,
+    "wall_s": 1.4
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 800 examples [00:00, 181110.98 examples/s]
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 267.3333,
+    "mean_output_tokens": 33.3333,
+    "mean_ttft_s": 0.2226,
+    "median_ttft_s": 0.2458,
+    "mean_total_s": 1.4476,
+    "mean_decode_tok_per_s": 27.22,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 1.7
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 1,
+    "mean_input_tokens": 241.0,
+    "mean_output_tokens": 532.0,
+    "mean_ttft_s": 0.2375,
+    "median_ttft_s": 0.2768,
+    "mean_total_s": 18.9473,
+    "mean_decode_tok_per_s": 28.4,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 27.2
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 216.6667,
+    "mean_output_tokens": 153.0,
+    "mean_ttft_s": 0.2166,
+    "median_ttft_s": 0.1953,
+    "mean_total_s": 5.6867,
+    "mean_decode_tok_per_s": 28.06,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 7.1
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 191.6667,
+    "mean_output_tokens": 29.6667,
+    "mean_ttft_s": 0.2188,
+    "median_ttft_s": 0.2504,
+    "mean_total_s": 1.2537,
+    "mean_decode_tok_per_s": 29.17,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 1.7
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 121 examples [00:00, 45590.26 examples/s]
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 87.6667,
+    "mean_output_tokens": 79.6667,
+    "mean_ttft_s": 0.1727,
+    "median_ttft_s": 0.1845,
+    "mean_total_s": 3.0632,
+    "mean_decode_tok_per_s": 27.55,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 3.7
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 4656 examples [00:00, 101461.92 examples/s]
+{
+  "metrics": {
+    "n": 6,
+    "status_counts": {
+      "unscored": 6
+    },
+    "truncated": 0,
+    "mean_input_tokens": 240.8333,
+    "mean_output_tokens": 48.8333,
+    "mean_ttft_s": 0.4342,
+    "median_ttft_s": 0.4615,
+    "mean_total_s": 2.1753,
+    "mean_decode_tok_per_s": 28.18,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 6,
+    "resumed": 0,
+    "wall_s": 2.6
+  }
+}

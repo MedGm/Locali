@@ -16,11 +16,12 @@
     "prompt_variant": "evalplus-instruct",
     "dataset": "evalplus/mbppplus",
     "dataset_revision": "b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
-    "notes": ""
+    "notes": "",
+    "generate_only": false
   },
   "environment": {
-    "started_at": "2026-10-12T06:11:45+00:00",
-    "git_commit": "c067e49f097d981b24b92b6efc57faf7430e7d5b",
+    "started_at": "2026-10-12T09:34:26+00:00",
+    "git_commit": "18ac8a76513dd098d0d23e6df636eabe0ae7cd08",
     "git_dirty": true,
     "host": "medgm-HP-EliteBook-840-G7-Notebook-PC",
     "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
@@ -52,6 +53,6 @@
   "this_session": {
     "generated": 377,
     "resumed": 0,
-    "wall_s": 136.3
+    "wall_s": 134.9
   }
 }

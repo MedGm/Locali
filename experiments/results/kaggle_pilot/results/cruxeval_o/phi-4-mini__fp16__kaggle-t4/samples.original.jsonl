@@ -1,0 +1,3 @@
+{"task_id": "sample_2", "status": "unscored", "input_tokens": 231, "output_tokens": 21, "ttft_s": 0.2884, "total_s": 1.3115, "finish_reason": "stop", "energy_j": null, "completion": "assert f('hbtofdeiequ') == 'hboediequ'\n[/ANSWER]", "reasoning": ""}
+{"task_id": "sample_1", "status": "unscored", "input_tokens": 235, "output_tokens": 33, "ttft_s": 0.2893, "total_s": 1.9236, "finish_reason": "stop", "energy_j": null, "completion": "assert f((1, ), (1, ), (1, 2)) == {1: 1, 2: 1}\n[/ANSWER]", "reasoning": ""}
+{"task_id": "sample_0", "status": "unscored", "input_tokens": 239, "output_tokens": 37, "ttft_s": 0.3618, "total_s": 2.1705, "finish_reason": "stop", "energy_j": null, "completion": "assert f([1, 1, 3, 1, 3, 1]) == [(4, 1), (2, 3)]\n[/ANSWER]", "reasoning": ""}

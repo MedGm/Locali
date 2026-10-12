@@ -57,8 +57,8 @@
     "wall_s": 2654.9
   },
   "rescored": {
-    "at": "2026-10-12T06:19:44+00:00",
-    "harness_commit": "c067e49f097d981b24b92b6efc57faf7430e7d5b",
+    "at": "2026-10-12T09:48:24+00:00",
+    "harness_commit": "18ac8a76513dd098d0d23e6df636eabe0ae7cd08",
     "previous_metrics": {
       "n": 163,
       "status_counts": {

@@ -4,19 +4,61 @@ import ast
 import re
 
 _THINK = re.compile(r"<think>.*?</think>", re.DOTALL)
-_FENCE = re.compile(r"```[ \t]*(?:python|py|python3)?[ \t]*\n(.*?)```", re.DOTALL | re.IGNORECASE)
-# Opening fence never closed, e.g. an answer cut off at the token limit.
-_OPEN_FENCE = re.compile(r"```[ \t]*(?:python|py|python3)?[ \t]*\n(.*)$", re.DOTALL | re.IGNORECASE)
+_FENCE_LINE = re.compile(r"^\s*```+\s*([\w+#.-]*)\s*$")
+_PYTHON_LANGS = {"python", "py", "python3"}
+
+
+def _fenced_blocks(text: str) -> list[tuple[str, str]]:
+    """(language, content) of every fenced block, parsed line by line.
+
+    A fence line with a language always opens a block (closing any open one, as in markdown
+    tutorials that wrap everything in ```markdown); a bare fence closes the open block, or opens an
+    unlabelled one. A block still open at the end (answer cut off) is kept.
+    """
+    blocks: list[tuple[str, str]] = []
+    lang, body = None, []
+    for line in _THINK.sub("", text).splitlines():
+        match = _FENCE_LINE.match(line)
+        if not match:
+            if lang is not None:
+                body.append(line)
+            continue
+        label = match.group(1).lower()
+        if lang is not None:
+            blocks.append((lang, "\n".join(body).strip("\n")))
+            lang, body = None, []
+            if not label:
+                continue  # bare fence closed the block
+        lang = label
+    if lang is not None:
+        blocks.append((lang, "\n".join(body).strip("\n")))
+    return blocks
+
+
+def _parses(code: str) -> bool:
+    try:
+        ast.parse(code)
+    except SyntaxError:
+        return False
+    return True
+
+
+def python_blocks(text: str) -> list[str]:
+    """Python blocks in order: labelled python/py, or unlabelled ones that look like code."""
+    blocks = [(lang, body) for lang, body in _fenced_blocks(text) if body.strip()]
+    if len(blocks) == 1 and blocks[0][0] in _PYTHON_LANGS | {""}:
+        return [blocks[0][1]]  # a single block is taken even if cut off mid-statement
+    return [body for lang, body in blocks if lang in _PYTHON_LANGS or (lang == "" and _parses(body))]
 
 
 def extract_code(text: str, entry_point: str | None = None) -> str:
     """Return the most plausible code block.
 
-    Order: a fenced block that defines `entry_point`, else the first fenced block,
-    else the whole response. Reasoning inside <think> tags is ignored.
+    Order: a Python block that defines `entry_point`, else the first Python block, else the
+    whole response. Reasoning inside <think> tags and non-Python blocks (bash, markdown) are
+    ignored.
     """
-    text = _THINK.sub("", text)
-    blocks = [b.strip("\n") for b in _FENCE.findall(text)]
+    blocks = python_blocks(text)
     if entry_point:
         defining = re.compile(rf"^\s*(async\s+)?def\s+{re.escape(entry_point)}\s*\(", re.MULTILINE)
         for block in blocks:
@@ -24,10 +66,7 @@ def extract_code(text: str, entry_point: str | None = None) -> str:
                 return block
     if blocks:
         return blocks[0]
-    unclosed = _OPEN_FENCE.search(text)
-    if unclosed:
-        return unclosed.group(1).strip("\n")
-    return text.strip("\n")
+    return _THINK.sub("", text).strip("\n")
 
 
 _KEEP = (ast.Import, ast.ImportFrom, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Assign, ast.AnnAssign)
@@ -63,19 +102,6 @@ def sanitize(code: str) -> str:
             kept.pop(0)
         return "\n".join(kept)
     return code
-
-
-def python_blocks(text: str) -> list[str]:
-    """All Python (or unlabelled) fenced blocks in order, plus a trailing unclosed one."""
-    text = _THINK.sub("", text)
-    blocks, end = [], 0
-    for match in _FENCE.finditer(text):
-        blocks.append(match.group(1).strip("\n"))
-        end = match.end()
-    unclosed = _OPEN_FENCE.search(text, end)
-    if unclosed:
-        blocks.append(unclosed.group(1).strip("\n"))
-    return [b for b in blocks if b.strip()]
 
 
 def extract_all_code(text: str) -> str:

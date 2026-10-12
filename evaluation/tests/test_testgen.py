@@ -121,3 +121,11 @@ def test_metrics_report_validity_detection_and_coverage():
     assert m["mean_coverage_valid"] == 75.0
     assert m["mean_coverage_all"] == 37.5  # items without valid tests count as 0 %
     assert m["multi_block_rate"] == 0.25
+
+
+@needs_docker
+@needs_hub
+def test_tests_without_import_line_still_run(item):
+    scored = TESTGEN_TASK.score(item, answer("```python\n" + CATCHES_BUG + "```"), eval_timeout_s=60)
+
+    assert scored["status"] == "caught_bug", scored

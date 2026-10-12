@@ -16,11 +16,12 @@
     "prompt_variant": "evalplus-instruct",
     "dataset": "s2e-lab/SecurityEval",
     "dataset_revision": "d1b6f685bba97b6f14af5f256e2aebf44216261f",
-    "notes": ""
+    "notes": "",
+    "generate_only": false
   },
   "environment": {
-    "started_at": "2026-09-15T16:07:20+00:00",
-    "git_commit": "fc9c9fdcc7a03193ae69fec145a7f33e69553d0b",
+    "started_at": "2026-10-12T09:45:26+00:00",
+    "git_commit": "18ac8a76513dd098d0d23e6df636eabe0ae7cd08",
     "git_dirty": true,
     "host": "medgm-HP-EliteBook-840-G7-Notebook-PC",
     "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
@@ -28,13 +29,13 @@
     "cpu": "Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz",
     "ram_gb": 15.4,
     "gpus": [],
-    "rapl_energy_available": false
+    "rapl_energy_available": true
   },
   "metrics": {
     "n": 121,
     "status_counts": {
-      "flagged": 33,
-      "clean": 88
+      "clean": 88,
+      "flagged": 33
     },
     "truncated": 0,
     "mean_input_tokens": null,
@@ -53,6 +54,6 @@
   "this_session": {
     "generated": 121,
     "resumed": 0,
-    "wall_s": 7.5
+    "wall_s": 7.1
   }
 }

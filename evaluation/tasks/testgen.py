@@ -65,7 +65,9 @@ class TestGenTask:
         # blocks and keep every complete statement (both recorded, applied to all models).
         joined = extract_all_code(completion.text)
         trimmed = trim_to_parseable(joined)
-        tests = split_asserts(trimmed)
+        # Some answers omit the import the prompt asks for; importing is boilerplate, not
+        # test-writing skill, so every file gets it (harmless when already present).
+        tests = "from solution import *  # added by harness\n" + split_asserts(trimmed)
         correct, buggy = (_solution_module(item, body) for body in (item.canonical_solution, item.buggy_solution))
 
         full = _run_tests(correct, tests, False, eval_timeout_s)
@@ -89,7 +91,7 @@ class TestGenTask:
             "coverage_percent": coverage,
             "multi_block": len(python_blocks(completion.text)) > 1,
             "trimmed": trimmed != joined.rstrip(),
-            "asserts_split": tests != trimmed,
+            "asserts_split": split_asserts(trimmed) != trimmed,
             "bug_type": item.bug_type,
             "code": tests,
             "eval_duration_s": full.duration_s,

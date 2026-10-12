@@ -1,0 +1,97 @@
+{
+  "config": {
+    "benchmark": "testgen",
+    "model_id": "qwen3.5-2b",
+    "runtime": "vLLM 0.29.0 T4x1 eager",
+    "max_tokens": 768,
+    "model_revision": "15852e8c16360a2fea060d615a32b45270f8a8fc",
+    "quantization": "fp16",
+    "base_url": "http://127.0.0.1:8001/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "bigcode/humanevalpack",
+    "dataset_revision": "9a41762f73a8cb23bb5811b73d5aab164efcf378",
+    "notes": "Kaggle generate-only; scored locally in Docker sandbox",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-10-12T07:33:34+00:00",
+    "git_commit": "3431c53f73661b936d38d75d307f420ced5c3cd0",
+    "git_dirty": false,
+    "host": "b9e5a2bfd33c",
+    "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 164,
+    "status_counts": {
+      "caught_bug": 143,
+      "missed_bug": 15,
+      "no_valid_tests": 6
+    },
+    "truncated": 62,
+    "mean_input_tokens": 272.378,
+    "mean_output_tokens": 548.25,
+    "mean_ttft_s": 0.3072,
+    "median_ttft_s": 0.1858,
+    "mean_total_s": 27.4712,
+    "mean_decode_tok_per_s": 20.24,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "strict_valid_rate": 0.1463,
+    "test_pass_rate": 0.7414,
+    "any_valid_test_rate": 0.9634,
+    "bug_detection_rate": 0.872,
+    "mean_coverage_valid": 95.01,
+    "mean_coverage_all": 91.53,
+    "mean_tests_collected": 14.71,
+    "multi_block_rate": 0.0
+  },
+  "excluded": {},
+  "this_session": {
+    "generated": 164,
+    "resumed": 0,
+    "wall_s": 302.6
+  },
+  "gpu_energy": {
+    "gpus": [
+      1
+    ],
+    "window_s": 305.1,
+    "total_j": 20113.9,
+    "j_per_task": 122.65,
+    "peak_memory_mib_per_gpu": 13883.0,
+    "method": "trapezoidal integral of nvidia-smi power.draw at 1 s, whole board"
+  },
+  "rescored": {
+    "at": "2026-10-12T10:44:35+00:00",
+    "harness_commit": "18ac8a76513dd098d0d23e6df636eabe0ae7cd08",
+    "previous_metrics": {
+      "n": 164,
+      "status_counts": {
+        "unscored": 164
+      },
+      "truncated": 62,
+      "mean_input_tokens": 272.378,
+      "mean_output_tokens": 548.25,
+      "mean_ttft_s": 0.3072,
+      "median_ttft_s": 0.1858,
+      "mean_total_s": 27.4712,
+      "mean_decode_tok_per_s": 20.24,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
+  }
+}

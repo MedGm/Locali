@@ -16,11 +16,12 @@
     "prompt_variant": "evalplus-instruct",
     "dataset": "cruxeval-org/cruxeval",
     "dataset_revision": "b96af0450242eb4da433032b90998f25588a5d0f",
-    "notes": ""
+    "notes": "",
+    "generate_only": false
   },
   "environment": {
-    "started_at": "2026-09-15T15:50:28+00:00",
-    "git_commit": "a42e93fafa34d1f74b1cd78671802e7ba89a87af",
+    "started_at": "2026-10-12T09:37:23+00:00",
+    "git_commit": "18ac8a76513dd098d0d23e6df636eabe0ae7cd08",
     "git_dirty": true,
     "host": "medgm-HP-EliteBook-840-G7-Notebook-PC",
     "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
@@ -28,7 +29,7 @@
     "cpu": "Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz",
     "ram_gb": 15.4,
     "gpus": [],
-    "rapl_energy_available": false
+    "rapl_energy_available": true
   },
   "metrics": {
     "n": 800,
@@ -50,6 +51,6 @@
   "this_session": {
     "generated": 800,
     "resumed": 0,
-    "wall_s": 181.8
+    "wall_s": 166.6
   }
 }

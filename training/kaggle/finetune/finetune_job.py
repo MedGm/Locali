@@ -109,10 +109,13 @@ def train(model_id: str, method: str, epochs: float, max_steps: int | None) -> d
         output_dir=str(WORK / "checkpoints"), per_device_train_batch_size=4, gradient_accumulation_steps=4,
         per_device_eval_batch_size=4, num_train_epochs=epochs, max_steps=max_steps or -1,
         learning_rate=2e-4, lr_scheduler_type="cosine", warmup_ratio=0.03, weight_decay=0.01,
-        optim="adamw_8bit", fp16=True, bf16=False, logging_steps=10, eval_strategy="steps",
-        eval_steps=100 if not max_steps else max(10, max_steps // 3), save_strategy="steps",
-        save_steps=100 if not max_steps else max(10, max_steps // 3), save_total_limit=2,
-        load_best_model_at_end=True, metric_for_best_model="eval_loss", greater_is_better=False,
+        optim="adamw_8bit", fp16=True, bf16=False, logging_steps=10,
+        # Fixed schedule, adapter saved per epoch. Validation loss is logged but not used to pick a
+        # checkpoint: in smoke runs it stayed at ~4.4 while training loss was ~0.5 with masking
+        # verified on both splits (see eval_loss_on_train_subset in the report).
+        eval_strategy="steps" if max_steps else "epoch", eval_steps=max(10, (max_steps or 30) // 3),
+        save_strategy="steps" if max_steps else "epoch", save_steps=max(10, (max_steps or 30) // 3),
+        save_total_limit=3, load_best_model_at_end=False,
         report_to="none", seed=SEED, max_length=SEQ_LEN, packing=False, completion_only_loss=True,
     )
     trainer = SFTTrainer(model=model, processing_class=tok, train_dataset=train_ds, eval_dataset=val_ds, args=config)
@@ -128,14 +131,18 @@ def train(model_id: str, method: str, epochs: float, max_steps: int | None) -> d
         raise RuntimeError(f"loss masking looks wrong: {masking}")
     start = time.time()
     result = trainer.train()
+    diagnostic = {
+        "eval_loss_on_val": trainer.evaluate()["eval_loss"],
+        "eval_loss_on_train_subset": trainer.evaluate(eval_dataset=train_ds.select(range(64)))["eval_loss"],
+    }
+    log(f"evaluation-path diagnostic: {diagnostic}")
     adapter_dir = WORK / "adapter"
     model.save_pretrained(str(adapter_dir))
     tok.save_pretrained(str(adapter_dir))
     report = {
         "model": model_id, "method": method, "train_examples": len(train_ds), "val_examples": len(val_ds),
         "dropped_too_long": train_dropped + val_dropped, "train_seconds": round(time.time() - start),
-        "train_loss": result.training_loss, "best_eval_loss": trainer.state.best_metric,
-        "best_checkpoint": trainer.state.best_model_checkpoint, "log_history": trainer.state.log_history,
+        "train_loss": result.training_loss, **diagnostic, "log_history": trainer.state.log_history,
         "peak_memory_gb": round(torch.cuda.max_memory_reserved() / 2**30, 2), "commit": COMMIT,
         "supervised_token_fraction": masking,
     }
@@ -194,7 +201,7 @@ def main() -> None:
     max_steps = int(os.environ["MAX_STEPS"]) if os.environ.get("MAX_STEPS") else None
     setup()
     report = train(model_id, method, float(os.environ.get("EPOCHS", "2")), max_steps)
-    log(f"trained: loss {report['train_loss']:.4f}, best eval {report['best_eval_loss']}, {report['train_seconds']} s")
+    log(f"trained: loss {report['train_loss']:.4f}, {report['train_seconds']} s")
     if not os.environ.get("SKIP_GENERATE"):
         generate(model_id, method)
     log("done")

@@ -1,0 +1,256 @@
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/constants.py:299: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating test split:   0%|          | 0/164 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 164/164 [00:00<00:00, 1420.44 examples/s]Generating test split: 100%|██████████| 164/164 [00:00<00:00, 1383.08 examples/s]
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 153.0,
+    "mean_output_tokens": 118.6667,
+    "mean_ttft_s": 13.7705,
+    "median_ttft_s": 16.5405,
+    "mean_total_s": 31.0389,
+    "mean_decode_tok_per_s": 7.98,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 44.1
+  }
+}
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/constants.py:299: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating test split:   0%|          | 0/378 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 378/378 [00:00<00:00, 13363.85 examples/s]
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 102.6667,
+    "mean_output_tokens": 36.3333,
+    "mean_ttft_s": 0.3196,
+    "median_ttft_s": 0.3557,
+    "mean_total_s": 3.3342,
+    "mean_decode_tok_per_s": 12.13,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 5.1
+  }
+}
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/constants.py:299: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating test split:   0%|          | 0/164 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 164/164 [00:00<00:00, 24010.96 examples/s]
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 297.0,
+    "mean_output_tokens": 72.3333,
+    "mean_ttft_s": 0.5375,
+    "median_ttft_s": 0.6204,
+    "mean_total_s": 6.6393,
+    "mean_decode_tok_per_s": 11.93,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 10.1
+  }
+}
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/constants.py:299: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 6,
+    "status_counts": {
+      "unscored": 6
+    },
+    "truncated": 0,
+    "mean_input_tokens": 225.3333,
+    "mean_output_tokens": 33.5,
+    "mean_ttft_s": 0.5552,
+    "median_ttft_s": 0.5953,
+    "mean_total_s": 3.3555,
+    "mean_decode_tok_per_s": 11.96,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 6,
+    "resumed": 0,
+    "wall_s": 4.1
+  }
+}
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/constants.py:299: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 800 examples [00:00, 234629.97 examples/s]
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 267.3333,
+    "mean_output_tokens": 27.3333,
+    "mean_ttft_s": 0.3981,
+    "median_ttft_s": 0.4368,
+    "mean_total_s": 2.6345,
+    "mean_decode_tok_per_s": 12.2,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 3.7
+  }
+}
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/constants.py:299: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 2,
+    "mean_input_tokens": 241.0,
+    "mean_output_tokens": 551.3333,
+    "mean_ttft_s": 0.4687,
+    "median_ttft_s": 0.5198,
+    "mean_total_s": 46.923,
+    "mean_decode_tok_per_s": 11.87,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 65.2
+  }
+}
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/constants.py:299: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 216.6667,
+    "mean_output_tokens": 153.0,
+    "mean_ttft_s": 0.4328,
+    "median_ttft_s": 0.4847,
+    "mean_total_s": 13.2946,
+    "mean_decode_tok_per_s": 11.9,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 16.4
+  }
+}
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/constants.py:299: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 191.6667,
+    "mean_output_tokens": 32.6667,
+    "mean_ttft_s": 0.389,
+    "median_ttft_s": 0.4384,
+    "mean_total_s": 3.0443,
+    "mean_decode_tok_per_s": 12.47,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 3.9
+  }
+}
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/constants.py:299: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 121 examples [00:00, 41150.64 examples/s]
+{
+  "metrics": {
+    "n": 3,
+    "status_counts": {
+      "unscored": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 87.6667,
+    "mean_output_tokens": 69.3333,
+    "mean_ttft_s": 0.3338,
+    "median_ttft_s": 0.3662,
+    "mean_total_s": 6.1362,
+    "mean_decode_tok_per_s": 11.93,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 3,
+    "resumed": 0,
+    "wall_s": 8.3
+  }
+}
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/constants.py:299: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 4656 examples [00:00, 118333.40 examples/s]
+{
+  "metrics": {
+    "n": 6,
+    "status_counts": {
+      "unscored": 6
+    },
+    "truncated": 0,
+    "mean_input_tokens": 240.8333,
+    "mean_output_tokens": 47.5,
+    "mean_ttft_s": 0.7653,
+    "median_ttft_s": 0.8531,
+    "mean_total_s": 4.74,
+    "mean_decode_tok_per_s": 11.99,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 6,
+    "resumed": 0,
+    "wall_s": 5.3
+  }
+}

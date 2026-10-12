@@ -35,7 +35,9 @@ def test_selected_tests_catch_mutants_and_pass_on_original():
     names = [n.name for n in tree.body if isinstance(n, ast.FunctionDef)]
     assert 3 <= len(names) <= 8
     assert ex["mutants_killed"] >= 1
-    assert "from solution import" in ex["tests"]
+    assert ex["tests"].count("from solution import") == 1
+    assert "from solution import clamp\n" in ex["tests"]
+    assert "#" not in ex["tests"]
     assert ex["entry_point"] == "clamp"
 
 

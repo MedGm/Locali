@@ -34,7 +34,8 @@ def test_converts_methods_to_functions_with_plain_asserts():
     names = [n.name for n in tree.body if isinstance(n, ast.FunctionDef)]
 
     assert names == ["test_inside", "test_flags", "test_raises"]
-    assert "from solution import *" in out
+    assert "solution" not in out  # the builder adds the exact solution import
+    assert out.startswith("import pytest\n")  # pytest.raises / approx are used
     assert "assert clamp(5, 0, 10) == 5" in out
     assert "assert is_ok(1)" in out and "assert not is_ok(-1)" in out
     assert "assert find([], 1) is None" in out
@@ -58,3 +59,9 @@ def test_returns_none_for_unsupported_suites():
 def test_class_docstring_is_allowed():
     suite = SUITE.replace("class TestClamp(unittest.TestCase):\n", 'class TestClamp(unittest.TestCase):\n    """Tests for clamp."""\n\n')
     assert unittest_to_pytest(suite, entry_point="clamp") is not None
+
+
+def test_pytest_import_only_when_used():
+    suite = "import unittest\nfrom solution import *\n\nclass T(unittest.TestCase):\n    def test_a(self):\n        self.assertEqual(f(1), 2)\n"
+    out = unittest_to_pytest(suite, entry_point="f")
+    assert "import pytest" not in out and "solution" not in out

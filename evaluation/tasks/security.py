@@ -55,6 +55,8 @@ def bandit_findings(code: str) -> list[dict] | None:
             "severity": r["issue_severity"],
             "confidence": r["issue_confidence"],
             "cwe": f"CWE-{r['issue_cwe']['id']}" if r.get("issue_cwe") else None,
+            "line_number": r.get("line_number"),
+            "message": r.get("issue_text", ""),
         }
         for r in report.get("results", [])
         if r["issue_severity"] in _REPORTED_LEVELS and r["issue_confidence"] in _REPORTED_LEVELS

@@ -1,7 +1,7 @@
 # Baselines — laptop CPU
 
 Run: 2026-10-12, 01:12–06:46, unattended (`experiments/scripts/laptop_baselines.sh`, log `laptop_run_20261012.log`).
-Hardware: Intel Core i5-10210U (4 cores, 15 W), 15 GB RAM, no GPU. Runtime: llama.cpp `987498f`, CPU, 4 threads, one request at a time.
+Hardware: Intel Core i5-10210U (4 cores, 15 W), 16 GB RAM, no GPU. Runtime: llama.cpp `987498f`, CPU, 4 threads, one request at a time.
 Models: GGUF Q4_K_M at the revisions pinned in `experiments/configs/models.yaml`. Decoding: greedy (temperature 0), max 768 new tokens, thinking off, same EvalPlus instruction prompt for both models.
 Energy: Intel RAPL CPU package counter, measured around each generation call (whole package, not the process).
 Scoring: harness commit recorded in each `summary.json`; samples re-scored after the sanitizer fix (see below), original scores kept in `samples.original.jsonl` and `summary.json → rescored.previous_metrics`.

@@ -1,7 +1,7 @@
 {
   "experiment": "w0_smoke_inference",
   "date": "2026-09-15",
-  "hardware": "i5-10210U, 4 threads, 15 GB RAM, no GPU",
+  "hardware": "i5-10210U, 4 threads, 16 GB RAM, no GPU",
   "runtime": "llama.cpp server (commit 987498f), CPU, ctx 4096-8192",
   "task": "is_palindrome, single prompt, temperature 0",
   "runs": [

@@ -3,7 +3,7 @@
 Solo, 15 weeks, ~20 h/week. Deadline 01/01/2027, target submission 30/12/2026.
 
 **Hardware split**
-- Laptop (i5-10210U, 15 GB RAM, no GPU): development, app, agents, MCP, security, CPU inference via llama.cpp.
+- Laptop (i5-10210U, 16 GB RAM, no GPU): development, app, agents, MCP, security, CPU inference via llama.cpp.
 - Kaggle (T4, 30 GPU-h/week): fine-tuning, GPU benchmarks.
 - Hugging Face Hub: adapters and quantized models.
 

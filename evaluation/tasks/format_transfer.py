@@ -64,6 +64,32 @@ def compute_error(item: PackItem, timeout_s: float = 60) -> str:
     return re.sub(r" at 0x[0-9a-f]+>", ">", error) or "AssertionError"
 
 
+_DEFINITION = re.compile(r"^(from |import |def |class |@)")
+
+
+def lenient_code(text: str, entry_point: str) -> str:
+    """Code of an answer regardless of fences (analysis only, not the headline score): a Python
+    block defining `entry_point` if there is one, else the text without the JSON diagnosis and
+    fence lines, from the first definition on, trimmed until it parses."""
+    from evaluation.extract import extract_code, python_blocks, trim_to_parseable
+
+    if any(re.search(rf"^\s*def\s+{re.escape(entry_point)}\s*\(", b, re.MULTILINE) for b in python_blocks(text)):
+        return extract_code(text, entry_point=entry_point)
+    diagnosis_free = text
+    decoder = json.JSONDecoder()
+    for match in re.finditer(r"\{", text):
+        try:
+            obj, end = decoder.raw_decode(text, match.start())
+        except json.JSONDecodeError:
+            continue
+        if isinstance(obj, dict) and "bug_location" in obj:
+            diagnosis_free = text[: match.start()] + text[end:]
+            break
+    lines = [line for line in diagnosis_free.splitlines() if not line.strip().startswith("```")]
+    start = next((i for i, line in enumerate(lines) if _DEFINITION.match(line)), None)
+    return trim_to_parseable("\n".join(lines[start:])) if start is not None else ""
+
+
 class T1FormatFixTask:
     name = "humanevalfix_t1fmt"
     dataset = HUMANEVALPACK

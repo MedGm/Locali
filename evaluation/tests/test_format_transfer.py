@@ -46,3 +46,13 @@ def test_review_format_detection_counts_bug_findings():
     assert task.score(clean, quality_only, 1)["status"] == "correct"
     assert task.score(clean, found, 1)["status"] == "incorrect"
     assert task.score(buggy, answer("nothing parseable"), 1)["status"] == "invalid"
+
+
+def test_lenient_code_recovers_code_outside_python_fences():
+    from evaluation.tasks.format_transfer import lenient_code
+
+    in_json_fence = '```json\n{"bug_location": "x", "bug_type": "t", "explanation": "e"}\n\ndef add(a, b):\n    return a + b\n```'
+    unfenced = '{"bug_location": "x", "bug_type": "t", "explanation": "a {brace}"}\nHere is the fix:\ndef add(a, b):\n    return a + b\n'
+    fenced = "Fix:\n```python\ndef add(a, b):\n    return a + b\n```\nDone."
+    for text in (in_json_fence, unfenced, fenced):
+        assert lenient_code(text, "add").strip() == "def add(a, b):\n    return a + b"

@@ -27,6 +27,8 @@ OUTCOME = {
     "internal_t1": lambda r: r["passed"],
     "internal_t2": lambda r: r["correct"],  # every injected fault caught
     "internal_t3": lambda r: r["correct"],
+    "humanevalfix_t1fmt": lambda r: r["passed"],
+    "bugdetect_t3fmt": lambda r: r["status"] == "correct",
 }
 
 

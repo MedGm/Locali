@@ -130,3 +130,19 @@ Reference suites after the change: 164 / 164 caught the bug, strict-valid rate 1
 | internal_t3 (review, T3 format) | 164 | bug recall, clean specificity, pair accuracy, tool line recall, format all **1.000** |
 
 Building internal_t1 exposed a parser bug: the T1 diagnosis was located with a regex that assumed no braces inside the JSON, so explanations quoting a dict literal failed to parse. The parser now decodes JSON from every brace; all 3,745 T1 training targets parse. No earlier result used this parser.
+
+## Format-transfer variants (2026-10-13)
+
+Same HumanEvalPack items as `humanevalfix` / `bugdetect`, asked in the fine-tuning prompt formats
+(`evaluation/tasks/format_transfer.py`).
+
+| Task | Items | Reference score |
+|---|---|---|
+| humanevalfix_t1fmt (T1 repair format, canonical fix as the answer) | 164 | **1.000** pass@1, format valid 1.000 |
+| bugdetect_t3fmt (T3 review format, one bug finding on buggy items, none on correct ones) | 328 | **1.000** accuracy |
+
+The error shown in each T1-format prompt comes from running the buggy solution under pytest in
+the sandbox (`python -m evaluation.tasks.format_transfer`). All 164 buggy solutions fail; 161
+with an assertion or exception message, Python/10 and Python/160 time out, Python/156 is killed
+at the 512 MB limit. Two tests draw random inputs (Python/38, Python/50), so their messages
+differ between runs; the committed `humanevalfix_errors.json` fixes one draw.

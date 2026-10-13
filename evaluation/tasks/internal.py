@@ -7,6 +7,7 @@ the training answer. Groups in the test split never appear in training (split by
   (sandbox), exact fix (same AST as the original), bug location and answer format.
 - internal_t2: test generation, scored against the T2 builder's injected faults.
 - internal_t3: structured review (bug recall, clean specificity, tool-finding line recall).
+- internal_t4: execution trace (mix v2), the predicted value must equal the traced one.
 """
 
 import ast
@@ -236,5 +237,32 @@ class InternalTestgenTask(_InternalTask):
         }
 
 
+class InternalTraceTask(_InternalTask):
+    """internal_t4: the predicted return value, as a literal, must equal the traced value."""
+
+    name = "internal_t4"
+    task_tag = "T4"
+
+    def score(self, item: InternalItem, completion: Completion, eval_timeout_s: float) -> dict:
+        from training.data.t4_trace import parse_trace_answer
+
+        expected = ast.literal_eval(parse_trace_answer(self.reference(item)))
+        predicted = parse_trace_answer(completion.text)
+        try:
+            value = ast.literal_eval(predicted) if predicted is not None else None
+            valid = predicted is not None
+        except (ValueError, TypeError, SyntaxError, MemoryError, RecursionError):
+            value, valid = None, False
+        correct = valid and value == expected and type(value) is type(expected)
+        return {"status": "correct" if correct else "incorrect" if valid else "invalid",
+                "correct": bool(correct), "prediction": predicted}
+
+    def metrics(self, records: list[dict]) -> dict:
+        n = len(records)
+        return {"accuracy": round(sum(r["correct"] for r in records) / n, 4),
+                "invalid_rate": round(sum(r["status"] == "invalid" for r in records) / n, 4)} if n else {}
+
+
 INTERNAL_T2_TASK = InternalTestgenTask()
 INTERNAL_T3_TASK = InternalReviewTask()
+INTERNAL_T4_TASK = InternalTraceTask()

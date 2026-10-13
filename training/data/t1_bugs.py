@@ -32,6 +32,11 @@ OPERATOR_DESCRIPTION = {
     "arithmetic_swap": "wrong arithmetic operator",
     "off_by_one": "off-by-one constant",
     "negate_condition": "inverted condition",
+    "variable_misuse": "wrong variable",
+    "missing_condition": "missing condition",
+    "missing_term": "missing term",
+    "missing_call": "missing function call",
+    "function_swap": "wrong function",
 }
 
 
@@ -116,7 +121,16 @@ def _test_source(tests: str, name: str | None) -> str:
     return ""
 
 
-def _examples_for_seed(seed_obj: Seed, mutants_per_seed: int, seed: int, timeout_s: float):
+def _round_robin(mutants: list) -> list:
+    """Interleave operators (first of each, then second of each, ...), keeping each one's order."""
+    by_op: dict[str, list] = {}
+    for m in mutants:
+        by_op.setdefault(m.operator, []).append(m)
+    queues = list(by_op.values())
+    return [q[i] for i in range(max(map(len, queues), default=0)) for q in queues if i < len(q)]
+
+
+def _examples_for_seed(seed_obj: Seed, mutants_per_seed: int, seed: int, timeout_s: float, family: str = "v1"):
     stats = {"seeds_original_failed": 0, "seeds_used": 0, "mutants_tried": 0,
              "mutants_equivalent": 0, "mutants_timeout": 0, "mutants_crashed": 0}
     original = _run(seed_obj.code, seed_obj.tests, timeout_s)
@@ -124,8 +138,10 @@ def _examples_for_seed(seed_obj: Seed, mutants_per_seed: int, seed: int, timeout
         stats["seeds_original_failed"] = 1
         return [], stats
     stats["seeds_used"] = 1
-    mutants = enumerate_mutants(seed_obj.code)
+    mutants = enumerate_mutants(seed_obj.code, family=family)
     random.Random(f"{seed}-{seed_obj.task_id}").shuffle(mutants)
+    if family != "v1":
+        mutants = _round_robin(mutants)
     examples = []
     for mutant in mutants[:MAX_TRIES_PER_SEED]:
         if len(examples) >= mutants_per_seed:
@@ -144,7 +160,7 @@ def _examples_for_seed(seed_obj: Seed, mutants_per_seed: int, seed: int, timeout
             stats["mutants_equivalent"] += 1
             continue
         examples.append({
-            "id": f"t1-{seed_obj.task_id}-{len(examples)}",
+            "id": f"t1-{seed_obj.task_id}-{len(examples)}" + ("" if family == "v1" else f"-{family}"),
             "task": "T1",
             "source": f"{SOURCE}:{seed_obj.task_id}",
             "license": LICENSE,
@@ -161,9 +177,9 @@ def _examples_for_seed(seed_obj: Seed, mutants_per_seed: int, seed: int, timeout
 
 
 def build_examples(seeds: list[Seed], mutants_per_seed: int = 2, seed: int = 3407,
-                   timeout_s: float = 60, workers: int = 4) -> tuple[list[dict], dict]:
+                   timeout_s: float = 60, workers: int = 4, family: str = "v1") -> tuple[list[dict], dict]:
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        results = list(pool.map(lambda s: _examples_for_seed(s, mutants_per_seed, seed, timeout_s), seeds))
+        results = list(pool.map(lambda s: _examples_for_seed(s, mutants_per_seed, seed, timeout_s, family), seeds))
     examples = [ex for exs, _ in results for ex in exs]
     stats: dict[str, int] = {}
     for _, s in results:

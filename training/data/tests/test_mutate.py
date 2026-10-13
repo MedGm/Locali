@@ -72,3 +72,49 @@ def test_non_ascii_source_is_spliced_correctly():
     for m in enumerate_mutants(src):
         ast.parse(m.code)
         assert '"é"' in m.code
+
+
+V2_SOURCE = '''def stats(values, limit):
+    total = 0
+    best = max(values)
+    for v in values:
+        if v > 0 and v < limit:
+            total = total + abs(v)
+    name = "x".upper()
+    return total, best, name
+'''
+
+
+def _v2(operator: str) -> set[str]:
+    return {m.replacement for m in enumerate_mutants(V2_SOURCE, family="v2") if m.operator == operator}
+
+
+def test_v1_family_is_unchanged_by_default():
+    assert {m.operator for m in enumerate_mutants(V2_SOURCE)} <= {
+        "comparison_flip", "boolean_swap", "arithmetic_swap", "off_by_one", "negate_condition"}
+    assert enumerate_mutants(V2_SOURCE) == enumerate_mutants(V2_SOURCE, family="v1")
+
+
+def test_v2_mutants_parse_and_change_exactly_one_line():
+    mutants = enumerate_mutants(V2_SOURCE, family="v2")
+    assert {m.operator for m in mutants} == {"variable_misuse", "missing_condition", "missing_term",
+                                               "missing_call", "function_swap"}
+    for m in mutants:
+        ast.parse(m.code)
+        changed = [d for d in difflib.ndiff(V2_SOURCE.splitlines(), m.code.splitlines()) if d.startswith("+ ")]
+        assert len(changed) == 1
+
+
+def test_function_swap_and_missing_call():
+    assert "min" in _v2("function_swap") and "lower" in _v2("function_swap")
+    assert "v" in _v2("missing_call")
+
+
+def test_missing_condition_and_missing_term():
+    assert {"v > 0", "v < limit"} <= _v2("missing_condition")
+    assert "total" in _v2("missing_term") or "abs(v)" in _v2("missing_term")
+
+
+def test_variable_misuse_uses_other_local_names_only():
+    replacements = _v2("variable_misuse")
+    assert replacements and replacements <= {"values", "limit", "total", "best", "v", "name"}

@@ -34,14 +34,19 @@ from evaluation.tasks.completion import COMPLETION_TASK
 from evaluation.tasks.cruxeval import CRUX_OUTPUT_TASK
 from evaluation.tasks.format_transfer import REVIEW_FORMAT_DETECT_TASK, T1_FORMAT_FIX_TASK
 from evaluation.tasks.humanevalpack import BUG_DETECT_TASK, FIX_TASK
-from evaluation.tasks.internal import INTERNAL_T1_TASK, INTERNAL_T2_TASK, INTERNAL_T3_TASK
+from evaluation.tasks.internal import (
+    INTERNAL_T1_TASK,
+    INTERNAL_T2_TASK,
+    INTERNAL_T3_TASK,
+    INTERNAL_T4_TASK,
+)
 from evaluation.tasks.refactor import REFACTOR_TASK
 from evaluation.tasks.security import SECURE_CODEGEN_TASK, VULN_DETECT_TASK
 from evaluation.tasks.testgen import TESTGEN_TASK
 
 TASKS: dict[str, Task] = {
     task.name: task for task in [HUMANEVAL_PLUS_TASK, MBPP_PLUS_TASK, FIX_TASK, BUG_DETECT_TASK, CRUX_OUTPUT_TASK, TESTGEN_TASK, REFACTOR_TASK, COMPLETION_TASK,
-                 SECURE_CODEGEN_TASK, VULN_DETECT_TASK, INTERNAL_T1_TASK, INTERNAL_T2_TASK, INTERNAL_T3_TASK,
+                 SECURE_CODEGEN_TASK, VULN_DETECT_TASK, INTERNAL_T1_TASK, INTERNAL_T2_TASK, INTERNAL_T3_TASK, INTERNAL_T4_TASK,
                  T1_FORMAT_FIX_TASK, REVIEW_FORMAT_DETECT_TASK]
 }
 

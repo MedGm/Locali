@@ -138,3 +138,21 @@ def test_t2_tests_failing_on_correct_code_kill_nothing():
     wrong = "```python\nfrom solution import clamp\n\ndef test_wrong():\n    assert clamp(5, 0, 10) == 6\n```"
     scored = task.score(T2_ITEM, answer(wrong), 60)
     assert scored["tests_passed_on_correct"] == 0 and scored["mutants_killed"] == 0
+
+
+def test_internal_t4_compares_literal_values_with_type():
+    from evaluation.tasks.internal import InternalTraceTask
+    from training.data.t4_trace import t4_messages
+
+    row = {"id": "t4-1-0", "task": "T4", "group": "g", "messages": t4_messages(
+        {"code": "def f(x):\n    return [x]\n", "call": "f(2)", "output": "[2]"})}
+    task = InternalTraceTask(rows=[row])
+    item = task.load()[0]
+
+    def score(text):
+        return task.score(item, Completion(text, "", 1, 1, 0.1, 0.2, "stop"), 1)["status"]
+
+    assert score(task.reference(item)) == "correct"
+    assert score("assert f(2) == [ 2 ]") == "correct"
+    assert score("assert f(2) == (2,)") == "incorrect"
+    assert score("I think it returns a list") == "invalid"

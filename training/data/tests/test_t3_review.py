@@ -2,6 +2,7 @@ import json
 
 from training.data.t3_review import (
     parse_review_answer,
+    t3_clean_item,
     t3_items_from_bug_pair,
     t3_messages,
     tool_findings,
@@ -41,6 +42,11 @@ def test_bug_pair_gives_a_buggy_item_with_a_bug_finding_and_a_clean_item_without
     assert clean["code"] == BUG_EXAMPLE["fixed_code"]
     assert clean["findings"] == []
     assert buggy["group"] == clean["group"] == "KAKA22/CodeRM-UnitTest:7"
+
+
+def test_verified_clean_item_is_the_clean_half_of_the_pair():
+    _, clean = t3_items_from_bug_pair(BUG_EXAMPLE, message="m")
+    assert t3_clean_item(BUG_EXAMPLE) == clean
 
 
 def test_messages_answer_is_parseable_json_and_empty_list_is_allowed():

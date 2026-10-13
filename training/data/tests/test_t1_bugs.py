@@ -107,3 +107,11 @@ def test_failing_test_details_keeps_only_the_first_failures_error():
     name, error = failing_test_details(output)
     assert name == "TestClamp::test_edges"
     assert error == "AssertionError: 10 != 9"
+
+
+def test_round_robin_interleaves_operators_keeping_their_order():
+    from training.data.mutate import Mutant
+    from training.data.t1_bugs import _round_robin
+
+    ms = [Mutant(op, i, "", "", "") for i, op in enumerate(["a", "a", "a", "b", "c", "b"])]
+    assert [(m.operator, m.line) for m in _round_robin(ms)] == [("a", 0), ("b", 3), ("c", 4), ("a", 1), ("b", 5), ("a", 2)]

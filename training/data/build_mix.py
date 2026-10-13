@@ -1,7 +1,11 @@
-"""Assemble the fine-tuning mixture (v1) from the task builders' outputs.
+"""Assemble the fine-tuning mixture from the task builders' outputs.
 
     uv run python -m training.data.build_mix --t1 data/t1/mutation_v1.notimeout.clean.jsonl \
         --t2 data/t2/tests_v1.clean.jsonl --explanations data/teacher/explanations.jsonl --out data/mix_v1
+
+v2 adds T4 execution-trace examples (--t4) and standalone test-verified "no bug" reviews of
+T1 originals (--t3-verified-clean N, one per non-reserved T1 group, in file order). Without those
+options the build reproduces v1.
 
 Writes <out>/{train,val,test}.jsonl with {id, task, group, split, messages} and <out>/stats.json.
 All component logic lives in tested modules; this script only wires them together.
@@ -17,7 +21,8 @@ from training.data.format import t1_messages
 from training.data.mix import assign_split, explanation_for, reserved_for_t3
 from training.data.selfoss import SELF_OSS, replay_examples, review_items
 from training.data.t2_tests import t2_messages
-from training.data.t3_review import t3_items_from_bug_pair, t3_messages
+from training.data.t3_review import t3_clean_item, t3_items_from_bug_pair, t3_messages
+from training.data.t4_trace import t4_messages
 
 
 def _jsonl(path: Path) -> list[dict]:
@@ -26,10 +31,12 @@ def _jsonl(path: Path) -> list[dict]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--t1", type=Path, required=True)
+    parser.add_argument("--t1", type=Path, nargs="+", required=True)
     parser.add_argument("--t2", type=Path, required=True)
-    parser.add_argument("--explanations", type=Path)
+    parser.add_argument("--explanations", type=Path, nargs="+", default=[])
+    parser.add_argument("--t4", type=Path)
     parser.add_argument("--t3-pairs", type=int, default=1000)
+    parser.add_argument("--t3-verified-clean", type=int, default=0)
     parser.add_argument("--t3-corpus", nargs=3, type=int, default=[500, 250, 250], metavar=("SECURITY", "QUALITY", "CLEAN"))
     parser.add_argument("--replay", type=int, default=2000)
     parser.add_argument("--out", type=Path, required=True)
@@ -37,12 +44,13 @@ def main() -> None:
 
     from datasets import load_dataset
 
-    teacher = {r["id"]: r for r in _jsonl(args.explanations)} if args.explanations else {}
+    teacher = {r["id"]: r for path in args.explanations for r in _jsonl(path)}
     origins = collections.Counter()
     examples: list[dict] = []
 
     t3_pairs = 0
-    for ex in _jsonl(args.t1):
+    clean_groups: set[str] = set()
+    for ex in (ex for path in args.t1 for ex in _jsonl(path)):
         row = teacher.get(ex["id"], {})
         explanation, origin = explanation_for(ex, row.get("text"), cut=row.get("finish_reason") == "length")
         origins[origin] += 1
@@ -55,9 +63,17 @@ def main() -> None:
                                  "has_findings": bool(item["findings"]), "has_bug": any(f["category"] == "bug" for f in item["findings"])})
         else:
             examples.append({"id": ex["id"], "task": "T1", "group": ex["source"], "messages": t1_messages(ex, explanation)})
+            if len(clean_groups) < args.t3_verified_clean and ex["source"] not in clean_groups:
+                clean_groups.add(ex["source"])
+                item = t3_clean_item(ex)
+                examples.append({"id": item["id"], "task": "T3", "group": item["group"], "messages": t3_messages(item),
+                                 "has_findings": bool(item["findings"]), "has_bug": False})
 
     for ex in _jsonl(args.t2):
         examples.append({"id": ex["id"], "task": "T2", "group": ex["source"], "messages": t2_messages(ex)})
+
+    for ex in _jsonl(args.t4) if args.t4 else []:
+        examples.append({"id": ex["id"], "task": "T4", "group": ex["source"], "messages": t4_messages(ex)})
 
     rows = load_dataset(SELF_OSS[0], revision=SELF_OSS[1], split="train")
     index = evaluation_index()

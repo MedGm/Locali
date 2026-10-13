@@ -79,9 +79,15 @@ def t3_items_from_bug_pair(example: dict, message: str) -> tuple[dict, dict]:
     common = {"group": example["source"], "source": example["source"], "license": "Apache-2.0"}
     buggy = {"id": f"t3-{example['id']}-buggy", "code": example["buggy_code"],
              "findings": [bug, *tool_findings(example["buggy_code"])], **common}
-    clean = {"id": f"t3-{example['id']}-clean", "code": example["fixed_code"],
-             "findings": tool_findings(example["fixed_code"]), **common}
-    return buggy, clean
+    return buggy, t3_clean_item(example)
+
+
+def t3_clean_item(example: dict) -> dict:
+    """The test-verified original of a T1 example alone, as a review item without a bug finding
+    (v2: more "no bug" answers against over-reporting)."""
+    return {"id": f"t3-{example['id']}-clean", "code": example["fixed_code"],
+            "findings": tool_findings(example["fixed_code"]), "group": example["source"],
+            "source": example["source"], "license": "Apache-2.0"}
 
 
 def t3_messages(item: dict) -> list[dict]:

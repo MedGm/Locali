@@ -1,0 +1,4 @@
+3bb54890f1ccae39ab67a96b62ae7b72ae95bbefbd942ebb1f0831db1a21b97d  qwen2.5-coder-1.5b-qlora-v2-f16.gguf
+e40bae4f51eca1c0a72f2580421c0bd84aca5848cd85a32b2086bf241b372ed9  qwen2.5-coder-1.5b-qlora-v2-q4_k_m.gguf
+30d69a788c6ffaa83edc67234b398d806bde8c3e35332aace3e6052847f11fac  qwen2.5-coder-1.5b-qlora-v2-q8_0.gguf
+35cd405e4f8920eaf00aff781ae7f92416e0c4860108f850ed3f115d528cf7a4  model.safetensors

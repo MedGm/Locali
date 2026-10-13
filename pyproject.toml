@@ -25,6 +25,15 @@ dev = [
     "pytest",
     "httpx>=0.28.1",
 ]
+merge = [
+    "accelerate>=1.15.0",
+    "peft>=0.21.2",
+    "protobuf>=4.25.9",
+    "safetensors>=0.8.0",
+    "sentencepiece>=0.2.2",
+    "torch>=2.14.1",
+    "transformers>=5.17.0",
+]
 
 [tool.ruff]
 line-length = 100
@@ -40,3 +49,11 @@ extend-exclude = ["experiments/results", "training/kaggle/**/*.ipynb", "demo_rep
 [tool.pytest.ini_options]
 testpaths = ["evaluation", "backend", "security", "mcp_servers", "training"]
 pythonpath = ["."]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }

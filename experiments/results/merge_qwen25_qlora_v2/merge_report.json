@@ -1,0 +1,12 @@
+{
+  "base": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "revision": "2e1fd397ee46e1388853d2af2c993145b0f1098a",
+  "adapter": "/home/medgm/models/adapters/qwen2.5-coder-1.5b-qlora-v2",
+  "max_abs_logit_diff_adapter_vs_bare_base": 19.750442504882812,
+  "max_abs_logit_diff_merged_vs_unmerged_fp32": 7.2479248046875e-05,
+  "fp16_top1_agreement_with_fp32": [
+    1.0,
+    1.0,
+    1.0
+  ]
+}

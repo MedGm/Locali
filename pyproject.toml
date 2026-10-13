@@ -13,6 +13,8 @@ dependencies = [
     "mcp>=1.30.0",
     "radon>=6.0.1",
     "ruff>=0.16.7",
+    "semgrep>=1.136.0",
+    "setuptools<81",  # semgrep telemetry still imports pkg_resources
 ]
 
 [dependency-groups]

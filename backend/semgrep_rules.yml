@@ -1,0 +1,43 @@
+rules:
+  - id: eval-exec
+    languages: [python]
+    severity: ERROR
+    message: eval/exec on a value that may come from the user
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: exec(...)
+
+  - id: pickle-load
+    languages: [python]
+    severity: ERROR
+    message: unpickling data can run arbitrary code
+    pattern-either:
+      - pattern: pickle.loads(...)
+      - pattern: pickle.load(...)
+
+  - id: shell-true
+    languages: [python]
+    severity: ERROR
+    message: command run through a shell
+    pattern: subprocess.$F(..., shell=True, ...)
+
+  - id: sql-string-format
+    languages: [python]
+    severity: ERROR
+    message: SQL built from a formatted string, use query parameters
+    pattern-either:
+      - pattern: |
+          $Q = f"..."
+          ...
+          $CONN.execute($Q, ...)
+      - pattern: $CONN.execute(f"...", ...)
+      - pattern: $CONN.execute("..." % ..., ...)
+      - pattern: $CONN.execute("...".format(...), ...)
+
+  - id: weak-hash
+    languages: [python]
+    severity: WARNING
+    message: MD5/SHA1 are not suitable for passwords
+    pattern-either:
+      - pattern: hashlib.md5(...)
+      - pattern: hashlib.sha1(...)

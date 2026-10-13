@@ -38,7 +38,7 @@ Solo, 15 weeks, ~20 h/week. Deadline 01/01/2027, target submission 30/12/2026.
 - [x] Tasks (10, all validated): HumanEval+, MBPP+, HumanEvalFix, bug detection, CRUXEval-O, test generation, refactoring, completion (infilling, replaces SAFIM), SecurityEval insecure generation, vulnerability detection — [validation](experiments/results/harness_validation/README.md)
 - [x] Unattended laptop baseline script with energy: `experiments/scripts/laptop_baselines.sh`
 - [ ] Locali-Fresh: first 30 contamination-free tasks
-- [ ] `demo_repo/`: bugs, vulnerabilities, fake secret, missing tests, malicious README
+- [x] `demo_repo/`: bugs, vulnerabilities, fake secret, missing tests, malicious README (answer key in `security/demo_repo_flaws.json`)
 - [x] Laptop CPU baselines with energy, HumanEval+ and MBPP+: Qwen2.5-Coder-1.5B, Qwen3.5-2B ([results](experiments/results/baselines/README.md))
 - [x] Full baselines on Kaggle, 10 tasks × 4 models ([results](experiments/results/kaggle_baselines_20261012/README.md))
 - [x] Qwen3.5-9B reference baseline (2 × T4, separate session) ([results](experiments/results/kaggle_reference_20261012/README.md))
@@ -52,7 +52,7 @@ Design: [docs/research-design.md](docs/research-design.md)
 - [x] Unsloth QLoRA run + LoRA run + rsLoRA run on Qwen2.5-Coder-1.5B ([v1](experiments/results/finetune_qwen25_qlora_v1/README.md), [v2](experiments/results/finetune_v2/README.md)); DoRA not run
 - [x] QLoRA run on Phi-4-mini (in the [v2 report](experiments/results/finetune_v2/README.md))
 - [x] Evaluate with harness: benchmarks, [format-transfer check](experiments/results/format_transfer_qwen25_v1/README.md), in-distribution tasks, paired McNemar tests. Adapters are on private Kaggle datasets; HF upload still todo
-- [ ] During GPU waits: FastAPI skeleton, static-analysis wrappers, secret scanner (Docker sandbox done in W1; the rest moved to W6–7)
+- [ ] During GPU waits: FastAPI skeleton (static analysis in `backend/analysis.py` and secret scanner in `security/secrets.py` done)
 - **Gate:** fine-tuned model evaluated and documented — **passed 2026-10-13**. Deployment model: Qwen2.5-Coder-1.5B + QLoRA v2
 
 ### W6–7 · Oct 26–Nov 8 · Optimization ladder

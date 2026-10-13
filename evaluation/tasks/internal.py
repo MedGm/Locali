@@ -30,9 +30,9 @@ class InternalItem:
 
 
 def mix_test_rows() -> list[dict]:
-    """Test split of the mixture: $LOCALI_MIX_DIR, else data/mix_v1, else searched under /kaggle/input."""
+    """Test split of the mixture: $LOCALI_MIX_DIR, else data/mix_v2 (a superset of v1), else searched under /kaggle/input."""
     candidates = [Path(os.environ[MIX_DIR_ENV]) / "test.jsonl"] if os.environ.get(MIX_DIR_ENV) else []
-    candidates.append(Path("data/mix_v1/test.jsonl"))
+    candidates.append(Path("data/mix_v2/test.jsonl"))
     candidates += sorted(Path("/kaggle/input").rglob("test.jsonl")) if Path("/kaggle/input").exists() else []
     for path in candidates:
         if path.exists():

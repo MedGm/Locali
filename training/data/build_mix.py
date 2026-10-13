@@ -29,13 +29,41 @@ def _jsonl(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()] if path.exists() else []
 
 
+def _t1_and_t3(t1: list[dict], cap: int, teacher: dict, origins: collections.Counter, clean_groups: set[str],
+               verified_clean: int) -> list[dict]:
+    """T1 repair examples, T3 bug/clean pairs from reserved groups (at most `cap`), and verified
+    clean reviews (at most `verified_clean` groups overall, shared through `clean_groups`)."""
+    examples: list[dict] = []
+    t3_pairs = 0
+    for ex in t1:
+        row = teacher.get(ex["id"], {})
+        explanation, origin = explanation_for(ex, row.get("text"), cut=row.get("finish_reason") == "length")
+        origins[origin] += 1
+        if reserved_for_t3(ex["source"]):
+            if t3_pairs >= cap:
+                continue
+            t3_pairs += 1
+            for item in t3_items_from_bug_pair(ex, explanation):
+                examples.append({"id": item["id"], "task": "T3", "group": item["group"], "messages": t3_messages(item),
+                                 "has_findings": bool(item["findings"]), "has_bug": any(f["category"] == "bug" for f in item["findings"])})
+        else:
+            examples.append({"id": ex["id"], "task": "T1", "group": ex["source"], "messages": t1_messages(ex, explanation)})
+            if len(clean_groups) < verified_clean and ex["source"] not in clean_groups:
+                clean_groups.add(ex["source"])
+                item = t3_clean_item(ex)
+                examples.append({"id": item["id"], "task": "T3", "group": item["group"], "messages": t3_messages(item),
+                                 "has_findings": bool(item["findings"]), "has_bug": False})
+
+    return examples
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--t1", type=Path, nargs="+", required=True)
     parser.add_argument("--t2", type=Path, required=True)
     parser.add_argument("--explanations", type=Path, nargs="+", default=[])
     parser.add_argument("--t4", type=Path)
-    parser.add_argument("--t3-pairs", type=int, default=1000)
+    parser.add_argument("--t3-pairs", type=int, nargs="+", default=[1000], help="cap per --t1 file, in order")
     parser.add_argument("--t3-verified-clean", type=int, default=0)
     parser.add_argument("--t3-corpus", nargs=3, type=int, default=[500, 250, 250], metavar=("SECURITY", "QUALITY", "CLEAN"))
     parser.add_argument("--replay", type=int, default=2000)
@@ -48,26 +76,10 @@ def main() -> None:
     origins = collections.Counter()
     examples: list[dict] = []
 
-    t3_pairs = 0
     clean_groups: set[str] = set()
-    for ex in (ex for path in args.t1 for ex in _jsonl(path)):
-        row = teacher.get(ex["id"], {})
-        explanation, origin = explanation_for(ex, row.get("text"), cut=row.get("finish_reason") == "length")
-        origins[origin] += 1
-        if reserved_for_t3(ex["source"]):
-            if t3_pairs >= args.t3_pairs:
-                continue
-            t3_pairs += 1
-            for item in t3_items_from_bug_pair(ex, explanation):
-                examples.append({"id": item["id"], "task": "T3", "group": item["group"], "messages": t3_messages(item),
-                                 "has_findings": bool(item["findings"]), "has_bug": any(f["category"] == "bug" for f in item["findings"])})
-        else:
-            examples.append({"id": ex["id"], "task": "T1", "group": ex["source"], "messages": t1_messages(ex, explanation)})
-            if len(clean_groups) < args.t3_verified_clean and ex["source"] not in clean_groups:
-                clean_groups.add(ex["source"])
-                item = t3_clean_item(ex)
-                examples.append({"id": item["id"], "task": "T3", "group": item["group"], "messages": t3_messages(item),
-                                 "has_findings": bool(item["findings"]), "has_bug": False})
+    caps = args.t3_pairs + [args.t3_pairs[-1]] * (len(args.t1) - len(args.t3_pairs))
+    for path, cap in zip(args.t1, caps, strict=True):
+        examples += _t1_and_t3(_jsonl(path), cap, teacher, origins, clean_groups, args.t3_verified_clean)
 
     for ex in _jsonl(args.t2):
         examples.append({"id": ex["id"], "task": "T2", "group": ex["source"], "messages": t2_messages(ex)})

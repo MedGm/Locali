@@ -1,7 +1,7 @@
 """Fine-tune with Unsloth on one Kaggle T4, then generate all benchmark answers with the adapter.
 
 Phases (one session):
-  1. train: Unsloth + TRL SFT on the mixture (Kaggle dataset `locali-mix-v1`), loss on assistant
+  1. train: Unsloth + TRL SFT on the mixture (Kaggle dataset `locali-mix-v2`), loss on assistant
      tokens only, best checkpoint by validation loss -> /kaggle/working/adapter
   2. generate: vLLM serves base model + LoRA adapter; `evaluation.run --generate-only` for every
      task (same runtime and prompts as the baselines); scoring happens locally in the sandbox.
@@ -34,7 +34,8 @@ MODELS = {
     "phi-4-mini": {"repo": "unsloth/Phi-4-mini-instruct", "revision": "75becc471c56fc34761ec998615ca6f8535c5a61"},
 }
 TASKS = ["humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect", "cruxeval_o",
-         "testgen", "refactor", "completion", "securecodegen", "vulndetect"]
+         "testgen", "refactor", "completion", "securecodegen", "vulndetect",
+         "humanevalfix_t1fmt", "bugdetect_t3fmt", "internal_t1", "internal_t2", "internal_t3", "internal_t4"]
 SEQ_LEN = 2048
 SEED = 3407
 
@@ -184,6 +185,7 @@ def generate(model_id: str, method: str) -> None:
                      "--notes", f"fine-tuned ({method}) adapter at commit {COMMIT}",
                      *(["--limit", os.environ["LIMIT"]] if os.environ.get("LIMIT") else [])],
                     cwd=CODE, stdout=gen_log, stderr=subprocess.STDOUT, check=False,
+                    env={**os.environ, "LOCALI_MIX_DIR": str(find_input("test.jsonl").parent)},
                 ).returncode
             if rc == 0 and (out / "summary.json").exists():
                 energy = attach_gpu_energy(out, (WORK / "gpu_power.csv").read_text(), [1], start, time.time())

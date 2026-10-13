@@ -10,7 +10,9 @@ the log, and stored in its summary.json.
 
 Environment variables:
     LIMIT=3          items per task (pilot run); unset for full runs
-    QUEUES=small     "small" (four 1.5-4.7B models, one queue per GPU) or "reference" (9B on both GPUs)
+    QUEUES=small     "small" (four 1.5-4.7B models, one queue per GPU), "reference" (9B on both GPUs)
+                     or "merged" (the merged QLoRA v2 model, one GPU)
+    TASKS=a,b        override the task list
 """
 
 import json
@@ -32,10 +34,11 @@ RESULTS = WORK / "results"
 LOGS = WORK / "logs"
 POWER_LOG = WORK / "gpu_power.csv"
 
-TASKS = [
+DEFAULT_TASKS = [
     "humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect", "cruxeval_o",
     "testgen", "refactor", "completion", "securecodegen", "vulndetect",
 ]
+TASKS = os.environ["TASKS"].split(",") if os.environ.get("TASKS") else DEFAULT_TASKS
 TEXT_ONLY = ["--limit-mm-per-prompt", '{"image": 0, "video": 0}']
 
 MODELS = {
@@ -47,6 +50,9 @@ MODELS = {
                    "revision": "15852e8c16360a2fea060d615a32b45270f8a8fc", "extra": TEXT_ONLY},
     "qwen3.5-4b": {"repo": "Qwen/Qwen3.5-4B",
                    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a", "extra": TEXT_ONLY},
+    # QLoRA v2 merged into the base (training/merge_adapter.py), published on the Hub
+    "qwen2.5-coder-1.5b-ft-qlora-v2-merged": {"repo": "MedGm/Llama-Locali-Qwen2.5-Coder-1.5B",
+                                              "revision": "a1b0b1189d2050dd20013371fc327362ea6b2964", "extra": []},
     "qwen3.5-9b": {"repo": "Qwen/Qwen3.5-9B",
                    "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a", "extra": TEXT_ONLY},
 }
@@ -55,6 +61,7 @@ QUEUE_SETS = {
     "small": [([0], 8000, ["qwen2.5-coder-1.5b", "phi-4-mini"]),
               ([1], 8001, ["qwen3.5-2b", "qwen3.5-4b"])],
     "reference": [([0, 1], 8000, ["qwen3.5-9b"])],
+    "merged": [([0], 8000, ["qwen2.5-coder-1.5b-ft-qlora-v2-merged"])],
 }
 
 

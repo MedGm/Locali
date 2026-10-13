@@ -41,19 +41,19 @@ Solo, 15 weeks, ~20 h/week. Deadline 01/01/2027, target submission 30/12/2026.
 - [ ] `demo_repo/`: bugs, vulnerabilities, fake secret, missing tests, malicious README
 - [x] Laptop CPU baselines with energy, HumanEval+ and MBPP+: Qwen2.5-Coder-1.5B, Qwen3.5-2B ([results](experiments/results/baselines/README.md))
 - [x] Full baselines on Kaggle, 10 tasks × 4 models ([results](experiments/results/kaggle_baselines_20261012/README.md))
-- [ ] Qwen3.5-9B reference baseline (2 × T4, separate session)
+- [x] Qwen3.5-9B reference baseline (2 × T4, separate session) ([results](experiments/results/kaggle_reference_20261012/README.md))
 - **Gate:** baseline table reproducible from one command
 
 ### W3–5 · Oct 5–25 · Fine-tuning
 Design: [docs/research-design.md](docs/research-design.md)
-- [ ] Data pipelines: T1 mutation bugs, T2 tests, T3 tool-grounded reviews, replay set
-- [ ] Teacher messages with Qwen3.5-9B (≈5–10 GPU-h); verify CodeReviewer license
-- [ ] Decontaminate (exact + 13-gram) against all eval sets; grouped split
-- [ ] Unsloth QLoRA run + LoRA run + rsLoRA run on Qwen2.5-Coder-1.5B (DoRA optional, 20 % subset: 3× slower)
-- [ ] QLoRA run on Phi-4-mini (cut first if behind)
-- [ ] Push adapter to HF, evaluate with harness
-- [ ] During GPU waits: FastAPI skeleton, static-analysis wrappers, Docker sandbox, secret scanner
-- **Gate:** fine-tuned model evaluated and documented
+- [x] Data pipelines: T1 mutation bugs, T2 tests, T3 tool-grounded reviews, replay set ([mix v1](experiments/results/data_mix_v1/README.md)); v2 adds T4 execution traces, 5 more bug operators, verified clean reviews ([mix v2](experiments/results/data_mix_v2/README.md))
+- [x] Teacher explanations with Qwen3.5-9B (v1 + v2, ~1.5 GPU-h); CodeReviewer license not verified → not used, T3 stays synthetic (decision D3)
+- [x] Decontaminate (13-gram) against all eval sets; grouped split (0 groups in more than one split)
+- [x] Unsloth QLoRA run + LoRA run + rsLoRA run on Qwen2.5-Coder-1.5B ([v1](experiments/results/finetune_qwen25_qlora_v1/README.md), [v2](experiments/results/finetune_v2/README.md)); DoRA not run
+- [x] QLoRA run on Phi-4-mini (in the [v2 report](experiments/results/finetune_v2/README.md))
+- [x] Evaluate with harness: benchmarks, [format-transfer check](experiments/results/format_transfer_qwen25_v1/README.md), in-distribution tasks, paired McNemar tests. Adapters are on private Kaggle datasets; HF upload still todo
+- [ ] During GPU waits: FastAPI skeleton, static-analysis wrappers, secret scanner (Docker sandbox done in W1; the rest moved to W6–7)
+- **Gate:** fine-tuned model evaluated and documented — **passed 2026-10-13**. Deployment model: Qwen2.5-Coder-1.5B + QLoRA v2
 
 ### W6–7 · Oct 26–Nov 8 · Optimization ladder
 - [ ] Merge adapter, export FP16 / INT8 / INT4
@@ -83,6 +83,12 @@ Design: [docs/research-design.md](docs/research-design.md)
 - [ ] README report with figures
 - [ ] 5-min demo, scripted and timed
 - **Submit by Dec 30**
+
+## Status 2026-10-13 (week 4)
+
+- Done: W0, W1–2 (except Locali-Fresh and `demo_repo/`), W3–5 (12 days early).
+- Not started: W6–15. `backend/` and `frontend/` are empty: app work planned for GPU waits went to the extra fine-tuning experiments.
+- Next: `demo_repo/` → quantization ladder on Kaggle, with FastAPI + static-analysis wrappers + secret scanner built during the waits.
 
 ## Cut order if behind
 1. Phi fine-tuning

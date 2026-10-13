@@ -16,12 +16,12 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 
 | # | Requirement | Solo minimum | Location | Week | Status |
 |---|---|---|---|---|---|
-| C1 | SLM benchmarking: code generation, completion, bug detection, explanation, refactoring, test generation | 3 models × 6 tasks on benchmark subsets | `evaluation/`, `experiments/` | W1–2 | wip (all 10 tasks built and validated; model runs pending) |
-| C2 | Efficient fine-tuning with Unsloth, LoRA/QLoRA, other PEFT | 1 model, QLoRA + LoRA runs on Kaggle T4 | `training/` | W3–5 | todo |
+| C1 | SLM benchmarking: code generation, completion, bug detection, explanation, refactoring, test generation | 3 models × 6 tasks on benchmark subsets | `evaluation/`, `experiments/` | W1–2 | done: 10 tasks × 4 SLMs + Qwen3.5-9B reference on Kaggle, laptop CPU baselines |
+| C2 | Efficient fine-tuning with Unsloth, LoRA/QLoRA, other PEFT | 1 model, QLoRA + LoRA runs on Kaggle T4 | `training/` | W3–5 | done: QLoRA, 16-bit LoRA, rsLoRA (Qwen2.5-Coder) + Phi-4-mini QLoRA, Unsloth |
 | C3 | Quantization 4/8-bit | FP16 / INT8 / INT4 on T4 and laptop CPU | `experiments/` | W6–7 | todo |
 | C4 | KV cache, efficient attention, batching | Prefix caching on/off, batch 1/4/16, SDPA vs eager | `experiments/` | W6–7 | todo |
 | C5 | Context compression, prompt optimization, token reduction | AST slicing + compact prompts, tokens before/after | `evaluation/`, `backend/` | W6–7 | todo |
-| C6 | Measure latency, throughput, memory, cost | Shared metrics logger in harness | `evaluation/` | W1–2 | wip (tokens, TTFT, decode tok/s, energy done; memory, cost todo) |
+| C6 | Measure latency, throughput, memory, cost | Shared metrics logger in harness | `evaluation/` | W1–2 | wip (tokens, TTFT, decode tok/s, CPU + GPU energy, training peak memory done; inference memory, cost todo) |
 | C7 | Code quality, maintainability, complexity, vulnerabilities, standards, technical debt | Ruff, Radon, Bandit, Semgrep + LLM summary | `backend/` | W3–5 | todo |
 | C8 | Static-analysis tool integration | Same tools exposed via MCP | `mcp_servers/` | W6–7 | todo |
 | C9 | Generate unit, integration, API tests | Test-generation agent on `demo_repo/` | `backend/` | W8–10 | todo |
@@ -55,7 +55,7 @@ Pipeline: SLM → Fine-tuning → Quantization → Token optimization → Agenti
 
 | Metric | Source | Status |
 |---|---|---|
-| Code correctness, pass@k | EvalPlus (HumanEval+/MBPP+) | wip (harness done; first baseline run) |
+| Code correctness, pass@k | EvalPlus (HumanEval+/MBPP+) | done |
 | Unit-test pass rate | pytest runs in sandbox | done (harness) |
 | Test coverage | pytest-cov | done (harness: line + branch, `testgen`) |
 | Bug-detection precision/recall/F1 | HumanEvalPack / labelled set | done (harness: `bugdetect`) |
@@ -64,14 +64,14 @@ Pipeline: SLM → Fine-tuning → Quantization → Token optimization → Agenti
 | Compilation/execution success | Harness | done (status: passed/failed/timeout/crashed) |
 | Hallucination/error rate | Invalid APIs, unparseable output | todo |
 | Inference latency, TTFT, tokens/s | Metrics logger | done (harness) |
-| GPU/CPU memory | nvidia-smi / psutil | todo |
+| GPU/CPU memory | nvidia-smi / psutil | wip (training peak GPU memory; inference todo) |
 | Input/output tokens | Tokenizer counts | done (server usage counts) |
 | Cost per task | GPU-hour and CPU-hour pricing model | todo |
-| Energy | Intel RAPL on laptop; nvidia-smi power on T4 | wip (RAPL done; GPU power todo) |
+| Energy | Intel RAPL on laptop; nvidia-smi power on T4 | done (both) |
 
 | Ablation | Status |
 |---|---|
-| Base vs fine-tuned SLM | todo |
+| Base vs fine-tuned SLM | done ([v1](../experiments/results/finetune_qwen25_qlora_v1/README.md), [v2](../experiments/results/finetune_v2/README.md); also QLoRA vs LoRA vs rsLoRA, Qwen vs Phi) |
 | FP16 vs INT8/INT4 | todo |
 | Standard vs optimized prompting | todo |
 | Full vs reduced context | todo |
@@ -82,7 +82,7 @@ Pipeline: SLM → Fine-tuning → Quantization → Token optimization → Agenti
 | Deliverable | Status |
 |---|---|
 | Platform flow: Repository → Code Analysis → AI Review → Test Generation → Automated Testing → Bug/Fix Suggestions → Quality Assessment → CI/CD → Deployment Assistance → Monitoring/Audit | todo |
-| GitHub repository | wip |
+| GitHub repository | wip (research half done) |
 | Full report in markdown (README) | todo |
 | Demo video, 5 min max | todo |
 | Deadline 01/01/2027 — target submission 30/12/2026 | todo |

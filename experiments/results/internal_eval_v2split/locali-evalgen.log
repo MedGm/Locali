@@ -1,0 +1,48 @@
+[{"stream_name":"stderr","time":7.70725372,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.707301086,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.707305988,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.70730867,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.334882612,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.334911101,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.334917144,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.334921683,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.511660328,"data":"Writing /kaggle/working/evalgen_job.py\n"}
+,{"stream_name":"stdout","time":9.608532677,"data":"Cloning into '/tmp/locali'...\n"}
+,{"stream_name":"stdout","time":11.546927397,"data":"Note: switching to '21b0b9b3712f3577cfab3089b8304caa8821cdd4'.\n"}
+,{"stream_name":"stdout","time":11.547902479,"data":"\n"}
+,{"stream_name":"stdout","time":11.548877145,"data":"You are in 'detached HEAD' state. You can look around, make experimental\n"}
+,{"stream_name":"stdout","time":11.549816937,"data":"changes and commit them, and you can discard any commits you make in this\n"}
+,{"stream_name":"stdout","time":11.550713199,"data":"state without impacting any branches by switching back to a branch.\n"}
+,{"stream_name":"stdout","time":11.551707841,"data":"\n"}
+,{"stream_name":"stdout","time":11.55261249,"data":"If you want to create a new branch to retain commits you create, you may\n"}
+,{"stream_name":"stdout","time":11.553590527,"data":"do so (now or later) by using -c with the switch command. Example:\n"}
+,{"stream_name":"stdout","time":11.554492649,"data":"\n"}
+,{"stream_name":"stdout","time":11.555509122,"data":"  git switch -c \u003cnew-branch-name\u003e\n"}
+,{"stream_name":"stdout","time":11.55637959,"data":"\n"}
+,{"stream_name":"stdout","time":11.557412938,"data":"Or undo this operation with:\n"}
+,{"stream_name":"stdout","time":11.55821573,"data":"\n"}
+,{"stream_name":"stdout","time":11.55903153,"data":"  git switch -\n"}
+,{"stream_name":"stdout","time":11.559820524,"data":"\n"}
+,{"stream_name":"stdout","time":11.560602623,"data":"Turn off this advice by setting config variable advice.detachedHead to false\n"}
+,{"stream_name":"stdout","time":11.561392054,"data":"\n"}
+,{"stream_name":"stdout","time":11.562177345,"data":"HEAD is now at 21b0b9b chore: evalgen reads locali-mix-v2\n"}
+,{"stream_name":"stdout","time":17.064608129,"data":"[08:04:38] adapter /kaggle/input/datasets/elgorrimmohamed/locali-adapter-qwen25-qlora-v1, mixture /kaggle/input/locali-mix-v2\n"}
+,{"stream_name":"stdout","time":357.993751799,"data":"[08:10:19] qwen2.5-coder-1.5b/internal_t1: done, GPU energy 3919.1 J\n"}
+,{"stream_name":"stdout","time":544.165091731,"data":"[08:13:25] qwen2.5-coder-1.5b/internal_t2: done, GPU energy 11351.9 J\n"}
+,{"stream_name":"stdout","time":609.329579307,"data":"[08:14:30] qwen2.5-coder-1.5b/internal_t3: done, GPU energy 3951.8 J\n"}
+,{"stream_name":"stdout","time":637.10300773,"data":"[08:14:58] qwen2.5-coder-1.5b/internal_t4: done, GPU energy 1514.4 J\n"}
+,{"stream_name":"stdout","time":640.494671325,"data":"[08:15:01] qwen2.5-coder-1.5b-ft-qlora/internal_t1: done, GPU energy 17826.7 J\n"}
+,{"stream_name":"stdout","time":767.802334164,"data":"[08:17:08] qwen2.5-coder-1.5b-ft-qlora/internal_t2: done, GPU energy 7202.9 J\n"}
+,{"stream_name":"stdout","time":857.032375695,"data":"[08:18:38] qwen2.5-coder-1.5b-ft-qlora/internal_t3: done, GPU energy 4985.9 J\n"}
+,{"stream_name":"stdout","time":923.765321352,"data":"[08:19:44] qwen2.5-coder-1.5b-ft-qlora/internal_t4: done, GPU energy 3638.2 J\n"}
+,{"stream_name":"stdout","time":924.429751299,"data":"[08:19:45] done\n"}
+,{"stream_name":"stdout","time":924.451719292,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":927.304865095,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":927.304893773,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":927.504227817,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":927.50425597,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":928.302505575,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":928.380132253,"data":"[NbConvertApp] Writing 10680 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":930.856127108,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":931.455239377,"data":"[NbConvertApp] Writing 300345 bytes to __results__.html\n"}
+]

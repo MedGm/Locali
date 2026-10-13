@@ -1,0 +1,94 @@
+{
+  "config": {
+    "benchmark": "bugdetect_t3fmt",
+    "model_id": "qwen2.5-coder-1.5b-ft-lora16",
+    "runtime": "vLLM T4x1 eager + LoRA adapter",
+    "max_tokens": 768,
+    "model_revision": "2e1fd397ee46e1388853d2af2c993145b0f1098a",
+    "quantization": "fp16",
+    "base_url": "http://127.0.0.1:8000/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "bigcode/humanevalpack",
+    "dataset_revision": "9a41762f73a8cb23bb5811b73d5aab164efcf378",
+    "notes": "fine-tuned (lora16) adapter at commit 371ff2922a2b7d27adf1338bd12546a8137b6a9d",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-10-13T04:51:05+00:00",
+    "git_commit": "371ff2922a2b7d27adf1338bd12546a8137b6a9d",
+    "git_dirty": false,
+    "host": "1601defd2d87",
+    "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 328,
+    "status_counts": {
+      "correct": 214,
+      "incorrect": 111,
+      "invalid": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 301.9634,
+    "mean_output_tokens": 37.7012,
+    "mean_ttft_s": 0.4212,
+    "median_ttft_s": 0.3341,
+    "mean_total_s": 3.7788,
+    "mean_decode_tok_per_s": 12.47,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "accuracy": 0.6524,
+    "precision": 0.7476,
+    "recall": 0.4695,
+    "f1": 0.5768,
+    "invalid_rate": 0.0091
+  },
+  "excluded": {},
+  "this_session": {
+    "generated": 328,
+    "resumed": 0,
+    "wall_s": 81.5
+  },
+  "gpu_energy": {
+    "gpus": [
+      1
+    ],
+    "window_s": 83.9,
+    "total_j": 5331.7,
+    "j_per_task": 16.26,
+    "peak_memory_mib_per_gpu": 13641.0,
+    "method": "trapezoidal integral of nvidia-smi power.draw at 1 s, whole board"
+  },
+  "rescored": {
+    "at": "2026-10-13T05:07:24+00:00",
+    "harness_commit": "21b0b9b3712f3577cfab3089b8304caa8821cdd4",
+    "previous_metrics": {
+      "n": 328,
+      "status_counts": {
+        "unscored": 328
+      },
+      "truncated": 0,
+      "mean_input_tokens": 301.9634,
+      "mean_output_tokens": 37.7012,
+      "mean_ttft_s": 0.4212,
+      "median_ttft_s": 0.3341,
+      "mean_total_s": 3.7788,
+      "mean_decode_tok_per_s": 12.47,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
+  }
+}

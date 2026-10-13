@@ -1,0 +1,93 @@
+{
+  "config": {
+    "benchmark": "internal_t3",
+    "model_id": "qwen2.5-coder-1.5b-ft-rslora",
+    "runtime": "vLLM T4x1 eager + LoRA adapter",
+    "max_tokens": 768,
+    "model_revision": "2e1fd397ee46e1388853d2af2c993145b0f1098a",
+    "quantization": "fp16",
+    "base_url": "http://127.0.0.1:8000/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": null,
+    "dataset_revision": null,
+    "notes": "fine-tuned (rslora) adapter at commit 377a06714c26d8dd003b474c5da92083e2b42057",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-10-13T08:00:16+00:00",
+    "git_commit": "377a06714c26d8dd003b474c5da92083e2b42057",
+    "git_dirty": false,
+    "host": "3d1f4d682961",
+    "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 229,
+    "status_counts": {
+      "correct": 132,
+      "incorrect": 97
+    },
+    "truncated": 0,
+    "mean_input_tokens": 276.0611,
+    "mean_output_tokens": 60.6201,
+    "mean_ttft_s": 0.3716,
+    "median_ttft_s": 0.2677,
+    "mean_total_s": 5.2311,
+    "mean_decode_tok_per_s": 13.11,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "bug_recall": 0.5595,
+    "clean_specificity": 0.6239,
+    "pair_accuracy": 0.5959,
+    "tool_line_recall": 0.5952,
+    "format_valid_rate": 1.0
+  },
+  "excluded": {},
+  "this_session": {
+    "generated": 229,
+    "resumed": 0,
+    "wall_s": 78.5
+  },
+  "gpu_energy": {
+    "gpus": [
+      1
+    ],
+    "window_s": 78.7,
+    "total_j": 5150.1,
+    "j_per_task": 22.49,
+    "peak_memory_mib_per_gpu": 13641.0,
+    "method": "trapezoidal integral of nvidia-smi power.draw at 1 s, whole board"
+  },
+  "rescored": {
+    "at": "2026-10-13T08:18:21+00:00",
+    "harness_commit": "da6517ca0cea4ff12a9ab96717b02b5ff55f9bff",
+    "previous_metrics": {
+      "n": 229,
+      "status_counts": {
+        "unscored": 229
+      },
+      "truncated": 0,
+      "mean_input_tokens": 276.0611,
+      "mean_output_tokens": 60.6201,
+      "mean_ttft_s": 0.3716,
+      "median_ttft_s": 0.2677,
+      "mean_total_s": 5.2311,
+      "mean_decode_tok_per_s": 13.11,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
+  }
+}

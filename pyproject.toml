@@ -7,6 +7,7 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "bandit>=1.9.4",
     "datasets>=5.0.1",
+    "fastapi>=0.141.1",
     "langchain-mcp-adapters>=0.3.2",
     "langchain-openai>=1.6.2",
     "langgraph>=1.2.11",
@@ -15,10 +16,15 @@ dependencies = [
     "ruff>=0.16.7",
     "semgrep>=1.136.0",
     "setuptools<81",  # semgrep telemetry still imports pkg_resources
+    "uvicorn>=0.53.0",
 ]
 
 [dependency-groups]
-dev = ["ruff", "pytest"]
+dev = [
+    "ruff",
+    "pytest",
+    "httpx>=0.28.1",
+]
 
 [tool.ruff]
 line-length = 100

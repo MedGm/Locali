@@ -1,4 +1,4 @@
-"""Static analysis of a project folder: Ruff, Bandit, Radon and Semgrep, one findings list.
+"""Static analysis of a project folder: Ruff, Bandit, Radon, Semgrep and the secret scanner.
 
 Findings use the categories and severities of the T3 review format (bug / security / quality,
 high / medium / low), so tool output and model reviews can be merged and compared.
@@ -83,7 +83,25 @@ def semgrep(root: Path) -> list[Finding]:
     ]
 
 
+def secrets(root: Path, max_bytes: int = 1_000_000) -> list[Finding]:
+    from security.secrets import scan_text
+
+    skip = set(SKIP_DIRS.split(","))
+    found = []
+    for path in sorted(root.rglob("*")):
+        if not path.is_file() or skip & set(path.relative_to(root).parts) or path.stat().st_size > max_bytes:
+            continue
+        try:
+            text = path.read_text()
+        except (UnicodeDecodeError, OSError):
+            continue
+        for s in scan_text(text):
+            found.append(Finding("secrets", s.rule, path.relative_to(root).as_posix(), s.line, "security", "high",
+                                 f"hardcoded secret ({s.rule})"))
+    return found
+
+
 def analyze(root: str | Path) -> list[Finding]:
     root = Path(root).resolve()
-    findings = [*ruff(root), *bandit(root), *radon(root), *semgrep(root)]
+    findings = [*ruff(root), *bandit(root), *radon(root), *semgrep(root), *secrets(root)]
     return sorted(findings, key=lambda f: (f.path, f.line, f.tool, f.rule))

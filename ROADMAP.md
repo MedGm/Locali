@@ -52,7 +52,7 @@ Design: [docs/research-design.md](docs/research-design.md)
 - [x] Unsloth QLoRA run + LoRA run + rsLoRA run on Qwen2.5-Coder-1.5B ([v1](experiments/results/finetune_qwen25_qlora_v1/README.md), [v2](experiments/results/finetune_v2/README.md)); DoRA not run
 - [x] QLoRA run on Phi-4-mini (in the [v2 report](experiments/results/finetune_v2/README.md))
 - [x] Evaluate with harness: benchmarks, [format-transfer check](experiments/results/format_transfer_qwen25_v1/README.md), in-distribution tasks, paired McNemar tests. Adapters are on private Kaggle datasets; HF upload still todo
-- [ ] During GPU waits: FastAPI skeleton (static analysis in `backend/analysis.py` and secret scanner in `security/secrets.py` done)
+- [x] During GPU waits: FastAPI skeleton (`backend/app.py`), static analysis (`backend/analysis.py`), secret scanner (`security/secrets.py`), audit log
 - **Gate:** fine-tuned model evaluated and documented — **passed 2026-10-13**. Deployment model: Qwen2.5-Coder-1.5B + QLoRA v2
 
 ### W6–7 · Oct 26–Nov 8 · Optimization ladder

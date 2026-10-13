@@ -1,0 +1,24 @@
+{
+  "seeds_original_failed": 8,
+  "seeds_used": 1492,
+  "mutants_tried": 3266,
+  "mutants_equivalent": 368,
+  "mutants_timeout": 41,
+  "mutants_crashed": 10,
+  "examples": 2888,
+  "examples_after_operator_cap": 1413,
+  "operators": {
+    "function_swap": 146,
+    "missing_call": 143,
+    "missing_condition": 124,
+    "missing_term": 500,
+    "variable_misuse": 500
+  },
+  "max_per_operator": 500,
+  "family": "v2",
+  "sample_seed": 29,
+  "seeds_selected": 1500,
+  "wall_s": 2231.3,
+  "source": "KAKA22/CodeRM-UnitTest",
+  "revision": "98879a4b7d98a66d8c0da9567b8c7eabe4e1f411"
+}

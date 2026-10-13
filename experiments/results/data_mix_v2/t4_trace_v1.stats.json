@@ -1,0 +1,23 @@
+{
+  "seeds_selected": 2400,
+  "seeds_with_example": 1966,
+  "examples": 1952,
+  "decontamination_dropped": {
+    "humanevalpack": 5,
+    "humaneval_plus": 5,
+    "mbpp_plus": 8
+  },
+  "output_types": {
+    "int": 1027,
+    "str": 390,
+    "list": 438,
+    "dict": 7,
+    "tuple": 81,
+    "float": 4,
+    "bool": 5
+  },
+  "wall_s": 533.0,
+  "source": "KAKA22/CodeRM-UnitTest",
+  "revision": "98879a4b7d98a66d8c0da9567b8c7eabe4e1f411",
+  "sample_seed": 23
+}

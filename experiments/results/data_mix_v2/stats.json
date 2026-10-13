@@ -1,0 +1,40 @@
+{
+  "counts": {
+    "train": {
+      "T1": 4323,
+      "T3": 3641,
+      "T2": 2619,
+      "T4": 1775,
+      "replay": 1794
+    },
+    "test": {
+      "T1": 212,
+      "T3": 229,
+      "T2": 134,
+      "T4": 96,
+      "replay": 113
+    },
+    "val": {
+      "T3": 185,
+      "T1": 252,
+      "T2": 148,
+      "T4": 81,
+      "replay": 86
+    }
+  },
+  "total": 15688,
+  "explanations": {
+    "teacher": 5976,
+    "template": 441
+  },
+  "t3_balance": {
+    "with_bug": 1339,
+    "without_any_finding": 1859,
+    "total": 4055
+  },
+  "decontamination_dropped": {
+    "T3-corpus": 3,
+    "replay": 7
+  },
+  "groups_in_more_than_one_split": 0
+}

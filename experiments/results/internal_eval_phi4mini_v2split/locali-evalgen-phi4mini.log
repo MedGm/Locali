@@ -1,0 +1,52 @@
+[{"stream_name":"stderr","time":7.207764964,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.207815376,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.207820031,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.207822838,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.855963445,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.85599899,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.856004604,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.856008776,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.016942534,"data":"Writing /kaggle/working/evalgen_job.py\n"}
+,{"stream_name":"stdout","time":9.125512577,"data":"Cloning into '/tmp/locali'...\n"}
+,{"stream_name":"stdout","time":11.842307491,"data":"Note: switching to '95294ad63bf1e973963072e5e168683382633c20'.\n"}
+,{"stream_name":"stdout","time":11.843558527,"data":"\n"}
+,{"stream_name":"stdout","time":11.844870991,"data":"You are in 'detached HEAD' state. You can look around, make experimental\n"}
+,{"stream_name":"stdout","time":11.846140498,"data":"changes and commit them, and you can discard any commits you make in this\n"}
+,{"stream_name":"stdout","time":11.847694583,"data":"state without impacting any branches by switching back to a branch.\n"}
+,{"stream_name":"stdout","time":11.848851104,"data":"\n"}
+,{"stream_name":"stdout","time":11.850156235,"data":"If you want to create a new branch to retain commits you create, you may\n"}
+,{"stream_name":"stdout","time":11.851310842,"data":"do so (now or later) by using -c with the switch command. Example:\n"}
+,{"stream_name":"stdout","time":11.852445717,"data":"\n"}
+,{"stream_name":"stdout","time":11.853445322,"data":"  git switch -c \u003cnew-branch-name\u003e\n"}
+,{"stream_name":"stdout","time":11.854340236,"data":"\n"}
+,{"stream_name":"stdout","time":11.85528692,"data":"Or undo this operation with:\n"}
+,{"stream_name":"stdout","time":11.85618445,"data":"\n"}
+,{"stream_name":"stdout","time":11.857164612,"data":"  git switch -\n"}
+,{"stream_name":"stdout","time":11.858095679,"data":"\n"}
+,{"stream_name":"stdout","time":11.859089678,"data":"Turn off this advice by setting config variable advice.detachedHead to false\n"}
+,{"stream_name":"stdout","time":11.860069962,"data":"\n"}
+,{"stream_name":"stdout","time":11.861050373,"data":"HEAD is now at 95294ad results: fine-tuning on mixture v2 — QLoRA, 16-bit LoRA, rsLoRA on Qwen2.5-Coder-1.5B\n"}
+,{"stream_name":"stdout","time":17.755559013,"data":"[12:25:38] adapter /kaggle/input/datasets/elgorrimmohamed/locali-adapter-phi4mini-qlora-v2, mixture /kaggle/input/datasets/elgorrimmohamed/locali-mix-v2\n"}
+,{"stream_name":"stdout","time":375.896978697,"data":"[12:31:37] phi-4-mini/humanevalfix_t1fmt: done, GPU energy 9233.3 J\n"}
+,{"stream_name":"stdout","time":620.687519622,"data":"[12:35:41] phi-4-mini-ft-qlora/humanevalfix_t1fmt: done, GPU energy 24459.5 J\n"}
+,{"stream_name":"stdout","time":653.784436191,"data":"[12:36:14] phi-4-mini/bugdetect_t3fmt: done, GPU energy 18344.7 J\n"}
+,{"stream_name":"stdout","time":810.441443651,"data":"[12:38:51] phi-4-mini-ft-qlora/bugdetect_t3fmt: done, GPU energy 12309.1 J\n"}
+,{"stream_name":"stdout","time":870.763839098,"data":"[12:39:51] phi-4-mini/internal_t1: done, GPU energy 14419.9 J\n"}
+,{"stream_name":"stdout","time":1324.71066409,"data":"[12:47:25] phi-4-mini/internal_t2: done, GPU energy 30215.5 J\n"}
+,{"stream_name":"stdout","time":1361.501455847,"data":"[12:48:02] phi-4-mini-ft-qlora/internal_t1: done, GPU energy 36093.4 J\n"}
+,{"stream_name":"stdout","time":1607.659065924,"data":"[12:52:08] phi-4-mini/internal_t3: done, GPU energy 18843.1 J\n"}
+,{"stream_name":"stdout","time":1666.684477751,"data":"[12:53:07] phi-4-mini-ft-qlora/internal_t2: done, GPU energy 19826.3 J\n"}
+,{"stream_name":"stdout","time":1696.981556569,"data":"[12:53:38] phi-4-mini/internal_t4: done, GPU energy 5811.0 J\n"}
+,{"stream_name":"stdout","time":1820.763378656,"data":"[12:55:41] phi-4-mini-ft-qlora/internal_t3: done, GPU energy 10023.5 J\n"}
+,{"stream_name":"stdout","time":1941.470232343,"data":"[12:57:42] phi-4-mini-ft-qlora/internal_t4: done, GPU energy 7756.3 J\n"}
+,{"stream_name":"stdout","time":1942.182477677,"data":"[12:57:43] done\n"}
+,{"stream_name":"stdout","time":1942.205155835,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":1944.922845178,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1944.922897001,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1945.136180952,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1945.136210476,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1945.967580161,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":1946.054305885,"data":"[NbConvertApp] Writing 11048 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":1948.839053543,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1949.426576597,"data":"[NbConvertApp] Writing 300669 bytes to __results__.html\n"}
+]

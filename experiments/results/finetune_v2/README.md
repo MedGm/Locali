@@ -1,6 +1,6 @@
 # Fine-tuning on mixture v2: QLoRA, 16-bit LoRA, rsLoRA (Qwen2.5-Coder-1.5B)
 
-Date: 2026-10-13. Data: [mixture v2](../data_mix_v2/README.md). It is a superset of v1 and adds T4 execution traces, bugs from new mutation operators, and verified clean reviews. Phi-4-mini QLoRA on the same data is reported in [finetune_phi4mini_qlora_v2](../finetune_phi4mini_qlora_v2/README.md) once it finishes.
+Date: 2026-10-13. Data: [mixture v2](../data_mix_v2/README.md). It is a superset of v1 and adds T4 execution traces, bugs from new mutation operators, and verified clean reviews. Phi-4-mini QLoRA on the same data is in the last section ([run folder](../finetune_phi4mini_qlora_v2/); its base-model answers on the format and internal tasks are in [internal_eval_phi4mini_v2split](../internal_eval_phi4mini_v2split/)).
 
 Per-run folders hold samples, scores, logs, GPU power and `train_report.json`: [qlora](../finetune_qwen25_qlora_v2/), [lora16](../finetune_qwen25_lora16_v2/), [rslora](../finetune_qwen25_rslora_v2/). The base and v1 answers on the v2 internal test split come from one extra evalgen job, in [internal_eval_v2split](../internal_eval_v2split/).
 
@@ -100,3 +100,41 @@ Decision for the next steps (quantization ladder, platform): **QLoRA v2** is the
 - Rerunning the base model on the same items with vLLM is not bitwise deterministic. Base internal T2 was 11.9 % in the v1 evaluation and 11.2 % here, on the same 134 items.
 - Base and v1 benchmark answers come from earlier jobs on the same runtime (vLLM 0.29.0, T4, FP16, greedy).
 - Efficiency numbers are not compared: adapters are served unmerged (LoRA in vLLM). Merged-model latency and energy belong to the quantization ladder.
+
+## Phi-4-mini (3.8B) QLoRA on mixture v2
+
+The recipe is the same as Qwen QLoRA v2, with target modules `qkv_proj`, `o_proj`, `gate_up_proj` and `down_proj` (code at commit `21b0b9b`, identical training code). Training took 5 h 58 min (2.9× Qwen), final loss 0.279, peak memory 4.42 GB. A second, independent generation run of the fine-tuned model reproduces every task within one item, so the numbers below are stable.
+
+| Task | n | Phi base | Phi QLoRA v2 | p | Qwen QLoRA v2 |
+|---|---|---|---|---|---|
+| HumanEval+ | 163 | 71.2 | 64.4 | 0.061 | 62.0 |
+| MBPP+ | 377 | 54.1 | **48.3** | 0.006 | 62.1 |
+| Completion | 163 | 47.9 | **41.1** | 0.035 | 36.8 |
+| HumanEvalFix | 164 | 42.7 | 34.8 | 0.085 | 36.0 |
+| HumanEvalFix, T1 format | 164 | 46.3 | **24.4** | 4e-7 | 24.4 |
+| CRUXEval-O | 800 | 33.6 | 35.5 | 0.16 | 28.7 |
+| Refactor | 163 | 86.5 | **94.5** | 0.011 | 93.9 |
+| Testgen | 164 | 90.2 | 87.2 | 0.36 | 82.3 |
+| Bug detection | 328 | 65.2 | 68.3 | 0.40 | 65.5 |
+| Bug detection, T3 format | 328 | 64.3 | 65.9 | 0.69 | 65.9 |
+| Vulnerability detection | 712 | 57.3 | **53.8** | 0.0002 | 51.5 |
+| Secure codegen | 121 | 64.5 | **81.8** | 2e-5 | 81.0 |
+| internal T1 repair | 212 | 41.0 | **70.8** | 2e-13 | 63.7 |
+| internal T2 tests | 134 | 41.0 | **29.9** | 0.008 | 23.9 |
+| internal T3 review | 229 | 44.5 | **66.4** | 8e-8 | 50.7 |
+| internal T4 trace | 96 | 52.1 | 53.1 | 1 | 51.0 |
+
+Bold means a significant change from Phi base (p < 0.05).
+
+**Findings.**
+
+1. **The data only helps where the targets beat the model.** Phi gains where our labels encode something it lacks: in-distribution repair +30, review +22, secure codegen +17, refactor +8. It *loses* where base Phi was already better than our targets:
+   - Repair in the T1 format: 46.3 → 24.4. Our T1 targets are minimal single-line fixes with a short diagnosis.
+   - In-distribution test writing: 41.0 → 29.9. The T2 reference suites themselves catch the injected faults only 87.8 % of the time, and they are compact by design.
+
+   Supervised fine-tuning imitates the targets, so a stronger student is pulled down to their level. For Qwen (base T2 11.2 %, T1-format repair 9.1 %) the same targets are a large upgrade.
+2. **The MBPP+ drop is instruction following, not coding.** MBPP+ tests call the function name shown in the prompt. The fine-tuned Phi defines that name in 272 / 377 answers, against 304 for base. Among answers that do, the pass rate is unchanged (66.9 % vs 67.1 %). Our tasks always hand the model existing code and never ask it to write a function with a given name. Qwen kept its naming compliance (361 / 377 vs 366 for base).
+3. **Small regressions elsewhere** in completion (−6.8), vulnerability detection (−3.5) and, as trends, HumanEval+ (−6.7) and HumanEvalFix (−7.9). Unlike Qwen, Phi pays a general-capability cost for this data.
+4. **Fine-tuned Phi vs fine-tuned Qwen:** Phi leads on CRUXEval-O (+6.8, p = 2e-5), internal T1 (+7.1, p = 0.049), internal T3 (+15.7, p = 3e-5) and vulnerability detection (+2.2, p = 0.02). Qwen leads on MBPP+ (+13.8, p = 2e-6, mostly the naming effect). The other 11 tasks show no significant difference. Phi is 2.5× the parameters, 2.9× the training time and 2.1× the GPU energy for generating all 16 tasks (287 kJ vs 135 kJ, unmerged LoRA serving).
+
+**Consequence.** For the platform, **Qwen2.5-Coder-1.5B + QLoRA v2** stays the model to deploy: it gains everywhere it was trained and loses nowhere. Phi-4-mini gives better reasoning and review but, after this fine-tune, worse instruction following and repair, at a much higher cost. For a stronger base model, the training targets would need to be better than the model (teacher-written repairs and test suites instead of minimal ones), and the replay share should include "write a function named X" tasks. Neither was done here.

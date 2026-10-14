@@ -1,3 +1,7 @@
 2026-10-14T02:04:02+02:00	qwen2.5-coder-1.5b-ft-qlora-v2	Q4_K_M	3244592	humaneval_plus mbpp_plus
 2026-10-14T03:33:31+02:00	qwen2.5-coder-1.5b-ft-qlora-v2	Q8_0	4018368	humaneval_plus mbpp_plus
 2026-10-14T05:55:54+02:00	qwen2.5-coder-1.5b-ft-qlora-v2	F16	5450744	humaneval_plus mbpp_plus
+2026-10-14T11:41:00+02:00	qwen2.5-coder-1.5b	F16	3268048	humaneval_plus mbpp_plus
+2026-10-14T12:14:50+02:00	qwen2.5-coder-1.5b	Q4_K_M	1348244	humanevalfix
+2026-10-14T12:43:04+02:00	qwen2.5-coder-1.5b-ft-qlora-v2	Q4_K_M	1219980	humanevalfix
+2026-10-14T13:35:49+02:00	qwen2.5-coder-1.5b-ft-qlora-v2	F16	3279572	humanevalfix

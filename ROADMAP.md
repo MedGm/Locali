@@ -56,7 +56,7 @@ Design: [docs/research-design.md](docs/research-design.md)
 - **Gate:** fine-tuned model evaluated and documented — **passed 2026-10-13**. Deployment model: Qwen2.5-Coder-1.5B + QLoRA v2
 
 ### W6–7 · Oct 26–Nov 8 · Optimization ladder
-- [ ] Merge adapter, export FP16 / INT8 / INT4
+- [x] Merge adapter, export FP16 / INT8 / INT4 ([merge](experiments/results/merge_qwen25_qlora_v2/README.md), [laptop ladder](experiments/results/ladder_laptop/README.md))
 - [ ] Prompt optimization, context slicing, KV cache and batching tests
 - [ ] Experiments A–F
 - [ ] During waits: 3 MCP servers

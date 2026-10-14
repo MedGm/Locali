@@ -1,0 +1,36 @@
+[{"stream_name":"stderr","time":6.942905011,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.942951348,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.942955564,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.942958325,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.5341800039999995,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.534207945,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.534212762,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.534216489,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":8.631345043,"data":"Writing /kaggle/working/kaggle_baselines.py\n"}
+,{"stream_name":"stdout","time":328.502328341,"data":"[23:03:57] setup done\n"}
+,{"stream_name":"stdout","time":328.503175083,"data":"[23:03:57] qwen2.5-coder-1.5b-ft-qlora-v2-merged: starting vLLM on GPU [0]\n"}
+,{"stream_name":"stdout","time":433.569397556,"data":"[23:05:42] qwen2.5-coder-1.5b-ft-qlora-v2-merged: server ready\n"}
+,{"stream_name":"stdout","time":493.898107114,"data":"[23:06:43] qwen2.5-coder-1.5b-ft-qlora-v2-merged/humaneval_plus: 163 answers in 60s, GPU energy 3845.4 J\n"}
+,{"stream_name":"stdout","time":540.479002273,"data":"[23:07:29] qwen2.5-coder-1.5b-ft-qlora-v2-merged/mbpp_plus: 377 answers in 47s, GPU energy 2971.0 J\n"}
+,{"stream_name":"stdout","time":581.585467567,"data":"[23:08:10] qwen2.5-coder-1.5b-ft-qlora-v2-merged/humanevalfix: 164 answers in 41s, GPU energy 2681.7 J\n"}
+,{"stream_name":"stdout","time":637.054956225,"data":"[23:09:06] qwen2.5-coder-1.5b-ft-qlora-v2-merged/bugdetect: 328 answers in 55s, GPU energy 3549.5 J\n"}
+,{"stream_name":"stdout","time":706.110503119,"data":"[23:10:15] qwen2.5-coder-1.5b-ft-qlora-v2-merged/cruxeval_o: 800 answers in 69s, GPU energy 4322.3 J\n"}
+,{"stream_name":"stdout","time":767.033420424,"data":"[23:11:16] qwen2.5-coder-1.5b-ft-qlora-v2-merged/testgen: 164 answers in 61s, GPU energy 3986.9 J\n"}
+,{"stream_name":"stdout","time":841.049619689,"data":"[23:12:30] qwen2.5-coder-1.5b-ft-qlora-v2-merged/refactor: 163 answers in 74s, GPU energy 4831.6 J\n"}
+,{"stream_name":"stdout","time":864.579961237,"data":"[23:12:53] qwen2.5-coder-1.5b-ft-qlora-v2-merged/completion: 163 answers in 24s, GPU energy 1447.3 J\n"}
+,{"stream_name":"stdout","time":897.049219435,"data":"[23:13:26] qwen2.5-coder-1.5b-ft-qlora-v2-merged/securecodegen: 121 answers in 32s, GPU energy 2026.6 J\n"}
+,{"stream_name":"stdout","time":993.674810062,"data":"[23:15:02] qwen2.5-coder-1.5b-ft-qlora-v2-merged/vulndetect: 712 answers in 97s, GPU energy 6264.3 J\n"}
+,{"stream_name":"stdout","time":1063.000813844,"data":"[23:16:12] qwen2.5-coder-1.5b-ft-qlora-v2-merged/humanevalfix_t1fmt: 164 answers in 69s, GPU energy 4516.2 J\n"}
+,{"stream_name":"stdout","time":1101.862225802,"data":"[23:16:50] qwen2.5-coder-1.5b-ft-qlora-v2-merged/bugdetect_t3fmt: 328 answers in 39s, GPU energy 2397.3 J\n"}
+,{"stream_name":"stdout","time":1102.470222075,"data":"[23:16:51] qwen2.5-coder-1.5b-ft-qlora-v2-merged: server stopped\n"}
+,{"stream_name":"stdout","time":1102.471070685,"data":"[23:16:51] all queues done\n"}
+,{"stream_name":"stdout","time":1102.489341255,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":1104.927399806,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1104.927435727,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1105.108189202,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1105.108216896,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1105.887619106,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":1105.974425947,"data":"[NbConvertApp] Writing 15284 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":1108.445987461,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1108.989302621,"data":"[NbConvertApp] Writing 316605 bytes to __results__.html\n"}
+]

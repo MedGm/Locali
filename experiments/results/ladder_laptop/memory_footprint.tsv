@@ -1,0 +1,5 @@
+model	quant	peak_rss_kb	setup
+qwen2.5-coder-1.5b	Q4_K_M	1285156	load-mode none, cache-ram 0, ctx 4096, 1 request
+ft-qlora-v2	Q4_K_M	1156904	load-mode none, cache-ram 0, ctx 4096, 1 request
+ft-qlora-v2	Q8_0	1794348	load-mode none, cache-ram 0, ctx 4096, 1 request
+ft-qlora-v2	F16	3207488	load-mode none, cache-ram 0, ctx 4096, 1 request

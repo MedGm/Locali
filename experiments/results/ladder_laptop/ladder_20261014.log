@@ -1,0 +1,165 @@
+== ladder 2026-10-14T01:04:00+02:00, llama.cpp 987498f, benchmarks: humaneval_plus mbpp_plus
+-- 2026-10-14T01:04:00+02:00 llama-server qwen2.5-coder-1.5b-ft-qlora-v2 Q4_K_M
+-- 2026-10-14T01:04:02+02:00 qwen2.5-coder-1.5b-ft-qlora-v2 Q4_K_M / humaneval_plus
+{
+  "metrics": {
+    "n": 163,
+    "status_counts": {
+      "passed": 98,
+      "failed": 62,
+      "timeout": 2,
+      "crashed": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 183.4724,
+    "mean_output_tokens": 111.908,
+    "mean_ttft_s": 2.0616,
+    "median_ttft_s": 1.8228,
+    "mean_total_s": 9.0726,
+    "mean_decode_tok_per_s": 16.12,
+    "total_energy_j": 22969.5,
+    "mean_energy_j_per_task": 140.92,
+    "pass@1": 0.6012
+  },
+  "this_session": {
+    "generated": 163,
+    "resumed": 0,
+    "wall_s": 1773.6
+  }
+}
+-- 2026-10-14T01:33:38+02:00 qwen2.5-coder-1.5b-ft-qlora-v2 Q4_K_M / mbpp_plus
+{
+  "metrics": {
+    "n": 377,
+    "status_counts": {
+      "passed": 219,
+      "failed": 157,
+      "timeout": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 102.3979,
+    "mean_output_tokens": 51.9125,
+    "mean_ttft_s": 0.7394,
+    "median_ttft_s": 0.6211,
+    "mean_total_s": 3.8722,
+    "mean_decode_tok_per_s": 16.74,
+    "total_energy_j": 23340.7,
+    "mean_energy_j_per_task": 61.91,
+    "pass@1": 0.5809
+  },
+  "this_session": {
+    "generated": 377,
+    "resumed": 0,
+    "wall_s": 1821.8
+  }
+}
+-- qwen2.5-coder-1.5b-ft-qlora-v2 Q4_K_M peak RSS 3244592 kB
+-- 2026-10-14T02:04:03+02:00 llama-server qwen2.5-coder-1.5b-ft-qlora-v2 Q8_0
+-- 2026-10-14T02:04:05+02:00 qwen2.5-coder-1.5b-ft-qlora-v2 Q8_0 / humaneval_plus
+{
+  "metrics": {
+    "n": 163,
+    "status_counts": {
+      "failed": 59,
+      "passed": 103,
+      "timeout": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 183.4724,
+    "mean_output_tokens": 143.4479,
+    "mean_ttft_s": 2.5674,
+    "median_ttft_s": 2.2448,
+    "mean_total_s": 16.4712,
+    "mean_decode_tok_per_s": 10.38,
+    "total_energy_j": 40789.5,
+    "mean_energy_j_per_task": 250.24,
+    "pass@1": 0.6319
+  },
+  "this_session": {
+    "generated": 163,
+    "resumed": 0,
+    "wall_s": 2910.6
+  }
+}
+-- 2026-10-14T02:52:37+02:00 qwen2.5-coder-1.5b-ft-qlora-v2 Q8_0 / mbpp_plus
+{
+  "metrics": {
+    "n": 377,
+    "status_counts": {
+      "passed": 224,
+      "failed": 152,
+      "timeout": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 102.3979,
+    "mean_output_tokens": 49.1247,
+    "mean_ttft_s": 0.9296,
+    "median_ttft_s": 0.7708,
+    "mean_total_s": 5.5559,
+    "mean_decode_tok_per_s": 10.71,
+    "total_energy_j": 32805.2,
+    "mean_energy_j_per_task": 87.02,
+    "pass@1": 0.5942
+  },
+  "this_session": {
+    "generated": 377,
+    "resumed": 0,
+    "wall_s": 2451.2
+  }
+}
+-- qwen2.5-coder-1.5b-ft-qlora-v2 Q8_0 peak RSS 4018368 kB
+-- 2026-10-14T03:33:31+02:00 llama-server qwen2.5-coder-1.5b-ft-qlora-v2 F16
+-- 2026-10-14T03:33:34+02:00 qwen2.5-coder-1.5b-ft-qlora-v2 F16 / humaneval_plus
+{
+  "metrics": {
+    "n": 163,
+    "status_counts": {
+      "failed": 57,
+      "passed": 105,
+      "timeout": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 183.4724,
+    "mean_output_tokens": 144.7669,
+    "mean_ttft_s": 2.3312,
+    "median_ttft_s": 2.0664,
+    "mean_total_s": 27.2633,
+    "mean_decode_tok_per_s": 5.84,
+    "total_energy_j": 67041.3,
+    "mean_energy_j_per_task": 411.3,
+    "pass@1": 0.6442
+  },
+  "this_session": {
+    "generated": 163,
+    "resumed": 0,
+    "wall_s": 4668.4
+  }
+}
+-- 2026-10-14T04:51:25+02:00 qwen2.5-coder-1.5b-ft-qlora-v2 F16 / mbpp_plus
+{
+  "metrics": {
+    "n": 377,
+    "status_counts": {
+      "passed": 227,
+      "failed": 149,
+      "timeout": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 102.3979,
+    "mean_output_tokens": 50.2732,
+    "mean_ttft_s": 0.8322,
+    "median_ttft_s": 0.6887,
+    "mean_total_s": 9.329,
+    "mean_decode_tok_per_s": 5.96,
+    "total_energy_j": 53980.8,
+    "mean_energy_j_per_task": 143.19,
+    "pass@1": 0.6021
+  },
+  "this_session": {
+    "generated": 377,
+    "resumed": 0,
+    "wall_s": 3866.7
+  }
+}
+-- qwen2.5-coder-1.5b-ft-qlora-v2 F16 peak RSS 5450744 kB
+== done 2026-10-14T05:55:55+02:00

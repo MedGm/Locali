@@ -1,7 +1,7 @@
 """Read-only MCP server exposing one repository root.
 
 Least privilege: two tools, no write access, and every path is resolved (following
-symlinks) and must stay inside the root.
+symlinks) and must stay inside the root. File contents are returned with secrets redacted.
 
     python -m mcp_servers.repo_server --root /path/to/repo
 """
@@ -10,6 +10,8 @@ import argparse
 from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
+
+from security.secrets import redact
 
 MAX_BYTES = 200_000
 SKIP_DIRS = {".git", "__pycache__", ".venv", "node_modules"}
@@ -41,7 +43,7 @@ def read_file(root: Path, path: str) -> str:
         raise FileNotFoundError(f"no such file in repository: {path}")
     if target.stat().st_size > MAX_BYTES:
         raise ValueError(f"file larger than {MAX_BYTES} bytes: {path}")
-    return target.read_text(errors="replace")
+    return redact(target.read_text(errors="replace"))
 
 
 def build_server(root: Path) -> FastMCP:

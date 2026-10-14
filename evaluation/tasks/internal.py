@@ -13,6 +13,7 @@ the training answer. Groups in the test split never appear in training (split by
 import ast
 import json
 import os
+import threading
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -54,6 +55,7 @@ class InternalRepairTask:
     def __init__(self, rows: list[dict] | None = None, suites: dict[str, str] | None = None):
         self._rows = rows
         self._suites = suites
+        self._suites_lock = threading.Lock()  # prompts are built in worker threads; load the source once
 
     @property
     def excluded(self) -> dict[str, str]:
@@ -71,13 +73,14 @@ class InternalRepairTask:
         return item.messages[-1]["content"]
 
     def _suite(self, group: str) -> str | None:
-        if self._suites is None:
-            from datasets import load_dataset
+        with self._suites_lock:
+            if self._suites is None:
+                from datasets import load_dataset
 
-            from training.data.t1_bugs import SOURCE, SOURCE_REVISION, best_suite
+                from training.data.t1_bugs import SOURCE, SOURCE_REVISION, best_suite
 
-            rows = load_dataset(SOURCE, revision=SOURCE_REVISION, split="train")
-            self._suites = {f"{SOURCE}:{r['task_id']}": best_suite(r) for r in rows}
+                rows = load_dataset(SOURCE, revision=SOURCE_REVISION, split="train")
+                self._suites = {f"{SOURCE}:{r['task_id']}": best_suite(r) for r in rows}
         return self._suites.get(group)
 
     def score(self, item: InternalItem, completion: Completion, eval_timeout_s: float) -> dict:

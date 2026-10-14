@@ -115,7 +115,7 @@ def test_summary_lists_excluded_problems_for_the_benchmark(tmp_path):
 def test_runner_registers_all_benchmark_tasks():
     from evaluation.run import TASKS
 
-    assert {"humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect", "cruxeval_o", "testgen", "refactor", "completion", "securecodegen", "vulndetect", "internal_t1", "internal_t2", "internal_t3", "internal_t4", "humanevalfix_t1fmt", "bugdetect_t3fmt"} <= set(TASKS)
+    assert {"humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect", "cruxeval_o", "testgen", "refactor", "completion", "securecodegen", "vulndetect", "internal_t1", "internal_t2", "internal_t3", "internal_t4", "humanevalfix_t1fmt", "bugdetect_t3fmt", "internal_t1_fullctx", "internal_t1_compressed"} <= set(TASKS)
 
 
 def test_generate_only_records_answers_without_scoring(tmp_path, config):

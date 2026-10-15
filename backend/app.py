@@ -16,7 +16,6 @@ The model is the OpenAI-compatible endpoint in LOCALI_MODEL_URL; without it, age
 
 import json
 import os
-import subprocess
 import tempfile
 import uuid
 from collections import Counter
@@ -36,6 +35,7 @@ from backend.audit import AuditLog
 from backend.patches import ApprovalMismatch, PatchConflict, PatchStore, StalePatch, propose
 from backend.validation import validate_workspace
 from backend.workspace import open_workspace
+from security.commands import run as run_command
 from security.secrets import redact
 
 
@@ -186,8 +186,8 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
         try:
             # GNU patch tolerates shifted hunks (git apply anchors a hunk without leading context to
             # line 1); the result is a new proposal that is validated and reviewed from scratch.
-            done = subprocess.run(["patch", "-p1", "--batch", "--forward", "--fuzz=2", "--no-backup-if-mismatch"],
-                                  cwd=ws.path, input=old.diff, capture_output=True, text=True, check=False)
+            done = run_command(["patch", "-p1", "--batch", "--forward", "--fuzz=2", "--no-backup-if-mismatch"],
+                               cwd=ws.path, input=old.diff)
             if done.returncode != 0:
                 raise HTTPException(409, f"patch no longer applies: {(done.stdout + done.stderr).strip()[:300]}")
             diff = ws.diff()

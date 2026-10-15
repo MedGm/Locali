@@ -3,13 +3,15 @@
 import hashlib
 import json
 import shutil
-import subprocess
 import tempfile
 import time
 import uuid
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from pathlib import Path
+
+from security.commands import TimeoutExpired
+from security.commands import run as run_command
 
 DOCKERFILE = Path(__file__).with_name("sandbox.Dockerfile")
 # Tag by Dockerfile content so any change to the image definition forces a rebuild.
@@ -31,12 +33,9 @@ class SandboxResult:
 
 
 def ensure_image() -> None:
-    exists = subprocess.run(["docker", "image", "inspect", IMAGE], capture_output=True, check=False)
+    exists = run_command(["docker", "image", "inspect", IMAGE])
     if exists.returncode != 0:
-        subprocess.run(
-            ["docker", "build", "-t", IMAGE, "-f", str(DOCKERFILE), str(DOCKERFILE.parent)],
-            check=True, capture_output=True,
-        )
+        run_command(["docker", "build", "-t", IMAGE, "-f", str(DOCKERFILE), str(DOCKERFILE.parent)], check=True)
 
 
 def run_pytest(
@@ -87,11 +86,11 @@ def run_pytest(
         cmd += select or []
         start = time.perf_counter()
         try:
-            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_s, check=False)
+            proc = run_command(cmd, timeout=timeout_s)
             exit_code, output, timed_out = proc.returncode, proc.stdout + proc.stderr, False
-        except subprocess.TimeoutExpired as e:
+        except TimeoutExpired as e:
             # Killing the docker CLI does not stop the container; remove it explicitly.
-            subprocess.run(["docker", "rm", "-f", name], capture_output=True, check=False)
+            run_command(["docker", "rm", "-f", name])
             exit_code, timed_out = None, True
             output = _text(e.stdout) + _text(e.stderr)
         duration = time.perf_counter() - start

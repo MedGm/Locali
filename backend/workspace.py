@@ -11,17 +11,19 @@ Both give the same thing back: `diff()` is a Git unified diff relative to the fo
 
 import hashlib
 import shutil
-import subprocess
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+
+from security.commands import CompletedProcess
+from security.commands import run as run_command
 
 SKIP = (".git", ".venv", "venv", "node_modules", "__pycache__", ".pytest_cache", ".ruff_cache")
 _IDENTITY = ["-c", "user.name=locali", "-c", "user.email=locali@localhost"]
 
 
-def _git(cwd: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess:
-    return subprocess.run(["git", "-C", str(cwd), *_IDENTITY, *args], capture_output=True, text=True, check=check)
+def _git(cwd: Path, *args: str, check: bool = True) -> CompletedProcess:
+    return run_command(["git", "-C", str(cwd), *_IDENTITY, *args], check=check)
 
 
 def file_hash(path: Path) -> str | None:

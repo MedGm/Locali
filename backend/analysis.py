@@ -5,10 +5,11 @@ high / medium / low), so tool output and model reviews can be merged and compare
 """
 
 import json
-import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+
+from security.commands import run as run_command
 
 RULES = Path(__file__).with_name("semgrep_rules.yml")
 RUFF_SELECT = "F,E7,E9,B"
@@ -27,7 +28,7 @@ class Finding:
 
 
 def _run(args: list[str]) -> str:
-    return subprocess.run(args, capture_output=True, text=True, check=False).stdout
+    return run_command(args).stdout
 
 
 def _rel(root: Path, path: str) -> str:

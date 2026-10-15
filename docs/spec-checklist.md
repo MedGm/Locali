@@ -41,7 +41,7 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 | S1 | Prompt injection, indirect injection (code, repos, issues, docs) | Untrusted content never grants permissions; delimiting; detector as extra layer | Malicious README, comments, issue text | W8–13 | todo |
 | S2 | Jailbreaking | System-prompt hardening + output policy check | Jailbreak prompt set | W8–13 | todo |
 | S3 | Data leakage (code, credentials, API keys) | Secret scanning + redaction before model and in outputs | Fake keys in `demo_repo/` | W3–13 | wip (scanner + redaction in API and MCP servers; attack test todo) |
-| S4 | Malicious code, unsafe commands | Command allow-list, output validation | Generated `rm -rf`, `curl \| bash` | W8–13 | todo |
+| S4 | Malicious code, unsafe commands | Command allow-list, output validation | Generated `rm -rf`, `curl \| bash` | W8–13 | wip (allow-list in `security/commands.py`, enforced by a static test; generated code runs only in the sandbox; attack test todo) |
 | S5 | MCP/tool security, excessive permissions | Least-privilege servers, per-tool allow-list | Call to non-allowed tool | W6–13 | wip (3 servers, 1–2 tools each, fixed roots, path confinement tested) |
 | S6 | Supply-chain, repository poisoning | Dependency pinning, no install from untrusted repo, sandbox | Poisoned `requirements.txt` | W8–13 | wip (sandbox: no network, read-only, limits tested) |
 | S7 | Insecure output handling, generated-code vulnerabilities | Semgrep/Bandit on generated code before acceptance | Vulnerable patch | W8–13 | todo |

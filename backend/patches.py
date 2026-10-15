@@ -24,7 +24,6 @@ import json
 import os
 import re
 import shutil
-import subprocess
 import tempfile
 import uuid
 from collections.abc import Callable, Iterator
@@ -34,6 +33,8 @@ from pathlib import Path
 
 from backend.audit import AuditLog
 from backend.workspace import Workspace, file_hash
+from security.commands import CompletedProcess
+from security.commands import run as run_command
 
 _DIFF_HEADER = re.compile(r"^diff --git a/(.+?) b/(.+)$", re.MULTILINE)
 
@@ -80,17 +81,16 @@ def _touched(diff: str) -> list[str]:
     return sorted({b for _, b in _DIFF_HEADER.findall(diff)})
 
 
-def _git_apply(repo: Path, diff: str, *flags: str) -> subprocess.CompletedProcess:
+def _git_apply(repo: Path, diff: str, *flags: str) -> CompletedProcess:
     """Run `git apply` so paths resolve against `repo`, also when it sits inside a larger Git repo."""
-    top = subprocess.run(["git", "-C", str(repo), "rev-parse", "--show-toplevel"], capture_output=True, text=True,
-                         check=False)
+    top = run_command(["git", "-C", str(repo), "rev-parse", "--show-toplevel"])
     if top.returncode == 0:
         root = Path(top.stdout.strip()).resolve()
         rel = repo.resolve().relative_to(root).as_posix()
         args = ["git", "-C", str(root), "apply", *flags, *([f"--directory={rel}"] if rel != "." else [])]
     else:
         args = ["git", "-C", str(repo), "apply", *flags]
-    return subprocess.run([*args, "-"], input=diff, capture_output=True, text=True, check=False)
+    return run_command([*args, "-"], input=diff)
 
 
 class PatchStore:

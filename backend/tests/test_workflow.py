@@ -58,5 +58,5 @@ def test_on_step_reports_each_step_before_it_runs(tmp_path):
     import pytest
     with pytest.raises(RuntimeError):
         run_workflow(DEMO, run_id="run3", model=stop_after_prepare, store=PatchStore(tmp_path / "data"),
-                     tools=False, on_step=seen.append)
+                     tools=False, on_step=lambda name, state: seen.append(name))
     assert seen == ["prepare", "review"]

@@ -19,15 +19,18 @@ import { cn } from "@/lib/utils";
 export default function RunPage() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
-  const run = useQuery({ queryKey: ["run", id], queryFn: () => api<Run>(`/runs/${id}`) });
-
-  // Live progress: the backend streams the run's state; any change refreshes the run.
+  // Live progress: the backend streams the run's state and any change refreshes the run. The browser
+  // reconnects the stream by itself after an error; slow polling is a safety net on top of that.
+  const run = useQuery({
+    queryKey: ["run", id],
+    queryFn: () => api<Run>(`/runs/${id}`),
+    refetchInterval: (q) => (q.state.data?.status === "queued" || q.state.data?.status === "running" ? 5000 : false),
+  });
   const live = run.data && (run.data.status === "queued" || run.data.status === "running");
   useEffect(() => {
     if (!live) return;
     const events = new EventSource(`/api/runs/${id}/events`);
     events.onmessage = () => queryClient.invalidateQueries({ queryKey: ["run", id] });
-    events.onerror = () => events.close();
     return () => events.close();
   }, [id, live, queryClient]);
 
@@ -152,8 +155,8 @@ function Findings({ findings }: { findings: Finding[] }) {
   return (
     <div className="space-y-3 pt-2">
       <div className="flex flex-wrap gap-2">
-        <Filter value={source} onChange={setSource} label="Source" options={tools} />
-        <Filter value={category} onChange={setCategory} label="Category" options={["bug", "security", "quality"]} />
+        <Filter value={source} onChange={setSource} label="Source" all="All sources" options={tools} />
+        <Filter value={category} onChange={setCategory} label="Category" all="All categories" options={["bug", "security", "quality"]} />
         <Input placeholder="Search file or message" value={text} onChange={(e) => setText(e.target.value)} className="w-64" />
         <span className="self-center text-xs text-muted-foreground">
           {shown.length} of {findings.length}. Findings from the model are a second opinion; the static tools are
@@ -194,7 +197,7 @@ function Findings({ findings }: { findings: Finding[] }) {
   );
 }
 
-function Filter(props: { label: string; value: string; onChange: (v: string) => void; options: string[] }) {
+function Filter(props: { label: string; all: string; value: string; onChange: (v: string) => void; options: string[] }) {
   return (
     <select
       aria-label={props.label}
@@ -202,7 +205,7 @@ function Filter(props: { label: string; value: string; onChange: (v: string) => 
       onChange={(e) => props.onChange(e.target.value)}
       className="h-8 rounded-lg border bg-transparent px-2 text-sm"
     >
-      <option value="all">All {props.label.toLowerCase()}s</option>
+      <option value="all">{props.all}</option>
       {props.options.map((o) => (
         <option key={o} value={o}>
           {o}

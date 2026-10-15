@@ -59,10 +59,29 @@ class Rejection(BaseModel):
     reviewer: str
 
 
+async def event_stream(load: Callable[[], dict], heartbeat_s: float, poll_s: float = 0.2):
+    """Server-Sent Events for one run: its state whenever it changes, and a comment line when nothing has
+    changed for heartbeat_s. A step can take minutes, and proxies drop a response that stays silent."""
+    loop = asyncio.get_running_loop()
+    last, quiet_since = None, loop.time()
+    while True:
+        run = load()
+        view = {k: run.get(k) for k in ("id", "status", "step", "steps_done", "patch_id", "error")}
+        if view != last:
+            yield f"data: {json.dumps(view)}\n\n"
+            last, quiet_since = view, loop.time()
+        elif loop.time() - quiet_since >= heartbeat_s:
+            yield ": keepalive\n\n"
+            quiet_since = loop.time()
+        if run["status"] in ("done", "failed"):
+            return
+        await asyncio.sleep(poll_s)
+
+
 def create_app(repos_root: str | Path, data_dir: str | Path,
                validate: Callable[[Path, list[str]], dict] | None = None,
                model: Callable[[list[dict]], str] | None = None, tools: bool = True,
-               api_token: str | None = None) -> FastAPI:
+               api_token: str | None = None, heartbeat_s: float = 15.0) -> FastAPI:
     """validate replaces the full workspace validation (tests use a stub); model answers chat messages
     for agent runs; tools=False drops the static-analysis step of agent runs (ablation); api_token,
     when set, is required as a Bearer token on every endpoint except /health."""
@@ -94,11 +113,12 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
         progress = {"step": None, "steps_done": []}
         trajectory = runs_dir / f"{run['id']}.trajectory.jsonl"
 
-        def on_step(name: str) -> None:
+        def on_step(name: str, state: dict) -> None:
             if progress["step"]:
                 progress["steps_done"].append(progress["step"])
             progress["step"] = name
-            save_run({**run, "status": "running", **progress})
+            partial = {k: state[k] for k in ("findings", "suspects", "fixes", "tests_added") if k in state}
+            save_run({**run, "status": "running", **progress, **partial})
 
         def record(call: dict) -> None:
             with trajectory.open("a") as f:
@@ -191,20 +211,7 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
     @app.get("/runs/{run_id}/events")
     async def run_events(run_id: str):
         load_run(run_id)
-
-        async def stream():
-            last = None
-            while True:
-                run = load_run(run_id)
-                view = {k: run.get(k) for k in ("id", "status", "step", "steps_done", "patch_id", "error")}
-                if view != last:
-                    yield f"data: {json.dumps(view)}\n\n"
-                    last = view
-                if run["status"] in ("done", "failed"):
-                    return
-                await asyncio.sleep(0.2)
-
-        return StreamingResponse(stream(), media_type="text/event-stream")
+        return StreamingResponse(event_stream(lambda: load_run(run_id), heartbeat_s), media_type="text/event-stream")
 
     def get_patch(patch_id: str):
         try:

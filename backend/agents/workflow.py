@@ -69,7 +69,7 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
     def step(name, update):
         def node(state: RunState) -> RunState:
             if on_step:
-                on_step(name)
+                on_step(name, state)
             return {**update(state), "steps": [*state.get("steps", []), name]}
         return node
 
@@ -118,7 +118,7 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
 
 def run_workflow(repo: str | Path, run_id: str, model, store: PatchStore, tools: bool = True,
                  on_step=None) -> RunState:
-    """on_step(name) is called before each step runs (progress reporting)."""
+    """on_step(name, state) is called before each step runs, with the results of the steps so far."""
     workspaces: dict[str, Workspace] = {}
     try:
         graph = build_workflow(model, store, workspaces, tools, on_step)

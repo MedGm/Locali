@@ -82,3 +82,39 @@ def test_run_records_progress_trajectory_and_streams_events(tmp_path):
 
     listed = client.get("/runs").json()
     assert listed[0]["id"] == run_id and listed[0]["status"] == "done" and "findings" not in listed[0]
+
+
+def test_event_stream_sends_heartbeats_while_nothing_changes():
+    # TestClient collects a whole response body, so the endless stream is read from the generator.
+    import asyncio
+
+    from backend.app import event_stream
+
+    state = {"id": "r1", "status": "running", "step": "testgen"}
+
+    async def first(n):
+        out, gen = [], event_stream(lambda: state, heartbeat_s=0.2, poll_s=0.05)
+        async for chunk in gen:
+            out.append(chunk)
+            if len(out) == n:
+                await gen.aclose()
+                return out
+
+    chunks = asyncio.run(first(3))
+    assert chunks[0].startswith("data: ") and chunks[1] == ": keepalive\n\n" and chunks[2] == ": keepalive\n\n"
+
+
+@needs_docker
+def test_partial_results_are_saved_while_the_run_is_going(tmp_path):
+    snapshots = []
+    client = TestClient(create_app(repos_root=ROOT, data_dir=tmp_path, model=fake_model))
+    run_id = client.post("/runs", json={"repo": "demo_repo", "mode": "agents"}).json()["id"]
+    deadline = time.time() + 600
+    while time.time() < deadline:
+        run = client.get(f"/runs/{run_id}").json()
+        snapshots.append(run)
+        if run["status"] in ("done", "failed"):
+            break
+        time.sleep(0.5)
+    during = [s for s in snapshots if s["status"] == "running" and s.get("step") in ("testgen", "debug")]
+    assert during and all(s.get("findings") for s in during)  # analysis results visible before the end

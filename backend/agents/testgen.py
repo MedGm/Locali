@@ -119,7 +119,7 @@ def generate_tests(root: str | Path, model: Model, functions: list[tuple[str, st
         if not _test_names(kept):
             out.unlink()
             continue
-        out.write_text(kept)
+        out.write_text(kept.rstrip("\n") + "\n")
         check = run_tests(root, [out_rel])
         if check["failed"] or check["errors"] or check["timed_out"]:  # flaky or broken: keep nothing
             out.unlink()

@@ -39,6 +39,7 @@ def test_passing_tests_are_kept_and_failing_ones_become_suspects():
 
         kept = (ws.path / result.files[0]).read_text()
         assert "from tinyshop.pricing import" in kept and "solution" not in kept
+        assert kept.endswith("\n")
         assert "def test_small_order" in kept and "def test_fifty_units" not in kept
 
         [suspect] = result.suspects
@@ -84,5 +85,16 @@ def test_tests_that_crash_are_counted_not_reported_as_suspects():
         assert [s.test.splitlines()[0] for s in result.suspects] == ["def test_fifty_units():"]
         assert result.crashed == {"tinyshop/pricing.py::bulk_discount": 1}
         assert result.files == []
+    finally:
+        ws.cleanup()
+
+
+@needs_docker
+def test_kept_test_file_ends_with_a_newline():
+    ws = open_workspace(DEMO)
+    try:
+        answer = "```python\nfrom solution import bulk_discount\n\n\ndef test_small():\n    assert bulk_discount(5) == 0\n```"
+        result = generate_tests(ws.path, ScriptedModel(answer), [("tinyshop/pricing.py", "bulk_discount")])
+        assert (ws.path / result.files[0]).read_text().endswith("\n")
     finally:
         ws.cleanup()

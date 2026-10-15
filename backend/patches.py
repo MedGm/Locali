@@ -11,16 +11,24 @@ Approval names the exact patch hash, baseline and validation-record hash (what t
 and only a patch whose validation passed can be approved. The stored record is re-hashed at
 approval, so a record edited after the proposal is refused. Applying re-hashes the files first (any change makes the patch stale), checks the diff
 with `git apply --check`, backs up the files it will overwrite, then applies. Revert restores the
-backups and removes the files the patch created.
+backups and removes the files the patch created, but only if the files are still exactly as the
+patch left them; otherwise it would overwrite later work.
+
+Every state change runs under a lock per user folder (flock, so it also holds across processes):
+re-hashing, checking and writing happen as one step, and patch records are written atomically.
 """
 
+import fcntl
 import hashlib
 import json
+import os
 import re
 import shutil
 import subprocess
+import tempfile
 import uuid
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
@@ -54,6 +62,7 @@ class Patch:
     head: str | None
     validation: dict
     validation_sha256: str = ""
+    applied_hashes: dict[str, str | None] = field(default_factory=dict)
     status: str = "proposed"
     reviewer: str | None = None
     history: list[str] = field(default_factory=list)
@@ -89,7 +98,20 @@ class PatchStore:
         self.dir = Path(data_dir)
         (self.dir / "patches").mkdir(parents=True, exist_ok=True)
         (self.dir / "backups").mkdir(parents=True, exist_ok=True)
+        (self.dir / "locks").mkdir(parents=True, exist_ok=True)
         self.audit = audit
+
+    @contextmanager
+    def _locked(self, patch_id: str) -> Iterator[Patch]:
+        """Hold the lock of the patch's folder and yield a fresh copy of the patch read under it."""
+        repo = self.get(patch_id).repo
+        lock_path = self.dir / "locks" / f"{_sha(str(Path(repo).resolve()))[:16]}.lock"
+        with open(lock_path, "w") as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            try:
+                yield self.get(patch_id)
+            finally:
+                fcntl.flock(lock, fcntl.LOCK_UN)
 
     def _log(self, action: str, patch: Patch, **extra) -> None:
         patch.history.append(action)
@@ -97,7 +119,10 @@ class PatchStore:
             self.audit.write(action, patch_id=patch.id, run_id=patch.run_id, sha256=patch.sha256, **extra)
 
     def save(self, patch: Patch) -> Patch:
-        (self.dir / "patches" / f"{patch.id}.json").write_text(json.dumps(asdict(patch), indent=1))
+        fd, tmp = tempfile.mkstemp(dir=self.dir / "patches", suffix=".tmp")
+        with os.fdopen(fd, "w") as f:
+            f.write(json.dumps(asdict(patch), indent=1))
+        os.replace(tmp, self.dir / "patches" / f"{patch.id}.json")
         return patch
 
     def get(self, patch_id: str) -> Patch:
@@ -112,68 +137,73 @@ class PatchStore:
 
     def approve(self, patch_id: str, *, sha256: str, baseline: dict, validation_sha256: str,
                 reviewer: str) -> Patch:
-        patch = self.get(patch_id)
-        if patch.status != "proposed":
-            raise ApprovalMismatch(f"patch is {patch.status}, not proposed")
-        if validation_hash(patch.validation) != patch.validation_sha256:
-            raise ApprovalMismatch("stored validation record does not match its hash")
-        if not patch.validation.get("ok"):
-            raise ApprovalMismatch("patch failed validation")
-        if sha256 != patch.sha256 or baseline != patch.baseline or validation_sha256 != patch.validation_sha256:
-            raise ApprovalMismatch("decision does not match the proposed patch")
-        patch.status, patch.reviewer = "approved", reviewer
-        self._log("patch.approved", patch, reviewer=reviewer)
-        return self.save(patch)
+        with self._locked(patch_id) as patch:
+            if patch.status != "proposed":
+                raise ApprovalMismatch(f"patch is {patch.status}, not proposed")
+            if validation_hash(patch.validation) != patch.validation_sha256:
+                raise ApprovalMismatch("stored validation record does not match its hash")
+            if not patch.validation.get("ok"):
+                raise ApprovalMismatch("patch failed validation")
+            if sha256 != patch.sha256 or baseline != patch.baseline or validation_sha256 != patch.validation_sha256:
+                raise ApprovalMismatch("decision does not match the proposed patch")
+            patch.status, patch.reviewer = "approved", reviewer
+            self._log("patch.approved", patch, reviewer=reviewer)
+            return self.save(patch)
 
     def reject(self, patch_id: str, *, reviewer: str) -> Patch:
-        patch = self.get(patch_id)
-        if patch.status not in ("proposed", "approved", "stale"):
-            raise ApprovalMismatch(f"patch is {patch.status}")
-        patch.status, patch.reviewer = "rejected", reviewer
-        self._log("patch.rejected", patch, reviewer=reviewer)
-        return self.save(patch)
+        with self._locked(patch_id) as patch:
+            if patch.status not in ("proposed", "approved", "stale"):
+                raise ApprovalMismatch(f"patch is {patch.status}")
+            patch.status, patch.reviewer = "rejected", reviewer
+            self._log("patch.rejected", patch, reviewer=reviewer)
+            return self.save(patch)
 
     def apply(self, patch_id: str) -> Patch:
-        patch = self.get(patch_id)
-        if patch.status != "approved":
-            raise ApprovalMismatch(f"patch is {patch.status}, not approved")
-        repo = Path(patch.repo)
-        current = {f: file_hash(repo / f) for f in patch.files}
-        if current != patch.baseline:
-            patch.status = "stale"
-            self._log("patch.stale", patch, changed=[f for f in patch.files if current[f] != patch.baseline[f]])
-            self.save(patch)
-            raise StalePatch("files changed since the patch was proposed; revalidate it")
-        check = _git_apply(repo, patch.diff, "--check")
-        if check.returncode != 0:
-            self._log("patch.conflict", patch, error=check.stderr.strip()[:500])
-            self.save(patch)
-            raise PatchConflict(check.stderr.strip())
-        backup = self.dir / "backups" / patch.id
-        for f in patch.files:
-            if patch.baseline[f] is not None:
-                (backup / f).parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(repo / f, backup / f)
-        done = _git_apply(repo, patch.diff)
-        if done.returncode != 0:
-            raise PatchConflict(done.stderr.strip())
-        patch.status = "applied"
-        self._log("patch.applied", patch)
-        return self.save(patch)
+        with self._locked(patch_id) as patch:
+            if patch.status != "approved":
+                raise ApprovalMismatch(f"patch is {patch.status}, not approved")
+            repo = Path(patch.repo)
+            current = {f: file_hash(repo / f) for f in patch.files}
+            if current != patch.baseline:
+                patch.status = "stale"
+                self._log("patch.stale", patch, changed=[f for f in patch.files if current[f] != patch.baseline[f]])
+                self.save(patch)
+                raise StalePatch("files changed since the patch was proposed; revalidate it")
+            check = _git_apply(repo, patch.diff, "--check")
+            if check.returncode != 0:
+                self._log("patch.conflict", patch, error=check.stderr.strip()[:500])
+                self.save(patch)
+                raise PatchConflict(check.stderr.strip())
+            backup = self.dir / "backups" / patch.id
+            for f in patch.files:
+                if patch.baseline[f] is not None:
+                    (backup / f).parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(repo / f, backup / f)
+            done = _git_apply(repo, patch.diff)
+            if done.returncode != 0:
+                raise PatchConflict(done.stderr.strip())
+            patch.applied_hashes = {f: file_hash(repo / f) for f in patch.files}
+            patch.status = "applied"
+            self._log("patch.applied", patch)
+            return self.save(patch)
 
     def revert(self, patch_id: str) -> Patch:
-        patch = self.get(patch_id)
-        if patch.status != "applied":
-            raise ApprovalMismatch(f"patch is {patch.status}, not applied")
-        repo, backup = Path(patch.repo), self.dir / "backups" / patch.id
-        for f in patch.files:
-            if patch.baseline[f] is None:
-                (repo / f).unlink(missing_ok=True)
-            else:
-                shutil.copy2(backup / f, repo / f)
-        patch.status = "reverted"
-        self._log("patch.reverted", patch)
-        return self.save(patch)
+        with self._locked(patch_id) as patch:
+            if patch.status != "applied":
+                raise ApprovalMismatch(f"patch is {patch.status}, not applied")
+            repo, backup = Path(patch.repo), self.dir / "backups" / patch.id
+            if {f: file_hash(repo / f) for f in patch.files} != patch.applied_hashes:
+                self._log("patch.revert_refused", patch)
+                self.save(patch)
+                raise StalePatch("files changed after the patch was applied; reverting would overwrite that")
+            for f in patch.files:
+                if patch.baseline[f] is None:
+                    (repo / f).unlink(missing_ok=True)
+                else:
+                    shutil.copy2(backup / f, repo / f)
+            patch.status = "reverted"
+            self._log("patch.reverted", patch)
+            return self.save(patch)
 
 
 def propose(ws: Workspace, *, run_id: str, validate: Callable[[Path, list[str]], dict],

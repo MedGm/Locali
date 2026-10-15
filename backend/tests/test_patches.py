@@ -145,3 +145,72 @@ def test_apply_works_for_a_folder_inside_a_git_repo(tmp_path, store):
     store.apply(patch.id)
     assert "a + b" in (top / "shop" / "app.py").read_text()
     assert (top / "shop" / "test_app.py").exists() and not (top / "test_app.py").exists()
+
+
+def slow_git_apply(monkeypatch):
+    import time
+
+    import backend.patches as patches_module
+
+    real = patches_module._git_apply
+
+    def slow(repo, diff, *flags):
+        time.sleep(0.2)  # widen the check-then-write window so a missing lock shows up
+        return real(repo, diff, *flags)
+
+    monkeypatch.setattr(patches_module, "_git_apply", slow)
+
+
+def run_concurrently(calls):
+    import threading
+
+    barrier = threading.Barrier(len(calls))
+    results = [None] * len(calls)
+
+    def worker(i, fn):
+        barrier.wait()
+        try:
+            results[i] = fn().status
+        except Exception as e:  # noqa: BLE001 - the outcome is what the test checks
+            results[i] = type(e).__name__
+
+    threads = [threading.Thread(target=worker, args=(i, fn)) for i, fn in enumerate(calls)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    return results
+
+
+def test_concurrent_applies_of_one_patch_apply_it_once(repo, store, monkeypatch):
+    patch = fix_and_add_test(repo, store)
+    approve(store, patch)
+    slow_git_apply(monkeypatch)
+    results = run_concurrently([lambda: store.apply(patch.id)] * 4)
+    assert sorted(results) == ["ApprovalMismatch"] * 3 + ["applied"]
+    assert (repo / "app.py").read_text() == "def add(a, b):\n    return a + b\n"
+
+
+def test_concurrent_patches_on_the_same_file_cannot_both_apply(repo, store, monkeypatch):
+    first = fix_and_add_test(repo, store)
+    ws = open_workspace(repo)
+    (ws.path / "app.py").write_text("def add(a, b):\n    return b + a\n")
+    second = propose(ws, run_id="r2", validate=no_checks, store=store)
+    ws.cleanup()
+    approve(store, first)
+    approve(store, second)
+    slow_git_apply(monkeypatch)
+    results = run_concurrently([lambda: store.apply(first.id), lambda: store.apply(second.id)])
+    assert sorted(results) == ["StalePatch", "applied"]
+    assert (repo / "app.py").read_text() in ("def add(a, b):\n    return a + b\n", "def add(a, b):\n    return b + a\n")
+
+
+def test_revert_refuses_to_overwrite_later_changes(repo, store):
+    patch = fix_and_add_test(repo, store)
+    approve(store, patch)
+    store.apply(patch.id)
+    (repo / "app.py").write_text("def add(a, b):\n    return a + b  # reviewed\n")
+    with pytest.raises(StalePatch):
+        store.revert(patch.id)
+    assert "# reviewed" in (repo / "app.py").read_text()
+    assert store.get(patch.id).status == "applied"

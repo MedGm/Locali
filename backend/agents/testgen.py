@@ -18,13 +18,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from backend.agents.debug import function_source
+from backend.agents.files import is_test_file, python_files
 from evaluation.extract import extract_all_code, trim_to_parseable
 from evaluation.tasks.testgen import split_asserts, testgen_prompt
 from mcp_servers.tests_server import run_tests
 from training.data.t1_bugs import failing_test_details
 
 Model = Callable[[list[dict]], str]
-SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", "node_modules"}
 
 
 @dataclass
@@ -47,26 +47,18 @@ def _is_assertion(error: str) -> bool:
     return first.startswith(("assert ", "AssertionError"))
 
 
-def _is_test_file(rel: Path) -> bool:
-    return "tests" in rel.parts or rel.name.startswith("test_") or rel.name == "conftest.py"
-
-
-def _python_files(root: Path) -> list[Path]:
-    return [p for p in sorted(root.rglob("*.py")) if not SKIP_DIRS & set(p.relative_to(root).parts)]
-
-
 def untested_functions(root: str | Path) -> list[tuple[str, str]]:
     root = Path(root)
     mentioned: set[str] = set()
-    for path in _python_files(root):
-        if _is_test_file(path.relative_to(root)):
+    for path in python_files(root):
+        if is_test_file(path.relative_to(root)):
             tree = ast.parse(path.read_text())
             mentioned |= {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)}
             mentioned |= {a.asname or a.name for n in ast.walk(tree) if isinstance(n, ast.ImportFrom) for a in n.names}
     found = []
-    for path in _python_files(root):
+    for path in python_files(root):
         rel = path.relative_to(root)
-        if _is_test_file(rel):
+        if is_test_file(rel):
             continue
         for node in ast.parse(path.read_text()).body:
             if isinstance(node, ast.FunctionDef) and node.name not in mentioned and not node.name.startswith("_"):

@@ -30,22 +30,31 @@ def test_untested_functions_are_the_repo_functions_no_test_mentions():
 
 
 @needs_docker
-def test_passing_tests_are_kept_and_failing_ones_become_suspects():
+def test_failing_tests_become_suspects_and_their_function_keeps_no_tests():
+    # A function with a suspected bug is not a trustworthy baseline: its passing tests would record
+    # current behaviour, possibly the bug itself, so none of them are kept.
     ws = open_workspace(DEMO)
     try:
         model = ScriptedModel(BULK_TESTS)
         result = generate_tests(ws.path, model, [("tinyshop/pricing.py", "bulk_discount")])
         assert "from solution import bulk_discount" in model.prompts[0]
-
-        kept = (ws.path / result.files[0]).read_text()
-        assert "from tinyshop.pricing import" in kept and "solution" not in kept
-        assert kept.endswith("\n")
-        assert "def test_small_order" in kept and "def test_fifty_units" not in kept
-
         [suspect] = result.suspects
         assert suspect.function == "bulk_discount" and "test_fifty_units" in suspect.test
         assert "5 == 10" in suspect.error
-        assert not (DEMO / result.files[0]).exists()
+        assert result.files == [] and ws.diff() == ""
+    finally:
+        ws.cleanup()
+
+
+@needs_docker
+def test_passing_tests_are_kept_with_the_real_module_import():
+    ws = open_workspace(DEMO)
+    try:
+        answer = "```python\nfrom solution import bulk_discount\n\n\ndef test_small_order():\n    assert bulk_discount(5) == 0\n```"
+        result = generate_tests(ws.path, ScriptedModel(answer), [("tinyshop/pricing.py", "bulk_discount")])
+        kept = (ws.path / result.files[0]).read_text()
+        assert "from tinyshop.pricing import" in kept and "solution" not in kept
+        assert "def test_small_order" in kept and not (DEMO / result.files[0]).exists()
     finally:
         ws.cleanup()
 

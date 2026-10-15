@@ -60,3 +60,19 @@ def test_on_step_reports_each_step_before_it_runs(tmp_path):
         run_workflow(DEMO, run_id="run3", model=stop_after_prepare, store=PatchStore(tmp_path / "data"),
                      tools=False, on_step=lambda name, state: seen.append(name))
     assert seen == ["prepare", "review"]
+
+
+@needs_docker
+def test_no_tests_are_generated_for_functions_with_security_findings(tmp_path):
+    asked = []
+
+    def recording_model(messages):
+        prompt = messages[-1]["content"]
+        if prompt.startswith("Write pytest unit tests"):
+            asked.append(re.search(r"function `(\w+)`", prompt).group(1))
+        return fake_model(messages)
+
+    run_workflow(DEMO, run_id="run4", model=recording_model, store=PatchStore(tmp_path / "data"))
+    flagged = {"hash_password", "load_session", "main", "find_products", "export_report"}
+    assert asked and not flagged & set(asked)
+    assert {"total_units", "bulk_discount", "needs_restock"} <= set(asked)

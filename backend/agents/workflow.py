@@ -17,7 +17,7 @@ from langgraph.graph import END, START, StateGraph
 
 from backend.agents.debug import debug_failing_tests
 from backend.agents.review import review_functions
-from backend.agents.testgen import generate_tests
+from backend.agents.testgen import generate_tests, untested_functions
 from backend.analysis import analyze
 from backend.patches import PatchStore, propose
 from backend.validation import validate_workspace
@@ -41,6 +41,22 @@ class RunState(TypedDict, total=False):
     patch_id: str | None
     validation: dict | None
     report: str
+
+
+def flagged_functions(root: Path, findings: list[dict]) -> set[tuple[str, str]]:
+    """(file, function) pairs that contain a security finding from a static tool."""
+    import ast
+
+    lines: dict[str, set[int]] = {}
+    for f in findings:
+        if f["category"] == "security" and f["tool"] != "model" and f["path"].endswith(".py"):
+            lines.setdefault(f["path"], set()).add(f["line"])
+    flagged = set()
+    for rel, hits in lines.items():
+        for node in ast.parse((root / rel).read_text()).body:
+            if isinstance(node, ast.FunctionDef) and any(node.lineno <= n <= node.end_lineno for n in hits):
+                flagged.add((rel, node.name))
+    return flagged
 
 
 def _report(state: RunState) -> str:
@@ -89,7 +105,11 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
         return {"findings": state.get("findings", []) + result.findings, "review_dropped": result.dropped}
 
     def do_testgen(state):
-        result = generate_tests(ws_of(state), model)
+        # No regression tests for functions the tools flag as insecure: a test that passes today would
+        # assert that the vulnerable behaviour is correct and get in the way of fixing it.
+        flagged = flagged_functions(ws_of(state), state.get("findings", []))
+        targets = [fn for fn in untested_functions(ws_of(state)) if fn not in flagged]
+        result = generate_tests(ws_of(state), model, targets)
         return {"tests_added": result.files, "suspects": [asdict(s) for s in result.suspects],
                 "crashed_tests": result.crashed}
 

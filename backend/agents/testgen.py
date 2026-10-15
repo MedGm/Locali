@@ -9,6 +9,8 @@ only costs itself. Tests are run in the sandbox against the current code:
   bug in the code or a wrong expectation, and the agent cannot tell which, so it is reported as a
   suspect for review. A test that crashes instead (None passed as a database connection, invalid
   fake data, a missing import) says nothing about the code; those are only counted.
+- a function that produced a suspect keeps none of its tests: passing tests record what the code
+  does today, and with a suspected bug that may be the bug itself.
 """
 
 import ast
@@ -116,7 +118,7 @@ def generate_tests(root: str | Path, model: Model, functions: list[tuple[str, st
                 key = f"{rel}::{func}"
                 result.crashed[key] = result.crashed.get(key, 0) + 1
         kept = _drop_functions(tests, failed)
-        if not _test_names(kept):
+        if any(s.file == rel and s.function == func for s in result.suspects) or not _test_names(kept):
             out.unlink()
             continue
         out.write_text(kept.rstrip("\n") + "\n")

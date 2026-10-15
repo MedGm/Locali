@@ -14,6 +14,7 @@ one run at a time, and returns at once; GET /runs/{id} shows queued -> running -
 The model is the OpenAI-compatible endpoint in LOCALI_MODEL_URL; without it, agent runs are refused.
 """
 
+import hmac
 import json
 import os
 import tempfile
@@ -25,7 +26,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -57,9 +58,11 @@ class Rejection(BaseModel):
 
 def create_app(repos_root: str | Path, data_dir: str | Path,
                validate: Callable[[Path, list[str]], dict] | None = None,
-               model: Callable[[list[dict]], str] | None = None, tools: bool = True) -> FastAPI:
+               model: Callable[[list[dict]], str] | None = None, tools: bool = True,
+               api_token: str | None = None) -> FastAPI:
     """validate replaces the full workspace validation (tests use a stub); model answers chat messages
-    for agent runs; tools=False drops the static-analysis step of agent runs (ablation)."""
+    for agent runs; tools=False drops the static-analysis step of agent runs (ablation); api_token,
+    when set, is required as a Bearer token on every endpoint except /health."""
     repos_root = Path(repos_root).resolve()
     runs_dir = Path(data_dir) / "runs"
     runs_dir.mkdir(parents=True, exist_ok=True)
@@ -68,6 +71,15 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
     app = FastAPI(title="Locali")
     app.state.patches = patches
     app.state.agents = ThreadPoolExecutor(max_workers=1)  # model calls are CPU-heavy: one run at a time
+
+    @app.middleware("http")
+    async def require_token(request: Request, call_next):
+        if api_token and request.url.path != "/health":
+            sent = request.headers.get("authorization", "")
+            if not hmac.compare_digest(sent.encode(), f"Bearer {api_token}".encode()):
+                audit.write("auth.refused", method=request.method, path=request.url.path)
+                return JSONResponse(status_code=401, content={"detail": "missing or wrong API token"})
+        return await call_next(request)
 
     def save_run(run: dict) -> None:
         fd, tmp = tempfile.mkstemp(dir=runs_dir, suffix=".tmp")
@@ -210,5 +222,8 @@ def default_app() -> FastAPI:
 
         def model(messages):
             return client.complete(messages, max_tokens=768).text
+    token = os.environ.get("LOCALI_API_TOKEN")
+    if not token:
+        raise RuntimeError("set LOCALI_API_TOKEN; the API does not run without a token")
     return create_app(os.environ.get("LOCALI_REPOS_ROOT", "."), os.environ.get("LOCALI_DATA_DIR", "data/backend"),
-                      model=model)
+                      model=model, api_token=token)

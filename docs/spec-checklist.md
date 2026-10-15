@@ -20,7 +20,7 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 | C2 | Efficient fine-tuning with Unsloth, LoRA/QLoRA, other PEFT | 1 model, QLoRA + LoRA runs on Kaggle T4 | `training/` | W3–5 | done: QLoRA, 16-bit LoRA, rsLoRA (Qwen2.5-Coder) + Phi-4-mini QLoRA, Unsloth |
 | C3 | Quantization 4/8-bit | FP16 / INT8 / INT4 on T4 and laptop CPU | `experiments/` | W6–7 | todo |
 | C4 | KV cache, efficient attention, batching | Prefix caching on/off, batch 1/4/16, SDPA vs eager | `experiments/` | W6–7 | todo |
-| C5 | Context compression, prompt optimization, token reduction | AST slicing + compact prompts, tokens before/after | `evaluation/`, `backend/` | W6–7 | todo |
+| C5 | Context compression, prompt optimization, token reduction | AST slicing + compact prompts, tokens before/after | `evaluation/`, `backend/` | W6–7 | wip (context ablation done, slicing in `backend/context_slice.py`) |
 | C6 | Measure latency, throughput, memory, cost | Shared metrics logger in harness | `evaluation/` | W1–2 | wip (tokens, TTFT, decode tok/s, CPU + GPU energy, training peak memory done; inference memory, cost todo) |
 | C7 | Code quality, maintainability, complexity, vulnerabilities, standards, technical debt | Ruff, Radon, Bandit, Semgrep + LLM summary | `backend/` | W3–5 | wip (tools in `backend/analysis.py`; LLM summary todo) |
 | C8 | Static-analysis tool integration | Same tools exposed via MCP | `mcp_servers/` | W6–7 | done (`analysis_server`: Ruff, Bandit, Radon, Semgrep, secrets) |
@@ -74,7 +74,7 @@ Pipeline: SLM → Fine-tuning → Quantization → Token optimization → Agenti
 | Base vs fine-tuned SLM | done ([v1](../experiments/results/finetune_qwen25_qlora_v1/README.md), [v2](../experiments/results/finetune_v2/README.md); also QLoRA vs LoRA vs rsLoRA, Qwen vs Phi) |
 | FP16 vs INT8/INT4 | todo |
 | Standard vs optimized prompting | todo |
-| Full vs reduced context | todo |
+| Full vs reduced context | done ([context ablation](../experiments/results/context_ablation_t4/README.md)) |
 | Single-agent vs multi-agent | todo |
 
 ## 5. Deliverables

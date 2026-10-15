@@ -1,0 +1,69 @@
+{
+  "metrics": {
+    "n": 212,
+    "status_counts": {
+      "unscored": 212
+    },
+    "truncated": 0,
+    "mean_input_tokens": 364.0189,
+    "mean_output_tokens": 240.6462,
+    "mean_ttft_s": 0.3404,
+    "median_ttft_s": 0.1193,
+    "mean_total_s": 8.4326,
+    "mean_decode_tok_per_s": 29.77,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 212,
+    "resumed": 0,
+    "wall_s": 115.8
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 14292 examples [00:08, 1616.60 examples/s]Generating train split: 17562 examples [00:09, 2038.42 examples/s]Generating train split: 17562 examples [00:09, 1766.26 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 28090 examples [00:13, 2132.82 examples/s]Generating test split: 45338 examples [00:23, 1924.51 examples/s]Generating test split: 59630 examples [00:35, 1547.90 examples/s]Generating test split: 62900 examples [00:45, 1101.84 examples/s]Generating test split: 62900 examples [00:46, 1366.48 examples/s]
+{
+  "metrics": {
+    "n": 212,
+    "status_counts": {
+      "unscored": 212
+    },
+    "truncated": 1,
+    "mean_input_tokens": 806.0377,
+    "mean_output_tokens": 242.7453,
+    "mean_ttft_s": 0.4001,
+    "median_ttft_s": 0.2582,
+    "mean_total_s": 10.3838,
+    "mean_decode_tok_per_s": 24.51,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 212,
+    "resumed": 0,
+    "wall_s": 246.9
+  }
+}
+{
+  "metrics": {
+    "n": 212,
+    "status_counts": {
+      "unscored": 212
+    },
+    "truncated": 0,
+    "mean_input_tokens": 314.934,
+    "mean_output_tokens": 213.3019,
+    "mean_ttft_s": 0.1732,
+    "median_ttft_s": 0.1111,
+    "mean_total_s": 7.2497,
+    "mean_decode_tok_per_s": 30.16,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 212,
+    "resumed": 0,
+    "wall_s": 100.1
+  }
+}

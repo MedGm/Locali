@@ -63,3 +63,10 @@ def test_actions_are_audited(client):
     assert [e["action"] for e in events] == ["run.created", "run.finished", "run.refused"]
     assert events[1]["run_id"] == run["id"]
     assert all("time" in e for e in events)
+
+
+def test_status_reports_whether_a_model_is_configured(tmp_path):
+    plain = TestClient(create_app(repos_root=ROOT, data_dir=tmp_path))
+    assert plain.get("/status").json()["model_configured"] is False
+    with_model = TestClient(create_app(repos_root=ROOT, data_dir=tmp_path, model=lambda m: "x"))
+    assert with_model.get("/status").json()["model_configured"] is True

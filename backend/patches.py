@@ -131,6 +131,10 @@ class PatchStore:
             raise KeyError(patch_id)
         return Patch(**json.loads(path.read_text()))
 
+    def all(self) -> list[Patch]:
+        files = sorted((self.dir / "patches").glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+        return [Patch(**json.loads(p.read_text())) for p in files]
+
     def for_run(self, run_id: str) -> list[Patch]:
         patches = [Patch(**json.loads(p.read_text())) for p in sorted((self.dir / "patches").glob("*.json"))]
         return [p for p in patches if p.run_id == run_id]

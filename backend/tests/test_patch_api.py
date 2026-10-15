@@ -98,3 +98,11 @@ def test_revalidation_refuses_a_patch_that_no_longer_fits(env):
     r = client.post(f"/patches/{patch.id}/revalidate")
     assert r.status_code == 409 and "no longer applies" in r.json()["detail"]
     assert (repo / "app.py").read_text() == "def multiply(x, y):\n    return x * y\n"
+
+
+def test_patches_can_be_listed_across_runs_by_status(env):
+    client, _, _, patch = env
+    assert [p["id"] for p in client.get("/patches").json()] == [patch.id]
+    assert [p["id"] for p in client.get("/patches?status=proposed").json()] == [patch.id]
+    assert client.get("/patches?status=applied").json() == []
+    assert "diff" not in client.get("/patches").json()[0]  # list view stays small

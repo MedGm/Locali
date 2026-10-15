@@ -132,6 +132,10 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
     def health():
         return {"status": "ok"}
 
+    @app.get("/status")
+    def status():
+        return {"model_configured": model is not None, "static_analysis": tools}
+
     @app.post("/runs", status_code=201)
     def create_run(req: RunRequest):
         if req.mode == "agents" and model is None:
@@ -218,6 +222,12 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
     @app.get("/runs/{run_id}/patches")
     def list_patches(run_id: str):
         return [asdict(p) for p in patches.for_run(run_id)]
+
+    @app.get("/patches")
+    def list_all_patches(status: str | None = None):
+        keys = ("id", "run_id", "repo", "files", "status", "reviewer", "sha256")
+        return [{k: getattr(p, k) for k in keys} | {"validation_ok": bool(p.validation.get("ok"))}
+                for p in patches.all() if status is None or p.status == status]
 
     @app.get("/patches/{patch_id}")
     def show_patch(patch_id: str):

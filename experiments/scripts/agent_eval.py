@@ -5,6 +5,9 @@
 
 Writes state.json (the run), score.json, report.md and patch.diff to --out. demo_repo itself is
 never modified: the workflow works in an isolated workspace and only proposes a patch.
+
+--mode multi (default): the full workflow. multi-notools: the workflow without the static-analysis
+step. single: one review call per file, no tools, tests or fixes (ablation baselines).
 """
 
 import argparse
@@ -14,6 +17,7 @@ import time
 from pathlib import Path
 
 from backend.agents.scoring import score_run
+from backend.agents.single import review_files
 from backend.agents.workflow import run_workflow
 from backend.patches import PatchStore
 from evaluation.client import ChatClient
@@ -40,6 +44,7 @@ def main() -> None:
     parser.add_argument("--base-url", required=True)
     parser.add_argument("--model-name", default="local")
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--mode", choices=["multi", "multi-notools", "single"], default="multi")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 
@@ -52,9 +57,16 @@ def main() -> None:
         return c.text
 
     start = time.time()
-    state = run_workflow(DEMO, run_id=args.out.name, model=model, store=PatchStore(args.out / "data"))
+    if args.mode == "single":
+        result = review_files(DEMO, model)
+        state = {"findings": result.findings, "review_dropped": result.dropped, "suspects": [], "fixes": [],
+                 "report": f"single-agent review: {len(result.findings)} findings, {result.dropped} dropped\n"}
+    else:
+        state = run_workflow(DEMO, run_id=args.out.name, model=model, store=PatchStore(args.out / "data"),
+                             tools=args.mode == "multi")
     wall = time.time() - start
     score = score_run(state, KEY, enclosing_functions(DEMO, KEY))
+    score["mode"] = args.mode
     score["wall_s"] = round(wall, 1)
     score["model_calls"] = len(calls)
     score["output_tokens"] = sum(c["output_tokens"] or 0 for c in calls)

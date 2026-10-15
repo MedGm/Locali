@@ -63,7 +63,8 @@ def _report(state: RunState) -> str:
     return redact("\n".join(lines) + "\n")
 
 
-def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace]):
+def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], tools: bool = True):
+    """tools=False drops the static-analysis step (ablation); patch validation still uses the tools."""
     def step(name, update):
         def node(state: RunState) -> RunState:
             return {**update(state), "steps": [*state.get("steps", []), name]}
@@ -82,7 +83,7 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace]):
 
     def do_review(state):
         result = review_functions(ws_of(state), model)
-        return {"findings": state["findings"] + result.findings, "review_dropped": result.dropped}
+        return {"findings": state.get("findings", []) + result.findings, "review_dropped": result.dropped}
 
     def do_testgen(state):
         result = generate_tests(ws_of(state), model)
@@ -103,18 +104,20 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace]):
         return {"report": _report(state)}
 
     graph = StateGraph(RunState)
-    nodes = [prepare, do_analyze, do_review, do_testgen, do_debug, do_propose, do_report]
-    for name, fn in zip(STEPS, nodes, strict=True):
-        graph.add_node(name, step(name, fn))
-    for a, b in zip([START, *STEPS], [*STEPS, END], strict=True):
+    nodes = dict(zip(STEPS, [prepare, do_analyze, do_review, do_testgen, do_debug, do_propose, do_report], strict=True))
+    steps = [s for s in STEPS if tools or s != "analyze"]
+    for name in steps:
+        graph.add_node(name, step(name, nodes[name]))
+    for a, b in zip([START, *steps], [*steps, END], strict=True):
         graph.add_edge(a, b)
     return graph.compile()
 
 
-def run_workflow(repo: str | Path, run_id: str, model, store: PatchStore) -> RunState:
+def run_workflow(repo: str | Path, run_id: str, model, store: PatchStore, tools: bool = True) -> RunState:
     workspaces: dict[str, Workspace] = {}
     try:
-        return build_workflow(model, store, workspaces).invoke({"repo": str(Path(repo).resolve()), "run_id": run_id})
+        graph = build_workflow(model, store, workspaces, tools)
+        return graph.invoke({"repo": str(Path(repo).resolve()), "run_id": run_id})
     finally:
         for ws in workspaces.values():
             ws.cleanup()

@@ -39,3 +39,11 @@ def test_workflow_ends_in_one_validated_patch_and_leaves_the_repo_alone(tmp_path
 
     assert {p: p.read_bytes() for p in DEMO.rglob("*") if p.is_file()} == before
     assert not Path(state["workspace"]).exists()
+
+
+@needs_docker
+def test_workflow_without_tools_keeps_only_model_findings(tmp_path):
+    state = run_workflow(DEMO, run_id="run2", model=fake_model, store=PatchStore(tmp_path / "data"), tools=False)
+    assert "analyze" not in state["steps"]
+    assert all(f["tool"] == "model" for f in state["findings"])
+    assert state["patch_id"]

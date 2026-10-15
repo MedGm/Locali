@@ -39,29 +39,33 @@ def _norm(line: str) -> str:
     return " ".join(line.split())
 
 
+def review_span(model: Model, rel: str, lines: list[str], first_line: int, result: ReviewResult) -> None:
+    """Ask the model to review `lines` (starting at `first_line` of `rel`) and add located findings."""
+    found = parse_review_answer(model([{"role": "user", "content": review_prompt(redact("\n".join(lines)))}]))
+    if found is None:
+        result.invalid += 1
+        return
+    for f in found:
+        if not isinstance(f, dict):
+            continue
+        quoted = _norm(str(f.get("line", "")))
+        match = next((i for i, line in enumerate(lines) if quoted and _norm(line) == quoted), None)
+        if match is None:
+            result.dropped += 1
+            continue
+        result.findings.append({
+            "tool": "model", "rule": "review", "path": rel, "line": first_line + match,
+            "category": f.get("category") if f.get("category") in CATEGORIES else "quality",
+            "severity": f.get("severity") if f.get("severity") in SEVERITIES else "low",
+            "message": redact(str(f.get("message", ""))),
+        })
+
+
 def review_functions(root: str | Path, model: Model, functions: list[tuple[str, str]] | None = None) -> ReviewResult:
     root = Path(root)
     result = ReviewResult()
     for rel, func in functions if functions is not None else all_functions(root):
         src = (root / rel).read_text()
         node = next(n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef) and n.name == func)
-        lines = src.splitlines()[node.lineno - 1:node.end_lineno]
-        found = parse_review_answer(model([{"role": "user", "content": review_prompt(redact("\n".join(lines)))}]))
-        if found is None:
-            result.invalid += 1
-            continue
-        for f in found:
-            if not isinstance(f, dict):
-                continue
-            quoted = _norm(str(f.get("line", "")))
-            match = next((i for i, line in enumerate(lines) if quoted and _norm(line) == quoted), None)
-            if match is None:
-                result.dropped += 1
-                continue
-            result.findings.append({
-                "tool": "model", "rule": "review", "path": rel, "line": node.lineno + match,
-                "category": f.get("category") if f.get("category") in CATEGORIES else "quality",
-                "severity": f.get("severity") if f.get("severity") in SEVERITIES else "low",
-                "message": redact(str(f.get("message", ""))),
-            })
+        review_span(model, rel, src.splitlines()[node.lineno - 1:node.end_lineno], node.lineno, result)
     return result

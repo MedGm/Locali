@@ -59,3 +59,30 @@ def test_unusable_answer_adds_nothing():
         assert ws.diff() == ""
     finally:
         ws.cleanup()
+
+
+CRASHING_TESTS = """```python
+from solution import bulk_discount
+
+
+def test_needs_a_fixture():
+    conn = None
+    conn.execute("select 1")
+    assert bulk_discount(5) == 0
+
+
+def test_fifty_units():
+    assert bulk_discount(50) == 10
+```"""
+
+
+@needs_docker
+def test_tests_that_crash_are_counted_not_reported_as_suspects():
+    ws = open_workspace(DEMO)
+    try:
+        result = generate_tests(ws.path, ScriptedModel(CRASHING_TESTS), [("tinyshop/pricing.py", "bulk_discount")])
+        assert [s.test.splitlines()[0] for s in result.suspects] == ["def test_fifty_units():"]
+        assert result.crashed == {"tinyshop/pricing.py::bulk_discount": 1}
+        assert result.files == []
+    finally:
+        ws.cleanup()

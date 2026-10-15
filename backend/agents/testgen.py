@@ -5,8 +5,10 @@ the import is then pointed at the real module. Multi-assert tests are split so o
 only costs itself. Tests are run in the sandbox against the current code:
 
 - passing tests are kept, as a new test file in the workspace;
-- failing tests are never added. A failure means either a bug in the code or a wrong test, and the
-  agent cannot tell which, so each one is reported as a suspect with its error for review.
+- failing tests are never added. A failed assertion on what the function returned means either a
+  bug in the code or a wrong expectation, and the agent cannot tell which, so it is reported as a
+  suspect for review. A test that crashes instead (None passed as a database connection, invalid
+  fake data, a missing import) says nothing about the code; those are only counted.
 """
 
 import ast
@@ -37,6 +39,12 @@ class Suspect:
 class TestgenResult:
     files: list[str] = field(default_factory=list)
     suspects: list[Suspect] = field(default_factory=list)
+    crashed: dict[str, int] = field(default_factory=dict)  # "file::function" -> crashed tests
+
+
+def _is_assertion(error: str) -> bool:
+    first = error.strip().splitlines()[0] if error.strip() else ""
+    return first.startswith(("assert ", "AssertionError"))
 
 
 def _is_test_file(rel: Path) -> bool:
@@ -110,7 +118,11 @@ def generate_tests(root: str | Path, model: Model, functions: list[tuple[str, st
         failed = {t.split("::")[-1] for t in run_tests(root, [out_rel])["failed"]}
         for name in sorted(failed):
             _, error = failing_test_details(run_tests(root, [f"{out_rel}::{name}"])["output_tail"])
-            result.suspects.append(Suspect(rel, func, _segment(tests, name), error or "the test failed"))
+            if _is_assertion(error):
+                result.suspects.append(Suspect(rel, func, _segment(tests, name), error))
+            else:
+                key = f"{rel}::{func}"
+                result.crashed[key] = result.crashed.get(key, 0) + 1
         kept = _drop_functions(tests, failed)
         if not _test_names(kept):
             out.unlink()

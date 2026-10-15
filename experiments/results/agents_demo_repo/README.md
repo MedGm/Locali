@@ -20,7 +20,7 @@ tests and a byte-identical patch, so these results reproduce.
 | Vulnerabilities found (of 5) | 3 | 3 | **5** |
 | Hardcoded secret found | no | no | **yes** |
 | Model false positives | 3 | 17 | 17 |
-| Tests in the repo after the patch | n/a | 5 → 17, coverage 35 % → 78.5 % | same |
+| Tests after the patch | n/a | 6 (1 failing) → 17 (all passing), coverage 35 % → 78.5 % | same |
 | Validated patch | none | yes | yes |
 | Model calls / output tokens | 8 / 441 | 40 / 5,129 | 40 / 5,129 |
 | Time | 85 s | 665 s | 669 s |

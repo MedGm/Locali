@@ -11,7 +11,8 @@ A patch that went stale (the folder changed) is revalidated into a new proposal.
 
 POST /runs with mode "agents" runs the agent workflow (backend.agents.workflow) in the background,
 one run at a time, and returns at once; GET /runs/{id} shows queued -> running -> done | failed.
-The model is the OpenAI-compatible endpoint in LOCALI_MODEL_URL; without it, agent runs are refused.
+The model is the OpenAI-compatible endpoint in LOCALI_MODEL_URL (API key in LOCALI_MODEL_KEY);
+without it, agent runs are refused.
 """
 
 import asyncio
@@ -279,7 +280,8 @@ def default_app() -> FastAPI:
     if url := os.environ.get("LOCALI_MODEL_URL"):
         from evaluation.client import ChatClient
 
-        client = ChatClient(url, model=os.environ.get("LOCALI_MODEL_NAME", "local"))
+        client = ChatClient(url, model=os.environ.get("LOCALI_MODEL_NAME", "local"),
+                            api_key=os.environ.get("LOCALI_MODEL_KEY", "local"))
 
         def model(messages):
             return client.complete(messages, max_tokens=768)  # the run's guard reads text and token counts

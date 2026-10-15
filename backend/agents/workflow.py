@@ -63,10 +63,13 @@ def _report(state: RunState) -> str:
     return redact("\n".join(lines) + "\n")
 
 
-def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], tools: bool = True):
+def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], tools: bool = True,
+                   on_step=None):
     """tools=False drops the static-analysis step (ablation); patch validation still uses the tools."""
     def step(name, update):
         def node(state: RunState) -> RunState:
+            if on_step:
+                on_step(name)
             return {**update(state), "steps": [*state.get("steps", []), name]}
         return node
 
@@ -113,10 +116,12 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
     return graph.compile()
 
 
-def run_workflow(repo: str | Path, run_id: str, model, store: PatchStore, tools: bool = True) -> RunState:
+def run_workflow(repo: str | Path, run_id: str, model, store: PatchStore, tools: bool = True,
+                 on_step=None) -> RunState:
+    """on_step(name) is called before each step runs (progress reporting)."""
     workspaces: dict[str, Workspace] = {}
     try:
-        graph = build_workflow(model, store, workspaces, tools)
+        graph = build_workflow(model, store, workspaces, tools, on_step)
         return graph.invoke({"repo": str(Path(repo).resolve()), "run_id": run_id})
     finally:
         for ws in workspaces.values():

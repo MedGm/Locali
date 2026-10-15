@@ -47,3 +47,16 @@ def test_workflow_without_tools_keeps_only_model_findings(tmp_path):
     assert "analyze" not in state["steps"]
     assert all(f["tool"] == "model" for f in state["findings"])
     assert state["patch_id"]
+
+
+def test_on_step_reports_each_step_before_it_runs(tmp_path):
+    seen = []
+
+    def stop_after_prepare(messages):
+        raise RuntimeError("stop")
+
+    import pytest
+    with pytest.raises(RuntimeError):
+        run_workflow(DEMO, run_id="run3", model=stop_after_prepare, store=PatchStore(tmp_path / "data"),
+                     tools=False, on_step=seen.append)
+    assert seen == ["prepare", "review"]

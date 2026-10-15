@@ -14,6 +14,7 @@ one run at a time, and returns at once; GET /runs/{id} shows queued -> running -
 The model is the OpenAI-compatible endpoint in LOCALI_MODEL_URL; without it, agent runs are refused.
 """
 
+import asyncio
 import hmac
 import json
 import os
@@ -27,9 +28,10 @@ from pathlib import Path
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 
+from backend.agents.model import guarded
 from backend.agents.workflow import run_workflow
 from backend.analysis import analyze
 from backend.audit import AuditLog
@@ -88,15 +90,30 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
         os.replace(tmp, runs_dir / f"{run['id']}.json")
 
     def agent_job(run: dict, path: Path) -> None:
-        save_run({**run, "status": "running"})
+        progress = {"step": None, "steps_done": []}
+        trajectory = runs_dir / f"{run['id']}.trajectory.jsonl"
+
+        def on_step(name: str) -> None:
+            if progress["step"]:
+                progress["steps_done"].append(progress["step"])
+            progress["step"] = name
+            save_run({**run, "status": "running", **progress})
+
+        def record(call: dict) -> None:
+            with trajectory.open("a") as f:
+                f.write(json.dumps(call) + "\n")
+
+        save_run({**run, "status": "running", **progress})
         audit.write("run.started", run_id=run["id"])
         try:
-            state = run_workflow(path, run_id=run["id"], model=model, store=patches, tools=tools)
+            gated = guarded(model, record, step=lambda: progress["step"])
+            state = run_workflow(path, run_id=run["id"], model=gated, store=patches, tools=tools, on_step=on_step)
         except Exception as e:  # noqa: BLE001 - any failure ends the run and is reported
-            save_run({**run, "status": "failed", "error": redact(f"{type(e).__name__}: {e}")})
+            save_run({**run, "status": "failed", "error": redact(f"{type(e).__name__}: {e}"), **progress})
             audit.write("run.failed", run_id=run["id"], error=type(e).__name__)
             return
-        save_run({**run, "status": "done", "report": state["report"], "patch_id": state.get("patch_id"),
+        save_run({**run, "status": "done", "step": None, "steps_done": state["steps"],
+                  "report": state["report"], "patch_id": state.get("patch_id"),
                   "findings": state["findings"], "suspects": state["suspects"], "fixes": state["fixes"],
                   "tests_added": state["tests_added"], "validation": state.get("validation")})
         audit.write("run.finished", run_id=run["id"], patch_id=state.get("patch_id"))
@@ -143,12 +160,46 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
         audit.write("run.finished", run_id=run_id, findings=len(findings))
         return run
 
-    @app.get("/runs/{run_id}")
-    def get_run(run_id: str):
+    def load_run(run_id: str) -> dict:
         path = runs_dir / f"{run_id}.json"
         if not run_id.isalnum() or not path.exists():
             raise HTTPException(404, "run not found")
         return json.loads(path.read_text())
+
+    @app.get("/runs")
+    def list_runs():
+        summary_keys = ("id", "repo", "mode", "status", "step", "patch_id", "error")
+        runs = [json.loads(p.read_text()) for p in runs_dir.glob("*.json")]
+        runs.sort(key=lambda r: (runs_dir / f"{r['id']}.json").stat().st_mtime, reverse=True)
+        return [{k: r[k] for k in summary_keys if k in r} for r in runs]
+
+    @app.get("/runs/{run_id}")
+    def get_run(run_id: str):
+        return load_run(run_id)
+
+    @app.get("/runs/{run_id}/trajectory")
+    def get_trajectory(run_id: str):
+        load_run(run_id)
+        path = runs_dir / f"{run_id}.trajectory.jsonl"
+        return [json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
+
+    @app.get("/runs/{run_id}/events")
+    async def run_events(run_id: str):
+        load_run(run_id)
+
+        async def stream():
+            last = None
+            while True:
+                run = load_run(run_id)
+                view = {k: run.get(k) for k in ("id", "status", "step", "steps_done", "patch_id", "error")}
+                if view != last:
+                    yield f"data: {json.dumps(view)}\n\n"
+                    last = view
+                if run["status"] in ("done", "failed"):
+                    return
+                await asyncio.sleep(0.2)
+
+        return StreamingResponse(stream(), media_type="text/event-stream")
 
     def get_patch(patch_id: str):
         try:
@@ -221,7 +272,7 @@ def default_app() -> FastAPI:
         client = ChatClient(url, model=os.environ.get("LOCALI_MODEL_NAME", "local"))
 
         def model(messages):
-            return client.complete(messages, max_tokens=768).text
+            return client.complete(messages, max_tokens=768)  # the run's guard reads text and token counts
     token = os.environ.get("LOCALI_API_TOKEN")
     if not token:
         raise RuntimeError("set LOCALI_API_TOKEN; the API does not run without a token")

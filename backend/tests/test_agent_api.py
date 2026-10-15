@@ -59,3 +59,26 @@ def test_failing_agent_run_is_reported_and_cleans_up(tmp_path, repo):
     assert run["status"] == "failed" and "model server down" in run["error"]
     leftovers = [p for p in Path("/tmp").glob("locali-ws-*") if p.stat().st_mtime > time.time() - 60]
     assert leftovers == []
+
+
+@needs_docker
+def test_run_records_progress_trajectory_and_streams_events(tmp_path):
+    client = TestClient(create_app(repos_root=ROOT, data_dir=tmp_path, model=fake_model))
+    run_id = client.post("/runs", json={"repo": "demo_repo", "mode": "agents"}).json()["id"]
+
+    with client.stream("GET", f"/runs/{run_id}/events") as stream:
+        events = [json.loads(line[len("data: "):]) for line in stream.iter_lines() if line.startswith("data: ")]
+    assert events[-1]["status"] == "done"
+    seen = list(dict.fromkeys(e["step"] for e in events if e.get("step")))
+    order = ["prepare", "analyze", "review", "testgen", "debug", "propose", "report"]
+    assert seen == sorted(seen, key=order.index) and "testgen" in seen  # fast steps may pass between polls
+
+    run = client.get(f"/runs/{run_id}").json()
+    assert run["steps_done"] == ["prepare", "analyze", "review", "testgen", "debug", "propose", "report"]
+
+    calls = client.get(f"/runs/{run_id}/trajectory").json()
+    assert {c["step"] for c in calls} == {"review", "testgen", "debug"}
+    assert all(c["prompt"] and c["answer"] for c in calls)
+
+    listed = client.get("/runs").json()
+    assert listed[0]["id"] == run_id and listed[0]["status"] == "done" and "findings" not in listed[0]

@@ -1,0 +1,62 @@
+{
+ "findings": [
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/auth.py",
+   "line": 6,
+   "category": "security",
+   "severity": "high",
+   "message": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/cli.py",
+   "line": 36,
+   "category": "security",
+   "severity": "medium",
+   "message": "Use of possibly insecure function - consider using safer ast.literal_eval."
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/inventory.py",
+   "line": 31,
+   "category": "quality",
+   "severity": "medium",
+   "message": "Loop control variable `i` not used within loop body"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/pricing.py",
+   "line": 1,
+   "category": "quality",
+   "severity": "low",
+   "message": "`tinyshop.settings` imported but unused"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/reports.py",
+   "line": 29,
+   "category": "security",
+   "severity": "medium",
+   "message": "subprocess call with shell=True identified, security issue."
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/settings.py",
+   "line": 3,
+   "category": "quality",
+   "severity": "high",
+   "message": "Local variable `DB_PATH` is assigned to but never used"
+  }
+ ],
+ "review_dropped": 1,
+ "suspects": [],
+ "fixes": [],
+ "report": "single-agent review: 6 findings, 1 dropped\n"
+}

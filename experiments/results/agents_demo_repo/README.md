@@ -3,7 +3,48 @@
 The full workflow (`backend/agents/workflow.py`) runs on `demo_repo/` and is scored against the
 planted-flaw answer key (`security/demo_repo_flaws.json`) with `experiments/scripts/agent_eval.py`.
 
-## ft-q8-run1 (2026-10-15)
+## Single agent vs multi-agent (deterministic runs, 2026-10-15)
+
+Same model (fine-tuned Qwen2.5-Coder-1.5B, Q8_0, llama.cpp on the laptop CPU), same repository,
+same scoring. The server ran with one slot and no prompt cache (`--parallel 1 --cache-ram 0`).
+Two full-workflow runs (`det-multi-a`, `det-multi-b`) produced identical findings, suspects, fixes,
+tests and a byte-identical patch, so these results reproduce.
+
+| | Single agent | Multi-agent, no tools | Multi-agent + tools |
+|---|---|---|---|
+| What it does | one review call per file | review per function, test generation, debug loop | same, plus Ruff / Bandit / Radon / Semgrep / secret scan |
+| Bugs fixed (of 5) | 0 | 1 | 1 |
+| Bugs found on the right line | 0 | 1 (bulk boundary) | 2 (+ mutable default, by Ruff) |
+| Real bug shown by generated tests | 0 | 1 (`total_units`) | 1 (`total_units`) |
+| **Bugs caught in any way** | **0** | **3** | **4** |
+| Vulnerabilities found (of 5) | 3 | 3 | **5** |
+| Hardcoded secret found | no | no | **yes** |
+| Model false positives | 3 | 17 | 17 |
+| Tests in the repo after the patch | n/a | 5 → 17, coverage 35 % → 78.5 % | same |
+| Validated patch | none | yes | yes |
+| Model calls / output tokens | 8 / 441 | 40 / 5,129 | 40 / 5,129 |
+| Time | 85 s | 665 s | 669 s |
+
+"Restock boundary" is left out of the bug counts even though the scorer marks it suspected: the
+generated test behind it expected a wrong value.
+
+- **Splitting the work is what finds and fixes bugs.** Reviewing a whole file in one call, the
+  model mostly echoed lint-style remarks and found no bug at all. Working function by function, with
+  tests and a sandboxed debug loop, it fixed one bug, found one more and exposed a third. The price is
+  8× the time and 12× the output tokens, and 6× the false positives, because it reviews 17
+  functions instead of 8 files.
+- **Tools make security complete and add no noise.** The model alone found 3 of 5 vulnerabilities
+  in both setups, a different 3 each time, and missed the SQL injection and the secret. The static
+  tools found all of them, with no false positives, for 4 extra seconds.
+- **The safety layer holds in every variant.** Both workflows ended in one validated patch, and
+  `demo_repo/` was not modified.
+
+An earlier set of runs (`ft-q8-run1`, `ft-q8-multi-notools`, `ft-q8-single`) used the server's
+default settings (several slots, prompt cache), and the outputs changed between runs: the
+no-tools run lost the bulk-boundary finding. Those runs are kept for the record, but the numbers
+above come only from the deterministic runs.
+
+## ft-q8-run1 (2026-10-15, default server settings)
 
 Model: the fine-tuned Qwen2.5-Coder-1.5B, Q8_0 GGUF, llama.cpp on the laptop CPU (4 threads),
 greedy decoding. 40 model calls, 5,129 output tokens, 773 s in total, most of it review and test

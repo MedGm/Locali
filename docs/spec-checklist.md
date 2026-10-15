@@ -75,7 +75,7 @@ Pipeline: SLM → Fine-tuning → Quantization → Token optimization → Agenti
 | FP16 vs INT8/INT4 | todo |
 | Standard vs optimized prompting | todo |
 | Full vs reduced context | done ([context ablation](../experiments/results/context_ablation_t4/README.md)) |
-| Single-agent vs multi-agent | todo |
+| Single-agent vs multi-agent | done ([agents on demo_repo](../experiments/results/agents_demo_repo/README.md)) |
 
 ## 5. Deliverables
 

@@ -1,0 +1,26 @@
+{
+ "bugs": {
+  "bug-restock-boundary": "suspected",
+  "bug-mutable-default": "missed",
+  "bug-skip-first": "suspected",
+  "bug-discount-sign": "fixed",
+  "bug-bulk-boundary": "found"
+ },
+ "security": {
+  "vuln-sql-injection": false,
+  "vuln-weak-hash": true,
+  "vuln-pickle": true,
+  "vuln-shell": true,
+  "vuln-eval": false
+ },
+ "secrets": {
+  "secret-hardcoded": false
+ },
+ "false_positives": {
+  "model": 17
+ },
+ "mode": "multi-notools",
+ "wall_s": 664.7,
+ "model_calls": 40,
+ "output_tokens": 5129
+}

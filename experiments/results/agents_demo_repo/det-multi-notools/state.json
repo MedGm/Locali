@@ -1,0 +1,311 @@
+{
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "run_id": "det-multi-notools",
+ "workspace": "/tmp/locali-ws-8nvj09tf/wt/demo_repo",
+ "steps": [
+  "prepare",
+  "review",
+  "testgen",
+  "debug",
+  "propose",
+  "report"
+ ],
+ "findings": [
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/auth.py",
+   "line": 6,
+   "category": "security",
+   "severity": "high",
+   "message": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/auth.py",
+   "line": 10,
+   "category": "security",
+   "severity": "medium",
+   "message": "Possible SQL injection vector through string-based query construction."
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/auth.py",
+   "line": 15,
+   "category": "quality",
+   "severity": "medium",
+   "message": "`?` is a SQL injection vector"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/auth.py",
+   "line": 18,
+   "category": "security",
+   "severity": "high",
+   "message": "Possible SQL injection vector through string-based query construction."
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/auth.py",
+   "line": 23,
+   "category": "security",
+   "severity": "medium",
+   "message": "Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue."
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/cli.py",
+   "line": 8,
+   "category": "quality",
+   "severity": "low",
+   "message": "Local variable `parser` is assigned to but never used"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/db.py",
+   "line": 24,
+   "category": "security",
+   "severity": "medium",
+   "message": "Possible SQL injection vector through string-based connection"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/db.py",
+   "line": 30,
+   "category": "quality",
+   "severity": "medium",
+   "message": "`?` is a SQL injection vector. Use parameterized queries or prepared statements instead"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/db.py",
+   "line": 37,
+   "category": "quality",
+   "severity": "medium",
+   "message": "Using .execute to fetch data for a query that can be executed with .scalar is security issue."
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/db.py",
+   "line": 41,
+   "category": "quality",
+   "severity": "medium",
+   "message": "`?` is a SQL injection vector. Use parameterized queries or prepared statements instead"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/db.py",
+   "line": 47,
+   "category": "quality",
+   "severity": "medium",
+   "message": "Within an `execute` call, avoid using a string query to prevent SQL injection. Replace with parameterized query."
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/inventory.py",
+   "line": 8,
+   "category": "quality",
+   "severity": "low",
+   "message": "Ambiguous variable name: `threshold`"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/inventory.py",
+   "line": 17,
+   "category": "quality",
+   "severity": "medium",
+   "message": "Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/inventory.py",
+   "line": 23,
+   "category": "quality",
+   "severity": "medium",
+   "message": "Loop control variable `name` not used within loop body"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/inventory.py",
+   "line": 31,
+   "category": "quality",
+   "severity": "medium",
+   "message": "Loop control variable `i` not used within loop body"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/pricing.py",
+   "line": 10,
+   "category": "quality",
+   "severity": "medium",
+   "message": "`round` without any arguments"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/pricing.py",
+   "line": 16,
+   "category": "quality",
+   "severity": "medium",
+   "message": "`round` without any precision specified"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/pricing.py",
+   "line": 19,
+   "category": "quality",
+   "severity": "low",
+   "message": "Ambiguous variable name: `total`"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/pricing.py",
+   "line": 25,
+   "category": "bug",
+   "severity": "high",
+   "message": "The condition `if qty > 50` incorrectly returns 10 for quantities greater than 50, whereas the logic should only apply a 10% discount when the quantity is exactly 50. Changing this to `qty >= 50` ensures that any quantity exceeding 50 units receives the correct bulk discount of 10."
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/reports.py",
+   "line": 16,
+   "category": "quality",
+   "severity": "medium",
+   "message": "Loop control variable `name` not used within loop body"
+  },
+  {
+   "tool": "model",
+   "rule": "review",
+   "path": "tinyshop/reports.py",
+   "line": 29,
+   "category": "security",
+   "severity": "medium",
+   "message": "subprocess call with shell=True identified, security issue."
+  }
+ ],
+ "review_dropped": 0,
+ "tests_added": [
+  "tests/test_locali_hash_password.py",
+  "tests/test_locali_main.py",
+  "tests/test_locali_find_products.py",
+  "tests/test_locali_needs_restock.py",
+  "tests/test_locali_line_total.py",
+  "tests/test_locali_bulk_discount.py"
+ ],
+ "suspects": [
+  {
+   "file": "tinyshop/auth.py",
+   "function": "hash_password",
+   "test": "def test_hash_password():\n    password = 'test'\n    expected_output = '5f4dcc3b5aa765d6193e83ac7d22322f'\n    assert hash_password(password) == expected_output",
+   "error": "AssertionError: assert '098f6bcd4621...e4e832627b4f6' == '5f4dcc3b5aa7...e83ac7d22322f'\n\n- 5f4dcc3b5aa765d6193e83ac7d22322f\n+ 098f6bcd4621d373cade4e832627b4f6"
+  },
+  {
+   "file": "tinyshop/auth.py",
+   "function": "hash_password",
+   "test": "def test_hash_password_different_input():\n    password = 'another_test'\n    expected_output = '0a5c69855455b0555555555555555555'\n    assert hash_password(password) == expected_output",
+   "error": "AssertionError: assert '27bf2841ec35...564a77a0f43c9' == '0a5c69855455...5555555555555'\n\n- 0a5c69855455b0555555555555555555\n+ 27bf2841ec350c1842e564a77a0f43c9"
+  },
+  {
+   "file": "tinyshop/db.py",
+   "function": "connect",
+   "test": "def test_create_table():\n    conn = connect(':memory:')\n    cursor = conn.cursor()\n    cursor.execute('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT UNIQUE NOT NULL)')\n    cursor.execute('SELECT count(*) FROM users')\n    assert cursor.fetchone()[0] == 1",
+   "error": "assert 0 == 1"
+  },
+  {
+   "file": "tinyshop/db.py",
+   "function": "find_products",
+   "test": "def test_find_products_with_name():\n    conn = sqlite3.connect(':memory:')\n    conn.execute('''\n        CREATE TABLE products (\n            id INTEGER PRIMARY KEY,\n            name TEXT NOT NULL,\n            price REAL NOT NULL,\n            stock INTEGER NOT NULL\n        )\n    ''')\n    conn.execute(\"INSERT INTO products (name, price, stock) VALUES ('Apple', 1.0, 5)\")\n    conn.execute(\"INSERT INTO products (name, price, stock) VALUES ('Banana', 2.0, 3)\")\n    conn.execute(\"INSERT INTO products (name, price, stock) VALUES ('Cherry', 3.0, 7)\")\n    result = find_products(conn, 'an')\n    assert len(result) == 2\n    for row in result:\n        assert row[1].lower().find('an') != -1",
+   "error": "AssertionError: assert 1 == 2\n+  where 1 = len([(2, 'Banana', 2.0, 3)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "needs_restock",
+   "test": "def test_stock_above_threshold():\n    assert needs_restock(LOW_STOCK_THRESHOLD + 1)",
+   "error": "assert False\n+  where False = needs_restock((5 + 1))"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_example():\n    products = [[1, 5], [2, 3], [4, 6]]\n    assert total_units(products) == 10",
+   "error": "assert 9 == 10\n+  where 9 = total_units([[1, 5], [2, 3], [4, 6]])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_multiple_products_same_unit():\n    products = [[1, 5], [1, 5], [1, 5]]\n    assert total_units(products) == 15",
+   "error": "assert 10 == 15\n+  where 10 = total_units([[1, 5], [1, 5], [1, 5]])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_single_product():\n    products = [[1, 5]]\n    assert total_units(products) == 5",
+   "error": "assert 0 == 5\n+  where 0 = total_units([[1, 5]])"
+  },
+  {
+   "file": "tinyshop/pricing.py",
+   "function": "bulk_discount",
+   "test": "def test_bulk_discount_10_percent():\n    assert bulk_discount(49) == 10",
+   "error": "assert 5 == 10\n+  where 5 = bulk_discount(49)"
+  }
+ ],
+ "crashed_tests": {
+  "tinyshop/auth.py::create_staff": 3,
+  "tinyshop/auth.py::check_login": 3,
+  "tinyshop/auth.py::load_session": 7,
+  "tinyshop/cli.py::main": 3,
+  "tinyshop/db.py::connect": 2,
+  "tinyshop/db.py::add_product": 3,
+  "tinyshop/db.py::record_sale": 3,
+  "tinyshop/db.py::sales_for_day": 3,
+  "tinyshop/reports.py::daily_report": 3,
+  "tinyshop/reports.py::best_seller": 3,
+  "tinyshop/reports.py::export_report": 3
+ },
+ "fixes": [
+  {
+   "test": "tests/test_pricing.py::test_discount",
+   "file": "tinyshop/pricing.py",
+   "function": "apply_discount",
+   "fixed": true,
+   "attempts": 1,
+   "diagnosis": {
+    "bug_location": "    return round(total * (1 + percent / 100), 2)",
+    "bug_type": "wrong arithmetic operator",
+    "explanation": "`1 + percent / 100` is a wrong arithmetic operator, so `test_discount` fails; it should be `1 - percent / 100`."
+   }
+  }
+ ],
+ "patch_id": "4eceb10b0be6",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 17,
+   "failed": [],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 78.5,
+   "output_tail": ".................                                                        [100%]\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n17 passed in 0.16s\n"
+  },
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "report": "# Run det-multi-notools\n\n## Findings\n\n- bug: 1\n- quality: 14\n- security: 6\n\nModel review findings whose quoted line did not exist (dropped): 0\n\n## Tests added\n\n- tests/test_locali_hash_password.py\n- tests/test_locali_main.py\n- tests/test_locali_find_products.py\n- tests/test_locali_needs_restock.py\n- tests/test_locali_line_total.py\n- tests/test_locali_bulk_discount.py\n\n## Suspected bugs (generated tests that failed; check the test before the code)\n\n- tinyshop/auth.py::hash_password: AssertionError: assert '098f6bcd4621...e4e832627b4f6' == '5f4dcc3b5aa7...e83ac7d22322f'\n- tinyshop/auth.py::hash_password: AssertionError: assert '27bf2841ec35...564a77a0f43c9' == '0a5c69855455...5555555555555'\n- tinyshop/db.py::connect: assert 0 == 1\n- tinyshop/db.py::find_products: AssertionError: assert 1 == 2\n- tinyshop/inventory.py::needs_restock: assert False\n- tinyshop/inventory.py::total_units: assert 9 == 10\n- tinyshop/inventory.py::total_units: assert 10 == 15\n- tinyshop/inventory.py::total_units: assert 0 == 5\n- tinyshop/pricing.py::bulk_discount: assert 5 == 10\n\n## Fixes\n\n- tests/test_pricing.py::test_discount: fixed in 1 attempt(s), tinyshop/pricing.py::apply_discount\n\n## Patch\n\n- 4eceb10b0be6: validation passed, awaiting review\n"
+}

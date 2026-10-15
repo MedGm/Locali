@@ -1,0 +1,150 @@
+diff --git a/tests/test_locali_bulk_discount.py b/tests/test_locali_bulk_discount.py
+new file mode 100644
+index 0000000..5dad39e
+--- /dev/null
++++ b/tests/test_locali_bulk_discount.py
+@@ -0,0 +1,9 @@
++from tinyshop.pricing import *  # noqa: F403
++from tinyshop.pricing import bulk_discount
++
++def test_bulk_discount_5_percent():
++    assert bulk_discount(12) == 5
++
++
++def test_no_discount():
++    assert bulk_discount(3) == 0
+diff --git a/tests/test_locali_find_products.py b/tests/test_locali_find_products.py
+new file mode 100644
+index 0000000..ee05ef6
+--- /dev/null
++++ b/tests/test_locali_find_products.py
+@@ -0,0 +1,37 @@
++from tinyshop.db import *  # noqa: F403
++from tinyshop.db import find_products
++
++import sqlite3
++
++
++def test_find_products_with_no_name():
++    conn = sqlite3.connect(':memory:')
++    conn.execute('''
++        CREATE TABLE products (
++            id INTEGER PRIMARY KEY,
++            name TEXT NOT NULL,
++            price REAL NOT NULL,
++            stock INTEGER NOT NULL
++        )
++    ''')
++    conn.execute("INSERT INTO products (name, price, stock) VALUES ('Apple', 1.0, 5)")
++    conn.execute("INSERT INTO products (name, price, stock) VALUES ('Banana', 2.0, 3)")
++    conn.execute("INSERT INTO products (name, price, stock) VALUES ('Cherry', 3.0, 7)")
++    result = find_products(conn, '')
++    assert len(result) == 3
++
++def test_find_products_with_empty_name():
++    conn = sqlite3.connect(':memory:')
++    conn.execute('''
++        CREATE TABLE products (
++            id INTEGER PRIMARY KEY,
++            name TEXT NOT NULL,
++            price REAL NOT NULL,
++            stock INTEGER NOT NULL
++        )
++    ''')
++    conn.execute("INSERT INTO products (name, price, stock) VALUES ('Apple', 1.0, 5)")
++    conn.execute("INSERT INTO products (name, price, stock) VALUES ('Banana', 2.0, 3)")
++    conn.execute("INSERT INTO products (name, price, stock) VALUES ('Cherry', 3.0, 7)")
++    result = find_products(conn, '')
++    assert len(result) == 3
+diff --git a/tests/test_locali_hash_password.py b/tests/test_locali_hash_password.py
+new file mode 100644
+index 0000000..5f8947a
+--- /dev/null
++++ b/tests/test_locali_hash_password.py
+@@ -0,0 +1,11 @@
++from tinyshop.auth import *  # noqa: F403
++import hashlib
++
++from tinyshop.auth import hash_password
++
++
++
++def test_hash_password_empty_string():
++    password = ''
++    expected_output = 'd41d8cd98f00b204e9800998ecf8427e'
++    assert hash_password(password) == expected_output
+diff --git a/tests/test_locali_line_total.py b/tests/test_locali_line_total.py
+new file mode 100644
+index 0000000..11bc4f5
+--- /dev/null
++++ b/tests/test_locali_line_total.py
+@@ -0,0 +1,20 @@
++from tinyshop.pricing import *  # noqa: F403
++from tinyshop.pricing import line_total
++
++def test_example_1():
++    price = 50
++    qty = 3
++    expected_result = 150.0
++    assert line_total(price, qty) == expected_result
++
++def test_example_2():
++    price = 100
++    qty = 4
++    expected_result = 400.0
++    assert line_total(price, qty) == expected_result
++
++def test_zero_quantity():
++    price = 50
++    qty = 0
++    expected_result = 0.0
++    assert line_total(price, qty) == expected_result
+diff --git a/tests/test_locali_main.py b/tests/test_locali_main.py
+new file mode 100644
+index 0000000..741cb72
+--- /dev/null
++++ b/tests/test_locali_main.py
+@@ -0,0 +1,16 @@
++from tinyshop.cli import *  # noqa: F403
++from tinyshop.cli import main
++
++import argparse
++import io
++import sys
++
++
++
++
++def test_calc():
++    captured_output = io.StringIO()
++    sys.stdout = captured_output
++    main(['calc', '8.5*3'])
++    sys.stdout = sys.__stdout__
++    assert captured_output.getvalue().strip() == '25.5'
+diff --git a/tests/test_locali_needs_restock.py b/tests/test_locali_needs_restock.py
+new file mode 100644
+index 0000000..7c480f6
+--- /dev/null
++++ b/tests/test_locali_needs_restock.py
+@@ -0,0 +1,8 @@
++from tinyshop.inventory import *  # noqa: F403
++from tinyshop.inventory import needs_restock
++
++def test_stock_below_threshold():
++    assert not needs_restock(10)
++
++def test_stock_at_threshold():
++    assert not needs_restock(LOW_STOCK_THRESHOLD)
+diff --git a/tinyshop/pricing.py b/tinyshop/pricing.py
+index cfc5961..bc546a5 100644
+--- a/tinyshop/pricing.py
++++ b/tinyshop/pricing.py
+@@ -13,7 +13,7 @@ def cart_total(lines):
+ def apply_discount(total, percent):
+     if not 0 <= percent <= 100:
+         raise ValueError("percent must be between 0 and 100")
+-    return round(total * (1 + percent / 100), 2)
++    return round(total * (1 - percent / 100), 2)
+ 
+ 
+ def with_vat(total):

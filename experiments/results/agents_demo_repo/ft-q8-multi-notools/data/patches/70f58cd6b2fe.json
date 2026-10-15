@@ -1,0 +1,58 @@
+{
+ "id": "70f58cd6b2fe",
+ "run_id": "ft-q8-multi-notools",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tests/test_locali_bulk_discount.py b/tests/test_locali_bulk_discount.py\nnew file mode 100644\nindex 0000000..5dad39e\n--- /dev/null\n+++ b/tests/test_locali_bulk_discount.py\n@@ -0,0 +1,9 @@\n+from tinyshop.pricing import *  # noqa: F403\n+from tinyshop.pricing import bulk_discount\n+\n+def test_bulk_discount_5_percent():\n+    assert bulk_discount(12) == 5\n+\n+\n+def test_no_discount():\n+    assert bulk_discount(3) == 0\ndiff --git a/tests/test_locali_find_products.py b/tests/test_locali_find_products.py\nnew file mode 100644\nindex 0000000..ee05ef6\n--- /dev/null\n+++ b/tests/test_locali_find_products.py\n@@ -0,0 +1,37 @@\n+from tinyshop.db import *  # noqa: F403\n+from tinyshop.db import find_products\n+\n+import sqlite3\n+\n+\n+def test_find_products_with_no_name():\n+    conn = sqlite3.connect(':memory:')\n+    conn.execute('''\n+        CREATE TABLE products (\n+            id INTEGER PRIMARY KEY,\n+            name TEXT NOT NULL,\n+            price REAL NOT NULL,\n+            stock INTEGER NOT NULL\n+        )\n+    ''')\n+    conn.execute(\"INSERT INTO products (name, price, stock) VALUES ('Apple', 1.0, 5)\")\n+    conn.execute(\"INSERT INTO products (name, price, stock) VALUES ('Banana', 2.0, 3)\")\n+    conn.execute(\"INSERT INTO products (name, price, stock) VALUES ('Cherry', 3.0, 7)\")\n+    result = find_products(conn, '')\n+    assert len(result) == 3\n+\n+def test_find_products_with_empty_name():\n+    conn = sqlite3.connect(':memory:')\n+    conn.execute('''\n+        CREATE TABLE products (\n+            id INTEGER PRIMARY KEY,\n+            name TEXT NOT NULL,\n+            price REAL NOT NULL,\n+            stock INTEGER NOT NULL\n+        )\n+    ''')\n+    conn.execute(\"INSERT INTO products (name, price, stock) VALUES ('Apple', 1.0, 5)\")\n+    conn.execute(\"INSERT INTO products (name, price, stock) VALUES ('Banana', 2.0, 3)\")\n+    conn.execute(\"INSERT INTO products (name, price, stock) VALUES ('Cherry', 3.0, 7)\")\n+    result = find_products(conn, '')\n+    assert len(result) == 3\ndiff --git a/tests/test_locali_hash_password.py b/tests/test_locali_hash_password.py\nnew file mode 100644\nindex 0000000..6710288\n--- /dev/null\n+++ b/tests/test_locali_hash_password.py\n@@ -0,0 +1,21 @@\n+from tinyshop.auth import *  # noqa: F403\n+import hashlib\n+from tinyshop.auth import hash_password\n+\n+\n+def test_hash_password__a1():\n+    password = 'test'\n+    expected_output = '5f4dcc3b5aa765d6193e8e3f0e623200'\n+    password = 'hello'\n+    expected_output = '5d41402abc4b2a76b9719d911017c592'\n+    assert hash_password(password) == expected_output\n+\n+def test_hash_password_with_different_password():\n+    password = 'test'\n+    expected_output = '5f4dcc3b5aa765d6193e8e3f0e623200'\n+    assert hash_password(password) != hash_password('different_test')\n+\n+def test_hash_password_with_empty_string():\n+    password = ''\n+    expected_output = 'd41d8cd98f00b204e9800998ecf8427e'\n+    assert hash_password(password) == expected_output\ndiff --git a/tests/test_locali_line_total.py b/tests/test_locali_line_total.py\nnew file mode 100644\nindex 0000000..11bc4f5\n--- /dev/null\n+++ b/tests/test_locali_line_total.py\n@@ -0,0 +1,20 @@\n+from tinyshop.pricing import *  # noqa: F403\n+from tinyshop.pricing import line_total\n+\n+def test_example_1():\n+    price = 50\n+    qty = 3\n+    expected_result = 150.0\n+    assert line_total(price, qty) == expected_result\n+\n+def test_example_2():\n+    price = 100\n+    qty = 4\n+    expected_result = 400.0\n+    assert line_total(price, qty) == expected_result\n+\n+def test_zero_quantity():\n+    price = 50\n+    qty = 0\n+    expected_result = 0.0\n+    assert line_total(price, qty) == expected_result\ndiff --git a/tests/test_locali_load_session.py b/tests/test_locali_load_session.py\nnew file mode 100644\nindex 0000000..2641d67\n--- /dev/null\n+++ b/tests/test_locali_load_session.py\n@@ -0,0 +1,12 @@\n+from tinyshop.auth import *  # noqa: F403\n+from tinyshop.auth import load_session\n+\n+import pickle\n+\n+\n+\n+def test_load_session_invalid_pickle():\n+    try:\n+        pickle.loads(b'invalid')\n+    except Exception as e:\n+        assert isinstance(e, pickle.PickleError)\ndiff --git a/tests/test_locali_main.py b/tests/test_locali_main.py\nnew file mode 100644\nindex 0000000..741cb72\n--- /dev/null\n+++ b/tests/test_locali_main.py\n@@ -0,0 +1,16 @@\n+from tinyshop.cli import *  # noqa: F403\n+from tinyshop.cli import main\n+\n+import argparse\n+import io\n+import sys\n+\n+\n+\n+\n+def test_calc():\n+    captured_output = io.StringIO()\n+    sys.stdout = captured_output\n+    main(['calc', '8.5*3'])\n+    sys.stdout = sys.__stdout__\n+    assert captured_output.getvalue().strip() == '25.5'\ndiff --git a/tests/test_locali_needs_restock.py b/tests/test_locali_needs_restock.py\nnew file mode 100644\nindex 0000000..7c480f6\n--- /dev/null\n+++ b/tests/test_locali_needs_restock.py\n@@ -0,0 +1,8 @@\n+from tinyshop.inventory import *  # noqa: F403\n+from tinyshop.inventory import needs_restock\n+\n+def test_stock_below_threshold():\n+    assert not needs_restock(10)\n+\n+def test_stock_at_threshold():\n+    assert not needs_restock(LOW_STOCK_THRESHOLD)\ndiff --git a/tinyshop/pricing.py b/tinyshop/pricing.py\nindex cfc5961..bc546a5 100644\n--- a/tinyshop/pricing.py\n+++ b/tinyshop/pricing.py\n@@ -13,7 +13,7 @@ def cart_total(lines):\n def apply_discount(total, percent):\n     if not 0 <= percent <= 100:\n         raise ValueError(\"percent must be between 0 and 100\")\n-    return round(total * (1 + percent / 100), 2)\n+    return round(total * (1 - percent / 100), 2)\n \n \n def with_vat(total):\n",
+ "sha256": "3fdfc6a86962c18026678a3759ef46f88469d10841d456382a7e13b5649347c1",
+ "files": [
+  "tests/test_locali_bulk_discount.py",
+  "tests/test_locali_find_products.py",
+  "tests/test_locali_hash_password.py",
+  "tests/test_locali_line_total.py",
+  "tests/test_locali_load_session.py",
+  "tests/test_locali_main.py",
+  "tests/test_locali_needs_restock.py",
+  "tinyshop/pricing.py"
+ ],
+ "baseline": {
+  "tests/test_locali_bulk_discount.py": null,
+  "tests/test_locali_find_products.py": null,
+  "tests/test_locali_hash_password.py": null,
+  "tests/test_locali_line_total.py": null,
+  "tests/test_locali_load_session.py": null,
+  "tests/test_locali_main.py": null,
+  "tests/test_locali_needs_restock.py": null,
+  "tinyshop/pricing.py": "9e833daf09c23dfa0b611232bae9eee74b3e1edd8880af32aa3b5e7bf2369415"
+ },
+ "head": "ef1b25206d13ddcdf68679b0f24539d223ea1f4e",
+ "validation": {
+  "ok": false,
+  "tests": {
+   "passed": 20,
+   "failed": [],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 80.2,
+   "output_tail": "....................                                                     [100%]\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n20 passed in 0.17s\n"
+  },
+  "new_security_findings": [
+   {
+    "tool": "bandit",
+    "rule": "B301",
+    "path": "tests/test_locali_load_session.py",
+    "line": 10,
+    "category": "security",
+    "severity": "medium",
+    "message": "Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue."
+   }
+  ],
+  "secrets_added": []
+ },
+ "validation_sha256": "29e76f3fc42a280e94560314564ed846a35e75ef46b6b2fb85bca70e1de971b6",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

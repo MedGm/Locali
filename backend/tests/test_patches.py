@@ -24,6 +24,12 @@ def store(tmp_path):
     return PatchStore(tmp_path / "data")
 
 
+def approve(store, patch, **over):
+    args = {"sha256": patch.sha256, "baseline": patch.baseline, "validation_sha256": patch.validation_sha256,
+            "reviewer": "me", **over}
+    return store.approve(patch.id, **args)
+
+
 def fix_and_add_test(repo, store, validate=no_checks):
     ws = open_workspace(repo)
     (ws.path / "app.py").write_text("def add(a, b):\n    return a + b\n")
@@ -65,24 +71,41 @@ def test_no_changes_means_no_proposal(repo, store):
 def test_approval_must_name_the_exact_patch_and_baseline(repo, store):
     patch = fix_and_add_test(repo, store)
     with pytest.raises(ApprovalMismatch):
-        store.approve(patch.id, sha256="0" * 64, baseline=patch.baseline, reviewer="me")
+        approve(store, patch, sha256="0" * 64)
     with pytest.raises(ApprovalMismatch):
-        store.approve(patch.id, sha256=patch.sha256, baseline={**patch.baseline, "app.py": "x"}, reviewer="me")
-    approved = store.approve(patch.id, sha256=patch.sha256, baseline=patch.baseline, reviewer="me")
+        approve(store, patch, baseline={**patch.baseline, "app.py": "x"})
+    approved = approve(store, patch)
     assert approved.status == "approved" and approved.reviewer == "me"
+
+
+def test_approval_must_name_the_validation_record_the_reviewer_saw(repo, store):
+    patch = fix_and_add_test(repo, store)
+    assert len(patch.validation_sha256) == 64
+    with pytest.raises(ApprovalMismatch):
+        approve(store, patch, validation_sha256="0" * 64)
+    assert store.get(patch.id).status == "proposed"
+
+
+def test_validation_record_edited_after_proposal_cannot_be_approved(repo, store):
+    patch = fix_and_add_test(repo, store, validate=lambda p, f: {"ok": False, "tests": "1 failed"})
+    tampered = store.get(patch.id)
+    tampered.validation = {"ok": True, "tests": "all passed"}
+    store.save(tampered)
+    with pytest.raises(ApprovalMismatch):
+        approve(store, tampered)
 
 
 def test_failed_validation_cannot_be_approved(repo, store):
     patch = fix_and_add_test(repo, store, validate=lambda p, f: {"ok": False})
     with pytest.raises(ApprovalMismatch):
-        store.approve(patch.id, sha256=patch.sha256, baseline=patch.baseline, reviewer="me")
+        approve(store, patch)
 
 
 def test_apply_requires_approval_then_changes_the_repo_and_keeps_a_backup(repo, store):
     patch = fix_and_add_test(repo, store)
     with pytest.raises(ApprovalMismatch):
         store.apply(patch.id)
-    store.approve(patch.id, sha256=patch.sha256, baseline=patch.baseline, reviewer="me")
+    approve(store, patch)
     applied = store.apply(patch.id)
     assert applied.status == "applied"
     assert "a + b" in (repo / "app.py").read_text() and (repo / "test_app.py").exists()
@@ -94,7 +117,7 @@ def test_apply_requires_approval_then_changes_the_repo_and_keeps_a_backup(repo, 
 
 def test_repo_changed_since_proposal_makes_the_patch_stale(repo, store):
     patch = fix_and_add_test(repo, store)
-    store.approve(patch.id, sha256=patch.sha256, baseline=patch.baseline, reviewer="me")
+    approve(store, patch)
     (repo / "app.py").write_text("def add(a, b):\n    return b - a\n")
     with pytest.raises(StalePatch):
         store.apply(patch.id)
@@ -104,7 +127,7 @@ def test_repo_changed_since_proposal_makes_the_patch_stale(repo, store):
 
 def test_conflicting_new_file_is_refused_before_anything_is_written(repo, store):
     patch = fix_and_add_test(repo, store)
-    store.approve(patch.id, sha256=patch.sha256, baseline=patch.baseline, reviewer="me")
+    approve(store, patch)
     (repo / "test_app.py").write_text("# someone else's test\n")
     with pytest.raises((StalePatch, PatchConflict)):
         store.apply(patch.id)
@@ -118,7 +141,7 @@ def test_apply_works_for_a_folder_inside_a_git_repo(tmp_path, store):
     for args in (["init", "-q"], ["add", "-A"], ["-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "x"]):
         subprocess.run(["git", "-C", str(top), *args], check=True)
     patch = fix_and_add_test(top / "shop", store)
-    store.approve(patch.id, sha256=patch.sha256, baseline=patch.baseline, reviewer="me")
+    approve(store, patch)
     store.apply(patch.id)
     assert "a + b" in (top / "shop" / "app.py").read_text()
     assert (top / "shop" / "test_app.py").exists() and not (top / "test_app.py").exists()

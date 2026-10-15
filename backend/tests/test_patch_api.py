@@ -29,7 +29,8 @@ def env(tmp_path):
 
 
 def decision(patch, **over):
-    return {"sha256": patch.sha256, "baseline": patch.baseline, "reviewer": "medgm", **over}
+    return {"sha256": patch.sha256, "baseline": patch.baseline, "validation_sha256": patch.validation_sha256,
+            "reviewer": "medgm", **over}
 
 
 def test_patch_is_listed_and_inspectable(env):
@@ -37,6 +38,12 @@ def test_patch_is_listed_and_inspectable(env):
     assert [p["id"] for p in client.get("/runs/run1/patches").json()] == [patch.id]
     body = client.get(f"/patches/{patch.id}").json()
     assert body["diff"] == patch.diff and body["validation"] == {"ok": True} and body["status"] == "proposed"
+
+
+def test_approve_with_wrong_validation_hash_is_refused(env):
+    client, _, _, patch = env
+    r = client.post(f"/patches/{patch.id}/approve", json=decision(patch, validation_sha256="0" * 64))
+    assert r.status_code == 409
 
 
 def test_approve_with_wrong_hash_is_refused(env):
@@ -70,6 +77,7 @@ def test_stale_patch_can_be_revalidated_into_a_new_proposal(env):
     assert new["baseline"]["app.py"] != patch.baseline["app.py"]
     assert "# header" not in new["diff"].split("@@")[0]
     client.post(f"/patches/{new['id']}/approve", json={"sha256": new["sha256"], "baseline": new["baseline"],
+                                                       "validation_sha256": new["validation_sha256"],
                                                        "reviewer": "medgm"})
     assert client.post(f"/patches/{new['id']}/apply").json()["status"] == "applied"
     assert (repo / "app.py").read_text() == "# header\ndef add(a, b):\n    return a + b\n"

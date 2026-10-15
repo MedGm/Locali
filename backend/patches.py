@@ -7,8 +7,9 @@ the unified diff, its SHA-256, the files it touches with the hash each had in th
     proposed -> approved -> applied -> reverted
              -> rejected     \\-> stale (folder changed after the proposal)
 
-Approval names the exact patch hash and baseline, and only a patch whose validation passed can be
-approved. Applying re-hashes the files first (any change makes the patch stale), checks the diff
+Approval names the exact patch hash, baseline and validation-record hash (what the reviewer saw),
+and only a patch whose validation passed can be approved. The stored record is re-hashed at
+approval, so a record edited after the proposal is refused. Applying re-hashes the files first (any change makes the patch stale), checks the diff
 with `git apply --check`, backs up the files it will overwrite, then applies. Revert restores the
 backups and removes the files the patch created.
 """
@@ -52,6 +53,7 @@ class Patch:
     baseline: dict[str, str | None]
     head: str | None
     validation: dict
+    validation_sha256: str = ""
     status: str = "proposed"
     reviewer: str | None = None
     history: list[str] = field(default_factory=list)
@@ -59,6 +61,10 @@ class Patch:
 
 def _sha(text: str) -> str:
     return hashlib.sha256(text.encode()).hexdigest()
+
+
+def validation_hash(validation: dict) -> str:
+    return _sha(json.dumps(validation, sort_keys=True, separators=(",", ":"), default=str))
 
 
 def _touched(diff: str) -> list[str]:
@@ -104,13 +110,16 @@ class PatchStore:
         patches = [Patch(**json.loads(p.read_text())) for p in sorted((self.dir / "patches").glob("*.json"))]
         return [p for p in patches if p.run_id == run_id]
 
-    def approve(self, patch_id: str, *, sha256: str, baseline: dict, reviewer: str) -> Patch:
+    def approve(self, patch_id: str, *, sha256: str, baseline: dict, validation_sha256: str,
+                reviewer: str) -> Patch:
         patch = self.get(patch_id)
         if patch.status != "proposed":
             raise ApprovalMismatch(f"patch is {patch.status}, not proposed")
+        if validation_hash(patch.validation) != patch.validation_sha256:
+            raise ApprovalMismatch("stored validation record does not match its hash")
         if not patch.validation.get("ok"):
             raise ApprovalMismatch("patch failed validation")
-        if sha256 != patch.sha256 or baseline != patch.baseline:
+        if sha256 != patch.sha256 or baseline != patch.baseline or validation_sha256 != patch.validation_sha256:
             raise ApprovalMismatch("decision does not match the proposed patch")
         patch.status, patch.reviewer = "approved", reviewer
         self._log("patch.approved", patch, reviewer=reviewer)
@@ -174,8 +183,9 @@ def propose(ws: Workspace, *, run_id: str, validate: Callable[[Path, list[str]],
     if not diff.strip():
         return None
     files = _touched(diff)
+    validation = validate(ws.path, files)
     patch = Patch(id=uuid.uuid4().hex[:12], run_id=run_id, repo=str(ws.repo), diff=diff, sha256=_sha(diff),
                   files=files, baseline=ws.baseline_hashes(files), head=ws.head,
-                  validation=validate(ws.path, files))
+                  validation=validation, validation_sha256=validation_hash(validation))
     store._log("patch.proposed", patch, files=files, validation_ok=bool(patch.validation.get("ok")))
     return store.save(patch)

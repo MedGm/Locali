@@ -37,6 +37,7 @@ class RunRequest(BaseModel):
 class Approval(BaseModel):
     sha256: str
     baseline: dict[str, str | None]
+    validation_sha256: str
     reviewer: str
 
 
@@ -120,7 +121,8 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
 
     @app.post("/patches/{patch_id}/approve")
     def approve_patch(patch_id: str, body: Approval):
-        return decide(patches.approve, patch_id, sha256=body.sha256, baseline=body.baseline, reviewer=body.reviewer)
+        return decide(patches.approve, patch_id, sha256=body.sha256, baseline=body.baseline,
+                      validation_sha256=body.validation_sha256, reviewer=body.reviewer)
 
     @app.post("/patches/{patch_id}/reject")
     def reject_patch(patch_id: str, body: Rejection):

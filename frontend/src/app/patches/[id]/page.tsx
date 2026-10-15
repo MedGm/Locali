@@ -63,7 +63,10 @@ export default function PatchPage() {
     onError,
   });
   const reject = useMutation({
-    mutationFn: (p: Patch) => post<Patch>(`/patches/${p.id}/reject`, { reviewer: reviewer || "reviewer" }),
+    mutationFn: (p: Patch) => {
+      localStorage.setItem(REVIEWER_KEY, reviewer);
+      return post<Patch>(`/patches/${p.id}/reject`, { reviewer });
+    },
     onSuccess: refresh,
     onError,
   });
@@ -179,10 +182,10 @@ export default function PatchPage() {
                   <Input value={reviewer} onChange={(e) => setReviewer(e.target.value)} placeholder="your name" />
                 </label>
                 <div className="flex gap-2">
-                  <Button disabled={busy || !v.ok || !reviewer} onClick={() => approve.mutate(p)}>
+                  <Button disabled={busy || !v.ok || !reviewer.trim()} onClick={() => approve.mutate(p)}>
                     Approve
                   </Button>
-                  <Button variant="outline" disabled={busy} onClick={() => reject.mutate(p)}>
+                  <Button variant="outline" disabled={busy || !reviewer.trim()} onClick={() => reject.mutate(p)}>
                     Reject
                   </Button>
                 </div>
@@ -193,7 +196,7 @@ export default function PatchPage() {
                 <Button disabled={busy} onClick={() => setConfirmApply(true)}>
                   Apply to repository
                 </Button>
-                <Button variant="outline" disabled={busy} onClick={() => reject.mutate(p)}>
+                <Button variant="outline" disabled={busy || !reviewer.trim()} onClick={() => reject.mutate(p)}>
                   Reject
                 </Button>
               </div>

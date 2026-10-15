@@ -26,11 +26,11 @@ from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, StringConstraints
 
 from backend.agents.model import guarded
 from backend.agents.workflow import run_workflow
@@ -48,15 +48,18 @@ class RunRequest(BaseModel):
     mode: Literal["analyze", "agents"] = "analyze"
 
 
+Reviewer = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=80)]
+
+
 class Approval(BaseModel):
     sha256: str
     baseline: dict[str, str | None]
     validation_sha256: str
-    reviewer: str
+    reviewer: Reviewer
 
 
 class Rejection(BaseModel):
-    reviewer: str
+    reviewer: Reviewer
 
 
 async def event_stream(load: Callable[[], dict], heartbeat_s: float, poll_s: float = 0.2):

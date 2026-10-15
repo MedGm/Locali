@@ -106,3 +106,10 @@ def test_patches_can_be_listed_across_runs_by_status(env):
     assert [p["id"] for p in client.get("/patches?status=proposed").json()] == [patch.id]
     assert client.get("/patches?status=applied").json() == []
     assert "diff" not in client.get("/patches").json()[0]  # list view stays small
+
+
+def test_decisions_need_a_reviewer_name(env):
+    client, _, _, patch = env
+    assert client.post(f"/patches/{patch.id}/reject", json={"reviewer": "  "}).status_code == 422
+    assert client.post(f"/patches/{patch.id}/approve", json=decision(patch, reviewer="")).status_code == 422
+    assert client.get(f"/patches/{patch.id}").json()["status"] == "proposed"

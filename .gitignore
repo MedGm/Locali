@@ -26,7 +26,7 @@ kaggle.json
 *.bin
 *.pt
 *.pth
-models/
+/models/
 checkpoints/
 outputs/
 adapters/

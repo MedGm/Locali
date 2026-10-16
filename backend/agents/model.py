@@ -20,6 +20,8 @@ def guarded(model: Callable[[list[dict]], object], record: Callable[[dict], None
             step: Callable[[], str]) -> Model:
     def call(messages: list[dict]) -> str:
         clean = [{**m, "content": redact(m["content"])} for m in messages]
+        redactions = sum(c["content"].count("[REDACTED:") - m["content"].count("[REDACTED:")
+                         for c, m in zip(clean, messages, strict=True))
         start = time.perf_counter()
         reply = model(clean)
         latency = time.perf_counter() - start
@@ -31,6 +33,7 @@ def guarded(model: Callable[[list[dict]], object], record: Callable[[dict], None
             "input_tokens": getattr(reply, "input_tokens", None),
             "output_tokens": getattr(reply, "output_tokens", None),
             "latency_s": round(latency, 3),
+            "redactions": redactions,
         })
         return text
 

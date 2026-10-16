@@ -3,6 +3,33 @@
 The full workflow (`backend/agents/workflow.py`) runs on `demo_repo/` and is scored against the
 planted-flaw answer key (`security/demo_repo_flaws.json`) with `experiments/scripts/agent_eval.py`.
 
+## After the review of the first patch (det-multi-split, 2026-10-16)
+
+Reviewing the first real patch showed that 3 of its 6 generated test files locked in a planted
+problem: one asserted the restock-boundary bug, one the MD5 hash, one the `eval` behaviour. They
+passed validation because they pass on the current code. Three changes followed:
+
+- no tests are generated for functions with a security finding from the static tools;
+- a function with a suspected bug keeps none of its generated tests;
+- the run proposes one patch per change (per fixed file, per test file), each validated alone on a
+  fresh copy. Validation now means "no test that passed before fails", so a test patch is not
+  blocked by a failure that was already there, and the record lists the failing tests a patch
+  makes pass.
+
+Same model, server settings and scoring as the deterministic runs below:
+
+| | Before (det-multi-a) | After (det-multi-split) |
+|---|---|---|
+| Bugs: fixed / found / suspected | 1 / 2 / 2 | 1 / 2 / 2 (same flaws) |
+| Vulnerabilities, secrets | 5 / 5, found | 5 / 5, found |
+| Model false positives | 17 | 17 |
+| Patches proposed | 1 (fix + 6 test files) | 2: the fix, and one test file |
+| Generated test files kept | 6, of which 3 lock in a planted problem | 1 (`line_total`, correct expected values) |
+| Model calls / output tokens | 40 / 5,129 | 35 / 3,678 (-28 %) |
+
+Detection did not change; the proposals did. The fix patch's record names the test it repairs
+(`test_discount`). Wall time is not compared: other jobs used the CPU during this run.
+
 ## Single agent vs multi-agent (deterministic runs, 2026-10-15)
 
 Same model (fine-tuned Qwen2.5-Coder-1.5B, Q8_0, llama.cpp on the laptop CPU), same repository,

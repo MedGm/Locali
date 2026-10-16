@@ -21,6 +21,9 @@ TimeoutExpired = subprocess.TimeoutExpired
 CompletedProcess = subprocess.CompletedProcess
 
 
+REFUSAL_HOOKS: list = []  # called with the refused command before raising (the API audits refusals)
+
+
 class CommandNotAllowed(Exception):
     pass
 
@@ -36,6 +39,8 @@ def _allowed(cmd: list[str]) -> bool:
 def run(cmd: list[str], *, input: str | None = None, cwd: str | Path | None = None,
         timeout: float | None = None, check: bool = False, text: bool = True) -> CompletedProcess:
     if not _allowed(cmd):
+        for hook in REFUSAL_HOOKS:
+            hook(list(cmd))
         raise CommandNotAllowed(f"not on the command allow-list: {cmd[:3]}")
     return subprocess.run(cmd, input=input, cwd=cwd, timeout=timeout, check=check, text=text,
                           capture_output=True)

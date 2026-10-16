@@ -39,8 +39,13 @@ from backend.audit import AuditLog
 from backend.patches import ApprovalMismatch, PatchConflict, PatchStore, StalePatch, propose
 from backend.validation import validate_workspace
 from backend.workspace import open_workspace
+from security import commands
 from security.commands import run as run_command
 from security.secrets import redact
+
+# audit actions shown in the security center
+SECURITY_ACTIONS = {"auth.refused", "run.refused", "command.refused", "model.redacted", "patch.stale",
+                    "patch.conflict", "patch.revert_refused", "patch.rejected"}
 
 
 class RunRequest(BaseModel):
@@ -96,6 +101,8 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
     app = FastAPI(title="Locali")
     app.state.patches = patches
     app.state.agents = ThreadPoolExecutor(max_workers=1)  # model calls are CPU-heavy: one run at a time
+    commands.REFUSAL_HOOKS.append(
+        lambda cmd: audit.write("command.refused", program=redact(cmd[0]) if cmd else "", args=[redact(a) for a in cmd[1:3]]))
 
     @app.middleware("http")
     async def require_token(request: Request, call_next):
@@ -126,6 +133,8 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
         def record(call: dict) -> None:
             with trajectory.open("a") as f:
                 f.write(json.dumps(call) + "\n")
+            if call.get("redactions"):
+                audit.write("model.redacted", run_id=run["id"], step=call["step"], count=call["redactions"])
 
         save_run({**run, "status": "running", **progress})
         audit.write("run.started", run_id=run["id"])
@@ -155,6 +164,21 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
     @app.get("/health")
     def health():
         return {"status": "ok"}
+
+    def read_audit() -> list[dict]:
+        path = Path(data_dir) / "audit.jsonl"
+        lines = path.read_text().splitlines() if path.exists() else []
+        return [json.loads(line) for line in reversed(lines)]
+
+    @app.get("/audit")
+    def list_audit(action: str | None = None, limit: int = 200):
+        events = [e for e in read_audit() if action is None or e["action"] == action]
+        return events[: max(1, min(limit, 2000))]
+
+    @app.get("/security/events")
+    def security_events(limit: int = 200):
+        events = [e for e in read_audit() if e["action"] in SECURITY_ACTIONS]
+        return {"counts": dict(Counter(e["action"] for e in events)), "events": events[: max(1, min(limit, 2000))]}
 
     @app.get("/status")
     def status():

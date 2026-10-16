@@ -42,6 +42,7 @@ def test_agent_run_happens_in_the_background_and_ends_with_a_patch(tmp_path):
     run = wait_for(client, r.json()["id"])
     assert run["status"] == "done", run.get("error")
     assert "## Fixes" in run["report"] and run["patch_ids"]
+    assert run["devops"]["ready_to_merge"] is False and run["devops"]["dependencies"]
     assert sorted(p["id"] for p in client.get(f"/runs/{run['id']}/patches").json()) == sorted(run["patch_ids"])
     assert {p: p.read_bytes() for p in (ROOT / "demo_repo").rglob("*") if p.is_file()} == before
 
@@ -70,11 +71,11 @@ def test_run_records_progress_trajectory_and_streams_events(tmp_path):
         events = [json.loads(line[len("data: "):]) for line in stream.iter_lines() if line.startswith("data: ")]
     assert events[-1]["status"] == "done"
     seen = list(dict.fromkeys(e["step"] for e in events if e.get("step")))
-    order = ["prepare", "analyze", "review", "testgen", "debug", "propose", "report"]
+    order = ["prepare", "analyze", "review", "testgen", "debug", "propose", "devops", "report"]
     assert seen == sorted(seen, key=order.index) and "testgen" in seen  # fast steps may pass between polls
 
     run = client.get(f"/runs/{run_id}").json()
-    assert run["steps_done"] == ["prepare", "analyze", "review", "testgen", "debug", "propose", "report"]
+    assert run["steps_done"] == ["prepare", "analyze", "review", "testgen", "debug", "propose", "devops", "report"]
 
     calls = client.get(f"/runs/{run_id}/trajectory").json()
     assert {c["step"] for c in calls} == {"review", "testgen", "debug"}

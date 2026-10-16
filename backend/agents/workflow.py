@@ -1,6 +1,6 @@
 """The assistant's workflow on one repository, as a LangGraph graph with fixed routing.
 
-    prepare -> analyze -> review -> testgen -> debug -> propose -> report
+    prepare -> analyze -> review -> testgen -> debug -> propose -> devops -> report
 
 Routing is fixed rather than chosen by the model: the 1.5B model made no native tool calls in the
 W1 spike, and fixed steps make every run reproducible. All edits happen in an isolated workspace,
@@ -21,6 +21,7 @@ from typing import TypedDict
 from langgraph.graph import END, START, StateGraph
 
 from backend.agents.debug import debug_failing_tests
+from backend.agents.devops import devops_summary
 from backend.agents.review import review_functions
 from backend.agents.testgen import generate_tests, untested_functions
 from backend.analysis import analyze
@@ -30,7 +31,7 @@ from backend.workspace import Workspace, open_workspace
 from mcp_servers.tests_server import run_tests
 from security.secrets import redact
 
-STEPS = ["prepare", "analyze", "review", "testgen", "debug", "propose", "report"]
+STEPS = ["prepare", "analyze", "review", "testgen", "debug", "propose", "devops", "report"]
 
 
 class RunState(TypedDict, total=False):
@@ -46,6 +47,8 @@ class RunState(TypedDict, total=False):
     fixes: list[dict]
     patch_ids: list[str]
     patches: list[dict]
+    tests_before: dict
+    devops: dict
     report: str
 
 
@@ -99,6 +102,8 @@ def _report(state: RunState) -> str:
     lines += ["", "## Patches (each one is reviewed and applied on its own)", ""]
     lines += [f"- {p['id']} [{p['kind']}] {p['title']}: validation {'passed' if p['ok'] else 'FAILED'}"
               for p in state["patches"]] or ["- no changes"]
+    if "devops" in state:
+        lines += ["", state["devops"]["markdown"].rstrip()]
     return redact("\n".join(lines) + "\n")
 
 
@@ -142,7 +147,8 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
 
     def do_propose(state):
         ws = workspaces[state["run_id"]]
-        failing_before = run_tests(ws.repo)["failed"]  # once per run, shared by every patch's validation
+        before = run_tests(ws.repo)  # once per run, shared by every patch's validation
+        failing_before = before["failed"]
         made = []
         for paths, kind, title in change_groups(state, _touched(ws.diff())):
             diff = ws.diff(paths)
@@ -158,13 +164,18 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
             if patch:
                 made.append({"id": patch.id, "kind": kind, "title": title, "files": patch.files,
                              "ok": bool(patch.validation.get("ok"))})
-        return {"patch_ids": [p["id"] for p in made], "patches": made}
+        tests_before = {k: before[k] for k in ("passed", "failed", "coverage_percent")}
+        return {"patch_ids": [p["id"] for p in made], "patches": made, "tests_before": tests_before}
+
+    def do_devops(state):
+        return {"devops": devops_summary(Path(state["repo"]), state, state.get("tests_before"))}
 
     def do_report(state):
         return {"report": _report(state)}
 
     graph = StateGraph(RunState)
-    nodes = dict(zip(STEPS, [prepare, do_analyze, do_review, do_testgen, do_debug, do_propose, do_report], strict=True))
+    nodes = dict(zip(STEPS, [prepare, do_analyze, do_review, do_testgen, do_debug, do_propose, do_devops,
+                                    do_report], strict=True))
     steps = [s for s in STEPS if tools or s != "analyze"]
     for name in steps:
         graph.add_node(name, step(name, nodes[name]))

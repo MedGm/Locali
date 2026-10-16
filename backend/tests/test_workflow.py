@@ -28,7 +28,7 @@ def test_workflow_proposes_one_validated_patch_per_change_and_leaves_the_repo_al
     store = PatchStore(tmp_path / "data")
     state = run_workflow(DEMO, run_id="run1", model=fake_model, store=store)
 
-    assert [s for s in state["steps"]] == ["prepare", "analyze", "review", "testgen", "debug", "propose", "report"]
+    assert [s for s in state["steps"]] == ["prepare", "analyze", "review", "testgen", "debug", "propose", "devops", "report"]
     assert {f["tool"] for f in state["findings"]} >= {"bandit", "semgrep", "secrets"}
     assert [f["test"] for f in state["fixes"] if f["fixed"]] == ["tests/test_pricing.py::test_discount"]
 
@@ -40,6 +40,8 @@ def test_workflow_proposes_one_validated_patch_per_change_and_leaves_the_repo_al
     assert len(patches) == len(fixes) + len(tests)
     assert all(p.status == "proposed" and p.validation["ok"] and p.title for p in patches)
     assert "## Fixes" in state["report"] and "test_discount" in state["report"]
+    assert [r["name"] for r in state["devops"]["dependencies"]] == ["reqeusts"]
+    assert state["devops"]["ready_to_merge"] is False and "## DevOps summary" in state["report"]
 
     assert {p: p.read_bytes() for p in DEMO.rglob("*") if p.is_file()} == before
     assert not Path(state["workspace"]).exists()

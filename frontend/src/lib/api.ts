@@ -65,6 +65,16 @@ export type Run = RunSummary & {
   tests_added?: string[];
   patches?: RunPatch[];
   summary?: { by_category: Record<string, number>; by_tool: Record<string, number> };
+  devops?: Devops;
+};
+
+export type Devops = {
+  ready_to_merge: boolean;
+  blockers: string[];
+  warnings: string[];
+  dependencies: { file: string; name: string; looks_like: string }[];
+  ci: { has_ci: boolean; has_locali_review: boolean; workflows: string[] };
+  suggested_workflow: string | null;
 };
 
 export type ModelCall = {
@@ -102,7 +112,7 @@ export type Patch = Omit<PatchSummary, "validation_ok"> & {
   history: string[];
 };
 
-export const PIPELINE = ["prepare", "analyze", "review", "testgen", "debug", "propose", "report"] as const;
+export const PIPELINE = ["prepare", "analyze", "review", "testgen", "debug", "propose", "devops", "report"] as const;
 
 export class ApiError extends Error {
   constructor(

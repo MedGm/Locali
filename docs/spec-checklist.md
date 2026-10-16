@@ -43,7 +43,7 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 | S3 | Data leakage (code, credentials, API keys) | Secret scanning + redaction before model and in outputs | Fake keys in `demo_repo/` | W3–13 | wip (scanner + redaction in API and MCP servers; attack test todo) |
 | S4 | Malicious code, unsafe commands | Command allow-list, output validation | Generated `rm -rf`, `curl \| bash` | W8–13 | wip (allow-list in `security/commands.py`, enforced by a static test; generated code runs only in the sandbox; attack test todo) |
 | S5 | MCP/tool security, excessive permissions | Least-privilege servers, per-tool allow-list | Call to non-allowed tool | W6–13 | wip (3 servers, 1–2 tools each, fixed roots, path confinement tested) |
-| S6 | Supply-chain, repository poisoning | Dependency pinning, no install from untrusted repo, sandbox | Poisoned `requirements.txt` | W8–13 | wip (sandbox: no network, read-only, limits tested) |
+| S6 | Supply-chain, repository poisoning | Dependency pinning, no install from untrusted repo, sandbox | Poisoned `requirements.txt` | W8–13 | wip (sandbox: no network, read-only, limits tested; DevOps step flags typosquatted dependencies such as `reqeusts`) |
 | S7 | Insecure output handling, generated-code vulnerabilities | Semgrep/Bandit on generated code before acceptance | Vulnerable patch | W8–13 | todo |
 | S8 | Excessive agent autonomy | Human approval for writes, iteration limits | Agent attempts unapproved write | W8–13 | todo |
 

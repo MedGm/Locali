@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { api, PIPELINE, type Finding, type ModelCall, type Run } from "@/lib/api";
+import { api, PIPELINE, type Devops, type Finding, type ModelCall, type Run } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 export default function RunPage() {
@@ -89,6 +89,7 @@ export default function RunPage() {
               <TabsTrigger value="tests">Tests & suspects</TabsTrigger>
               <TabsTrigger value="fixes">Fixes ({r.fixes?.length ?? 0})</TabsTrigger>
               <TabsTrigger value="trajectory">Model calls</TabsTrigger>
+              <TabsTrigger value="devops">DevOps</TabsTrigger>
               <TabsTrigger value="report">Report</TabsTrigger>
             </>
           )}
@@ -104,6 +105,9 @@ export default function RunPage() {
         </TabsContent>
         <TabsContent value="trajectory">
           <Trajectory id={r.id} live={!!live} />
+        </TabsContent>
+        <TabsContent value="devops">
+          {r.devops ? <DevopsPanel devops={r.devops} /> : <p className="text-sm text-muted-foreground">Not ready yet.</p>}
         </TabsContent>
         <TabsContent value="report">
           <pre className="whitespace-pre-wrap rounded-md border bg-muted/30 p-4 text-sm">{r.report ?? "Not ready yet."}</pre>
@@ -348,6 +352,80 @@ function Trajectory({ id, live }: { id: string; live: boolean }) {
           </div>
         </details>
       ))}
+    </div>
+  );
+}
+
+function DevopsPanel({ devops }: { devops: Devops }) {
+  return (
+    <div className="space-y-4">
+      <Alert variant={devops.ready_to_merge ? "default" : "destructive"}>
+        <AlertTitle>{devops.ready_to_merge ? "Ready to merge" : "Not ready to merge"}</AlertTitle>
+        <AlertDescription>
+          {devops.blockers.length ? (
+            <ul className="mt-1 list-disc space-y-1 pl-4">
+              {devops.blockers.map((b) => (
+                <li key={b}>{b}</li>
+              ))}
+            </ul>
+          ) : (
+            "No blockers found."
+          )}
+        </AlertDescription>
+      </Alert>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Warnings</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm">
+            {devops.warnings.length ? (
+              <ul className="list-disc space-y-1 pl-4">
+                {devops.warnings.map((w) => (
+                  <li key={w}>{w}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-muted-foreground">None.</p>
+            )}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Dependencies</CardTitle>
+            <CardDescription>Names one edit away from a popular package (possible typosquats)</CardDescription>
+          </CardHeader>
+          <CardContent className="text-sm">
+            {devops.dependencies.length ? (
+              <ul className="space-y-1">
+                {devops.dependencies.map((d) => (
+                  <li key={`${d.file}:${d.name}`}>
+                    <span className="font-mono">{d.name}</span> looks like <span className="font-mono">{d.looks_like}</span>{" "}
+                    <span className="text-muted-foreground">({d.file})</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-muted-foreground">Nothing suspicious.</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">CI</CardTitle>
+          <CardDescription>
+            {devops.ci.workflows.length ? `Workflows: ${devops.ci.workflows.join(", ")}` : "No GitHub workflows."}
+            {devops.ci.has_ci && !devops.ci.has_locali_review && " None of them reviews pull requests for security issues."}
+          </CardDescription>
+        </CardHeader>
+        {devops.suggested_workflow && (
+          <CardContent>
+            <p className="mb-2 text-sm">A workflow to start from (.github/workflows/ci.yml):</p>
+            <pre className="overflow-x-auto rounded-md border bg-muted/30 p-3 text-xs">{devops.suggested_workflow}</pre>
+          </CardContent>
+        )}
+      </Card>
     </div>
   );
 }

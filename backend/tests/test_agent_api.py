@@ -71,14 +71,14 @@ def test_run_records_progress_trajectory_and_streams_events(tmp_path):
         events = [json.loads(line[len("data: "):]) for line in stream.iter_lines() if line.startswith("data: ")]
     assert events[-1]["status"] == "done"
     seen = list(dict.fromkeys(e["step"] for e in events if e.get("step")))
-    order = ["prepare", "analyze", "review", "testgen", "debug", "propose", "devops", "report"]
+    order = ["prepare", "analyze", "review", "testgen", "debug", "docs", "propose", "devops", "report"]
     assert seen == sorted(seen, key=order.index) and "testgen" in seen  # fast steps may pass between polls
 
     run = client.get(f"/runs/{run_id}").json()
-    assert run["steps_done"] == ["prepare", "analyze", "review", "testgen", "debug", "propose", "devops", "report"]
+    assert run["steps_done"] == ["prepare", "analyze", "review", "testgen", "debug", "docs", "propose", "devops", "report"]
 
     calls = client.get(f"/runs/{run_id}/trajectory").json()
-    assert {c["step"] for c in calls} == {"review", "testgen", "debug"}
+    assert {c["step"] for c in calls} == {"review", "testgen", "debug", "docs"}
     assert all(c["prompt"] and c["answer"] for c in calls)
 
     listed = client.get("/runs").json()

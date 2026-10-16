@@ -64,7 +64,7 @@ class Patch:
     validation: dict
     validation_sha256: str = ""
     title: str = ""
-    kind: str = "change"  # "fix" (repairs code), "tests" (adds tests), "change" (anything else)
+    kind: str = "change"  # "fix" (repairs code), "tests" (adds tests), "docs" (docstrings only), "change" (anything else)
     applied_hashes: dict[str, str | None] = field(default_factory=dict)
     status: str = "proposed"
     reviewer: str | None = None

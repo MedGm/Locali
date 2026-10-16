@@ -1,6 +1,6 @@
 """The assistant's workflow on one repository, as a LangGraph graph with fixed routing.
 
-    prepare -> analyze -> review -> testgen -> debug -> propose -> devops -> report
+    prepare -> analyze -> review -> testgen -> debug -> docs -> propose -> devops -> report
 
 Routing is fixed rather than chosen by the model: the 1.5B model made no native tool calls in the
 W1 spike, and fixed steps make every run reproducible. All edits happen in an isolated workspace,
@@ -22,6 +22,7 @@ from langgraph.graph import END, START, StateGraph
 
 from backend.agents.debug import debug_failing_tests
 from backend.agents.devops import devops_summary
+from backend.agents.docs import generate_docs, undocumented_functions
 from backend.agents.review import review_functions
 from backend.agents.testgen import generate_tests, untested_functions
 from backend.analysis import analyze
@@ -31,7 +32,7 @@ from backend.workspace import Workspace, open_workspace
 from mcp_servers.tests_server import run_tests
 from security.secrets import redact
 
-STEPS = ["prepare", "analyze", "review", "testgen", "debug", "propose", "devops", "report"]
+STEPS = ["prepare", "analyze", "review", "testgen", "debug", "docs", "propose", "devops", "report"]
 
 
 class RunState(TypedDict, total=False):
@@ -45,6 +46,7 @@ class RunState(TypedDict, total=False):
     suspects: list[dict]
     crashed_tests: dict[str, int]
     fixes: list[dict]
+    docs: dict
     patch_ids: list[str]
     patches: list[dict]
     tests_before: dict
@@ -65,6 +67,11 @@ def change_groups(state: RunState, changed: list[str]) -> list[tuple[list[str], 
     for test_file in state.get("tests_added", []):
         function = Path(test_file).stem.removeprefix("test_locali_")
         groups.append(([test_file], "tests", f"Regression tests for {function} (they record what the code does now)"))
+    documented: dict[str, list[str]] = {}
+    for file, name in state.get("docs", {}).get("documented", []):
+        documented.setdefault(file, []).append(name)
+    for file, names in documented.items():
+        groups.append(([file], "docs", f"Docstrings for {', '.join(names)} in {file}"))
     covered = {f for files, _, _ in groups for f in files}
     rest = [f for f in changed if f not in covered]
     if rest:
@@ -99,6 +106,11 @@ def _report(state: RunState) -> str:
     lines += ["", "## Fixes", ""]
     lines += [f"- {f['test']}: {'fixed' if f['fixed'] else 'not fixed'} in {f['attempts']} attempt(s), "
               f"{f['file']}::{f['function']}" for f in state["fixes"]] or ["- none"]
+    docs = state.get("docs", {})
+    lines += ["", "## Docstrings", ""]
+    lines += [f"- {file}::{name}" for file, name in docs.get("documented", [])] or ["- none"]
+    if docs.get("rejected"):
+        lines += [f"- answers dropped (not a docstring-only change): {docs['rejected']}"]
     lines += ["", "## Patches (each one is reviewed and applied on its own)", ""]
     lines += [f"- {p['id']} [{p['kind']}] {p['title']}: validation {'passed' if p['ok'] else 'FAILED'}"
               for p in state["patches"]] or ["- no changes"]
@@ -145,6 +157,18 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
     def do_debug(state):
         return {"fixes": [asdict(f) for f in debug_failing_tests(ws_of(state), model)]}
 
+    def do_docs(state):
+        # Leave alone what other patches touch or what may be wrong: fixed files, functions with a
+        # suspected bug, functions the tools flag as insecure. A docstring there would describe the bug.
+        root = ws_of(state)
+        fixed = {f["file"] for f in state.get("fixes", []) if f["fixed"]}
+        skip = flagged_functions(root, state.get("findings", []))
+        skip |= {(s["file"], s["function"]) for s in state.get("suspects", [])}
+        skip |= {fn for fn in undocumented_functions(root) if fn[0] in fixed}
+        result = generate_docs(root, model, skip=skip)
+        return {"docs": {"files": result.files, "documented": [list(d) for d in result.documented],
+                         "rejected": result.rejected}}
+
     def do_propose(state):
         ws = workspaces[state["run_id"]]
         before = run_tests(ws.repo)  # once per run, shared by every patch's validation
@@ -174,7 +198,7 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
         return {"report": _report(state)}
 
     graph = StateGraph(RunState)
-    nodes = dict(zip(STEPS, [prepare, do_analyze, do_review, do_testgen, do_debug, do_propose, do_devops,
+    nodes = dict(zip(STEPS, [prepare, do_analyze, do_review, do_testgen, do_debug, do_docs, do_propose, do_devops,
                                     do_report], strict=True))
     steps = [s for s in STEPS if tools or s != "analyze"]
     for name in steps:

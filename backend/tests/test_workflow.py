@@ -19,6 +19,8 @@ def fake_model(messages):
         return f"```python\nfrom solution import {name}\n\n\ndef test_{name}_exists():\n    assert callable({name})\n```"
     if prompt.startswith("The following Python function has a bug"):
         return GOOD_FIX
+    if prompt.startswith("Write a one-line docstring"):
+        return "Does what the name says."
     raise AssertionError(f"unexpected prompt: {prompt[:80]}")
 
 
@@ -28,16 +30,18 @@ def test_workflow_proposes_one_validated_patch_per_change_and_leaves_the_repo_al
     store = PatchStore(tmp_path / "data")
     state = run_workflow(DEMO, run_id="run1", model=fake_model, store=store)
 
-    assert [s for s in state["steps"]] == ["prepare", "analyze", "review", "testgen", "debug", "propose", "devops", "report"]
+    assert [s for s in state["steps"]] == ["prepare", "analyze", "review", "testgen", "debug", "docs", "propose", "devops", "report"]
     assert {f["tool"] for f in state["findings"]} >= {"bandit", "semgrep", "secrets"}
     assert [f["test"] for f in state["fixes"] if f["fixed"]] == ["tests/test_pricing.py::test_discount"]
 
     patches = [store.get(i) for i in state["patch_ids"]]
     fixes = [p for p in patches if p.kind == "fix"]
     tests = [p for p in patches if p.kind == "tests"]
+    docs = [p for p in patches if p.kind == "docs"]
     assert [p.files for p in fixes] == [["tinyshop/pricing.py"]]
     assert tests and all(len(p.files) == 1 and p.files[0].startswith("tests/test_locali_") for p in tests)
-    assert len(patches) == len(fixes) + len(tests)
+    assert docs and all(len(p.files) == 1 and p.files[0] != "tinyshop/pricing.py" for p in docs)
+    assert len(patches) == len(fixes) + len(tests) + len(docs)
     assert all(p.status == "proposed" and p.validation["ok"] and p.title for p in patches)
     assert "## Fixes" in state["report"] and "test_discount" in state["report"]
     assert [r["name"] for r in state["devops"]["dependencies"]] == ["reqeusts"]

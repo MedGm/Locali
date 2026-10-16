@@ -182,7 +182,8 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
         save_run({**run, "status": "done", "step": None, "steps_done": state["steps"],
                   "report": state["report"], "patch_ids": state["patch_ids"], "patches": state["patches"],
                   "findings": state["findings"], "suspects": state["suspects"], "fixes": state["fixes"],
-                  "tests_added": state["tests_added"], "devops": state["devops"]})
+                  "tests_added": state["tests_added"], "docs": state["docs"],
+                  "devops": state["devops"]})
         audit.write("run.finished", run_id=run["id"], patch_ids=state["patch_ids"])
 
     def resolve_repo(repo: str) -> Path:

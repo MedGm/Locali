@@ -32,6 +32,7 @@ export function SeverityBadge({ severity }: { severity: Severity }) {
 const KIND_COLORS: Record<PatchKind, string> = {
   fix: "bg-violet-100 text-violet-800",
   tests: "bg-teal-100 text-teal-800",
+  docs: "bg-indigo-100 text-indigo-800",
   change: "bg-zinc-100 text-zinc-700",
 };
 

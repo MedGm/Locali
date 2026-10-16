@@ -87,7 +87,7 @@ export type ModelCall = {
 };
 
 export type PatchStatus = "proposed" | "approved" | "applied" | "reverted" | "rejected" | "stale";
-export type PatchKind = "fix" | "tests" | "change";
+export type PatchKind = "fix" | "tests" | "docs" | "change";
 
 export type PatchSummary = {
   id: string;

@@ -1,0 +1,42 @@
+name: Locali review
+
+# Runs Locali's static analysis and secret scan on the files a pull request changes, posts one
+# comment with the new findings, and fails when the change adds a high-severity security issue or a
+# secret. The model review needs a model server, so it is not run here.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen
+      - name: Review the change
+        id: review
+        run: |
+          set +e
+          uv run python -m backend.pr_review --base "${{ github.event.pull_request.base.sha }}" \
+            --head "${{ github.event.pull_request.head.sha }}" --out comment.md
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+      - name: Comment on the pull request
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr comment "${{ github.event.pull_request.number }}" --body-file comment.md --edit-last || gh pr comment "${{ github.event.pull_request.number }}" --body-file comment.md
+      - name: Block on new security issues or secrets
+        if: steps.review.outputs.exit_code != '0'
+        run: |
+          echo "Locali found a new high-severity security issue or a secret in this change."
+          exit 1

@@ -226,17 +226,7 @@ export default function PatchPage() {
                 Revert
               </Button>
             )}
-            {p.kind === "tests" && (
-        <Alert>
-          <AlertTitle>These tests record what the code does now</AlertTitle>
-          <AlertDescription>
-            They were generated and kept because they pass on the current code. If the current behaviour is wrong,
-            a test like this would lock it in: read the expected values before approving.
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {p.status === "stale" && (
+            {p.status === "stale" && (
               <Button disabled={busy} onClick={() => revalidate.mutate(p)}>
                 Revalidate
               </Button>

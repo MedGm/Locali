@@ -48,7 +48,13 @@ export function HorizontalBars({
             contentStyle={{ fontSize: 12, borderRadius: 8 }}
           />
           {series.length > 1 && (
-            <Legend verticalAlign="top" align="left" iconType="circle" wrapperStyle={{ fontSize: 12, paddingBottom: 8 }} />
+            <Legend
+              verticalAlign="top"
+              align="left"
+              iconType="circle"
+              wrapperStyle={{ fontSize: 12, paddingBottom: 8 }}
+              formatter={(value) => <span style={{ color: "var(--viz-ink-2)" }}>{value}</span>}
+            />
           )}
           {series.map((s) => (
             <Bar

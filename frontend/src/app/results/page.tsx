@@ -48,7 +48,7 @@ type Summary = {
 const BASE = "var(--viz-series-1)";
 const TUNED = "var(--viz-series-2)";
 
-const fmtP = (t: Test) => (t ? (t.p < 0.001 ? t.p.toExponential(0) : t.p.toFixed(3)) : "—");
+const fmtP = (t: Test) => (t ? (t.p < 0.001 ? "< 0.001" : t.p.toFixed(3)) : "—");
 const mark = (t: Test) => (t && t.p < 0.05 ? " *" : "");
 
 export default function ResultsPage() {

@@ -59,7 +59,7 @@ def rate(root: Path, model: str, task: str) -> float | None:
 def paired(a: tuple[Path, str], b: tuple[Path, str], task: str) -> dict | None:
     row = compare_tasks(a[0], a[1], task, b[0], b[1], task)
     return None if row is None else {"n": row["n"], "only_a": row["only_a"], "only_b": row["only_b"],
-                                     "p": round(row["p"], 6)}
+                                     "p": float(f"{row['p']:.3g}")}
 
 
 def summary(root: Path, model: str, task: str) -> dict:
@@ -106,10 +106,11 @@ def finetuning() -> dict:
 
 def ladder() -> dict:
     lad, base_dir = R / "ladder_laptop", R / "baselines"
-    configs = [("base", "F16", lad, "qwen2.5-coder-1.5b__f16"), ("base", "Q4_K_M", base_dir, "qwen2.5-coder-1.5b__q4km"),
-               ("fine-tuned", "F16", lad, "qwen2.5-coder-1.5b-ft-qlora-v2__f16"),
-               ("fine-tuned", "Q8_0", lad, "qwen2.5-coder-1.5b-ft-qlora-v2__q80"),
-               ("fine-tuned", "Q4_K_M", lad, "qwen2.5-coder-1.5b-ft-qlora-v2__q4km")]
+    configs = [("base", "F16", [lad], "qwen2.5-coder-1.5b__f16"),
+               ("base", "Q4_K_M", [base_dir, lad], "qwen2.5-coder-1.5b__q4km"),
+               ("fine-tuned", "F16", [lad], "qwen2.5-coder-1.5b-ft-qlora-v2__f16"),
+               ("fine-tuned", "Q8_0", [lad], "qwen2.5-coder-1.5b-ft-qlora-v2__q80"),
+               ("fine-tuned", "Q4_K_M", [lad], "qwen2.5-coder-1.5b-ft-qlora-v2__q4km")]
     memory = {}  # decimal GB, like the report
     with open(lad / "server_memory.tsv") as f:  # whole runs; only night 2 ran with the prompt cache off
         for time, model, quant, kb, _ in csv.reader(f, delimiter="\t"):
@@ -120,11 +121,11 @@ def ladder() -> dict:
             key = ("base" if row["model"] == "qwen2.5-coder-1.5b" else "fine-tuned", row["quant"])
             memory[key] = (round(int(row["peak_rss_kb"]) / 1e6, 2), "load + one request")
     rows = []
-    for model, quant, root, prefix in configs:
+    for model, quant, roots, prefix in configs:
         ram, ram_source = memory.get((model, quant), (None, None))
         entry = {"model": model, "quant": quant, "peak_ram_gb": ram, "peak_ram_source": ram_source, "tasks": {}}
         for task in ("humaneval_plus", "mbpp_plus", "humanevalfix"):
-            runs = sorted((root / task).glob(f"{prefix}__laptop-cpu*"))
+            runs = [run for root in roots for run in sorted((root / task).glob(f"{prefix}__laptop-cpu*"))]
             if not runs:
                 continue
             m = json.loads((runs[-1] / "summary.json").read_text())["metrics"]
@@ -154,7 +155,7 @@ def context_ablation() -> dict:
 
 def _vs_standard(root: Path, model: str, task: str) -> dict:
     row = compare_tasks(root, model, "internal_t1", root, model, task)
-    return {"only_standard": row["only_a"], "only_variant": row["only_b"], "p": round(row["p"], 6)}
+    return {"only_standard": row["only_a"], "only_variant": row["only_b"], "p": float(f"{row['p']:.3g}")}
 
 
 def agents() -> dict:

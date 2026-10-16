@@ -1,0 +1,60 @@
+{
+  "note": "Models the assistant can run on the laptop with llama.cpp. Quality, speed, RAM and energy come from the quantization ladder (experiments/results/summary.json).",
+  "models": [
+    {
+      "id": "ft-q8",
+      "name": "Locali Qwen2.5-Coder-1.5B, fine-tuned (QLoRA v2), Q8_0",
+      "base": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "fine_tuned": true,
+      "quant": "Q8_0",
+      "file": "llama-locali-qwen2.5-coder-1.5b-q8_0.gguf",
+      "size_gib": 1.5,
+      "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF",
+      "recommended": "default"
+    },
+    {
+      "id": "ft-q4",
+      "name": "Locali Qwen2.5-Coder-1.5B, fine-tuned (QLoRA v2), Q4_K_M",
+      "base": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "fine_tuned": true,
+      "quant": "Q4_K_M",
+      "file": "llama-locali-qwen2.5-coder-1.5b-q4_k_m.gguf",
+      "size_gib": 0.9,
+      "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF",
+      "recommended": "fast"
+    },
+    {
+      "id": "ft-f16",
+      "name": "Locali Qwen2.5-Coder-1.5B, fine-tuned (QLoRA v2), F16",
+      "base": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "fine_tuned": true,
+      "quant": "F16",
+      "file": "built from MedGm/Llama-Locali-Qwen2.5-Coder-1.5B with convert_hf_to_gguf.py",
+      "size_gib": 2.9,
+      "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-1.5B",
+      "recommended": null
+    },
+    {
+      "id": "base-q4",
+      "name": "Qwen2.5-Coder-1.5B-Instruct (not fine-tuned), Q4_K_M",
+      "base": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "fine_tuned": false,
+      "quant": "Q4_K_M",
+      "file": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+      "size_gib": 1.0,
+      "hf_repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF",
+      "recommended": null
+    },
+    {
+      "id": "base-f16",
+      "name": "Qwen2.5-Coder-1.5B-Instruct (not fine-tuned), F16",
+      "base": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "fine_tuned": false,
+      "quant": "F16",
+      "file": "converted from Qwen/Qwen2.5-Coder-1.5B-Instruct@2e1fd39",
+      "size_gib": 2.9,
+      "hf_repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "recommended": null
+    }
+  ]
+}

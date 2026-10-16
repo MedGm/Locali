@@ -1,0 +1,1105 @@
+{
+ "generated_at": "2026-10-16T11:04:36+00:00",
+ "baselines": {
+  "note": "Kaggle T4, vLLM FP16, greedy decoding; the 9B model ran on two T4s.",
+  "systems": [
+   "Qwen2.5-Coder-1.5B",
+   "Phi-4-mini (3.8B)",
+   "Qwen3.5-2B",
+   "Qwen3.5-4B",
+   "Qwen3.5-9B (reference)"
+  ],
+  "rows": [
+   {
+    "task": "humaneval_plus",
+    "label": "HumanEval+",
+    "systems": {
+     "Qwen2.5-Coder-1.5B": {
+      "score": 65.0,
+      "gpu_j_per_item": 34.85,
+      "output_tokens": 213.2699
+     },
+     "Phi-4-mini (3.8B)": {
+      "score": 71.2,
+      "gpu_j_per_item": 74.83,
+      "output_tokens": 275.5276
+     },
+     "Qwen3.5-2B": {
+      "score": 47.2,
+      "gpu_j_per_item": 55.02,
+      "output_tokens": 251.2638
+     },
+     "Qwen3.5-4B": {
+      "score": 79.8,
+      "gpu_j_per_item": 78.5,
+      "output_tokens": 251.4908
+     },
+     "Qwen3.5-9B (reference)": {
+      "score": 84.0,
+      "gpu_j_per_item": 353.79,
+      "output_tokens": 321.0307
+     }
+    }
+   },
+   {
+    "task": "mbpp_plus",
+    "label": "MBPP+",
+    "systems": {
+     "Qwen2.5-Coder-1.5B": {
+      "score": 56.2,
+      "gpu_j_per_item": 19.67,
+      "output_tokens": 109.565
+     },
+     "Phi-4-mini (3.8B)": {
+      "score": 54.1,
+      "gpu_j_per_item": 47.59,
+      "output_tokens": 201.3103
+     },
+     "Qwen3.5-2B": {
+      "score": 40.8,
+      "gpu_j_per_item": 52.64,
+      "output_tokens": 250.4562
+     },
+     "Qwen3.5-4B": {
+      "score": 66.8,
+      "gpu_j_per_item": 70.11,
+      "output_tokens": 253.0398
+     },
+     "Qwen3.5-9B (reference)": {
+      "score": 62.1,
+      "gpu_j_per_item": 277.22,
+      "output_tokens": 281.0584
+     }
+    }
+   },
+   {
+    "task": "humanevalfix",
+    "label": "HumanEvalFix",
+    "systems": {
+     "Qwen2.5-Coder-1.5B": {
+      "score": 25.0,
+      "gpu_j_per_item": 36.5,
+      "output_tokens": 188.311
+     },
+     "Phi-4-mini (3.8B)": {
+      "score": 42.7,
+      "gpu_j_per_item": 90.86,
+      "output_tokens": 280.0366
+     },
+     "Qwen3.5-2B": {
+      "score": 34.1,
+      "gpu_j_per_item": 35.31,
+      "output_tokens": 102.2256
+     },
+     "Qwen3.5-4B": {
+      "score": 53.7,
+      "gpu_j_per_item": 71.68,
+      "output_tokens": 176.1646
+     },
+     "Qwen3.5-9B (reference)": {
+      "score": 65.9,
+      "gpu_j_per_item": 165.27,
+      "output_tokens": 112.1585
+     }
+    }
+   },
+   {
+    "task": "bugdetect",
+    "label": "Bug detection",
+    "systems": {
+     "Qwen2.5-Coder-1.5B": {
+      "score": 53.0,
+      "gpu_j_per_item": 5.49,
+      "output_tokens": 29.3171
+     },
+     "Phi-4-mini (3.8B)": {
+      "score": 65.2,
+      "gpu_j_per_item": 11.72,
+      "output_tokens": 33.4512
+     },
+     "Qwen3.5-2B": {
+      "score": 53.7,
+      "gpu_j_per_item": 14.51,
+      "output_tokens": 51.1982
+     },
+     "Qwen3.5-4B": {
+      "score": 66.2,
+      "gpu_j_per_item": 37.0,
+      "output_tokens": 73.9024
+     },
+     "Qwen3.5-9B (reference)": {
+      "score": 72.0,
+      "gpu_j_per_item": 81.42,
+      "output_tokens": 62.5427
+     }
+    }
+   },
+   {
+    "task": "cruxeval_o",
+    "label": "CRUXEval-O",
+    "systems": {
+     "Qwen2.5-Coder-1.5B": {
+      "score": 30.1,
+      "gpu_j_per_item": 6.86,
+      "output_tokens": 37.0538
+     },
+     "Phi-4-mini (3.8B)": {
+      "score": 33.6,
+      "gpu_j_per_item": 12.54,
+      "output_tokens": 37.0463
+     },
+     "Qwen3.5-2B": {
+      "score": 32.2,
+      "gpu_j_per_item": 13.37,
+      "output_tokens": 35.8237
+     },
+     "Qwen3.5-4B": {
+      "score": 47.6,
+      "gpu_j_per_item": 23.77,
+      "output_tokens": 34.73
+     },
+     "Qwen3.5-9B (reference)": {
+      "score": 54.5,
+      "gpu_j_per_item": 56.68,
+      "output_tokens": 37.48
+     }
+    }
+   },
+   {
+    "task": "testgen",
+    "label": "Test generation (bug caught)",
+    "systems": {
+     "Qwen2.5-Coder-1.5B": {
+      "score": 46.3,
+      "gpu_j_per_item": 66.95,
+      "output_tokens": 419.6707
+     },
+     "Phi-4-mini (3.8B)": {
+      "score": 90.2,
+      "gpu_j_per_item": 196.54,
+      "output_tokens": 581.2317
+     },
+     "Qwen3.5-2B": {
+      "score": 87.2,
+      "gpu_j_per_item": 122.65,
+      "output_tokens": 548.25
+     },
+     "Qwen3.5-4B": {
+      "score": 97.0,
+      "gpu_j_per_item": 218.97,
+      "output_tokens": 721.5671
+     },
+     "Qwen3.5-9B (reference)": {
+      "score": 95.7,
+      "gpu_j_per_item": 656.47,
+      "output_tokens": 711.872
+     }
+    }
+   },
+   {
+    "task": "refactor",
+    "label": "Refactoring (behaviour kept)",
+    "systems": {
+     "Qwen2.5-Coder-1.5B": {
+      "score": 69.9,
+      "gpu_j_per_item": 32.37,
+      "output_tokens": 200.8282
+     },
+     "Phi-4-mini (3.8B)": {
+      "score": 86.5,
+      "gpu_j_per_item": 63.0,
+      "output_tokens": 208.3067
+     },
+     "Qwen3.5-2B": {
+      "score": 82.8,
+      "gpu_j_per_item": 55.57,
+      "output_tokens": 248.3006
+     },
+     "Qwen3.5-4B": {
+      "score": 92.0,
+      "gpu_j_per_item": 73.89,
+      "output_tokens": 226.3926
+     },
+     "Qwen3.5-9B (reference)": {
+      "score": 92.6,
+      "gpu_j_per_item": 242.37,
+      "output_tokens": 242.135
+     }
+    }
+   },
+   {
+    "task": "completion",
+    "label": "Code completion",
+    "systems": {
+     "Qwen2.5-Coder-1.5B": {
+      "score": 35.6,
+      "gpu_j_per_item": 9.83,
+      "output_tokens": 41.2025
+     },
+     "Phi-4-mini (3.8B)": {
+      "score": 47.9,
+      "gpu_j_per_item": 13.75,
+      "output_tokens": 31.4724
+     },
+     "Qwen3.5-2B": {
+      "score": 33.7,
+      "gpu_j_per_item": 12.74,
+      "output_tokens": 39.362
+     },
+     "Qwen3.5-4B": {
+      "score": 54.6,
+      "gpu_j_per_item": 28.82,
+      "output_tokens": 44.7975
+     },
+     "Qwen3.5-9B (reference)": {
+      "score": 62.0,
+      "gpu_j_per_item": 50.04,
+      "output_tokens": 33.6748
+     }
+    }
+   },
+   {
+    "task": "securecodegen",
+    "label": "Secure code generation",
+    "systems": {
+     "Qwen2.5-Coder-1.5B": {
+      "score": 76.9,
+      "gpu_j_per_item": 25.99,
+      "output_tokens": 140.9421
+     },
+     "Phi-4-mini (3.8B)": {
+      "score": 64.5,
+      "gpu_j_per_item": 33.32,
+      "output_tokens": 124.6116
+     },
+     "Qwen3.5-2B": {
+      "score": 82.6,
+      "gpu_j_per_item": 39.69,
+      "output_tokens": 162.0744
+     },
+     "Qwen3.5-4B": {
+      "score": 81.8,
+      "gpu_j_per_item": 60.4,
+      "output_tokens": 181.5372
+     },
+     "Qwen3.5-9B (reference)": {
+      "score": 74.4,
+      "gpu_j_per_item": 194.32,
+      "output_tokens": 182.2727
+     }
+    }
+   },
+   {
+    "task": "vulndetect",
+    "label": "Vulnerability detection",
+    "systems": {
+     "Qwen2.5-Coder-1.5B": {
+      "score": 51.0,
+      "gpu_j_per_item": 8.91,
+      "output_tokens": 56.4817
+     },
+     "Phi-4-mini (3.8B)": {
+      "score": 57.3,
+      "gpu_j_per_item": 14.82,
+      "output_tokens": 54.7753
+     },
+     "Qwen3.5-2B": {
+      "score": 55.2,
+      "gpu_j_per_item": 11.34,
+      "output_tokens": 43.9368
+     },
+     "Qwen3.5-4B": {
+      "score": 57.7,
+      "gpu_j_per_item": 19.56,
+      "output_tokens": 46.5449
+     },
+     "Qwen3.5-9B (reference)": {
+      "score": 61.9,
+      "gpu_j_per_item": 52.71,
+      "output_tokens": 50.1685
+     }
+    }
+   }
+  ]
+ },
+ "finetuning": {
+  "note": "Paired on the same items; p is the exact two-sided McNemar test. Qwen2.5-Coder-1.5B unless named; v1 and v2 are the two training mixtures.",
+  "rows": [
+   {
+    "task": "humaneval_plus",
+    "label": "HumanEval+",
+    "family": "bench",
+    "base": 65.0,
+    "v1": 65.0,
+    "qlora_v2": 62.0,
+    "lora16_v2": 65.6,
+    "rslora_v2": 62.0,
+    "phi_base": 71.2,
+    "phi_qlora_v2": 64.4,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 163,
+      "only_a": 21,
+      "only_b": 16,
+      "p": 0.511376
+     },
+     "v1_vs_qlora_v2": {
+      "n": 163,
+      "only_a": 11,
+      "only_b": 6,
+      "p": 0.332306
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 163,
+      "only_a": 20,
+      "only_b": 9,
+      "p": 0.061428
+     }
+    }
+   },
+   {
+    "task": "mbpp_plus",
+    "label": "MBPP+",
+    "family": "bench",
+    "base": 56.2,
+    "v1": 58.9,
+    "qlora_v2": 62.1,
+    "lora16_v2": 57.0,
+    "rslora_v2": 60.2,
+    "phi_base": 54.1,
+    "phi_qlora_v2": 48.3,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 377,
+      "only_a": 18,
+      "only_b": 40,
+      "p": 0.005355
+     },
+     "v1_vs_qlora_v2": {
+      "n": 377,
+      "only_a": 7,
+      "only_b": 19,
+      "p": 0.028959
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 377,
+      "only_a": 41,
+      "only_b": 19,
+      "p": 0.006218
+     }
+    }
+   },
+   {
+    "task": "humanevalfix",
+    "label": "HumanEvalFix",
+    "family": "bench",
+    "base": 25.0,
+    "v1": 29.9,
+    "qlora_v2": 36.0,
+    "lora16_v2": 37.2,
+    "rslora_v2": 31.7,
+    "phi_base": 42.7,
+    "phi_qlora_v2": 34.8,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 164,
+      "only_a": 11,
+      "only_b": 29,
+      "p": 0.006427
+     },
+     "v1_vs_qlora_v2": {
+      "n": 164,
+      "only_a": 3,
+      "only_b": 13,
+      "p": 0.021271
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 164,
+      "only_a": 31,
+      "only_b": 18,
+      "p": 0.085433
+     }
+    }
+   },
+   {
+    "task": "bugdetect",
+    "label": "Bug detection",
+    "family": "bench",
+    "base": 53.0,
+    "v1": 54.9,
+    "qlora_v2": 65.5,
+    "lora16_v2": 53.4,
+    "rslora_v2": 56.1,
+    "phi_base": 65.2,
+    "phi_qlora_v2": 68.3,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 328,
+      "only_a": 45,
+      "only_b": 86,
+      "p": 0.000431
+     },
+     "v1_vs_qlora_v2": {
+      "n": 328,
+      "only_a": 48,
+      "only_b": 83,
+      "p": 0.002829
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 328,
+      "only_a": 53,
+      "only_b": 63,
+      "p": 0.40347
+     }
+    }
+   },
+   {
+    "task": "cruxeval_o",
+    "label": "CRUXEval-O",
+    "family": "bench",
+    "base": 30.1,
+    "v1": 25.5,
+    "qlora_v2": 28.7,
+    "lora16_v2": 28.1,
+    "rslora_v2": 31.1,
+    "phi_base": 33.6,
+    "phi_qlora_v2": 35.5,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 800,
+      "only_a": 53,
+      "only_b": 42,
+      "p": 0.304885
+     },
+     "v1_vs_qlora_v2": {
+      "n": 800,
+      "only_a": 23,
+      "only_b": 49,
+      "p": 0.002943
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 800,
+      "only_a": 43,
+      "only_b": 58,
+      "p": 0.163279
+     }
+    }
+   },
+   {
+    "task": "testgen",
+    "label": "Test generation (bug caught)",
+    "family": "bench",
+    "base": 46.3,
+    "v1": 83.5,
+    "qlora_v2": 82.3,
+    "lora16_v2": 81.1,
+    "rslora_v2": 85.4,
+    "phi_base": 90.2,
+    "phi_qlora_v2": 87.2,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 164,
+      "only_a": 9,
+      "only_b": 68,
+      "p": 0.0
+     },
+     "v1_vs_qlora_v2": {
+      "n": 164,
+      "only_a": 7,
+      "only_b": 5,
+      "p": 0.774414
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 164,
+      "only_a": 12,
+      "only_b": 7,
+      "p": 0.359283
+     }
+    }
+   },
+   {
+    "task": "refactor",
+    "label": "Refactoring (behaviour kept)",
+    "family": "bench",
+    "base": 69.9,
+    "v1": 92.6,
+    "qlora_v2": 93.9,
+    "lora16_v2": 92.6,
+    "rslora_v2": 93.9,
+    "phi_base": 86.5,
+    "phi_qlora_v2": 94.5,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 163,
+      "only_a": 3,
+      "only_b": 42,
+      "p": 0.0
+     },
+     "v1_vs_qlora_v2": {
+      "n": 163,
+      "only_a": 2,
+      "only_b": 4,
+      "p": 0.6875
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 163,
+      "only_a": 5,
+      "only_b": 18,
+      "p": 0.010622
+     }
+    }
+   },
+   {
+    "task": "completion",
+    "label": "Code completion",
+    "family": "bench",
+    "base": 35.6,
+    "v1": 34.4,
+    "qlora_v2": 36.8,
+    "lora16_v2": 41.7,
+    "rslora_v2": 37.4,
+    "phi_base": 47.9,
+    "phi_qlora_v2": 41.1,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 163,
+      "only_a": 11,
+      "only_b": 13,
+      "p": 0.83882
+     },
+     "v1_vs_qlora_v2": {
+      "n": 163,
+      "only_a": 4,
+      "only_b": 8,
+      "p": 0.387695
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 163,
+      "only_a": 17,
+      "only_b": 6,
+      "p": 0.03469
+     }
+    }
+   },
+   {
+    "task": "securecodegen",
+    "label": "Secure code generation",
+    "family": "bench",
+    "base": 76.9,
+    "v1": 81.8,
+    "qlora_v2": 81.0,
+    "lora16_v2": 81.8,
+    "rslora_v2": 82.6,
+    "phi_base": 64.5,
+    "phi_qlora_v2": 81.8,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 121,
+      "only_a": 1,
+      "only_b": 6,
+      "p": 0.125
+     },
+     "v1_vs_qlora_v2": {
+      "n": 121,
+      "only_a": 1,
+      "only_b": 0,
+      "p": 1.0
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 121,
+      "only_a": 2,
+      "only_b": 23,
+      "p": 1.9e-05
+     }
+    }
+   },
+   {
+    "task": "vulndetect",
+    "label": "Vulnerability detection",
+    "family": "bench",
+    "base": 51.0,
+    "v1": 50.4,
+    "qlora_v2": 51.5,
+    "lora16_v2": 50.3,
+    "rslora_v2": 50.7,
+    "phi_base": 57.3,
+    "phi_qlora_v2": 53.8,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 712,
+      "only_a": 10,
+      "only_b": 14,
+      "p": 0.541256
+     },
+     "v1_vs_qlora_v2": {
+      "n": 712,
+      "only_a": 9,
+      "only_b": 17,
+      "p": 0.168638
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 712,
+      "only_a": 34,
+      "only_b": 9,
+      "p": 0.00017
+     }
+    }
+   },
+   {
+    "task": "humanevalfix_t1fmt",
+    "label": "HumanEvalFix, trained format",
+    "family": "format",
+    "base": 9.1,
+    "v1": 17.7,
+    "qlora_v2": 24.4,
+    "lora16_v2": 19.5,
+    "rslora_v2": 23.2,
+    "phi_base": 46.3,
+    "phi_qlora_v2": 24.4,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 164,
+      "only_a": 6,
+      "only_b": 31,
+      "p": 4.1e-05
+     },
+     "v1_vs_qlora_v2": {
+      "n": 164,
+      "only_a": 8,
+      "only_b": 19,
+      "p": 0.052239
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 164,
+      "only_a": 44,
+      "only_b": 8,
+      "p": 0.0
+     }
+    }
+   },
+   {
+    "task": "bugdetect_t3fmt",
+    "label": "Bug detection, trained format",
+    "family": "format",
+    "base": 49.7,
+    "v1": 60.4,
+    "qlora_v2": 65.9,
+    "lora16_v2": 65.2,
+    "rslora_v2": 65.2,
+    "phi_base": 64.3,
+    "phi_qlora_v2": 65.9,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 328,
+      "only_a": 43,
+      "only_b": 96,
+      "p": 8e-06
+     },
+     "v1_vs_qlora_v2": {
+      "n": 328,
+      "only_a": 8,
+      "only_b": 26,
+      "p": 0.002935
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 328,
+      "only_a": 46,
+      "only_b": 51,
+      "p": 0.684859
+     }
+    }
+   },
+   {
+    "task": "internal_t1",
+    "label": "Repair (held-out training problems)",
+    "family": "internal",
+    "base": 2.4,
+    "v1": 59.0,
+    "qlora_v2": 63.7,
+    "lora16_v2": 63.7,
+    "rslora_v2": 67.0,
+    "phi_base": 41.0,
+    "phi_qlora_v2": 70.8,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 212,
+      "only_a": 1,
+      "only_b": 131,
+      "p": 0.0
+     },
+     "v1_vs_qlora_v2": {
+      "n": 212,
+      "only_a": 9,
+      "only_b": 19,
+      "p": 0.087159
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 212,
+      "only_a": 9,
+      "only_b": 72,
+      "p": 0.0
+     }
+    }
+   },
+   {
+    "task": "internal_t2",
+    "label": "Test writing (held-out)",
+    "family": "internal",
+    "base": 11.2,
+    "v1": 21.6,
+    "qlora_v2": 23.9,
+    "lora16_v2": 25.4,
+    "rslora_v2": 25.4,
+    "phi_base": 41.0,
+    "phi_qlora_v2": 29.9,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 134,
+      "only_a": 4,
+      "only_b": 21,
+      "p": 0.000911
+     },
+     "v1_vs_qlora_v2": {
+      "n": 134,
+      "only_a": 6,
+      "only_b": 9,
+      "p": 0.607239
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 134,
+      "only_a": 22,
+      "only_b": 7,
+      "p": 0.00813
+     }
+    }
+   },
+   {
+    "task": "internal_t3",
+    "label": "Code review (held-out)",
+    "family": "internal",
+    "base": 26.2,
+    "v1": 52.0,
+    "qlora_v2": 50.7,
+    "lora16_v2": 63.8,
+    "rslora_v2": 57.6,
+    "phi_base": 44.5,
+    "phi_qlora_v2": 66.4,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 229,
+      "only_a": 23,
+      "only_b": 79,
+      "p": 0.0
+     },
+     "v1_vs_qlora_v2": {
+      "n": 229,
+      "only_a": 17,
+      "only_b": 14,
+      "p": 0.7201
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 229,
+      "only_a": 19,
+      "only_b": 69,
+      "p": 0.0
+     }
+    }
+   },
+   {
+    "task": "internal_t4",
+    "label": "Execution trace (held-out)",
+    "family": "internal",
+    "base": 42.7,
+    "v1": 28.1,
+    "qlora_v2": 51.0,
+    "lora16_v2": 52.1,
+    "rslora_v2": 52.1,
+    "phi_base": 52.1,
+    "phi_qlora_v2": 53.1,
+    "tests": {
+     "base_vs_qlora_v2": {
+      "n": 96,
+      "only_a": 2,
+      "only_b": 10,
+      "p": 0.038574
+     },
+     "v1_vs_qlora_v2": {
+      "n": 96,
+      "only_a": 0,
+      "only_b": 22,
+      "p": 0.0
+     },
+     "phi_base_vs_phi_v2": {
+      "n": 96,
+      "only_a": 8,
+      "only_b": 9,
+      "p": 1.0
+     }
+    }
+   }
+  ]
+ },
+ "ladder": {
+  "note": "Laptop CPU (i5-10210U, 4 threads), llama.cpp, greedy; energy is the CPU package (RAPL).",
+  "rows": [
+   {
+    "model": "base",
+    "quant": "F16",
+    "peak_ram_gb": 3.27,
+    "peak_ram_source": "whole run",
+    "tasks": {
+     "humaneval_plus": {
+      "score": 65.0,
+      "tokens_per_s": 5.81,
+      "j_per_item": 625.36,
+      "j_per_solved": 962,
+      "output_tokens": 226.5276
+     },
+     "mbpp_plus": {
+      "score": 56.2,
+      "tokens_per_s": 5.9,
+      "j_per_item": 278.1,
+      "j_per_solved": 495,
+      "output_tokens": 102.4828
+     }
+    }
+   },
+   {
+    "model": "base",
+    "quant": "Q4_K_M",
+    "peak_ram_gb": 1.29,
+    "peak_ram_source": "load + one request",
+    "tasks": {
+     "humaneval_plus": {
+      "score": 67.5,
+      "tokens_per_s": 16.77,
+      "j_per_item": 224.04,
+      "j_per_solved": 332,
+      "output_tokens": 209.2638
+     },
+     "mbpp_plus": {
+      "score": 60.5,
+      "tokens_per_s": 17.25,
+      "j_per_item": 102.03,
+      "j_per_solved": 169,
+      "output_tokens": 99.4536
+     }
+    }
+   },
+   {
+    "model": "fine-tuned",
+    "quant": "F16",
+    "peak_ram_gb": 3.21,
+    "peak_ram_source": "load + one request",
+    "tasks": {
+     "humaneval_plus": {
+      "score": 64.4,
+      "tokens_per_s": 5.84,
+      "j_per_item": 411.3,
+      "j_per_solved": 638,
+      "output_tokens": 144.7669
+     },
+     "mbpp_plus": {
+      "score": 60.2,
+      "tokens_per_s": 5.96,
+      "j_per_item": 143.19,
+      "j_per_solved": 238,
+      "output_tokens": 50.2732
+     },
+     "humanevalfix": {
+      "score": 32.3,
+      "tokens_per_s": 5.82,
+      "j_per_item": 269.31,
+      "j_per_solved": 833,
+      "output_tokens": 72.7744
+     }
+    }
+   },
+   {
+    "model": "fine-tuned",
+    "quant": "Q8_0",
+    "peak_ram_gb": 1.79,
+    "peak_ram_source": "load + one request",
+    "tasks": {
+     "humaneval_plus": {
+      "score": 63.2,
+      "tokens_per_s": 10.38,
+      "j_per_item": 250.24,
+      "j_per_solved": 396,
+      "output_tokens": 143.4479
+     },
+     "mbpp_plus": {
+      "score": 59.4,
+      "tokens_per_s": 10.71,
+      "j_per_item": 87.02,
+      "j_per_solved": 146,
+      "output_tokens": 49.1247
+     }
+    }
+   },
+   {
+    "model": "fine-tuned",
+    "quant": "Q4_K_M",
+    "peak_ram_gb": 1.16,
+    "peak_ram_source": "load + one request",
+    "tasks": {
+     "humaneval_plus": {
+      "score": 60.1,
+      "tokens_per_s": 16.12,
+      "j_per_item": 140.92,
+      "j_per_solved": 234,
+      "output_tokens": 111.908
+     },
+     "mbpp_plus": {
+      "score": 58.1,
+      "tokens_per_s": 16.74,
+      "j_per_item": 61.91,
+      "j_per_solved": 107,
+      "output_tokens": 51.9125
+     },
+     "humanevalfix": {
+      "score": 29.9,
+      "tokens_per_s": 16.04,
+      "j_per_item": 140.86,
+      "j_per_solved": 471,
+      "output_tokens": 73.6098
+     }
+    }
+   }
+  ]
+ },
+ "context_ablation": {
+  "note": "212 held-out repair problems, merged QLoRA v2 model on a T4.",
+  "rows": [
+   {
+    "variant": "Failing test only (trained prompt)",
+    "score": 63.7,
+    "input_tokens": 364.0189,
+    "output_tokens": 240.6462,
+    "gpu_j": 7687.2,
+    "vs_standard": null
+   },
+   {
+    "variant": "Whole test suite",
+    "score": 62.3,
+    "input_tokens": 806.0377,
+    "output_tokens": 242.7453,
+    "gpu_j": 13012.5,
+    "vs_standard": {
+     "only_standard": 10,
+     "only_variant": 7,
+     "p": 0.629059
+    }
+   },
+   {
+    "variant": "Compressed (no comments, docstrings)",
+    "score": 61.3,
+    "input_tokens": 314.934,
+    "output_tokens": 213.3019,
+    "gpu_j": 6668.3,
+    "vs_standard": {
+     "only_standard": 13,
+     "only_variant": 8,
+     "p": 0.38331
+    }
+   }
+  ]
+ },
+ "agents": {
+  "note": "demo_repo with 5 planted bugs, 5 vulnerabilities and hardcoded secrets; fine-tuned Q8_0 on the laptop. 'restock boundary' counts as suspected only through a wrong generated test.",
+  "rows": [
+   {
+    "variant": "Single agent",
+    "bugs": {
+     "bug-restock-boundary": "missed",
+     "bug-mutable-default": "missed",
+     "bug-skip-first": "missed",
+     "bug-discount-sign": "missed",
+     "bug-bulk-boundary": "missed"
+    },
+    "security": {
+     "vuln-sql-injection": false,
+     "vuln-weak-hash": true,
+     "vuln-pickle": false,
+     "vuln-shell": true,
+     "vuln-eval": true
+    },
+    "secrets": {
+     "secret-hardcoded": false
+    },
+    "false_positives": 3,
+    "model_calls": 8,
+    "output_tokens": 441
+   },
+   {
+    "variant": "Multi-agent, no tools",
+    "bugs": {
+     "bug-restock-boundary": "suspected",
+     "bug-mutable-default": "missed",
+     "bug-skip-first": "suspected",
+     "bug-discount-sign": "fixed",
+     "bug-bulk-boundary": "found"
+    },
+    "security": {
+     "vuln-sql-injection": false,
+     "vuln-weak-hash": true,
+     "vuln-pickle": true,
+     "vuln-shell": true,
+     "vuln-eval": false
+    },
+    "secrets": {
+     "secret-hardcoded": false
+    },
+    "false_positives": 17,
+    "model_calls": 40,
+    "output_tokens": 5129
+   },
+   {
+    "variant": "Multi-agent + tools",
+    "bugs": {
+     "bug-restock-boundary": "suspected",
+     "bug-mutable-default": "found",
+     "bug-skip-first": "suspected",
+     "bug-discount-sign": "fixed",
+     "bug-bulk-boundary": "found"
+    },
+    "security": {
+     "vuln-sql-injection": true,
+     "vuln-weak-hash": true,
+     "vuln-pickle": true,
+     "vuln-shell": true,
+     "vuln-eval": true
+    },
+    "secrets": {
+     "secret-hardcoded": true
+    },
+    "false_positives": 17,
+    "model_calls": 40,
+    "output_tokens": 5129
+   },
+   {
+    "variant": "Multi-agent + tools, per-change patches",
+    "bugs": {
+     "bug-restock-boundary": "suspected",
+     "bug-mutable-default": "found",
+     "bug-skip-first": "suspected",
+     "bug-discount-sign": "fixed",
+     "bug-bulk-boundary": "found"
+    },
+    "security": {
+     "vuln-sql-injection": true,
+     "vuln-weak-hash": true,
+     "vuln-pickle": true,
+     "vuln-shell": true,
+     "vuln-eval": true
+    },
+    "secrets": {
+     "secret-hardcoded": true
+    },
+    "false_positives": 17,
+    "model_calls": 35,
+    "output_tokens": 3678
+   }
+  ]
+ }
+}

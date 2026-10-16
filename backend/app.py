@@ -43,6 +43,9 @@ from security import commands
 from security.commands import run as run_command
 from security.secrets import redact
 
+RESULTS_FILE = Path(__file__).resolve().parents[1] / "experiments" / "results" / "summary.json"
+MODELS_FILE = Path(__file__).with_name("models.json")
+
 # audit actions shown in the security center
 SECURITY_ACTIONS = {"auth.refused", "run.refused", "command.refused", "model.redacted", "patch.stale",
                     "patch.conflict", "patch.revert_refused", "patch.rejected"}
@@ -89,7 +92,8 @@ async def event_stream(load: Callable[[], dict], heartbeat_s: float, poll_s: flo
 def create_app(repos_root: str | Path, data_dir: str | Path,
                validate: Callable[[Path, list[str]], dict] | None = None,
                model: Callable[[list[dict]], str] | None = None, tools: bool = True,
-               api_token: str | None = None, heartbeat_s: float = 15.0) -> FastAPI:
+               api_token: str | None = None, heartbeat_s: float = 15.0,
+               results_file: str | Path | None = None) -> FastAPI:
     """validate replaces the full workspace validation (tests use a stub); model answers chat messages
     for agent runs; tools=False drops the static-analysis step of agent runs (ablation); api_token,
     when set, is required as a Bearer token on every endpoint except /health."""
@@ -179,6 +183,29 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
     def security_events(limit: int = 200):
         events = [e for e in read_audit() if e["action"] in SECURITY_ACTIONS]
         return {"counts": dict(Counter(e["action"] for e in events)), "events": events[: max(1, min(limit, 2000))]}
+
+    summary_path = Path(results_file) if results_file else RESULTS_FILE
+
+    def load_summary() -> dict | None:
+        return json.loads(summary_path.read_text()) if summary_path.exists() else None
+
+    @app.get("/results")
+    def results():
+        summary = load_summary()
+        if summary is None:
+            raise HTTPException(404, "no results summary; run experiments/scripts/export_results.py")
+        return summary
+
+    @app.get("/models")
+    def models():
+        registry = json.loads(MODELS_FILE.read_text())
+        measured = {(r["model"], r["quant"]): r for r in (load_summary() or {}).get("ladder", {}).get("rows", [])}
+        out = []
+        for m in registry["models"]:
+            row = measured.get(("fine-tuned" if m["fine_tuned"] else "base", m["quant"]), {})
+            out.append({**m, "laptop": row.get("tasks", {}), "peak_ram_gb": row.get("peak_ram_gb"),
+                        "active": os.environ.get("LOCALI_MODEL_ID") == m["id"]})
+        return {"note": registry["note"], "models": out}
 
     @app.get("/status")
     def status():

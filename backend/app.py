@@ -45,7 +45,7 @@ from backend.validation import validate_workspace
 from backend.workspace import open_workspace
 from security import commands, sandbox
 from security.commands import run as run_command
-from security.secrets import redact
+from security.secrets import redact, secret_values
 
 RESULTS_FILE = Path(__file__).resolve().parents[1] / "experiments" / "results" / "summary.json"
 MODELS_FILE = Path(__file__).with_name("models.json")
@@ -207,7 +207,8 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
                   "model": os.environ.get("LOCALI_MODEL_ID", "unknown")}
         try:
             with tracker.agent_run(run["id"], params):
-                gated = guarded(tracker.wrap_model(model), record, step=lambda: progress["step"])
+                gated = guarded(tracker.wrap_model(model), record, step=lambda: progress["step"],
+                                known=secret_values(path))
                 state = run_workflow(path, run_id=run["id"], model=gated, store=patches, tools=tools,
                                      on_step=on_step, around_step=tracker.step)
                 tracker.finish(run_metrics(state, calls), state["report"], trajectory)

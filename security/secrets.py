@@ -3,12 +3,18 @@
 Known token formats are matched first; a generic rule then catches assignments such as
 `API_KEY = "..."` when the value looks random (Shannon entropy check). Redaction replaces
 only the value, so redacted code still parses.
+
+The generic rule needs the assignment around the value, so a value repeated on its own (a model
+answer saying "the key is ...") would pass. secret_values() collects the values found in a
+repository, and redact(text, known) also removes those exact strings wherever they appear.
 """
 
 import math
 import re
 from collections import Counter
+from collections.abc import Iterable
 from dataclasses import dataclass
+from pathlib import Path
 
 PATTERNS = [
     ("private-key", re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----")),
@@ -53,7 +59,28 @@ def scan_text(text: str) -> list[SecretFinding]:
     return sorted(found, key=lambda f: f.start)
 
 
-def redact(text: str) -> str:
+def redact(text: str, known: Iterable[str] = ()) -> str:
     for f in sorted(scan_text(text), key=lambda f: f.start, reverse=True):
         text = text[: f.start] + f"[REDACTED:{f.rule}]" + text[f.end :]
+    for value in sorted(known, key=len, reverse=True):
+        text = text.replace(value, "[REDACTED:known-secret]")
     return text
+
+
+SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", "node_modules"}
+MAX_FILE_BYTES = 1_000_000
+
+
+def secret_values(root: str | Path) -> set[str]:
+    """Every secret value the scanner finds in the text files of a repository."""
+    root = Path(root)
+    values = set()
+    for path in root.rglob("*"):
+        if not path.is_file() or SKIP_DIRS & set(path.relative_to(root).parts) or path.stat().st_size > MAX_FILE_BYTES:
+            continue
+        try:
+            text = path.read_text()
+        except (UnicodeDecodeError, OSError):
+            continue
+        values |= {text[f.start:f.end] for f in scan_text(text) if f.end - f.start >= 8}
+    return values

@@ -50,3 +50,16 @@ def test_redaction_keeps_code_parseable_and_removes_values():
     assert "f3b1c9e07a5d4e2b8c6a9d0e1f2a3b4c" not in clean
     assert '"[REDACTED:aws-access-key]"' in clean
     assert "VAT_RATE = 0.20" in clean
+
+
+def test_values_found_in_a_repository_are_redacted_anywhere(tmp_path):
+    from security.secrets import secret_values
+
+    (tmp_path / "pkg").mkdir()
+    (tmp_path / "pkg" / "conf.py").write_text('API_KEY = "Zq8vR2mW9xLp4TnB7cYd"\n')
+    (tmp_path / ".venv").mkdir()
+    (tmp_path / ".venv" / "x.py").write_text('API_KEY = "Hk3jW8qPz5mN2rTv6bXy"\n')
+    known = secret_values(tmp_path)
+    assert known == {"Zq8vR2mW9xLp4TnB7cYd"}
+    assert redact("the key is Zq8vR2mW9xLp4TnB7cYd.", known) == "the key is [REDACTED:known-secret]."
+    assert redact("the key is Zq8vR2mW9xLp4TnB7cYd.") == "the key is Zq8vR2mW9xLp4TnB7cYd."

@@ -9,7 +9,7 @@ fix for it comes back with the placeholder; patch validation then decides whethe
 """
 
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 from security.secrets import redact
 
@@ -17,15 +17,18 @@ Model = Callable[[list[dict]], str]
 
 
 def guarded(model: Callable[[list[dict]], object], record: Callable[[dict], None],
-            step: Callable[[], str]) -> Model:
+            step: Callable[[], str], known: Iterable[str] = ()) -> Model:
+    """known: secret values found in the repository, removed wherever they appear (security.secrets)."""
+    known = frozenset(known)
+
     def call(messages: list[dict]) -> str:
-        clean = [{**m, "content": redact(m["content"])} for m in messages]
+        clean = [{**m, "content": redact(m["content"], known)} for m in messages]
         redactions = sum(c["content"].count("[REDACTED:") - m["content"].count("[REDACTED:")
                          for c, m in zip(clean, messages, strict=True))
         start = time.perf_counter()
         reply = model(clean)
         latency = time.perf_counter() - start
-        text = redact(reply if isinstance(reply, str) else reply.text)
+        text = redact(reply if isinstance(reply, str) else reply.text, known)
         record({
             "step": step(),
             "prompt": clean[-1]["content"],

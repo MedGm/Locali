@@ -69,3 +69,8 @@ def test_finds_every_planted_vulnerability_in_demo_repo():
     found = {(f.path, f.line) for f in analyze(ROOT / "demo_repo") if f.category == "security"}
     missed = [x["id"] for x in flaws if x["kind"] == "security" and (x["file"], x["line"]) not in found]
     assert missed == []
+
+
+def test_planted_injections_in_demo_repo_are_reported():
+    files = {f.path for f in analyze(ROOT / "demo_repo") if f.tool == "injection"}
+    assert files == {"README.md", "docs/issues/ISSUE-12.md"}

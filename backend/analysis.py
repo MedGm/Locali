@@ -1,4 +1,5 @@
-"""Static analysis of a project folder: Ruff, Bandit, Radon, Semgrep and the secret scanner.
+"""Static analysis of a project folder: Ruff, Bandit, Radon, Semgrep, the secret scanner and the
+prompt-injection detector.
 
 Findings use the categories and severities of the T3 review format (bug / security / quality,
 high / medium / low), so tool output and model reviews can be merged and compared.
@@ -102,7 +103,13 @@ def secrets(root: Path, max_bytes: int = 1_000_000) -> list[Finding]:
     return found
 
 
+def injection(root: Path) -> list[Finding]:
+    from security.injection import scan  # imports Finding from here
+
+    return scan(root)
+
+
 def analyze(root: str | Path) -> list[Finding]:
     root = Path(root).resolve()
-    findings = [*ruff(root), *bandit(root), *radon(root), *semgrep(root), *secrets(root)]
+    findings = [*ruff(root), *bandit(root), *radon(root), *semgrep(root), *secrets(root), *injection(root)]
     return sorted(findings, key=lambda f: (f.path, f.line, f.tool, f.rule))

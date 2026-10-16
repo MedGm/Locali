@@ -7,7 +7,7 @@ import { useMemo, useState } from "react";
 import { Diff, Hunk, parseDiff } from "react-diff-view";
 import { toast } from "sonner";
 
-import { SeverityBadge, StatusBadge } from "@/components/badges";
+import { KindBadge, SeverityBadge, StatusBadge } from "@/components/badges";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -104,8 +104,10 @@ export default function PatchPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="font-mono text-2xl font-semibold">{p.id}</h1>
+        <h1 className="text-2xl font-semibold">{p.title || p.id}</h1>
+        <KindBadge kind={p.kind} />
         <StatusBadge status={p.status} />
+        <span className="font-mono text-sm text-muted-foreground">{p.id}</span>
         <span className="text-sm text-muted-foreground">
           from run{" "}
           <Link href={`/runs/${p.run_id}`} className="font-mono underline">
@@ -114,6 +116,16 @@ export default function PatchPage() {
           {p.reviewer && ` · reviewed by ${p.reviewer}`}
         </span>
       </div>
+
+      {p.kind === "tests" && (
+        <Alert>
+          <AlertTitle>These tests record what the code does now</AlertTitle>
+          <AlertDescription>
+            They were generated and kept because they pass on the current code. If the current behaviour is wrong,
+            a test like this would lock it in: read the expected values before approving.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {p.status === "stale" && (
         <Alert>
@@ -143,12 +155,20 @@ export default function PatchPage() {
                 {v.tests.timed_out && " · timed out"}
               </p>
             )}
-            {v.tests?.failed.length ? (
-              <ul className="list-inside list-disc font-mono text-xs text-red-700">
-                {v.tests.failed.map((t) => (
-                  <li key={t}>{t}</li>
-                ))}
-              </ul>
+            <TestList
+              title="Now passing (failed before this patch)"
+              tests={v.now_passing ?? []}
+              className="text-emerald-700"
+            />
+            <TestList
+              title="Newly failing (passed before): this blocks the patch"
+              tests={v.newly_failing ?? []}
+              className="text-red-700"
+            />
+            {v.tests?.failed.length && !v.newly_failing?.length ? (
+              <p className="text-xs text-muted-foreground">
+                Still failing, as before this patch: {v.tests.failed.join(", ")}
+              </p>
             ) : null}
             <p>New security findings in the changed files: {v.new_security_findings.length}</p>
             {v.new_security_findings.map((f, i) => (
@@ -206,7 +226,17 @@ export default function PatchPage() {
                 Revert
               </Button>
             )}
-            {p.status === "stale" && (
+            {p.kind === "tests" && (
+        <Alert>
+          <AlertTitle>These tests record what the code does now</AlertTitle>
+          <AlertDescription>
+            They were generated and kept because they pass on the current code. If the current behaviour is wrong,
+            a test like this would lock it in: read the expected values before approving.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {p.status === "stale" && (
               <Button disabled={busy} onClick={() => revalidate.mutate(p)}>
                 Revalidate
               </Button>
@@ -258,6 +288,20 @@ export default function PatchPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+function TestList({ title, tests, className }: { title: string; tests: string[]; className: string }) {
+  if (!tests.length) return null;
+  return (
+    <div>
+      <p className={className}>{title}</p>
+      <ul className={`list-inside list-disc font-mono text-xs ${className}`}>
+        {tests.map((t) => (
+          <li key={t}>{t}</li>
+        ))}
+      </ul>
     </div>
   );
 }

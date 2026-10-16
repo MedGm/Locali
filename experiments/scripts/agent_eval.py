@@ -3,7 +3,7 @@
     uv run python experiments/scripts/agent_eval.py --base-url http://127.0.0.1:8093/v1 \
         --out experiments/results/agents_demo_repo/<name>
 
-Writes state.json (the run), score.json, report.md and patch.diff to --out. demo_repo itself is
+Writes state.json (the run), score.json, report.md and one patch-<kind>-<id>.diff per patch to --out. demo_repo itself is
 never modified: the workflow works in an isolated workspace and only proposes a patch.
 
 --mode multi (default): the full workflow. multi-notools: the workflow without the static-analysis
@@ -74,8 +74,10 @@ def main() -> None:
     (args.out / "state.json").write_text(json.dumps(state, indent=1))
     (args.out / "score.json").write_text(json.dumps(score, indent=1))
     (args.out / "report.md").write_text(state["report"])
-    if state.get("patch_id"):
-        (args.out / "patch.diff").write_text(PatchStore(args.out / "data").get(state["patch_id"]).diff)
+    store = PatchStore(args.out / "data")
+    for patch_id in state.get("patch_ids", []):
+        patch = store.get(patch_id)
+        (args.out / f"patch-{patch.kind}-{patch_id}.diff").write_text(patch.diff)
     print(json.dumps(score, indent=1))
 
 

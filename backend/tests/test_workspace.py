@@ -89,3 +89,13 @@ def test_folder_inside_a_git_repo_gets_a_worktree_with_paths_relative_to_it(git_
     diff = ws.diff()
     assert "+++ b/cart.py" in diff and "shop/" not in diff
     ws.cleanup()
+
+
+def test_diff_can_be_limited_to_some_files(plain_dir):
+    ws = open_workspace(plain_dir)
+    edit(ws)
+    (ws.path / "test_app.py").write_text("from app import add\n")
+    only_test = ws.diff(["test_app.py"])
+    assert "+++ b/test_app.py" in only_test and "app.py\n" not in only_test.replace("test_app.py", "")
+    assert "+++ b/app.py" in ws.diff(["app.py"]) and "test_app.py" not in ws.diff(["app.py"])
+    ws.cleanup()

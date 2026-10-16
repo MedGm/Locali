@@ -39,9 +39,10 @@ class Workspace:
     _tmp: Path
     _toplevel: Path | None = None
 
-    def diff(self) -> str:
+    def diff(self, paths: list[str] | None = None) -> str:
+        """The workspace's changes against the starting point, optionally only for some files."""
         _git(self.path, "add", "-A", "--", ".")
-        return _git(self.path, "diff", "--cached", "--binary", "--relative", "HEAD", "--", ".").stdout
+        return _git(self.path, "diff", "--cached", "--binary", "--relative", "HEAD", "--", *(paths or ["."])).stdout
 
     def baseline_hashes(self, rel_paths: list[str]) -> dict[str, str | None]:
         return {p: file_hash(self.repo / p) for p in rel_paths}

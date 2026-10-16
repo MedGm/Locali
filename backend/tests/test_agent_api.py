@@ -41,8 +41,8 @@ def test_agent_run_happens_in_the_background_and_ends_with_a_patch(tmp_path):
 
     run = wait_for(client, r.json()["id"])
     assert run["status"] == "done", run.get("error")
-    assert "## Fixes" in run["report"] and run["patch_id"]
-    assert [p["id"] for p in client.get(f"/runs/{run['id']}/patches").json()] == [run["patch_id"]]
+    assert "## Fixes" in run["report"] and run["patch_ids"]
+    assert sorted(p["id"] for p in client.get(f"/runs/{run['id']}/patches").json()) == sorted(run["patch_ids"])
     assert {p: p.read_bytes() for p in (ROOT / "demo_repo").rglob("*") if p.is_file()} == before
 
     actions = [json.loads(line)["action"] for line in (tmp_path / "audit.jsonl").read_text().splitlines()]

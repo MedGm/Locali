@@ -24,7 +24,7 @@ export default function RunsPage() {
               <TableHead>Repository</TableHead>
               <TableHead>Mode</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Patch</TableHead>
+              <TableHead>Patches</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -41,15 +41,7 @@ export default function RunsPage() {
                   <StatusBadge status={r.status} />
                   {r.status === "running" && r.step && <span className="ml-2 text-xs text-muted-foreground">{r.step}</span>}
                 </TableCell>
-                <TableCell>
-                  {r.patch_id ? (
-                    <Link className="font-mono text-sm hover:underline" href={`/patches/${r.patch_id}`}>
-                      {r.patch_id}
-                    </Link>
-                  ) : (
-                    <span className="text-muted-foreground">—</span>
-                  )}
-                </TableCell>
+                <TableCell>{r.patch_ids?.length ?? <span className="text-muted-foreground">—</span>}</TableCell>
               </TableRow>
             ))}
           </TableBody>

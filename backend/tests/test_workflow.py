@@ -23,7 +23,7 @@ def fake_model(messages):
 
 
 @needs_docker
-def test_workflow_ends_in_one_validated_patch_and_leaves_the_repo_alone(tmp_path):
+def test_workflow_proposes_one_validated_patch_per_change_and_leaves_the_repo_alone(tmp_path):
     before = {p: p.read_bytes() for p in DEMO.rglob("*") if p.is_file()}
     store = PatchStore(tmp_path / "data")
     state = run_workflow(DEMO, run_id="run1", model=fake_model, store=store)
@@ -32,9 +32,13 @@ def test_workflow_ends_in_one_validated_patch_and_leaves_the_repo_alone(tmp_path
     assert {f["tool"] for f in state["findings"]} >= {"bandit", "semgrep", "secrets"}
     assert [f["test"] for f in state["fixes"] if f["fixed"]] == ["tests/test_pricing.py::test_discount"]
 
-    patch = store.get(state["patch_id"])
-    assert patch.status == "proposed" and patch.validation["ok"]
-    assert "tinyshop/pricing.py" in patch.files and any(f.startswith("tests/test_locali_") for f in patch.files)
+    patches = [store.get(i) for i in state["patch_ids"]]
+    fixes = [p for p in patches if p.kind == "fix"]
+    tests = [p for p in patches if p.kind == "tests"]
+    assert [p.files for p in fixes] == [["tinyshop/pricing.py"]]
+    assert tests and all(len(p.files) == 1 and p.files[0].startswith("tests/test_locali_") for p in tests)
+    assert len(patches) == len(fixes) + len(tests)
+    assert all(p.status == "proposed" and p.validation["ok"] and p.title for p in patches)
     assert "## Fixes" in state["report"] and "test_discount" in state["report"]
 
     assert {p: p.read_bytes() for p in DEMO.rglob("*") if p.is_file()} == before
@@ -46,7 +50,7 @@ def test_workflow_without_tools_keeps_only_model_findings(tmp_path):
     state = run_workflow(DEMO, run_id="run2", model=fake_model, store=PatchStore(tmp_path / "data"), tools=False)
     assert "analyze" not in state["steps"]
     assert all(f["tool"] == "model" for f in state["findings"])
-    assert state["patch_id"]
+    assert state["patch_ids"]
 
 
 def test_on_step_reports_each_step_before_it_runs(tmp_path):

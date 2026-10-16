@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
 
-import { StatusBadge } from "@/components/badges";
+import { KindBadge, StatusBadge } from "@/components/badges";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { api, type PatchSummary } from "@/lib/api";
 
@@ -38,6 +38,7 @@ export default function PatchesPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Patch</TableHead>
+              <TableHead>Kind</TableHead>
               <TableHead>Run</TableHead>
               <TableHead>Files</TableHead>
               <TableHead>Validation</TableHead>
@@ -49,9 +50,13 @@ export default function PatchesPage() {
             {patches.data.map((p) => (
               <TableRow key={p.id}>
                 <TableCell>
-                  <Link className="font-mono text-sm hover:underline" href={`/patches/${p.id}`}>
-                    {p.id}
+                  <Link className="text-sm hover:underline" href={`/patches/${p.id}`}>
+                    {p.title || p.id}
                   </Link>
+                  <p className="font-mono text-xs text-muted-foreground">{p.id}</p>
+                </TableCell>
+                <TableCell>
+                  <KindBadge kind={p.kind} />
                 </TableCell>
                 <TableCell>
                   <Link className="font-mono text-sm hover:underline" href={`/runs/${p.run_id}`}>

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { StatusBadge } from "@/components/badges";
+import { KindBadge, StatusBadge } from "@/components/badges";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -99,13 +99,16 @@ export default function Dashboard() {
               <ul className="space-y-2">
                 {pending.data.map((p) => (
                   <li key={p.id} className="flex items-center justify-between rounded-md border px-3 py-2">
-                    <div>
-                      <Link className="font-mono text-sm hover:underline" href={`/patches/${p.id}`}>
-                        {p.id}
-                      </Link>
-                      <p className="text-xs text-muted-foreground">
-                        {p.files.length} file{p.files.length === 1 ? "" : "s"} · run {p.run_id}
-                      </p>
+                    <div className="flex items-start gap-2">
+                      <KindBadge kind={p.kind} />
+                      <div>
+                        <Link className="text-sm hover:underline" href={`/patches/${p.id}`}>
+                          {p.title || p.id}
+                        </Link>
+                        <p className="text-xs text-muted-foreground">
+                          {p.files.length} file{p.files.length === 1 ? "" : "s"} · run {p.run_id}
+                        </p>
+                      </div>
                     </div>
                     <span className={p.validation_ok ? "text-xs text-emerald-700" : "text-xs text-red-700"}>
                       {p.validation_ok ? "validation passed" : "validation failed"}

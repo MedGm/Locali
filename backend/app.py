@@ -69,7 +69,7 @@ async def event_stream(load: Callable[[], dict], heartbeat_s: float, poll_s: flo
     last, quiet_since = None, loop.time()
     while True:
         run = load()
-        view = {k: run.get(k) for k in ("id", "status", "step", "steps_done", "patch_id", "error")}
+        view = {k: run.get(k) for k in ("id", "status", "step", "steps_done", "patch_ids", "error")}
         if view != last:
             yield f"data: {json.dumps(view)}\n\n"
             last, quiet_since = view, loop.time()
@@ -137,10 +137,10 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
             audit.write("run.failed", run_id=run["id"], error=type(e).__name__)
             return
         save_run({**run, "status": "done", "step": None, "steps_done": state["steps"],
-                  "report": state["report"], "patch_id": state.get("patch_id"),
+                  "report": state["report"], "patch_ids": state["patch_ids"], "patches": state["patches"],
                   "findings": state["findings"], "suspects": state["suspects"], "fixes": state["fixes"],
-                  "tests_added": state["tests_added"], "validation": state.get("validation")})
-        audit.write("run.finished", run_id=run["id"], patch_id=state.get("patch_id"))
+                  "tests_added": state["tests_added"]})
+        audit.write("run.finished", run_id=run["id"], patch_ids=state["patch_ids"])
 
     def resolve_repo(repo: str) -> Path:
         path = (repos_root / repo).resolve()
@@ -196,7 +196,7 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
 
     @app.get("/runs")
     def list_runs():
-        summary_keys = ("id", "repo", "mode", "status", "step", "patch_id", "error")
+        summary_keys = ("id", "repo", "mode", "status", "step", "patch_ids", "error")
         runs = [json.loads(p.read_text()) for p in runs_dir.glob("*.json")]
         runs.sort(key=lambda r: (runs_dir / f"{r['id']}.json").stat().st_mtime, reverse=True)
         return [{k: r[k] for k in summary_keys if k in r} for r in runs]
@@ -236,7 +236,7 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
 
     @app.get("/patches")
     def list_all_patches(status: str | None = None):
-        keys = ("id", "run_id", "repo", "files", "status", "reviewer", "sha256")
+        keys = ("id", "run_id", "repo", "files", "status", "reviewer", "sha256", "title", "kind")
         return [{k: getattr(p, k) for k in keys} | {"validation_ok": bool(p.validation.get("ok"))}
                 for p in patches.all() if status is None or p.status == status]
 

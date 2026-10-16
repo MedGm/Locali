@@ -36,6 +36,8 @@ export type TestResult = {
 export type Validation = {
   ok: boolean;
   tests: TestResult | null;
+  newly_failing?: string[];
+  now_passing?: string[];
   new_security_findings: Finding[];
   secrets_added: string[];
 };
@@ -48,9 +50,11 @@ export type RunSummary = {
   mode: "analyze" | "agents";
   status: RunStatus;
   step?: string | null;
-  patch_id?: string | null;
+  patch_ids?: string[];
   error?: string;
 };
+
+export type RunPatch = { id: string; kind: PatchKind; title: string; files: string[]; ok: boolean };
 
 export type Run = RunSummary & {
   steps_done?: string[];
@@ -59,7 +63,7 @@ export type Run = RunSummary & {
   suspects?: Suspect[];
   fixes?: Fix[];
   tests_added?: string[];
-  validation?: Validation | null;
+  patches?: RunPatch[];
   summary?: { by_category: Record<string, number>; by_tool: Record<string, number> };
 };
 
@@ -73,6 +77,7 @@ export type ModelCall = {
 };
 
 export type PatchStatus = "proposed" | "approved" | "applied" | "reverted" | "rejected" | "stale";
+export type PatchKind = "fix" | "tests" | "change";
 
 export type PatchSummary = {
   id: string;
@@ -82,6 +87,8 @@ export type PatchSummary = {
   status: PatchStatus;
   reviewer: string | null;
   sha256: string;
+  title: string;
+  kind: PatchKind;
   validation_ok: boolean;
 };
 

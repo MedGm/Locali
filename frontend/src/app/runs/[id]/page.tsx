@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { SeverityBadge, StatusBadge } from "@/components/badges";
+import { KindBadge, SeverityBadge, StatusBadge } from "@/components/badges";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -57,14 +57,26 @@ export default function RunPage() {
         </Alert>
       )}
 
-      {r.patch_id && (
+      {r.patches && r.patches.length > 0 && (
         <Alert>
-          <AlertTitle>A patch is waiting for your review</AlertTitle>
+          <AlertTitle>
+            {r.patches.length} patch{r.patches.length === 1 ? "" : "es"} to review, each on its own
+          </AlertTitle>
           <AlertDescription>
-            <Link href={`/patches/${r.patch_id}`} className="font-mono underline">
-              {r.patch_id}
-            </Link>{" "}
-            — {r.validation?.ok ? "validation passed" : "validation failed"}. Nothing has been written to the repository.
+            <ul className="mt-1 space-y-1">
+              {r.patches.map((p) => (
+                <li key={p.id} className="flex flex-wrap items-center gap-2">
+                  <KindBadge kind={p.kind} />
+                  <Link href={`/patches/${p.id}`} className="underline">
+                    {p.title}
+                  </Link>
+                  <span className={p.ok ? "text-xs text-emerald-700" : "text-xs text-red-700"}>
+                    {p.ok ? "validation passed" : "validation failed"}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-xs">Nothing has been written to the repository.</p>
           </AlertDescription>
         </Alert>
       )}
@@ -216,7 +228,6 @@ function Filter(props: { label: string; all: string; value: string; onChange: (v
 }
 
 function TestsAndSuspects({ run }: { run: Run }) {
-  const tests = run.validation?.tests;
   return (
     <div className="grid gap-6 pt-2 lg:grid-cols-2">
       <Card>
@@ -234,12 +245,10 @@ function TestsAndSuspects({ run }: { run: Run }) {
           ) : (
             <p className="text-muted-foreground">None.</p>
           )}
-          {tests && (
-            <p>
-              After the patch: {tests.passed} tests pass
-              {tests.coverage_percent != null && `, ${tests.coverage_percent}% line coverage`}.
-            </p>
-          )}
+          <p className="text-xs text-muted-foreground">
+            Each test file is its own patch. Tests are not generated for functions with a security finding, and a
+            function with a suspected bug keeps none: a passing test records what the code does now, bug included.
+          </p>
         </CardContent>
       </Card>
       <Card>

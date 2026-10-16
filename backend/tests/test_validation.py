@@ -24,19 +24,34 @@ def test_fixing_the_failing_test_validates():
         ws.cleanup()
     assert result["ok"]
     assert result["tests"]["failed"] == [] and result["tests"]["passed"] == 6
+    assert result["now_passing"] == ["tests/test_pricing.py::test_discount"]
     assert result["new_security_findings"] == [] and result["secrets_added"] == []
 
 
 @needs_docker
-def test_existing_failure_is_not_ok():
+def test_a_pre_existing_failure_does_not_block_an_unrelated_change():
+    # demo_repo already has one failing test; a change that does not touch it is judged on what it
+    # changes, not on failures that were there before.
     ws = open_workspace(DEMO)
     try:
         change(ws, "tinyshop/pricing.py", "def with_vat", "# vat\ndef with_vat")
         result = validate_workspace(ws.path, ["tinyshop/pricing.py"], original=DEMO, diff=ws.diff())
     finally:
         ws.cleanup()
-    assert not result["ok"]
+    assert result["ok"]
     assert result["tests"]["failed"] == ["tests/test_pricing.py::test_discount"]
+    assert result["newly_failing"] == [] and result["now_passing"] == []
+
+
+@needs_docker
+def test_breaking_a_passing_test_is_not_ok():
+    ws = open_workspace(DEMO)
+    try:
+        change(ws, "tinyshop/pricing.py", "(1 + VAT_RATE)", "(2 + VAT_RATE)")
+        result = validate_workspace(ws.path, ["tinyshop/pricing.py"], original=DEMO, diff=ws.diff())
+    finally:
+        ws.cleanup()
+    assert not result["ok"] and result["newly_failing"] == ["tests/test_pricing.py::test_vat"]
 
 
 @needs_docker

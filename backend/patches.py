@@ -63,6 +63,8 @@ class Patch:
     head: str | None
     validation: dict
     validation_sha256: str = ""
+    title: str = ""
+    kind: str = "change"  # "fix" (repairs code), "tests" (adds tests), "change" (anything else)
     applied_hashes: dict[str, str | None] = field(default_factory=dict)
     status: str = "proposed"
     reviewer: str | None = None
@@ -211,15 +213,16 @@ class PatchStore:
 
 
 def propose(ws: Workspace, *, run_id: str, validate: Callable[[Path, list[str]], dict],
-            store: PatchStore) -> Patch | None:
-    """Turn the workspace's changes into a validated, stored proposal (None if nothing changed)."""
-    diff = ws.diff()
+            store: PatchStore, paths: list[str] | None = None, title: str = "", kind: str = "change") -> Patch | None:
+    """Turn the workspace's changes (or only those to `paths`) into a validated, stored proposal
+    (None if nothing changed)."""
+    diff = ws.diff(paths)
     if not diff.strip():
         return None
     files = _touched(diff)
     validation = validate(ws.path, files)
     patch = Patch(id=uuid.uuid4().hex[:12], run_id=run_id, repo=str(ws.repo), diff=diff, sha256=_sha(diff),
                   files=files, baseline=ws.baseline_hashes(files), head=ws.head,
-                  validation=validation, validation_sha256=validation_hash(validation))
+                  validation=validation, validation_sha256=validation_hash(validation), title=title, kind=kind)
     store._log("patch.proposed", patch, files=files, validation_ok=bool(patch.validation.get("ok")))
     return store.save(patch)

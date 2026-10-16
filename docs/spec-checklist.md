@@ -32,7 +32,7 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 | C14 | MCP access to tools, repos, docs, databases, issue trackers, test frameworks, DevOps | 3 servers: repo (read-only), test runner, static analysis | `mcp_servers/` | W6–10 | done: repo (read-only, redacted), tests (sandboxed pytest + coverage), static analysis |
 | C15 | Git/GitHub + CI/CD: review, tests, quality, docs, deployment assistance | 1 GitHub Action on pull requests | `.github/workflows/` | W11–12 | wip (CI: lint, 331 tests incl. sandbox, frontend build; PR review: new findings + secrets, comment, blocking; docs/deployment assistance todo) |
 | C16 | LLMOps: model versions, prompts, datasets, performance, tokens, agent trajectories, eval results | MLflow runs + JSONL traces | `experiments/`, `backend/` | W1–12 | done: agent runs as MLflow runs with traces (steps, model calls, tokens), evaluations (235 runs), training runs with loss curves, datasets; JSONL trajectories per run |
-| C17 | React/TypeScript web app + FastAPI backend, visualize quality and DevOps results | 3 pages: run, results/approval, metrics | `frontend/`, `backend/` | W11–12 | todo |
+| C17 | React/TypeScript web app + FastAPI backend, visualize quality and DevOps results | 3 pages: run, results/approval, metrics | `frontend/`, `backend/` | W11–12 | done: 11 pages incl. repositories, quality trends, DevOps tab per run, settings |
 
 ## 3. LLM security
 

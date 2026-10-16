@@ -52,7 +52,46 @@ export type RunSummary = {
   step?: string | null;
   patch_ids?: string[];
   error?: string;
+  created?: string;
 };
+
+export type Repo = {
+  name: string;
+  python_files: number;
+  git: { branch: string | null; last_commit: string | null; last_commit_date: string | null } | null;
+  runs: number;
+  last_run: { id: string; mode: RunSummary["mode"]; status: RunStatus; created: string } | null;
+  open_patches: number;
+  ready_to_merge: boolean | null;
+};
+
+export type TrendPoint = {
+  id: string;
+  created: string;
+  mode: RunSummary["mode"];
+  findings: { bug: number; security: number; quality: number };
+  high_security: number;
+  tests_passed: number | null;
+  tests_failed: number | null;
+  coverage_percent: number | null;
+  patches: number;
+  patches_validated: number;
+  ready_to_merge: boolean | null;
+};
+
+export type Settings = {
+  repos_root: string;
+  model: { configured: boolean; url: string | null; name: string | null; id: string | null; key_set: boolean; max_tokens: number };
+  api_token_set: boolean;
+  workflow: { steps: string[]; static_analysis: boolean; routing: string; concurrent_runs: number };
+  sandbox: { image: string; network: boolean };
+  mlflow: { tracking: boolean; ui: string | null };
+  variables: { env: string; description: string; value: string | null }[];
+};
+
+export function shortDate(iso?: string | null) {
+  return iso ? iso.slice(0, 16).replace("T", " ") : "—";
+}
 
 export type RunPatch = { id: string; kind: PatchKind; title: string; files: string[]; ok: boolean };
 

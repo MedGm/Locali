@@ -69,10 +69,10 @@ Design: [docs/research-design.md](docs/research-design.md)
 - **Gate:** full workflow runs on `demo_repo/` via API — **passed 2026-10-15** (real model, 11 min, validated patch awaiting review)
 
 ### W11–12 · Nov 30–Dec 13 · React + CI/CD + LLMOps
-- [ ] React/TypeScript, 3 pages
+- [x] Next.js/TypeScript app, 11 pages: dashboard, repositories, runs (live progress), patches (diff review, approve/apply/revert), security center, models, quality trends, results, settings (`frontend/`)
 - [x] GitHub Action on pull requests (`.github/workflows/locali-review.yml`) + CI for this repository (`ci.yml`)
 - [x] MLflow dashboard linked from metrics page (agent runs + traces logged live; evaluations, training runs and datasets backfilled by `experiments/scripts/log_to_mlflow.py`)
-- **Gate:** end-to-end run from browser
+- **Gate:** end-to-end run from browser — **passed 2026-10-16** (agent run started, followed live and reviewed from the browser)
 
 ### W13 · Dec 14–20 · Red-team + final runs
 - [ ] Injection corpus, attack success rate with defenses off vs on
@@ -84,11 +84,10 @@ Design: [docs/research-design.md](docs/research-design.md)
 - [ ] 5-min demo, scripted and timed
 - **Submit by Dec 30**
 
-## Status 2026-10-13 (week 4)
+## Status 2026-10-17 (week 5)
 
-- Done: W0, W1–2 (except Locali-Fresh and `demo_repo/`), W3–5 (12 days early).
-- Not started: W6–15. `backend/` and `frontend/` are empty: app work planned for GPU waits went to the extra fine-tuning experiments.
-- Next: `demo_repo/` → quantization ladder on Kaggle, with FastAPI + static-analysis wrappers + secret scanner built during the waits.
+- Done: W0–5, W8–10, W11–12 (about seven weeks early). All six agent steps, the safety layer, the API, the web app, CI with pull request review, and MLflow.
+- Open: rest of W6–7 (prompt optimization, KV cache and batching on T4), W13 red-team, W14–15 report and demo, UI design pass.
 
 ## Cut order if behind
 1. Phi fine-tuning

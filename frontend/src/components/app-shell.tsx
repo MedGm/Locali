@@ -1,6 +1,17 @@
 "use client";
 
-import { BarChart3, Boxes, FileDiff, LayoutDashboard, ListChecks, Shield, ShieldCheck } from "lucide-react";
+import {
+  BarChart3,
+  Boxes,
+  FileDiff,
+  FolderGit2,
+  LayoutDashboard,
+  ListChecks,
+  Settings,
+  Shield,
+  ShieldCheck,
+  TrendingUp,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense } from "react";
@@ -9,11 +20,14 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/repos", label: "Repositories", icon: FolderGit2 },
   { href: "/runs", label: "Runs", icon: ListChecks },
   { href: "/patches", label: "Patches", icon: FileDiff },
   { href: "/security", label: "Security", icon: Shield },
   { href: "/models", label: "Models", icon: Boxes },
+  { href: "/trends", label: "Quality trends", icon: TrendingUp },
   { href: "/results", label: "Results", icon: BarChart3 },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 // With cacheComponents, reading the URL (usePathname, useParams) suspends on routes with dynamic

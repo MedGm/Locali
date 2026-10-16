@@ -103,13 +103,14 @@ def _report(state: RunState) -> str:
 
 
 def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], tools: bool = True,
-                   on_step=None):
+                   on_step=None, around_step=None):
     """tools=False drops the static-analysis step (ablation); patch validation still uses the tools."""
     def step(name, update):
         def node(state: RunState) -> RunState:
             if on_step:
                 on_step(name, state)
-            return {**update(state), "steps": [*state.get("steps", []), name]}
+            result = around_step(name, lambda: update(state)) if around_step else update(state)
+            return {**result, "steps": [*state.get("steps", []), name]}
         return node
 
     def prepare(state):
@@ -173,11 +174,12 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
 
 
 def run_workflow(repo: str | Path, run_id: str, model, store: PatchStore, tools: bool = True,
-                 on_step=None) -> RunState:
-    """on_step(name, state) is called before each step runs, with the results of the steps so far."""
+                 on_step=None, around_step=None) -> RunState:
+    """on_step(name, state) is called before each step runs, with the results of the steps so far;
+    around_step(name, run) wraps each step (tracing)."""
     workspaces: dict[str, Workspace] = {}
     try:
-        graph = build_workflow(model, store, workspaces, tools, on_step)
+        graph = build_workflow(model, store, workspaces, tools, on_step, around_step)
         return graph.invoke({"repo": str(Path(repo).resolve()), "run_id": run_id})
     finally:
         for ws in workspaces.values():

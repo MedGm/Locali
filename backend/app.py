@@ -36,6 +36,7 @@ from backend.agents.model import guarded
 from backend.agents.workflow import run_workflow
 from backend.analysis import analyze
 from backend.audit import AuditLog
+from backend.llmops import Tracker
 from backend.patches import ApprovalMismatch, PatchConflict, PatchStore, StalePatch, propose
 from backend.validation import validate_workspace
 from backend.workspace import open_workspace
@@ -70,6 +71,24 @@ class Rejection(BaseModel):
     reviewer: Reviewer
 
 
+def run_metrics(state: dict, calls: list[dict]) -> dict:
+    by_category = Counter(f["category"] for f in state["findings"])
+    return {
+        **{f"findings_{c}": by_category.get(c, 0) for c in ("bug", "security", "quality")},
+        "suspects": len(state["suspects"]),
+        "fixes_total": len(state["fixes"]),
+        "fixes_fixed": sum(f["fixed"] for f in state["fixes"]),
+        "tests_added": len(state["tests_added"]),
+        "patches": len(state["patches"]),
+        "patches_validated": sum(p["ok"] for p in state["patches"]),
+        "model_calls": len(calls),
+        "input_tokens": sum(c["input_tokens"] or 0 for c in calls),
+        "output_tokens": sum(c["output_tokens"] or 0 for c in calls),
+        "generation_s": round(sum(c["latency_s"] for c in calls), 1),
+        "redactions": sum(c.get("redactions", 0) for c in calls),
+    }
+
+
 async def event_stream(load: Callable[[], dict], heartbeat_s: float, poll_s: float = 0.2):
     """Server-Sent Events for one run: its state whenever it changes, and a comment line when nothing has
     changed for heartbeat_s. A step can take minutes, and proxies drop a response that stays silent."""
@@ -93,7 +112,8 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
                validate: Callable[[Path, list[str]], dict] | None = None,
                model: Callable[[list[dict]], str] | None = None, tools: bool = True,
                api_token: str | None = None, heartbeat_s: float = 15.0,
-               results_file: str | Path | None = None) -> FastAPI:
+               results_file: str | Path | None = None, mlflow_uri: str | None = None,
+               mlflow_artifacts: str | None = None) -> FastAPI:
     """validate replaces the full workspace validation (tests use a stub); model answers chat messages
     for agent runs; tools=False drops the static-analysis step of agent runs (ablation); api_token,
     when set, is required as a Bearer token on every endpoint except /health."""
@@ -105,6 +125,8 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
     app = FastAPI(title="Locali")
     app.state.patches = patches
     app.state.agents = ThreadPoolExecutor(max_workers=1)  # model calls are CPU-heavy: one run at a time
+    tracker = Tracker(mlflow_uri, mlflow_artifacts)
+    app.state.tracker = tracker
     commands.REFUSAL_HOOKS.append(
         lambda cmd: audit.write("command.refused", program=redact(cmd[0]) if cmd else "", args=[redact(a) for a in cmd[1:3]]))
 
@@ -134,7 +156,10 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
             partial = {k: state[k] for k in ("findings", "suspects", "fixes", "tests_added") if k in state}
             save_run({**run, "status": "running", **progress, **partial})
 
+        calls: list[dict] = []
+
         def record(call: dict) -> None:
+            calls.append(call)
             with trajectory.open("a") as f:
                 f.write(json.dumps(call) + "\n")
             if call.get("redactions"):
@@ -142,9 +167,14 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
 
         save_run({**run, "status": "running", **progress})
         audit.write("run.started", run_id=run["id"])
+        params = {"repo": run["repo"], "mode": "agents", "static_tools": tools,
+                  "model": os.environ.get("LOCALI_MODEL_ID", "unknown")}
         try:
-            gated = guarded(model, record, step=lambda: progress["step"])
-            state = run_workflow(path, run_id=run["id"], model=gated, store=patches, tools=tools, on_step=on_step)
+            with tracker.agent_run(run["id"], params):
+                gated = guarded(tracker.wrap_model(model), record, step=lambda: progress["step"])
+                state = run_workflow(path, run_id=run["id"], model=gated, store=patches, tools=tools,
+                                     on_step=on_step, around_step=tracker.step)
+                tracker.finish(run_metrics(state, calls), state["report"], trajectory)
         except Exception as e:  # noqa: BLE001 - any failure ends the run and is reported
             save_run({**run, "status": "failed", "error": redact(f"{type(e).__name__}: {e}"), **progress})
             audit.write("run.failed", run_id=run["id"], error=type(e).__name__)
@@ -209,7 +239,8 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
 
     @app.get("/status")
     def status():
-        return {"model_configured": model is not None, "static_analysis": tools}
+        return {"model_configured": model is not None, "static_analysis": tools,
+                "mlflow_tracking": tracker.enabled, "mlflow_ui": os.environ.get("LOCALI_MLFLOW_UI")}
 
     @app.post("/runs", status_code=201)
     def create_run(req: RunRequest):
@@ -350,4 +381,5 @@ def default_app() -> FastAPI:
     if not token:
         raise RuntimeError("set LOCALI_API_TOKEN; the API does not run without a token")
     return create_app(os.environ.get("LOCALI_REPOS_ROOT", "."), os.environ.get("LOCALI_DATA_DIR", "data/backend"),
-                      model=model, api_token=token)
+                      model=model, api_token=token, mlflow_uri=os.environ.get("LOCALI_MLFLOW_URI"),
+                      mlflow_artifacts=os.environ.get("LOCALI_MLFLOW_ARTIFACTS"))

@@ -70,3 +70,4 @@ def test_status_reports_whether_a_model_is_configured(tmp_path):
     assert plain.get("/status").json()["model_configured"] is False
     with_model = TestClient(create_app(repos_root=ROOT, data_dir=tmp_path, model=lambda m: "x"))
     assert with_model.get("/status").json()["model_configured"] is True
+    assert plain.get("/status").json()["mlflow_tracking"] is False

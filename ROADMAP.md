@@ -71,7 +71,7 @@ Design: [docs/research-design.md](docs/research-design.md)
 ### W11–12 · Nov 30–Dec 13 · React + CI/CD + LLMOps
 - [ ] React/TypeScript, 3 pages
 - [x] GitHub Action on pull requests (`.github/workflows/locali-review.yml`) + CI for this repository (`ci.yml`)
-- [ ] MLflow dashboard linked from metrics page
+- [x] MLflow dashboard linked from metrics page (agent runs + traces logged live; evaluations, training runs and datasets backfilled by `experiments/scripts/log_to_mlflow.py`)
 - **Gate:** end-to-end run from browser
 
 ### W13 · Dec 14–20 · Red-team + final runs

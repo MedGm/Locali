@@ -6,6 +6,7 @@ import { HorizontalBars } from "@/components/charts/bars";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MlflowLink } from "@/components/mlflow-link";
 import { api } from "@/lib/api";
 
 type Test = { n: number; only_a: number; only_b: number; p: number } | null;
@@ -61,6 +62,7 @@ export default function ResultsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Evaluation results</h1>
+        <MlflowLink />
         <p className="text-sm text-muted-foreground">
           Computed from the per-item result files (exported {new Date(s.generated_at).toLocaleString()}). Every
           comparison is paired on the same items; * marks p &lt; 0.05 (exact McNemar test).

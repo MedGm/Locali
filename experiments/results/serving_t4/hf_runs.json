@@ -1,0 +1,79 @@
+{
+ "transformers": "5.16.1",
+ "torch": "2.11.0+cu128",
+ "gpu": "Tesla T4",
+ "rows": [
+  {
+   "run": "sdpa__b1",
+   "batch": 1,
+   "prompts": 16,
+   "max_new_tokens": 256,
+   "use_cache": true,
+   "wall_s": 153.82,
+   "generated_tokens": 3609,
+   "tokens_per_s": 23.5,
+   "peak_memory_gb": 3.16,
+   "same_answers_as_sdpa_b1": "16/16"
+  },
+  {
+   "run": "sdpa__b8",
+   "batch": 8,
+   "prompts": 16,
+   "max_new_tokens": 256,
+   "use_cache": true,
+   "wall_s": 22.15,
+   "generated_tokens": 3609,
+   "tokens_per_s": 162.9,
+   "peak_memory_gb": 3.47,
+   "same_answers_as_sdpa_b1": "14/16"
+  },
+  {
+   "run": "sdpa__b1__cache-on__128",
+   "batch": 1,
+   "prompts": 4,
+   "max_new_tokens": 128,
+   "use_cache": true,
+   "wall_s": 22.21,
+   "generated_tokens": 512,
+   "tokens_per_s": 23.1,
+   "peak_memory_gb": 3.14,
+   "same_answers_as_sdpa_b1": "0/4"
+  },
+  {
+   "run": "sdpa__b1__cache-off__128",
+   "batch": 1,
+   "prompts": 4,
+   "max_new_tokens": 128,
+   "use_cache": false,
+   "wall_s": 46.03,
+   "generated_tokens": 512,
+   "tokens_per_s": 11.1,
+   "peak_memory_gb": 3.15,
+   "same_answers_as_sdpa_b1": "0/4"
+  },
+  {
+   "run": "eager__b1",
+   "batch": 1,
+   "prompts": 16,
+   "max_new_tokens": 256,
+   "use_cache": true,
+   "wall_s": 163.5,
+   "generated_tokens": 4096,
+   "tokens_per_s": 25.1,
+   "peak_memory_gb": 3.15,
+   "same_answers_as_sdpa_b1": "0/16"
+  },
+  {
+   "run": "eager__b8",
+   "batch": 8,
+   "prompts": 16,
+   "max_new_tokens": 256,
+   "use_cache": true,
+   "wall_s": 22.35,
+   "generated_tokens": 4096,
+   "tokens_per_s": 183.2,
+   "peak_memory_gb": 3.52,
+   "same_answers_as_sdpa_b1": "0/16"
+  }
+ ]
+}

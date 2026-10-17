@@ -1,0 +1,111 @@
+[
+ {
+  "run": "prefix-on-eager__c1",
+  "workers": 1,
+  "items": 64,
+  "wall_s": 527.78,
+  "output_tokens": 15785,
+  "mean_ttft_s": 0.0996,
+  "mean_total_s": 8.2417,
+  "gpu_energy_j": 35255.8,
+  "throughput_tok_s": 29.9,
+  "config": "prefix-on-eager"
+ },
+ {
+  "run": "prefix-on-eager__c4",
+  "workers": 4,
+  "items": 64,
+  "wall_s": 131.61,
+  "output_tokens": 15768,
+  "mean_ttft_s": 0.177,
+  "mean_total_s": 7.9675,
+  "gpu_energy_j": 8804.7,
+  "throughput_tok_s": 119.8,
+  "config": "prefix-on-eager"
+ },
+ {
+  "run": "prefix-on-eager__c16",
+  "workers": 16,
+  "items": 64,
+  "wall_s": 38.86,
+  "output_tokens": 15805,
+  "mean_ttft_s": 0.379,
+  "mean_total_s": 8.5258,
+  "gpu_energy_j": 2393.0,
+  "throughput_tok_s": 406.7,
+  "config": "prefix-on-eager"
+ },
+ {
+  "run": "prefix-on-eager__c16-warm",
+  "workers": 16,
+  "items": 64,
+  "wall_s": 35.8,
+  "output_tokens": 15771,
+  "mean_ttft_s": 0.1816,
+  "mean_total_s": 7.8029,
+  "gpu_energy_j": 2347.2,
+  "throughput_tok_s": 440.5,
+  "config": "prefix-on-eager",
+  "warm": true
+ },
+ {
+  "run": "prefix-off-eager__c1",
+  "workers": 1,
+  "items": 64,
+  "wall_s": 471.16,
+  "output_tokens": 15765,
+  "mean_ttft_s": 0.0859,
+  "mean_total_s": 7.358,
+  "gpu_energy_j": 31583.8,
+  "throughput_tok_s": 33.5,
+  "config": "prefix-off-eager"
+ },
+ {
+  "run": "prefix-off-eager__c4",
+  "workers": 4,
+  "items": 64,
+  "wall_s": 126.55,
+  "output_tokens": 15848,
+  "mean_ttft_s": 0.1345,
+  "mean_total_s": 7.6366,
+  "gpu_energy_j": 8408.4,
+  "throughput_tok_s": 125.2,
+  "config": "prefix-off-eager"
+ },
+ {
+  "run": "prefix-off-eager__c16",
+  "workers": 16,
+  "items": 64,
+  "wall_s": 38.75,
+  "output_tokens": 15830,
+  "mean_ttft_s": 0.4043,
+  "mean_total_s": 8.5452,
+  "gpu_energy_j": 2509.2,
+  "throughput_tok_s": 408.5,
+  "config": "prefix-off-eager"
+ },
+ {
+  "run": "prefix-on-graphs__c1",
+  "workers": 1,
+  "items": 64,
+  "wall_s": 325.92,
+  "output_tokens": 15872,
+  "mean_ttft_s": 0.1272,
+  "mean_total_s": 5.0889,
+  "gpu_energy_j": 21515.2,
+  "throughput_tok_s": 48.7,
+  "config": "prefix-on-graphs"
+ },
+ {
+  "run": "prefix-on-graphs__c16",
+  "workers": 16,
+  "items": 64,
+  "wall_s": 31.31,
+  "output_tokens": 15815,
+  "mean_ttft_s": 0.3886,
+  "mean_total_s": 7.0311,
+  "gpu_energy_j": 1969.9,
+  "throughput_tok_s": 505.1,
+  "config": "prefix-on-graphs"
+ }
+]

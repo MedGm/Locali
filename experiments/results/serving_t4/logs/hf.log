@@ -1,0 +1,11 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:  76%|███████▋  | 258/338 [00:00<00:00, 2576.80it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 2639.47it/s]
+[13:18:35] hf sdpa__b1: 3609 tokens in 153.8s (23.5 tok/s), peak 3.16 GB
+[13:18:57] hf sdpa__b8: 3609 tokens in 22.2s (162.9 tok/s), peak 3.47 GB
+[13:19:19] hf sdpa__b1__cache-on__128: 512 tokens in 22.2s (23.1 tok/s), peak 3.14 GB
+[13:20:05] hf sdpa__b1__cache-off__128: 512 tokens in 46.0s (11.1 tok/s), peak 3.15 GB
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:  68%|██████▊   | 229/338 [00:00<00:00, 2289.55it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 2351.53it/s]
+[13:22:50] hf eager__b1: 4096 tokens in 163.5s (25.1 tok/s), peak 3.15 GB
+[13:23:12] hf eager__b8: 4096 tokens in 22.4s (183.2 tok/s), peak 3.52 GB
+[13:23:13] transformers runs done

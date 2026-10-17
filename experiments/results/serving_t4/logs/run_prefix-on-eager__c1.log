@@ -1,0 +1,22 @@
+{
+  "metrics": {
+    "n": 64,
+    "status_counts": {
+      "unscored": 64
+    },
+    "truncated": 0,
+    "mean_input_tokens": 364.375,
+    "mean_output_tokens": 246.6406,
+    "mean_ttft_s": 0.0996,
+    "median_ttft_s": 0.0769,
+    "mean_total_s": 8.2417,
+    "mean_decode_tok_per_s": 30.38,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 64,
+    "resumed": 0,
+    "wall_s": 527.5
+  }
+}

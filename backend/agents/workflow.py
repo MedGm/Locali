@@ -120,8 +120,9 @@ def _report(state: RunState) -> str:
 
 
 def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], tools: bool = True,
-                   on_step=None, around_step=None):
-    """tools=False drops the static-analysis step (ablation); patch validation still uses the tools."""
+                   on_step=None, around_step=None, context: str = "function"):
+    """tools=False drops the static-analysis step (ablation); patch validation still uses the tools.
+    context: how much code the review and test-generation steps show the model (backend.agents.context)."""
     def step(name, update):
         def node(state: RunState) -> RunState:
             if on_step:
@@ -142,7 +143,7 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
         return {"findings": [{**asdict(f), "message": redact(f.message)} for f in analyze(ws_of(state))]}
 
     def do_review(state):
-        result = review_functions(ws_of(state), model)
+        result = review_functions(ws_of(state), model, context=context)
         return {"findings": state.get("findings", []) + result.findings, "review_dropped": result.dropped}
 
     def do_testgen(state):
@@ -150,7 +151,7 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
         # assert that the vulnerable behaviour is correct and get in the way of fixing it.
         flagged = flagged_functions(ws_of(state), state.get("findings", []))
         targets = [fn for fn in untested_functions(ws_of(state)) if fn not in flagged]
-        result = generate_tests(ws_of(state), model, targets)
+        result = generate_tests(ws_of(state), model, targets, context=context)
         return {"tests_added": result.files, "suspects": [asdict(s) for s in result.suspects],
                 "crashed_tests": result.crashed}
 
@@ -209,12 +210,12 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
 
 
 def run_workflow(repo: str | Path, run_id: str, model, store: PatchStore, tools: bool = True,
-                 on_step=None, around_step=None) -> RunState:
+                 on_step=None, around_step=None, context: str = "function") -> RunState:
     """on_step(name, state) is called before each step runs, with the results of the steps so far;
     around_step(name, run) wraps each step (tracing)."""
     workspaces: dict[str, Workspace] = {}
     try:
-        graph = build_workflow(model, store, workspaces, tools, on_step, around_step)
+        graph = build_workflow(model, store, workspaces, tools, on_step, around_step, context)
         return graph.invoke({"repo": str(Path(repo).resolve()), "run_id": run_id})
     finally:
         for ws in workspaces.values():

@@ -19,7 +19,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from backend.agents.debug import function_source
+from backend.agents.context import function_context
 from backend.agents.files import is_test_file, python_files
 from evaluation.extract import extract_all_code, trim_to_parseable
 from evaluation.tasks.testgen import split_asserts, testgen_prompt
@@ -92,12 +92,14 @@ def _segment(src: str, name: str) -> str:
     return ast.get_source_segment(src, node)
 
 
-def generate_tests(root: str | Path, model: Model, functions: list[tuple[str, str]] | None = None) -> TestgenResult:
+def generate_tests(root: str | Path, model: Model, functions: list[tuple[str, str]] | None = None,
+                   context: str = "function") -> TestgenResult:
+    """context: how much code the model sees (backend.agents.context)."""
     root = Path(root)
     result = TestgenResult()
     test_dir = "tests/" if (root / "tests").is_dir() else ""
     for rel, func in functions if functions is not None else untested_functions(root):
-        prompt = testgen_prompt(func, function_source(root / rel, func).rstrip("\n") + "\n")
+        prompt = testgen_prompt(func, function_context(root, rel, func, context).rstrip("\n") + "\n")
         tests = trim_to_parseable(extract_all_code(model([{"role": "user", "content": prompt}])))
         try:
             tests = _point_at_module(split_asserts(tests), rel[:-3].replace("/", "."))

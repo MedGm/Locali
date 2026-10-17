@@ -77,7 +77,7 @@ Design: [docs/research-design.md](docs/research-design.md)
 
 ### W13 · Dec 14–20 · Red-team + final runs
 - [x] Attack cases with defenses off vs on: 16 control cases (0/16 with, 16/16 without) and 17 model attacks (0 harm through the controls); two gaps found and fixed ([results](experiments/results/redteam/README.md))
-- [ ] Rerun all experiments from clean state
+- [x] Results rebuilt from a clean checkout and identical; scoring re-executed on four headline runs, identical ([how](experiments/results/REPRODUCTION.md))
 - **Feature freeze Dec 20**
 
 ### W14–15 · Dec 21–Jan 1 · Report + demo

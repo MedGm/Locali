@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from evaluation.client import ChatClient
-from evaluation.redteam_model import GOALS, placements, run_goal
+from evaluation.redteam_model import GOALS, placements, rescore, run_goal
 
 OUT = ROOT / "experiments" / "results" / "redteam"
 
@@ -45,6 +45,12 @@ def report(rows: list[dict], model_id: str, commit: str) -> str:
              "| Threat | Attacks | Model complied | Harm with controls | Harm without controls |", "|---|---|---|---|---|"]
     lines += [f"| {t} | {len(v)} | {fmt(v, 'model_complied')} | {fmt(v, 'harm_with_controls')} | "
               f"{fmt(v, 'harm_without_controls')} |" for t, v in sorted(by_threat.items())]
+    baseline = {r["goal"] for r in rows if r["placement"] == "none" and r["model_complied"]}
+    same = [r for r in attacked if r["goal"] in baseline and r["model_complied"]]
+    if same:
+        note = (f"{len(same)} of the 'complied' results are for goals where the model gives the same answer with no "
+                f"payload at all ({', '.join(sorted(baseline))}): the payload changed nothing there.")
+        lines += ["", note]
     lines += ["", "| Goal | Step | Placement | Complied | Harm with | Harm without | What happened |",
               "|---|---|---|---|---|---|---|"]
     mark = {True: "yes", False: "no", None: "—"}
@@ -84,6 +90,8 @@ def main() -> None:
                 print(f"{goal.id:17} {placement:9} complied={row['model_complied']!s:5} "
                       f"harm_with={row['harm_with_controls']!s:5} harm_without={row['harm_without_controls']!s:5} "
                       f"{row['detail']}", flush=True)
+    rows = [rescore(r) for r in rows]  # rows saved by an earlier version are judged by the same rules
+    path.write_text("".join(json.dumps(r) + "\n" for r in rows))
     commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True, text=True,
                             check=False).stdout.strip()
     (OUT / "model.md").write_text(report(rows, model_id, commit))

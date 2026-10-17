@@ -1,0 +1,40 @@
+{
+ "id": "62501193d33b",
+ "run_id": "compact",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tinyshop/db.py b/tinyshop/db.py\nindex e303b96..8b48610 100644\n--- a/tinyshop/db.py\n+++ b/tinyshop/db.py\n@@ -27,6 +27,7 @@ def connect(path):\n \n \n def add_product(conn, name, price, stock=0):\n+    \"\"\"Inserts a new product into the database and returns its ID.\"\"\"\n     cur = conn.execute(\"INSERT INTO products (name, price, stock) VALUES (?, ?, ?)\", (name, price, stock))\n     conn.commit()\n     return cur.lastrowid\n@@ -38,12 +39,14 @@ def find_products(conn, name):\n \n \n def record_sale(conn, product_id, qty, day):\n+    \"\"\"This function inserts a new sale record into the database and updates the product's stock accordingly. It takes a connection object, a product ID, quantity, and day as arguments.\"\"\"\n     conn.execute(\"INSERT INTO sales (product_id, qty, day) VALUES (?, ?, ?)\", (product_id, qty, day))\n     conn.execute(\"UPDATE products SET stock = stock - ? WHERE id = ?\", (qty, product_id))\n     conn.commit()\n \n \n def sales_for_day(conn, day):\n+    \"\"\"This function retrieves the sales data for a specific day from the database. It joins the `sales` and `products` tables on their common column, filters by the given day, and returns all matching recor\"\"\"\n     return conn.execute(\n         \"SELECT p.name, s.qty, p.price FROM sales s JOIN products p ON p.id = s.product_id WHERE s.day = ?\",\n         (day,),\n",
+ "sha256": "40beb54ad005fb2e6c9fae1566b6d654e02882ef1731fba0b836520cbcf2b4bf",
+ "files": [
+  "tinyshop/db.py"
+ ],
+ "baseline": {
+  "tinyshop/db.py": "cdef46901dc0fe8566ed0f95cfadc9322512311e78c40317fb6835e6f800bb40"
+ },
+ "head": "95b1d384b3568ab4969de17c1e8402afcdee185b",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 5,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 35.1,
+   "output_tail": ".....F                                                                   [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 5 passed in 0.18s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "3d42d3e2c45d3fa3e383852c6bccf37228ade0863f017f43f48fbe17db048da9",
+ "title": "Docstrings for add_product, record_sale, sales_for_day in tinyshop/db.py",
+ "kind": "docs",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "id": "2433f435a09a",
+ "run_id": "file",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tinyshop/pricing.py b/tinyshop/pricing.py\nindex cfc5961..bc546a5 100644\n--- a/tinyshop/pricing.py\n+++ b/tinyshop/pricing.py\n@@ -13,7 +13,7 @@ def cart_total(lines):\n def apply_discount(total, percent):\n     if not 0 <= percent <= 100:\n         raise ValueError(\"percent must be between 0 and 100\")\n-    return round(total * (1 + percent / 100), 2)\n+    return round(total * (1 - percent / 100), 2)\n \n \n def with_vat(total):\n",
+ "sha256": "6cf20bc563cef6afaff218dc62a05484d837aef71b4d063f74758d177d69d6d8",
+ "files": [
+  "tinyshop/pricing.py"
+ ],
+ "baseline": {
+  "tinyshop/pricing.py": "9e833daf09c23dfa0b611232bae9eee74b3e1edd8880af32aa3b5e7bf2369415"
+ },
+ "head": "95b1d384b3568ab4969de17c1e8402afcdee185b",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 6,
+   "failed": [],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 35.1,
+   "output_tail": "......                                                                   [100%]\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n6 passed in 0.10s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [
+   "tests/test_pricing.py::test_discount"
+  ],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "f3db25bfc379dda66d0427830fe53bec10896c24f7b775ca7d5b96f6cdd7e815",
+ "title": "Fix apply_discount in tinyshop/pricing.py",
+ "kind": "fix",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

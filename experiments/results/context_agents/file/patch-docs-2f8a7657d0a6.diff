@@ -1,0 +1,12 @@
+diff --git a/tinyshop/db.py b/tinyshop/db.py
+index e303b96..2c0ed88 100644
+--- a/tinyshop/db.py
++++ b/tinyshop/db.py
+@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS staff (
+ 
+ 
+ def connect(path):
++    """Connects to a SQLite database at the specified path and executes the schema script. Returns the connection object."""
+     conn = sqlite3.connect(path)
+     conn.executescript(SCHEMA)
+     return conn

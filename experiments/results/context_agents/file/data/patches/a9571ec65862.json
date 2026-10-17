@@ -1,0 +1,40 @@
+{
+ "id": "a9571ec65862",
+ "run_id": "file",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tinyshop/reports.py b/tinyshop/reports.py\nindex 1d198b1..45cdd76 100644\n--- a/tinyshop/reports.py\n+++ b/tinyshop/reports.py\n@@ -4,6 +4,7 @@ from tinyshop.db import sales_for_day\n \n \n def daily_report(conn, day):\n+    \"\"\"This function takes a database connection and a day as input, retrieves sales data for that day from the database, formats it into a list of strings, calculates the total revenue, and returns a single\"\"\"\n     rows = sales_for_day(conn, day)\n     lines = [f\"{name}: {qty} x {price:.2f}\" for name, qty, price in rows]\n     revenue = sum(qty * price for _, qty, price in rows)\n@@ -12,6 +13,7 @@ def daily_report(conn, day):\n \n \n def best_seller(conn, day):\n+    \"\"\"This function returns the best-selling product on a given day by counting the quantity of each product sold and returning the one with the highest count. If no products were sold that day, it returns \"\"\"\n     counts = {}\n     for name, qty, _ in sales_for_day(conn, day):\n         counts[name] = counts.get(name, 0) + qty\n",
+ "sha256": "0825d424c4b7a8c54ce1821f7d2318464f880f131e3fce7fe362bc6b1904919b",
+ "files": [
+  "tinyshop/reports.py"
+ ],
+ "baseline": {
+  "tinyshop/reports.py": "5ff957e699d670654c47813e4f28c4c4df99fa61e4f8aecf909a9a08638755bc"
+ },
+ "head": "95b1d384b3568ab4969de17c1e8402afcdee185b",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 5,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 35.1,
+   "output_tail": ".....F                                                                   [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 5 passed in 0.10s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "dc7d20fd29fa07887b547bd0cfa9e01510e42b9456cb58c37ae8b91e7ecdf499",
+ "title": "Docstrings for daily_report, best_seller in tinyshop/reports.py",
+ "kind": "docs",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

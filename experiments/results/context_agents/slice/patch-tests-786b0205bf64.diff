@@ -1,0 +1,17 @@
+diff --git a/tests/test_locali_needs_restock.py b/tests/test_locali_needs_restock.py
+new file mode 100644
+index 0000000..b8b6c18
+--- /dev/null
++++ b/tests/test_locali_needs_restock.py
+@@ -0,0 +1,11 @@
++from tinyshop.inventory import *  # noqa: F403
++from tinyshop.inventory import needs_restock
++
++def test_stock_below_threshold():
++    assert needs_restock(3)
++
++def test_stock_at_threshold():
++    assert not needs_restock(5)
++
++def test_stock_above_threshold():
++    assert not needs_restock(10)

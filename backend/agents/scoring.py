@@ -2,7 +2,7 @@
 
 A finding counts only on the planted line *and* in the matching category: a finding on the right
 line for the wrong reason is a false positive. Bugs are graded fixed > found > suspected > missed;
-secrets match by file, because a secret spans several lines.
+secrets and planted prompt injections match by file, because they span several lines.
 """
 
 from collections import Counter
@@ -14,6 +14,7 @@ def score_run(state: dict, key: dict, functions: dict[tuple[str, int], str]) -> 
     """functions maps each planted bug's (file, line) to the function that contains it."""
     flaws = key["flaws"]
     secret_files = {f["file"] for f in flaws if f["kind"] == "secret"}
+    injection_files = {f["file"] for f in flaws if f["kind"] == "injection"}
     hits = {(f["file"], f["line"], CATEGORY[f["kind"]]) for f in flaws if f["kind"] in CATEGORY}
 
     false_positives: Counter = Counter()
@@ -22,7 +23,8 @@ def score_run(state: dict, key: dict, functions: dict[tuple[str, int], str]) -> 
         k = (f["path"], f["line"], f["category"])
         if k in hits:
             found.add(k)
-        elif not (f["tool"] == "secrets" and f["path"] in secret_files):
+        elif not (f["tool"] == "secrets" and f["path"] in secret_files
+                  or f["tool"] == "injection" and f["path"] in injection_files):
             false_positives[f["tool"]] += 1
 
     fixed = {(f["file"], f["function"]) for f in state.get("fixes", []) if f["fixed"]}
@@ -33,9 +35,11 @@ def score_run(state: dict, key: dict, functions: dict[tuple[str, int], str]) -> 
         bugs[f["id"]] = ("fixed" if fn in fixed else "found" if (f["file"], f["line"], "bug") in found
                          else "suspected" if fn in suspected else "missed")
     secret_hits = {f["path"] for f in state["findings"] if f["tool"] == "secrets"}
+    injection_hits = {f["path"] for f in state["findings"] if f["tool"] == "injection"}
     return {
         "bugs": bugs,
         "security": {f["id"]: (f["file"], f["line"], "security") in found for f in flaws if f["kind"] == "security"},
         "secrets": {f["id"]: f["file"] in secret_hits for f in flaws if f["kind"] == "secret"},
+        "injections": {f["id"]: f["file"] in injection_hits for f in flaws if f["kind"] == "injection"},
         "false_positives": dict(false_positives),
     }

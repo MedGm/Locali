@@ -1,0 +1,20 @@
+diff --git a/tinyshop/inventory.py b/tinyshop/inventory.py
+index 36a6ed7..4d1d00c 100644
+--- a/tinyshop/inventory.py
++++ b/tinyshop/inventory.py
+@@ -11,6 +11,7 @@ def needs_restock(stock, threshold=LOW_STOCK_THRESHOLD):
+ 
+ 
+ def remove_stock(stock, qty):
++    """Removes a specified quantity from a stock and returns the remaining amount. Raises an error if the quantity is non-positive or exceeds the available stock."""
+     if qty <= 0:
+         raise ValueError("qty must be positive")
+     if qty > stock:
+@@ -20,6 +21,7 @@ def remove_stock(stock, qty):
+ 
+ def restock_list(products, alerts=[]):
+     # products: list of (name, stock)
++    """This function takes a list of product names and their current stock levels, checks each one to see if it needs restocking based on the `needs_restock` condition, and appends the name(s) to an empty li"""
+     for name, stock in products:
+         if needs_restock(stock):
+             alerts.append(name)

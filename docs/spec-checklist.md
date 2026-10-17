@@ -20,7 +20,7 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 | C2 | Efficient fine-tuning with Unsloth, LoRA/QLoRA, other PEFT | 1 model, QLoRA + LoRA runs on Kaggle T4 | `training/` | W3–5 | done: QLoRA, 16-bit LoRA, rsLoRA (Qwen2.5-Coder) + Phi-4-mini QLoRA, Unsloth |
 | C3 | Quantization 4/8-bit | FP16 / INT8 / INT4 on T4 and laptop CPU | `experiments/` | W6–7 | todo |
 | C4 | KV cache, efficient attention, batching | Prefix caching on/off, batch 1/4/16, SDPA vs eager | `experiments/` | W6–7 | todo |
-| C5 | Context compression, prompt optimization, token reduction | AST slicing + compact prompts, tokens before/after | `evaluation/`, `backend/` | W6–7 | wip (context ablation done, slicing in `backend/context_slice.py`) |
+| C5 | Context compression, prompt optimization, token reduction | AST slicing + compact prompts, tokens before/after | `evaluation/`, `backend/` | W6–7 | done: repair context ablation on T4 (full suite / compressed vs standard) and agent context settings on demo_repo (file / function / slice / compact; slice cuts model false positives 17→6 for +21 % input) ([results](../experiments/results/context_agents/README.md)) |
 | C6 | Measure latency, throughput, memory, cost | Shared metrics logger in harness | `evaluation/` | W1–2 | wip (tokens, TTFT, decode tok/s, CPU + GPU energy, training peak memory done; inference memory, cost todo) |
 | C7 | Code quality, maintainability, complexity, vulnerabilities, standards, technical debt | Ruff, Radon, Bandit, Semgrep + LLM summary | `backend/` | W3–5 | wip (tools in `backend/analysis.py`; LLM summary todo) |
 | C8 | Static-analysis tool integration | Same tools exposed via MCP | `mcp_servers/` | W6–7 | done (`analysis_server`: Ruff, Bandit, Radon, Semgrep, secrets) |

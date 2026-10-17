@@ -1,0 +1,40 @@
+{
+ "id": "a74aa58146be",
+ "run_id": "compact",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tests/test_locali_bulk_discount.py b/tests/test_locali_bulk_discount.py\nnew file mode 100644\nindex 0000000..95c3a30\n--- /dev/null\n+++ b/tests/test_locali_bulk_discount.py\n@@ -0,0 +1,11 @@\n+from tinyshop.pricing import *  # noqa: F403\n+from tinyshop.pricing import bulk_discount\n+\n+def test_qty_greater_than_50():\n+    assert bulk_discount(60) == 10\n+\n+def test_qty_between_10_and_50():\n+    assert bulk_discount(30) == 5\n+\n+def test_qty_less_than_10():\n+    assert bulk_discount(9) == 0\n",
+ "sha256": "95a5bd04fb6d4235a3900ee3151ec2e02563f856d04efbe29c0e09389d1413c3",
+ "files": [
+  "tests/test_locali_bulk_discount.py"
+ ],
+ "baseline": {
+  "tests/test_locali_bulk_discount.py": null
+ },
+ "head": "95b1d384b3568ab4969de17c1e8402afcdee185b",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 8,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 41.7,
+   "output_tail": "........F                                                                [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 8 passed in 0.15s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "7e74f6bffabc980421a61e91c0091646332ab2a8c4d48f72804950d91ef4d714",
+ "title": "Regression tests for bulk_discount (they record what the code does now)",
+ "kind": "tests",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

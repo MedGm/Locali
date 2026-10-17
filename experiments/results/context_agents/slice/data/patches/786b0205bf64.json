@@ -1,0 +1,40 @@
+{
+ "id": "786b0205bf64",
+ "run_id": "slice",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tests/test_locali_needs_restock.py b/tests/test_locali_needs_restock.py\nnew file mode 100644\nindex 0000000..b8b6c18\n--- /dev/null\n+++ b/tests/test_locali_needs_restock.py\n@@ -0,0 +1,11 @@\n+from tinyshop.inventory import *  # noqa: F403\n+from tinyshop.inventory import needs_restock\n+\n+def test_stock_below_threshold():\n+    assert needs_restock(3)\n+\n+def test_stock_at_threshold():\n+    assert not needs_restock(5)\n+\n+def test_stock_above_threshold():\n+    assert not needs_restock(10)\n",
+ "sha256": "c2b3c1527be9532d16ac58f7b44beb4be3ca0a5b59e19af90a2a75e64690c50c",
+ "files": [
+  "tests/test_locali_needs_restock.py"
+ ],
+ "baseline": {
+  "tests/test_locali_needs_restock.py": null
+ },
+ "head": "95b1d384b3568ab4969de17c1e8402afcdee185b",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 8,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 38.5,
+   "output_tail": "........F                                                                [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 8 passed in 0.19s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "ab41e2779219114e4d26c01f2a495125c0d5fb5f3b6136fa133c8b0a5e54909d",
+ "title": "Regression tests for needs_restock (they record what the code does now)",
+ "kind": "tests",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

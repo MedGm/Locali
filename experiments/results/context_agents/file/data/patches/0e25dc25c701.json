@@ -1,0 +1,40 @@
+{
+ "id": "0e25dc25c701",
+ "run_id": "file",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tinyshop/inventory.py b/tinyshop/inventory.py\nindex 36a6ed7..4d1d00c 100644\n--- a/tinyshop/inventory.py\n+++ b/tinyshop/inventory.py\n@@ -11,6 +11,7 @@ def needs_restock(stock, threshold=LOW_STOCK_THRESHOLD):\n \n \n def remove_stock(stock, qty):\n+    \"\"\"Removes a specified quantity from a stock and returns the remaining amount. Raises an error if the quantity is non-positive or exceeds the available stock.\"\"\"\n     if qty <= 0:\n         raise ValueError(\"qty must be positive\")\n     if qty > stock:\n@@ -20,6 +21,7 @@ def remove_stock(stock, qty):\n \n def restock_list(products, alerts=[]):\n     # products: list of (name, stock)\n+    \"\"\"This function takes a list of product names and their current stock levels, checks each one to see if it needs restocking based on the `needs_restock` condition, and appends the name(s) to an empty li\"\"\"\n     for name, stock in products:\n         if needs_restock(stock):\n             alerts.append(name)\n",
+ "sha256": "0ae9e7475b1945e426c9b6a4be64fe704ac968f00ee50c5a34f26f7d5732d28a",
+ "files": [
+  "tinyshop/inventory.py"
+ ],
+ "baseline": {
+  "tinyshop/inventory.py": "71a09d4441e32494a98ff1a878e7ff38584ab6d927350b178f4c4bb39a5a8dda"
+ },
+ "head": "95b1d384b3568ab4969de17c1e8402afcdee185b",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 5,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 35.1,
+   "output_tail": ".....F                                                                   [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 5 passed in 0.11s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "42550f4b1305c622e3f4b1b861ffa433ef34bf28be85b1294ee7cc6f1c899808",
+ "title": "Docstrings for remove_stock, restock_list in tinyshop/inventory.py",
+ "kind": "docs",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

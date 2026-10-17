@@ -1,0 +1,40 @@
+{
+ "id": "4d9a289d5a50",
+ "run_id": "file",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tests/test_locali_needs_restock.py b/tests/test_locali_needs_restock.py\nnew file mode 100644\nindex 0000000..8f2bd00\n--- /dev/null\n+++ b/tests/test_locali_needs_restock.py\n@@ -0,0 +1,17 @@\n+from tinyshop.inventory import *  # noqa: F403\n+from tinyshop.inventory import needs_restock\n+\n+def test_needs_restock__a0():\n+    assert not needs_restock(5)\n+\n+def test_needs_restock__a1():\n+    assert needs_restock(4)\n+\n+def test_low_stock_threshold__a0():\n+    assert needs_restock(0, 2)\n+\n+def test_low_stock_threshold__a1():\n+    assert needs_restock(1, 2)\n+\n+def test_low_stock_threshold__a2():\n+    assert not needs_restock(2, 2)\n",
+ "sha256": "1c5a9e23cf255da16a45d067c8bbe3c42927a96c0f46c8b51c1ee955db98d605",
+ "files": [
+  "tests/test_locali_needs_restock.py"
+ ],
+ "baseline": {
+  "tests/test_locali_needs_restock.py": null
+ },
+ "head": "95b1d384b3568ab4969de17c1e8402afcdee185b",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 10,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 40.0,
+   "output_tail": "..........F                                                              [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 10 passed in 0.12s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "bbd7a12602e425893bb4cdfd78ed8346e27bc3a039bb1e05966c92858a836660",
+ "title": "Regression tests for needs_restock (they record what the code does now)",
+ "kind": "tests",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

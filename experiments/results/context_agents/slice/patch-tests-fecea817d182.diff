@@ -1,0 +1,17 @@
+diff --git a/tests/test_locali_bulk_discount.py b/tests/test_locali_bulk_discount.py
+new file mode 100644
+index 0000000..6755f57
+--- /dev/null
++++ b/tests/test_locali_bulk_discount.py
+@@ -0,0 +1,11 @@
++from tinyshop.pricing import *  # noqa: F403
++from tinyshop.pricing import bulk_discount
++
++def test_zero_quantity():
++    assert bulk_discount(0) == 0
++
++def test_single_unit():
++    assert bulk_discount(1) == 0
++
++def test_10_units():
++    assert bulk_discount(10) == 5

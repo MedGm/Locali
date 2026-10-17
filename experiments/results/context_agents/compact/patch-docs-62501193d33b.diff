@@ -1,0 +1,27 @@
+diff --git a/tinyshop/db.py b/tinyshop/db.py
+index e303b96..8b48610 100644
+--- a/tinyshop/db.py
++++ b/tinyshop/db.py
+@@ -27,6 +27,7 @@ def connect(path):
+ 
+ 
+ def add_product(conn, name, price, stock=0):
++    """Inserts a new product into the database and returns its ID."""
+     cur = conn.execute("INSERT INTO products (name, price, stock) VALUES (?, ?, ?)", (name, price, stock))
+     conn.commit()
+     return cur.lastrowid
+@@ -38,12 +39,14 @@ def find_products(conn, name):
+ 
+ 
+ def record_sale(conn, product_id, qty, day):
++    """This function inserts a new sale record into the database and updates the product's stock accordingly. It takes a connection object, a product ID, quantity, and day as arguments."""
+     conn.execute("INSERT INTO sales (product_id, qty, day) VALUES (?, ?, ?)", (product_id, qty, day))
+     conn.execute("UPDATE products SET stock = stock - ? WHERE id = ?", (qty, product_id))
+     conn.commit()
+ 
+ 
+ def sales_for_day(conn, day):
++    """This function retrieves the sales data for a specific day from the database. It joins the `sales` and `products` tables on their common column, filters by the given day, and returns all matching recor"""
+     return conn.execute(
+         "SELECT p.name, s.qty, p.price FROM sales s JOIN products p ON p.id = s.product_id WHERE s.day = ?",
+         (day,),

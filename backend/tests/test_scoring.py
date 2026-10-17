@@ -27,3 +27,15 @@ def test_score_counts_hits_by_line_and_category_and_false_positives_by_source():
     assert s["bugs"] == {"bug-a": "found", "bug-b": "fixed", "bug-c": "suspected"}
     assert s["security"] == {"vuln": True} and s["secrets"] == {"key": True}
     assert s["false_positives"] == {"model": 2, "ruff": 1}
+
+
+def test_injection_detector_hits_on_planted_injection_files_are_not_false_positives():
+    key = {"flaws": [*KEY["flaws"], {"id": "inject-readme", "kind": "injection", "file": "README.md", "line": 25}]}
+    state = {"findings": [
+        {"tool": "injection", "path": "README.md", "line": 26, "category": "security"},
+        {"tool": "injection", "path": "README.md", "line": 28, "category": "security"},
+        {"tool": "injection", "path": "notes.md", "line": 1, "category": "security"},
+    ]}
+    s = score_run(state, key, FUNCTIONS)
+    assert s["injections"] == {"inject-readme": True}
+    assert s["false_positives"] == {"injection": 1}

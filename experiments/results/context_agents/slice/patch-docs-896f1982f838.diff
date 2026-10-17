@@ -1,0 +1,20 @@
+diff --git a/tinyshop/reports.py b/tinyshop/reports.py
+index 1d198b1..45cdd76 100644
+--- a/tinyshop/reports.py
++++ b/tinyshop/reports.py
+@@ -4,6 +4,7 @@ from tinyshop.db import sales_for_day
+ 
+ 
+ def daily_report(conn, day):
++    """This function takes a database connection and a day as input, retrieves sales data for that day from the database, formats it into a list of strings, calculates the total revenue, and returns a single"""
+     rows = sales_for_day(conn, day)
+     lines = [f"{name}: {qty} x {price:.2f}" for name, qty, price in rows]
+     revenue = sum(qty * price for _, qty, price in rows)
+@@ -12,6 +13,7 @@ def daily_report(conn, day):
+ 
+ 
+ def best_seller(conn, day):
++    """This function returns the best-selling product on a given day by counting the quantity of each product sold and returning the one with the highest count. If no products were sold that day, it returns """
+     counts = {}
+     for name, qty, _ in sales_for_day(conn, day):
+         counts[name] = counts.get(name, 0) + qty

@@ -4,15 +4,25 @@
 """
 
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from backend.agents.scoring import score_run
+from experiments.scripts.agent_eval import DEMO, KEY, enclosing_functions
+
 RUNS = ROOT / "experiments" / "results" / "context_agents"
 ORDER = ["file", "function", "slice", "compact"]
 
 
 def main() -> None:
-    scores = {p.parent.name: json.loads(p.read_text()) for p in RUNS.glob("*/score.json")}
+    scores = {}
+    for path in RUNS.glob("*/score.json"):
+        # rescored from the saved run, so every run is judged by the current scoring rules
+        state = json.loads((path.parent / "state.json").read_text())
+        scores[path.parent.name] = json.loads(path.read_text()) | score_run(state, KEY, enclosing_functions(DEMO, KEY))
     header = ("| Context | Review input tokens | Test-gen input tokens | All input tokens | Output tokens | "
               "Model time | Review hits on planted flaws | Model false positives | Bugs fixed / found / suspected | "
               "Tests kept / crashed |")

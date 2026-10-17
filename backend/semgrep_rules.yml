@@ -21,6 +21,19 @@ rules:
     message: command run through a shell
     pattern: subprocess.$F(..., shell=True, ...)
 
+  - id: shell-command
+    languages: [python]
+    severity: ERROR
+    message: starts a shell or replaces the process (Bandit rates a constant command as low severity)
+    pattern-either:
+      - pattern: os.system(...)
+      - pattern: os.popen(...)
+      - pattern: os.$EXEC(...)
+      - pattern: pty.spawn(...)
+    metavariable-regex:
+      metavariable: $EXEC
+      regex: ^(exec|spawn)\w*$
+
   - id: sql-string-format
     languages: [python]
     severity: ERROR

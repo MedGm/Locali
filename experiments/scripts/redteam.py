@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from evaluation.redteam import CASES, run_case  # noqa: E402
+from evaluation.redteam import CASES, run_case
 
 OUT = ROOT / "experiments" / "results" / "redteam"
 

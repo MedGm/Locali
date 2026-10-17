@@ -75,7 +75,7 @@ Design: [docs/research-design.md](docs/research-design.md)
 - **Gate:** end-to-end run from browser — **passed 2026-10-16** (agent run started, followed live and reviewed from the browser)
 
 ### W13 · Dec 14–20 · Red-team + final runs
-- [ ] Injection corpus, attack success rate with defenses off vs on
+- [x] Attack cases with defenses off vs on: 16 control cases (0/16 with, 16/16 without) and 17 model attacks (0 harm through the controls); two gaps found and fixed ([results](experiments/results/redteam/README.md))
 - [ ] Rerun all experiments from clean state
 - **Feature freeze Dec 20**
 

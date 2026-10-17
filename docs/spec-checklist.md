@@ -38,14 +38,14 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 
 | # | Threat | Control | Attack test | Week | Status |
 |---|---|---|---|---|---|
-| S1 | Prompt injection, indirect injection (code, repos, issues, docs) | Untrusted content never grants permissions; delimiting; detector as extra layer | Malicious README, comments, issue text | W8–13 | todo |
-| S2 | Jailbreaking | System-prompt hardening + output policy check | Jailbreak prompt set | W8–13 | todo |
-| S3 | Data leakage (code, credentials, API keys) | Secret scanning + redaction before model and in outputs | Fake keys in `demo_repo/` | W3–13 | wip (scanner + redaction in API and MCP servers; attack test todo) |
-| S4 | Malicious code, unsafe commands | Command allow-list, output validation | Generated `rm -rf`, `curl \| bash` | W8–13 | wip (allow-list in `security/commands.py`, enforced by a static test; generated code runs only in the sandbox; attack test todo) |
-| S5 | MCP/tool security, excessive permissions | Least-privilege servers, per-tool allow-list | Call to non-allowed tool | W6–13 | wip (3 servers, 1–2 tools each, fixed roots, path confinement tested) |
-| S6 | Supply-chain, repository poisoning | Dependency pinning, no install from untrusted repo, sandbox | Poisoned `requirements.txt` | W8–13 | wip (sandbox: no network, read-only, limits tested; DevOps step flags typosquatted dependencies such as `reqeusts`) |
-| S7 | Insecure output handling, generated-code vulnerabilities | Semgrep/Bandit on generated code before acceptance | Vulnerable patch | W8–13 | todo |
-| S8 | Excessive agent autonomy | Human approval for writes, iteration limits | Agent attempts unapproved write | W8–13 | todo |
+| S1 | Prompt injection, indirect injection (code, repos, issues, docs) | Untrusted content never grants permissions; delimiting; detector as extra layer | Malicious README, comments, issue text | W8–13 | done: payloads in code comments, docstrings and strings, real model: complied with 3/11 (all the review missing an SQL injection it misses without a payload too), harm through the controls 0/11; README/issue text never reaches the model and is flagged by `security/injection.py` ([results](../experiments/results/redteam/README.md)) |
+| S2 | Jailbreaking | System-prompt hardening + output policy check | Jailbreak prompt set | W8–13 | done: jailbreak payloads in code, real model: complied 0/6, harm 0/6 ([results](../experiments/results/redteam/model.md)); the model has no chat surface, output is only parsed into findings or code that is validated |
+| S3 | Data leakage (code, credentials, API keys) | Secret scanning + redaction before model and in outputs | Fake keys in `demo_repo/` | W3–13 | done: 0/2 attacks with redaction, 2/2 without; red-team found that a key repeated without its assignment slipped through, fixed by redacting the exact values found in the repository |
+| S4 | Malicious code, unsafe commands | Command allow-list, output validation | Generated `rm -rf`, `curl \| bash` | W8–13 | done: `rm -rf`, `curl \| sh` and a destructive generated test: 0/3 with the allow-list and sandbox, 3/3 without |
+| S5 | MCP/tool security, excessive permissions | Least-privilege servers, per-tool allow-list | Call to non-allowed tool | W6–13 | done: `../` and symlink escapes: 0/2 with path confinement, 2/2 without |
+| S6 | Supply-chain, repository poisoning | Dependency pinning, no install from untrusted repo, sandbox | Poisoned `requirements.txt` | W8–13 | done: poisoned conftest.py 0/1 in the sandbox (1/1 on the host); typosquat `reqeusts` flagged by the DevOps step |
+| S7 | Insecure output handling, generated-code vulnerabilities | Semgrep/Bandit on generated code before acceptance | Vulnerable patch | W8–13 | done: fixes adding eval, shell=True, os.system(constant) and a hard-coded key: 0/4 through validation, 4/4 without; red-team found os.system(constant) passed (Bandit rates it low), fixed with a Semgrep rule |
+| S8 | Excessive agent autonomy | Human approval for writes, iteration limits | Agent attempts unapproved write | W8–13 | done: unapproved apply, forged approval hash, stale patch: 0/3 with the approval gate, 3/3 without |
 
 Required controls, all covered above: least privilege · sandboxed execution · tool allow-lists · input/output validation · secret filtering · human approval · complete audit logging.
 

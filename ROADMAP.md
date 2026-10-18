@@ -81,14 +81,15 @@ Design: [docs/research-design.md](docs/research-design.md)
 - **Feature freeze Dec 20**
 
 ### W14–15 · Dec 21–Jan 1 · Report + demo
-- [ ] README report with figures
+- [x] README report with figures and screenshots of the web app
 - [ ] 5-min demo, scripted and timed
 - **Submit by Dec 30**
 
-## Status 2026-10-17 (week 5)
+## Status 2026-10-18 (week 5)
 
-- Done: W0–5, W8–10, W11–12 (about seven weeks early). All six agent steps, the safety layer, the API, the web app, CI with pull request review, and MLflow.
-- Open: rest of W6–7 (prompt optimization, KV cache and batching on T4), W13 red-team, W14–15 report and demo, UI design pass.
+- Done: W0–15 except the demo video. All requirements of the brief, the web app redesign, a playground,
+  quick scans for JavaScript/TypeScript, Java and Go, and the report.
+- Open: the 5-minute demo video, recorded last.
 
 ## Cut order if behind
 1. Phi fine-tuning

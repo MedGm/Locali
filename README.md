@@ -14,8 +14,8 @@ DevOps* (2026). The brief was written for teams of five; I did it alone, with th
 
 **Short answer: yes, within limits I can now measure.** A 1.5B model fine-tuned with QLoRA in two
 hours on one T4 catches 82 % of bugs with the tests it writes (from 46 %), preserves behaviour in
-94 % of refactors (from 70 %) and repairs 36 % of HumanEvalFix bugs (from 25 %), without losing
-general code generation. Quantized to 8 bits it loses nothing measurable, needs 1.8 GB of RAM and
+94 % of refactors (from 70 %) and repairs 36 % of HumanEvalFix bugs (from 25 %), without a
+significant loss in general code generation. Quantized to 8 bits it loses nothing measurable, needs 1.8 GB of RAM and
 answers at 10 tokens/s on the laptop CPU. It stays far behind a 9B model on open-ended repair
 (36 % vs 66 %), and on its own it is noisy as a reviewer; it becomes useful as one part of a
 workflow where static tools carry security, a sandbox runs every test, and nothing reaches the
@@ -104,7 +104,8 @@ reference. All open weights, pinned to exact revisions.
 (infilling), bug repair (HumanEvalFix), bug detection, code reasoning (CRUXEval-O), test
 generation, refactoring, secure code generation and vulnerability detection, plus four held-out
 tasks in the formats I trained on. Answers are generated on Kaggle T4s with vLLM (or on the laptop
-with llama.cpp) and scored afterwards on the laptop, with all generated code run in the sandbox.
+with llama.cpp) and scored afterwards on the laptop, with all generated code run in the sandbox
+(the one exception, repair in five other languages, is described in section 10).
 The harness was validated on reference solutions first: all ten tasks score 100 %
 ([harness validation](experiments/results/harness_validation/README.md)). Comparisons on the same
 items use paired exact McNemar tests.
@@ -257,7 +258,7 @@ and the web app's security center lists the security-relevant ones.
 
 ## 7. DevOps, LLMOps and the web app
 
-- **CI** (`.github/workflows/ci.yml`): lint, the sandbox image, 384 tests, and the frontend's type
+- **CI** (`.github/workflows/ci.yml`): lint, the sandbox image, 422 tests, and the frontend's type
   check, lint and build, on every push.
 - **Pull request review** (`locali-review.yml`): runs the static analysis and secret scan on the
   changed files, comments on the pull request and fails it on a new high-severity issue or secret.
@@ -288,7 +289,7 @@ and the web app's security center lists the security-relevant ones.
 
 | Metric in the brief | How it is measured |
 |---|---|
-| Code correctness, pass@k, execution success | pass@1, greedy, every answer executed in the sandbox |
+| Code correctness, pass@k, execution success | pass@1, greedy, every answer executed in the sandbox (other languages: on a Kaggle VM) |
 | Unit-test pass rate, test coverage | pytest and pytest-cov in the sandbox (line and branch) |
 | Bug-detection precision / recall / F1 | per task, with accuracy as the headline because the models answer "yes" too often |
 | Code-quality metrics | Ruff, Radon complexity, refactoring "improved and preserved" |

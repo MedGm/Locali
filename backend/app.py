@@ -546,7 +546,10 @@ def _playground_model(client) -> PlaygroundModel:
 
 
 def default_app() -> FastAPI:
+    from backend.envfile import load_env
     from evaluation.client import ChatClient
+
+    load_env(os.environ.get("LOCALI_ENV_FILE", Path(__file__).resolve().parents[1] / ".env"))
 
     model = None
     playground: dict[str, tuple[str, PlaygroundModel]] = {}

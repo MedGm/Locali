@@ -38,3 +38,31 @@ def test_stops_at_the_first_passing_attempt_and_feeds_back_the_error():
 def test_gives_up_after_the_last_attempt():
     r = repair_with_feedback(ITEM, lambda m: answer("def add(a, b):\n    return 0\n"), lambda c: (False, "nope"), 3)
     assert r["fixed_at"] is None and r["attempts"] == 3 and len(r["errors"]) == 3
+
+
+def test_failing_asserts_say_what_was_returned_and_what_was_expected():
+    from evaluation.feedback_repair import explain_asserts
+
+    test = "def check(candidate):\n    assert candidate(1, 2) == 3\n    assert abs(candidate(0, 0)) < 1\n\ncheck(add)\n"
+    bad = "def add(a, b):\n    return a - b\n\n" + explain_asserts(test)
+    try:
+        exec(bad, {})  # noqa: S102 - a fixed, trusted program
+    except AssertionError as e:
+        assert str(e) == "candidate(1, 2) returned -1, expected 3"
+    else:
+        raise AssertionError("should fail")
+    good = "def add(a, b):\n    return a + b\n\n" + explain_asserts(test)
+    exec(good, {})  # noqa: S102 - passes exactly when the original asserts pass
+    other = "def add(a, b):\n    return 5\n\n" + explain_asserts("def check(candidate):\n    assert abs(candidate(0, 0)) < 1\ncheck(add)\n")
+    try:
+        exec(other, {})  # noqa: S102 - a fixed, trusted program
+    except AssertionError as e:
+        assert str(e) == "failed: assert abs(candidate(0, 0)) < 1"
+
+
+def test_retries_can_use_a_different_model():
+    calls = []
+    first = lambda m: (calls.append("first"), answer("def add(a, b):\n    return a * b\n"))[1]
+    retry = lambda m: (calls.append("retry"), answer("def add(a, b):\n    return a + b\n"))[1]
+    r = repair_with_feedback(ITEM, first, lambda c: ("a + b" in c, "x"), 3, retry_model=retry)
+    assert calls == ["first", "retry"] and r["fixed_at"] == 2

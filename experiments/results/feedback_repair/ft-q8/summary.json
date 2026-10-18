@@ -1,0 +1,20 @@
+{
+ "model_id": "ft-q8",
+ "n": 164,
+ "attempts": 3,
+ "fixed_within": {
+  "1": 52,
+  "2": 55,
+  "3": 57
+ },
+ "rate_within": {
+  "1": 31.7,
+  "2": 33.5,
+  "3": 34.8
+ },
+ "model_calls": 385,
+ "tokens_this_session": {
+  "input": 133105,
+  "output": 34291
+ }
+}

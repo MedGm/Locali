@@ -11,6 +11,7 @@ in the prompt are the tests that decide the score, as in the real setting where 
 what the agent has to make pass.
 """
 
+import ast
 from collections.abc import Callable
 
 from evaluation.extract import extract_code, sanitize
@@ -18,6 +19,40 @@ from evaluation.tasks.humanevalpack import PackItem
 
 Model = Callable[[list[dict]], str]
 Run = Callable[[str], tuple[bool, str | None]]  # code -> (passed, error)
+
+
+_SHOW = (
+    "def _lc_show(v):\n"
+    "    s = repr(v)\n"
+    "    return s if len(s) <= 200 else s[:200] + '...'\n\n"
+)
+
+
+class _ExplainAsserts(ast.NodeTransformer):
+    """assert a == b -> evaluate a and b once, fail with what a returned and what was expected."""
+
+    def visit_Assert(self, node: ast.Assert):
+        if node.msg is not None:
+            return node
+        test = node.test
+        if isinstance(test, ast.Compare) and len(test.ops) == 1 and isinstance(test.ops[0], ast.Eq):
+            left, right = ast.unparse(test.left), ast.unparse(test.comparators[0])
+            code = (f"_lc_l = {left}\n_lc_r = {right}\n"
+                    f"if not (_lc_l == _lc_r):\n"
+                    f"    raise AssertionError({left!r} + ' returned ' + _lc_show(_lc_l) + ', expected ' + _lc_show(_lc_r))\n")
+            return ast.parse(code).body
+        node.msg = ast.Constant("failed: assert " + ast.unparse(test))
+        return node
+
+
+def explain_asserts(test: str) -> str:
+    """The same test, but a failing assertion says what the code returned. It passes exactly when the
+    original passes, so it can replace it; if the test does not parse, it is returned unchanged."""
+    try:
+        tree = _ExplainAsserts().visit(ast.parse(test))
+    except SyntaxError:
+        return test
+    return _SHOW + ast.unparse(ast.fix_missing_locations(tree)) + "\n"
 
 
 def feedback_messages(item: PackItem, code: str | None, error: str | None) -> list[dict]:
@@ -33,12 +68,15 @@ def feedback_messages(item: PackItem, code: str | None, error: str | None) -> li
     return [{"role": "user", "content": content}]
 
 
-def repair_with_feedback(item: PackItem, model: Model, run: Run, max_attempts: int = 3) -> dict:
+def repair_with_feedback(item: PackItem, model: Model, run: Run, max_attempts: int = 3,
+                         retry_model: Model | None = None) -> dict:
+    """retry_model, when given, answers attempts 2 and up (e.g. the same model at a small temperature)."""
     code: str | None = None
     error: str | None = None
     errors, answers = [], []
     for attempt in range(1, max_attempts + 1):
-        answer = model(feedback_messages(item, code, error))
+        ask = retry_model if retry_model is not None and attempt > 1 else model
+        answer = ask(feedback_messages(item, code, error))
         answers.append(answer)
         code = sanitize(extract_code(answer, entry_point=item.entry_point)) or code
         passed, error = run(code or "")

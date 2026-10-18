@@ -1,8 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
+import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -37,13 +40,16 @@ export default function SecurityPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Security</h1>
-        <p className="text-sm text-muted-foreground">
-          Every action of the backend is written to an append-only audit log. This page shows what the controls
-          stopped or changed.
-        </p>
-      </div>
+      <PageHeader
+        title="Security"
+        description="Everything the backend does is written to an append-only audit log. Here is what the safety controls stopped or changed."
+        howItWorks={[
+          { title: "Secrets stay out", text: "Keys and passwords are removed before any text reaches the model, and from its answers." },
+          { title: "Commands are limited", text: "Only git, patch, docker and the analysers may run. Anything else is refused and logged." },
+          { title: "Code runs sealed", text: "Your tests run in a container with no network and a read-only copy of the code." },
+          { title: "You approve", text: "Changes are applied only after you approve the exact patch you reviewed." },
+        ]}
+      />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {Object.entries(SECURITY_LABELS).map(([key, { label, meaning }]) => (
@@ -91,8 +97,34 @@ export default function SecurityPage() {
   );
 }
 
+// Plain wording for the audit actions; unknown ones are shown as they are.
+const ACTION_TEXT: Record<string, string> = {
+  "auth.refused": "Request refused: wrong or missing token",
+  "run.created": "Run started",
+  "run.started": "Run began working",
+  "run.finished": "Run finished",
+  "run.failed": "Run failed",
+  "run.refused": "Run refused: repository outside the allowed folder",
+  "command.refused": "Command blocked: not on the allow-list",
+  "model.redacted": "Secrets removed from a model call",
+  "patch.proposed": "Patch proposed",
+  "patch.approved": "Patch approved",
+  "patch.rejected": "Patch rejected",
+  "patch.applied": "Patch applied to the repository",
+  "patch.reverted": "Patch reverted",
+  "patch.stale": "Patch went stale: files changed since",
+  "patch.conflict": "Patch no longer applies cleanly",
+  "patch.revert_refused": "Revert refused: it would overwrite later work",
+  "patch.revalidated": "Patch revalidated",
+};
+
 function EventTable({ events }: { events: AuditEvent[] }) {
-  if (!events.length) return <p className="py-4 text-sm text-muted-foreground">Nothing recorded.</p>;
+  if (!events.length)
+    return (
+      <EmptyState icon={ShieldCheck} title="Nothing to report" className="mt-2">
+        No control had to step in.
+      </EmptyState>
+    );
   return (
     <Card className="mt-2">
       <CardContent className="overflow-x-auto pt-4">
@@ -108,7 +140,10 @@ function EventTable({ events }: { events: AuditEvent[] }) {
             {events.map((e, i) => (
               <TableRow key={`${e.time}-${i}`}>
                 <TableCell className="whitespace-nowrap font-mono text-xs">{new Date(e.time).toLocaleString()}</TableCell>
-                <TableCell className="font-mono text-xs">{e.action}</TableCell>
+                <TableCell className="text-sm">
+                  {ACTION_TEXT[e.action] ?? e.action}
+                  <span className="block font-mono text-[11px] text-muted-foreground">{e.action}</span>
+                </TableCell>
                 <TableCell className="max-w-2xl whitespace-normal font-mono text-xs text-muted-foreground">
                   {Object.entries(e)
                     .filter(([k]) => !DETAIL_SKIP.has(k))

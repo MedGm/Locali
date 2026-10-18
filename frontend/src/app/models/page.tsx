@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 
+import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MlflowLink } from "@/components/mlflow-link";
@@ -34,11 +35,18 @@ export default function ModelsPage() {
   const models = useQuery({ queryKey: ["models"], queryFn: () => api<{ note: string; models: Model[] }>("/models") });
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Models</h1>
-        <MlflowLink />
-        <p className="text-sm text-muted-foreground">{models.data?.note}</p>
-      </div>
+      <PageHeader
+        title="Models"
+        description="The fine-tuned model in its three sizes, and the base model it came from. The highlighted card is the one this installation runs."
+        actions={<MlflowLink />}
+        howItWorks={[
+          { title: "One model, three sizes", text: "F16 is the full model; Q8 and Q4 are compressed copies that run faster in less memory." },
+          { title: "Q8 is the default", text: "It gives the same answers as F16 in our tests, in half the memory." },
+          { title: "Q4 is the fast option", text: "About 60 % faster than Q8 for 2–4 points of accuracy." },
+          { title: "Measured here", text: "Scores and speed come from benchmark runs on a 4-core laptop CPU." },
+        ]}
+      />
+      {models.data?.note && <p className="-mt-3 text-xs text-muted-foreground">{models.data.note}</p>}
       <div className="grid gap-4 lg:grid-cols-2">
         {models.data?.models.map((m) => (
           <Card key={m.id} className={m.active ? "border-emerald-400" : undefined}>

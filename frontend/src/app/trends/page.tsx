@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
+import { PageHeader } from "@/components/page-header";
 import { RunLines } from "@/components/charts/lines";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -41,13 +42,12 @@ function Trends() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">Quality trends</h1>
-          <p className="text-sm text-muted-foreground">How each finished run of a repository compares with the ones before.</p>
-        </div>
-        <label className="grid gap-1 text-sm">
-          Repository
+      <PageHeader
+        title="Quality trends"
+        description="How each finished run of a repository compares with the ones before: findings, tests, coverage and merge readiness."
+        actions={
+        <label className="flex items-center gap-2 text-sm">
+          <span className="text-muted-foreground">Repository</span>
           <select
             value={repo ?? ""}
             onChange={(e) => router.replace(`/trends?repo=${encodeURIComponent(e.target.value)}`)}
@@ -60,7 +60,8 @@ function Trends() {
             ))}
           </select>
         </label>
-      </div>
+        }
+      />
 
       {!points.data?.length ? (
         <p className="text-sm text-muted-foreground">

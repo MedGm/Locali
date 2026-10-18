@@ -1,7 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { BarChart3 } from "lucide-react";
 
+import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/page-header";
+import { Skeleton } from "@/components/ui/skeleton";
 import { HorizontalBars } from "@/components/charts/bars";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -54,20 +58,28 @@ const mark = (t: Test) => (t && t.p < 0.05 ? " *" : "");
 
 export default function ResultsPage() {
   const summary = useQuery({ queryKey: ["results"], queryFn: () => api<Summary>("/results") });
-  if (summary.isError) return <p className="text-sm text-red-700">No results summary yet.</p>;
-  if (!summary.data) return <p className="text-sm text-muted-foreground">Loading…</p>;
+  if (summary.isError)
+    return (
+      <EmptyState icon={BarChart3} title="No results summary yet">
+        Run experiments/scripts/export_results.py to build it from the experiment folders.
+      </EmptyState>
+    );
+  if (!summary.data) return <Skeleton className="h-96 rounded-xl" />;
   const s = summary.data;
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Evaluation results</h1>
-        <MlflowLink />
-        <p className="text-sm text-muted-foreground">
-          Computed from the per-item result files (exported {new Date(s.generated_at).toLocaleString()}). Every
-          comparison is paired on the same items; * marks p &lt; 0.05 (exact McNemar test).
-        </p>
-      </div>
+      <PageHeader
+        title="Research results"
+        description={
+          <>
+            The measurements behind the model Locali runs: how fine-tuning changed it, how it compares with other
+            models, what compression costs. Exported {new Date(s.generated_at).toLocaleString()}; every comparison is
+            paired on the same items, * marks p &lt; 0.05 (exact McNemar test).
+          </>
+        }
+        actions={<MlflowLink />}
+      />
       <Tabs defaultValue="finetuning">
         <TabsList>
           <TabsTrigger value="finetuning">Fine-tuning</TabsTrigger>

@@ -2,6 +2,8 @@
 
 import { useQuery } from "@tanstack/react-query";
 
+import { PageHeader } from "@/components/page-header";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { api, type Settings } from "@/lib/api";
@@ -9,17 +11,14 @@ import { api, type Settings } from "@/lib/api";
 export default function SettingsPage() {
   const settings = useQuery({ queryKey: ["settings"], queryFn: () => api<Settings>("/settings") });
   const s = settings.data;
-  if (!s) return <p className="text-sm text-muted-foreground">{settings.isError ? "Could not load settings." : "Loading…"}</p>;
+  if (!s) return settings.isError ? <p className="text-sm text-muted-foreground">Could not load settings.</p> : <Skeleton className="h-96 rounded-xl" />;
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Settings</h1>
-        <p className="text-sm text-muted-foreground">
-          What the backend is running with. Values come from environment variables and change on restart; keys and
-          tokens are never shown.
-        </p>
-      </div>
+      <PageHeader
+        title="Settings"
+        description="What this installation runs with. Values come from environment variables and take effect when the backend restarts; keys and tokens are never shown."
+      />
 
       <div className="grid gap-4 md:grid-cols-2">
         <Section title="Model" description={s.model.configured ? "Agent runs are enabled" : "No model: only static analysis runs"}>

@@ -1,0 +1,945 @@
+{
+ "js": {
+  "canonical_solution": {
+   "passed": 164,
+   "n": 164
+  },
+  "canonical_failures": [],
+  "buggy_solution": {
+   "passed": 0,
+   "n": 164
+  }
+ },
+ "java": {
+  "canonical_solution": {
+   "passed": 164,
+   "n": 164
+  },
+  "canonical_failures": [],
+  "buggy_solution": {
+   "passed": 0,
+   "n": 164
+  }
+ },
+ "go": {
+  "canonical_solution": {
+   "passed": 152,
+   "n": 164
+  },
+  "canonical_failures": [
+   [
+    "Go/10",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:19:10: undefined: IsPalindrome\n"
+   ],
+   [
+    "Go/17",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:12:11: undefined: strings\n"
+   ],
+   [
+    "Go/20",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:11:17: undefined: math\n./main_test.go:16:20: undefined: math\n./main_test.go:17:17: undefined: math\n./main_test.go:19:6: undefined: sort\n./main_test.go:22:21: undefined: math\n./main_test.go:26:7: undefined: sort\n"
+   ],
+   [
+    "Go/27",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:9:5: \"strings\" imported and not used\n"
+   ],
+   [
+    "Go/32",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:11:5: math redeclared in this block\n\t./main_test.go:6:5: other declaration of math\n./main_test.go:11:5: \"math\" imported and not used\n./main_test.go:18:6: undefined: Poly\n./main_test.go:24:6: undefined: Poly\n./main_test.go:61:37: undefined: Poly\n"
+   ],
+   [
+    "Go/38",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:6:5: \"math\" imported and not used\n./main_test.go:8:5: \"strings\" imported and not used\n./main_test.go:13:5: math redeclared in this block\n\t./main_test.go:6:5: other declaration of math\n./main_test.go:13:5: \"math\" imported and not used\n./main_test.go:14:5: strings redeclared in this block\n\t./main_test.go:8:5: other declaration of strings\n./main_test."
+   ],
+   [
+    "Go/50",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:36:24: undefined: EncodeShift\n"
+   ],
+   [
+    "Go/59",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:12:29: undefined: math\n"
+   ],
+   [
+    "Go/75",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:12:29: undefined: math\n"
+   ],
+   [
+    "Go/90",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:10:5: math redeclared in this block\n\t./main_test.go:5:5: other declaration of math\n./main_test.go:10:5: \"math\" imported and not used\n"
+   ],
+   [
+    "Go/108",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:10:5: math redeclared in this block\n\t./main_test.go:5:5: other declaration of math\n./main_test.go:10:5: \"math\" imported and not used\n"
+   ],
+   [
+    "Go/162",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:10:5: md5 redeclared in this block\n\t./main_test.go:5:5: other declaration of md5\n./main_test.go:10:5: \"crypto/md5\" imported and not used\n"
+   ]
+  ],
+  "buggy_solution": {
+   "passed": 0,
+   "n": 164
+  }
+ },
+ "cpp": {
+  "canonical_solution": {
+   "passed": 163,
+   "n": 164
+  },
+  "canonical_failures": [
+   [
+    "CPP/38",
+    "failed (compile)",
+    "In file included from /usr/include/features.h:502,\n                 from /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:33,\n                 from /usr/include/stdio.h:28,\n                 from main.cpp:1:\n/usr/include/assert.h: In function \u2018std::string decode_cyclic(std::string)\u2019:\n/usr/include/assert.h:66:1: error: expected unqualified-id before string constant\n   66 | __BEGIN_DECLS\n      "
+   ]
+  ],
+  "buggy_solution": {
+   "passed": 0,
+   "n": 164
+  }
+ },
+ "rust": {
+  "canonical_solution": {
+   "passed": 0,
+   "n": 164
+  },
+  "canonical_failures": [
+   [
+    "Rust/0",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/1",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/2",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/3",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/4",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/5",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/6",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/7",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/8",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/9",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/10",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/11",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/12",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/13",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/14",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/15",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/16",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/17",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/18",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/19",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/20",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/21",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/22",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/23",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/24",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/25",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/26",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/27",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/28",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/29",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/30",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/31",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/32",
+    "failed (compile)",
+    "-> /root/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rand-0.8.8/src/rng.rs:129:8\n    |\n129 |     fn gen_range<T, R>(&mut self, range: R) -> T\n    |        ^^^^^^^^^\n\nerror[E0277]: the trait bound `{integer}: SampleRange<_>` is not satisfied\n   --> src/lib.rs:54:49\n    |\n54  |                 let coeff = -10 + rng.gen_range(0, 21);\n    |                                       --------- ^ th"
+   ],
+   [
+    "Rust/33",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/34",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/35",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/36",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/37",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/38",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/39",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/40",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/41",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/42",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/43",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/44",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/45",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/46",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/47",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/48",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/49",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/50",
+    "failed (compile)",
+    "                 help: remove the extra argument\n    |\nnote: method defined here\n   --> /root/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rand-0.8.8/src/rng.rs:129:8\n    |\n129 |     fn gen_range<T, R>(&mut self, range: R) -> T\n    |        ^^^^^^^^^\n\nerror[E0277]: the trait bound `u8: SampleRange<_>` is not satisfied\n   --> src/lib.rs:84:36\n    |\n84  |                 1 => rng.gen_range(b"
+   ],
+   [
+    "Rust/51",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/52",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/53",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/54",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/55",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/56",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/57",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/58",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/59",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/60",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/61",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/62",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/63",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/64",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/65",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/66",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/67",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/68",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/69",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/70",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/71",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/72",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/73",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/74",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/75",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/76",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/77",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/78",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/79",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/80",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/81",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/82",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/83",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/84",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/85",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/86",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/87",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/88",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/89",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/90",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/91",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/92",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/93",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/94",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/95",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/96",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/97",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/98",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/99",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/100",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/101",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/102",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/103",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/104",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/105",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/106",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/107",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/108",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/109",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/110",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/111",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/112",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/113",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/114",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/115",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/116",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/117",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/118",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/119",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/120",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/121",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/122",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/123",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/124",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/125",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/126",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/127",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/128",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/129",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/130",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/131",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/132",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/133",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/134",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/135",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/136",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/137",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/138",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/139",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/140",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/141",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/142",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/143",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/144",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/145",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/146",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/147",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/148",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/149",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/150",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/151",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/152",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/153",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/154",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/155",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/156",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/157",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/158",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/159",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/160",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/161",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/162",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ],
+   [
+    "Rust/163",
+    "failed (compile)",
+    "                                                                                   ^^^^^^^^^^^^^^^ `AsciiExt` reimported here\n  |\n  = note: `AsciiExt` must be defined only once in the type namespace of this module\n\nerror[E0252]: the name `Rng` is defined multiple times\n  --> src/lib.rs:10:5\n   |\n3  | use rand::Rng;\n   |     --------- previous import of the trait `Rng` here\n...\n10 | use rand::Rng;\n"
+   ]
+  ],
+  "buggy_solution": {
+   "passed": 0,
+   "n": 164
+  }
+ }
+}

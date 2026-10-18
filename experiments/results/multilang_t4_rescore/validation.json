@@ -1,0 +1,95 @@
+{
+ "js": {
+  "canonical_solution": {
+   "passed": 164,
+   "n": 164
+  },
+  "canonical_failures": [],
+  "buggy_solution": {
+   "passed": 0,
+   "n": 164
+  }
+ },
+ "java": {
+  "canonical_solution": {
+   "passed": 164,
+   "n": 164
+  },
+  "canonical_failures": [],
+  "buggy_solution": {
+   "passed": 0,
+   "n": 164
+  }
+ },
+ "go": {
+  "canonical_solution": {
+   "passed": 160,
+   "n": 164
+  },
+  "canonical_failures": [
+   [
+    "Go/10",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:15:10: undefined: IsPalindrome\n"
+   ],
+   [
+    "Go/32",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:13:6: undefined: Poly\n./main_test.go:19:6: undefined: Poly\n./main_test.go:55:37: undefined: Poly\n"
+   ],
+   [
+    "Go/38",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:11:12: undefined: EncodeCyclic\n./main_test.go:28:24: undefined: EncodeCyclic\n"
+   ],
+   [
+    "Go/50",
+    "failed (compile)",
+    "# humanevalfix [humanevalfix.test]\n./main_test.go:33:24: undefined: EncodeShift\n"
+   ]
+  ],
+  "buggy_solution": {
+   "passed": 0,
+   "n": 164
+  }
+ },
+ "cpp": {
+  "canonical_solution": {
+   "passed": 163,
+   "n": 164
+  },
+  "canonical_failures": [
+   [
+    "CPP/38",
+    "failed (compile)",
+    "In file included from /usr/include/features.h:502,\n                 from /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:33,\n                 from /usr/include/stdio.h:28,\n                 from main.cpp:1:\n/usr/include/assert.h: In function \u2018std::string decode_cyclic(std::string)\u2019:\n/usr/include/assert.h:66:1: error: expected unqualified-id before string constant\n   66 | __BEGIN_DECLS\n      "
+   ]
+  ],
+  "buggy_solution": {
+   "passed": 0,
+   "n": 164
+  }
+ },
+ "rust": {
+  "canonical_solution": {
+   "passed": 162,
+   "n": 164
+  },
+  "canonical_failures": [
+   [
+    "Rust/32",
+    "failed (compile)",
+    "ere\n   --> /root/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rand-0.8.8/src/rng.rs:129:8\n    |\n129 |     fn gen_range<T, R>(&mut self, range: R) -> T\n    |        ^^^^^^^^^\n\nerror[E0277]: the trait bound `{integer}: SampleRange<_>` is not satisfied\n   --> src/lib.rs:46:49\n    |\n46  |                 let coeff = -10 + rng.gen_range(0, 21);\n    |                                       ------"
+   ],
+   [
+    "Rust/50",
+    "failed (compile)",
+    "                         help: remove the extra argument\n    |\nnote: method defined here\n   --> /root/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rand-0.8.8/src/rng.rs:129:8\n    |\n129 |     fn gen_range<T, R>(&mut self, range: R) -> T\n    |        ^^^^^^^^^\n\nerror[E0277]: the trait bound `u8: SampleRange<_>` is not satisfied\n   --> src/lib.rs:76:36\n    |\n76  |                 1 => rng.gen"
+   ]
+  ],
+  "buggy_solution": {
+   "passed": 0,
+   "n": 164
+  }
+ }
+}

@@ -1,0 +1,30 @@
+{
+ "js": {
+  "canonical_solution": {
+   "passed": 164,
+   "n": 164
+  },
+  "canonical_failures": [],
+  "buggy_solution": {
+   "passed": 0,
+   "n": 164
+  }
+ },
+ "cpp": {
+  "canonical_solution": {
+   "passed": 163,
+   "n": 164
+  },
+  "canonical_failures": [
+   [
+    "CPP/38",
+    "failed (compile)",
+    "In file included from /usr/include/features.h:502,\n                 from /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:33,\n                 from /usr/include/stdio.h:28,\n                 from main.cpp:1:\n/usr/include/assert.h: In function \u2018std::string decode_cyclic(std::string)\u2019:\n/usr/include/assert.h:66:1: error: expected unqualified-id before string constant\n   66 | __BEGIN_DECLS\n      "
+   ]
+  ],
+  "buggy_solution": {
+   "passed": 0,
+   "n": 164
+  }
+ }
+}

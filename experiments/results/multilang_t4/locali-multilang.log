@@ -1,0 +1,63 @@
+[{"stream_name":"stderr","time":8.36666546,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.366709719,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.366716138,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.366731292,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.009893069,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.009930988,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.009936536,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.009940123,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":10.185136001,"data":"Writing /kaggle/working/kaggle_multilang.py\n"}
+,{"stream_name":"stdout","time":343.873487792,"data":"[11:22:48] setup done\n"}
+,{"stream_name":"stdout","time":347.687295734,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stdout","time":349.657397801,"data":"\n"}
+,{"stream_name":"stdout","time":349.750442329,"data":"Generating test split:   0%|          | 0/164 [00:00\u003c?, ? examples/s]\n"}
+,{"stream_name":"stdout","time":349.751424219,"data":"Generating test split: 100%|██████████| 164/164 [00:00\u003c00:00, 1768.74 examples/s]\n"}
+,{"stream_name":"stdout","time":450.506508874,"data":"[11:24:35] validation js: canonical {'passed': 164, 'n': 164}, buggy {'passed': 0, 'n': 164}\n"}
+,{"stream_name":"stdout","time":451.205381348,"data":"\n"}
+,{"stream_name":"stdout","time":451.210240157,"data":"Generating test split:   0%|          | 0/164 [00:00\u003c?, ? examples/s]\n"}
+,{"stream_name":"stdout","time":451.211254104,"data":"Generating test split: 100%|██████████| 164/164 [00:00\u003c00:00, 25891.74 examples/s]\n"}
+,{"stream_name":"stdout","time":746.485034756,"data":"[11:29:31] validation java: canonical {'passed': 164, 'n': 164}, buggy {'passed': 0, 'n': 164}\n"}
+,{"stream_name":"stdout","time":747.26357891,"data":"\n"}
+,{"stream_name":"stdout","time":747.268109558,"data":"Generating test split:   0%|          | 0/164 [00:00\u003c?, ? examples/s]\n"}
+,{"stream_name":"stdout","time":747.268971891,"data":"Generating test split: 100%|██████████| 164/164 [00:00\u003c00:00, 29701.88 examples/s]\n"}
+,{"stream_name":"stdout","time":885.597170124,"data":"[11:31:50] validation go: canonical {'passed': 152, 'n': 164}, buggy {'passed': 0, 'n': 164}\n"}
+,{"stream_name":"stdout","time":886.25269138,"data":"\n"}
+,{"stream_name":"stdout","time":886.258506435,"data":"Generating test split:   0%|          | 0/164 [00:00\u003c?, ? examples/s]\n"}
+,{"stream_name":"stdout","time":886.259399141,"data":"Generating test split: 100%|██████████| 164/164 [00:00\u003c00:00, 27995.03 examples/s]\n"}
+,{"stream_name":"stdout","time":1103.183436956,"data":"[11:35:27] validation cpp: canonical {'passed': 163, 'n': 164}, buggy {'passed': 0, 'n': 164}\n"}
+,{"stream_name":"stdout","time":1104.014352756,"data":"\n"}
+,{"stream_name":"stdout","time":1104.018871718,"data":"Generating test split:   0%|          | 0/164 [00:00\u003c?, ? examples/s]\n"}
+,{"stream_name":"stdout","time":1104.019658049,"data":"Generating test split: 100%|██████████| 164/164 [00:00\u003c00:00, 29986.74 examples/s]\n"}
+,{"stream_name":"stdout","time":1156.56669795,"data":"[11:36:21] validation rust: canonical {'passed': 0, 'n': 164}, buggy {'passed': 0, 'n': 164}\n"}
+,{"stream_name":"stdout","time":1156.56673559,"data":"[11:36:21] some reference solutions fail; see validation.json (scores are still computed)\n"}
+,{"stream_name":"stdout","time":1354.939895185,"data":"[11:39:39] ft/js: 164 answers\n"}
+,{"stream_name":"stdout","time":1361.473154726,"data":"[11:39:46] base/js: 164 answers\n"}
+,{"stream_name":"stdout","time":1402.851881513,"data":"[11:40:27] ft/java: 164 answers\n"}
+,{"stream_name":"stdout","time":1410.42084401,"data":"[11:40:35] base/java: 164 answers\n"}
+,{"stream_name":"stdout","time":1446.411259999,"data":"[11:41:11] ft/go: 164 answers\n"}
+,{"stream_name":"stdout","time":1497.522982469,"data":"[11:42:02] ft/cpp: 164 answers\n"}
+,{"stream_name":"stdout","time":1516.880643458,"data":"[11:42:21] base/go: 164 answers\n"}
+,{"stream_name":"stdout","time":1571.009392757,"data":"[11:43:15] ft/rust: 164 answers\n"}
+,{"stream_name":"stdout","time":1591.71763375,"data":"[11:43:36] base/cpp: 164 answers\n"}
+,{"stream_name":"stdout","time":1700.465000996,"data":"[11:45:25] base/rust: 164 answers\n"}
+,{"stream_name":"stdout","time":1765.055593141,"data":"[11:46:29] score ft/js: 53/164\n"}
+,{"stream_name":"stdout","time":1824.051586875,"data":"[11:47:28] score base/js: 35/164\n"}
+,{"stream_name":"stdout","time":1985.998575159,"data":"[11:50:10] score ft/java: 52/164\n"}
+,{"stream_name":"stdout","time":2145.637799307,"data":"[11:52:50] score base/java: 63/164\n"}
+,{"stream_name":"stdout","time":2230.495442533,"data":"[11:54:15] score ft/go: 48/164\n"}
+,{"stream_name":"stdout","time":2259.385005671,"data":"[11:54:44] score base/go: 1/164\n"}
+,{"stream_name":"stdout","time":2387.066214228,"data":"[11:56:51] score ft/cpp: 48/164\n"}
+,{"stream_name":"stdout","time":2486.045074562,"data":"[11:58:30] score base/cpp: 44/164\n"}
+,{"stream_name":"stdout","time":2525.429487449,"data":"[11:59:10] score ft/rust: 0/164\n"}
+,{"stream_name":"stdout","time":2548.434147428,"data":"[11:59:33] score base/rust: 0/164\n"}
+,{"stream_name":"stdout","time":2548.479614556,"data":"[11:59:33] all done\n"}
+,{"stream_name":"stdout","time":2548.825465132,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":2551.386814129,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":2551.386843889,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":2551.590398807,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":2551.59044424,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":2552.327610038,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":2552.40841277,"data":"[NbConvertApp] Writing 16026 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":2554.781553835,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":2555.320037239,"data":"[NbConvertApp] Writing 321740 bytes to __results__.html\n"}
+]

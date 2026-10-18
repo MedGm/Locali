@@ -4,6 +4,7 @@ Quick scans cover all of these (Semgrep rules, secret scan, injection detector).
 needs Python: its tests, repair loop and patch validation rely on pytest and Python's parser.
 """
 
+import os
 from collections import Counter
 from pathlib import Path
 
@@ -20,10 +21,11 @@ SKIP = SKIP_DIRS | {"dist", "build", ".next", "target", "vendor"}
 
 
 def count_languages(root: str | Path) -> dict[str, int]:
-    root = Path(root)
     counts: Counter = Counter()
-    for path in root.rglob("*"):
-        language = EXTENSIONS.get(path.suffix.lower())
-        if language and path.is_file() and not SKIP & set(path.relative_to(root).parts):
-            counts[language] += 1
+    for _, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d not in SKIP]  # never descend into node_modules and the like
+        for name in files:
+            language = EXTENSIONS.get(os.path.splitext(name)[1].lower())
+            if language:
+                counts[language] += 1
     return dict(counts.most_common())

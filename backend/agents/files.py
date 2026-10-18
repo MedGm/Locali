@@ -1,5 +1,6 @@
 """Which files of a repository count as code and which as tests."""
 
+import os
 from pathlib import Path
 
 SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", "node_modules"}
@@ -10,4 +11,8 @@ def is_test_file(rel: Path) -> bool:
 
 
 def python_files(root: Path) -> list[Path]:
-    return [p for p in sorted(root.rglob("*.py")) if not SKIP_DIRS & set(p.relative_to(root).parts)]
+    found = []
+    for folder, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]  # prune instead of walking node_modules and filtering
+        found += [Path(folder) / f for f in files if f.endswith(".py")]
+    return sorted(found)

@@ -2,10 +2,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { BookOpen, Bug, FlaskConical, MessageSquare, ScanSearch, Sparkles, Square, Wand2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { Answer } from "@/components/answer";
+import { Answer, CopyButton } from "@/components/answer";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
@@ -142,21 +142,24 @@ export default function PlaygroundPage() {
         description="Ask the model directly: paste code, pick a task, get an answer. Nothing here touches a repository."
       />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-        <section className="space-y-4">
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 xl:grid-cols-3 2xl:grid-cols-5">
+      <div className="grid gap-6 lg:grid-cols-[minmax(320px,380px)_minmax(0,1fr)]">
+        <section className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+          <p className="text-sm font-semibold">What should the model do?</p>
+          <div className="flex flex-wrap gap-1.5">
             {TASKS.map((t) => (
               <button
                 key={t.value}
                 type="button"
                 onClick={() => setTask(t.value)}
                 className={cn(
-                  "flex flex-col items-start gap-1 rounded-lg border p-2.5 text-left transition-colors",
-                  task === t.value ? "border-primary bg-accent/60 ring-2 ring-primary/15" : "hover:border-primary/40",
+                  "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors",
+                  task === t.value
+                    ? "border-primary bg-accent font-medium text-accent-foreground"
+                    : "text-muted-foreground hover:border-primary/40 hover:text-foreground",
                 )}
               >
-                <t.icon className={cn("size-4", task === t.value ? "text-primary" : "text-muted-foreground")} />
-                <span className="text-sm font-medium">{t.label}</span>
+                <t.icon className="size-3.5" />
+                {t.label}
               </button>
             ))}
           </div>
@@ -189,16 +192,16 @@ export default function PlaygroundPage() {
 
           {task !== "free" || code ? (
             <Field label={task === "free" ? "Code (optional)" : "Code"}>
-              <CodeArea value={code} onChange={setCode} rows={12} placeholder="Paste a function or a file…" onSubmit={generate} />
+              <CodeArea value={code} onChange={setCode} rows={10} placeholder="Paste a function or a file…" onSubmit={generate} />
             </Field>
           ) : null}
           {task === "fix" && (
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3">
               <Field label="Failing test (optional)">
-                <CodeArea value={test} onChange={setTest} rows={5} placeholder="def test_…" onSubmit={generate} />
+                <CodeArea value={test} onChange={setTest} rows={4} placeholder="def test_…" onSubmit={generate} />
               </Field>
               <Field label="Error (optional)">
-                <CodeArea value={error} onChange={setError} rows={5} placeholder="AssertionError: …" onSubmit={generate} />
+                <CodeArea value={error} onChange={setError} rows={3} placeholder="AssertionError: …" onSubmit={generate} />
               </Field>
             </div>
           )}
@@ -227,9 +230,9 @@ export default function PlaygroundPage() {
           </div>
         </section>
 
-        <section className="space-y-3">
-          <h2 className="font-semibold">Answers</h2>
-          <div className={cn("grid gap-3", available.length > 1 && "2xl:grid-cols-2")}>
+        <section className="min-w-0 space-y-3">
+          <p className="text-sm font-semibold">Answers</p>
+          <div className={cn("grid gap-3", available.length > 1 && "md:grid-cols-2")}>
             {available.map((m) => (
               <AnswerPane key={m.key} model={m} pane={panes[m.key]} />
             ))}
@@ -286,16 +289,37 @@ function CodeArea(props: {
 
 function AnswerPane({ model, pane }: { model: { key: string; id: string }; pane?: Pane }) {
   const d = pane?.done;
+  const [copied, setCopied] = useState(false);
+  const body = useRef<HTMLDivElement>(null);
+  const follow = useRef(true);
+  // keep the newest text in view while it streams, unless the reader has scrolled up
+  useEffect(() => {
+    const el = body.current;
+    if (el && pane?.running && follow.current) el.scrollTop = el.scrollHeight;
+  }, [pane?.text, pane?.running]);
   return (
-    <div className="flex min-h-64 flex-col rounded-xl border bg-card">
+    <div className="flex h-[calc(100vh-13rem)] min-h-[440px] flex-col overflow-hidden rounded-xl border bg-card">
       <div className="flex items-center gap-2 border-b px-4 py-2.5">
         <span className={cn("size-2 rounded-full", model.key === "main" ? "bg-primary" : "bg-amber-500")} />
         <span className="text-sm font-medium">{model.id}</span>
         <span className="text-xs text-muted-foreground">{model.key === "main" ? "assistant model" : "comparison"}</span>
+        <span className="ml-auto">
+          {pane?.text && !pane.running && <CopyButton text={pane.text} copied={copied} onCopied={setCopied} />}
+        </span>
       </div>
-      <div className="flex-1 overflow-x-auto p-4">
+      <div
+        ref={body}
+        onScroll={(e) => {
+          const el = e.currentTarget;
+          follow.current = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
+        }}
+        className="min-h-0 flex-1 overflow-y-auto p-4"
+      >
         {!pane ? (
-          <p className="text-sm text-muted-foreground">The answer will appear here.</p>
+          <div className="flex h-full flex-col items-center justify-center gap-2 text-center text-sm text-muted-foreground">
+            <Sparkles className="size-5 opacity-60" />
+            The answer will appear here.
+          </div>
         ) : pane.error && !pane.text ? (
           <p className="text-sm text-red-700 dark:text-red-400">{pane.error}</p>
         ) : !pane.text && pane.running ? (
@@ -306,17 +330,23 @@ function AnswerPane({ model, pane }: { model: { key: string; id: string }; pane?
           <Answer text={pane.text} streaming={pane.running} />
         )}
       </div>
-      {d && (
-        <div className="flex flex-wrap gap-x-4 gap-y-1 border-t px-4 py-2 text-[11px] text-muted-foreground tabular-nums">
-          <span>{d.input_tokens ?? "?"} tokens in</span>
-          <span>{d.output_tokens ?? "?"} tokens out</span>
-          <span>first token {d.ttft_s.toFixed(2)} s</span>
-          <span>total {d.total_s.toFixed(1)} s</span>
-          {d.output_tokens && d.total_s > d.ttft_s && (
-            <span>{(d.output_tokens / (d.total_s - d.ttft_s)).toFixed(1)} tokens/s</span>
-          )}
-        </div>
-      )}
+      <div className="flex min-h-9 flex-wrap items-center gap-x-4 gap-y-1 border-t px-4 py-2 text-[11px] text-muted-foreground tabular-nums">
+        {d ? (
+          <>
+            <span>{d.input_tokens ?? "?"} tokens in</span>
+            <span>{d.output_tokens ?? "?"} tokens out</span>
+            <span>first token {d.ttft_s.toFixed(2)} s</span>
+            <span>total {d.total_s.toFixed(1)} s</span>
+            {d.output_tokens && d.total_s > d.ttft_s && (
+              <span>{(d.output_tokens / (d.total_s - d.ttft_s)).toFixed(1)} tokens/s</span>
+            )}
+          </>
+        ) : pane?.running ? (
+          <span>Generating…</span>
+        ) : (
+          <span>Tokens and speed appear here.</span>
+        )}
+      </div>
     </div>
   );
 }

@@ -16,7 +16,8 @@ from pathlib import Path
 from backend.agents.files import SKIP_DIRS
 from backend.analysis import Finding
 
-SUFFIXES = {".py", ".md", ".txt", ".rst", ".html", ".cfg", ".toml", ".yml", ".yaml"}
+SUFFIXES = {".py", ".js", ".jsx", ".ts", ".tsx", ".java", ".go", ".md", ".txt", ".rst", ".html", ".cfg", ".toml",
+            ".yml", ".yaml"}
 
 RULES = {  # rule: (description, alternatives)
     "injection.addresses-ai": ("addresses an AI tool directly", [

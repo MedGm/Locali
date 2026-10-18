@@ -54,3 +54,110 @@ rules:
     pattern-either:
       - pattern: hashlib.md5(...)
       - pattern: hashlib.sha1(...)
+
+  # JavaScript and TypeScript
+  - id: js-eval
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: eval or new Function on a value that may come from the user
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+
+  - id: js-shell-command
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: shell command built from a variable (command injection)
+    pattern-either:
+      - pattern: exec(`...${$X}...`, ...)
+      - pattern: exec("..." + $X, ...)
+      - pattern: $CP.exec(`...${$X}...`, ...)
+      - pattern: $CP.exec("..." + $X, ...)
+      - pattern: $CP.execSync(`...${$X}...`, ...)
+      - pattern: $CP.execSync("..." + $X, ...)
+
+  - id: js-sql-concat
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: SQL built by concatenation, use query parameters
+    pattern-either:
+      - pattern: $DB.query("..." + $X + ..., ...)
+      - pattern: $DB.query(`...${$X}...`, ...)
+      - pattern: $DB.execute("..." + $X + ..., ...)
+      - pattern: $DB.execute(`...${$X}...`, ...)
+
+  - id: js-inner-html
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: innerHTML set from a variable (cross-site scripting)
+    patterns:
+      - pattern: $EL.innerHTML = $X
+      - pattern-not: $EL.innerHTML = "..."
+
+  - id: js-weak-hash
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: MD5/SHA-1 are not suitable for passwords or signatures
+    pattern-either:
+      - pattern: $C.createHash("md5")
+      - pattern: $C.createHash("sha1")
+
+  # Java
+  - id: java-sql-concat
+    languages: [java]
+    severity: ERROR
+    message: SQL built by concatenation, use a PreparedStatement
+    pattern-either:
+      - pattern: $S.executeQuery("..." + $X + ...)
+      - pattern: $S.executeUpdate("..." + $X + ...)
+      - pattern: $S.execute("..." + $X + ...)
+
+  - id: java-runtime-exec
+    languages: [java]
+    severity: ERROR
+    message: command run through Runtime.exec
+    pattern: Runtime.getRuntime().exec(...)
+
+  - id: java-weak-hash
+    languages: [java]
+    severity: WARNING
+    message: MD5/SHA-1 are not suitable for passwords or signatures
+    pattern-either:
+      - pattern: MessageDigest.getInstance("MD5")
+      - pattern: MessageDigest.getInstance("SHA-1")
+
+  - id: java-deserialization
+    languages: [java]
+    severity: ERROR
+    message: Java deserialization of untrusted data can run code
+    pattern: new ObjectInputStream(...)
+
+  # Go
+  - id: go-sql-format
+    languages: [go]
+    severity: ERROR
+    message: SQL built with Sprintf or concatenation, use query parameters
+    pattern-either:
+      - pattern: $DB.Query(fmt.Sprintf(...), ...)
+      - pattern: $DB.Exec(fmt.Sprintf(...), ...)
+      - pattern: $DB.QueryRow(fmt.Sprintf(...), ...)
+      - pattern: $DB.Query("..." + $X, ...)
+      - pattern: $DB.Exec("..." + $X, ...)
+
+  - id: go-shell-command
+    languages: [go]
+    severity: ERROR
+    message: command run through a shell
+    pattern-either:
+      - pattern: exec.Command("sh", "-c", ...)
+      - pattern: exec.Command("bash", "-c", ...)
+
+  - id: go-weak-hash
+    languages: [go]
+    severity: WARNING
+    message: MD5/SHA-1 are not suitable for passwords or signatures
+    pattern-either:
+      - pattern: md5.New()
+      - pattern: md5.Sum(...)
+      - pattern: sha1.New()
+      - pattern: sha1.Sum(...)

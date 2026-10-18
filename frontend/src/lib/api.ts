@@ -58,6 +58,7 @@ export type RunSummary = {
 export type Repo = {
   name: string;
   python_files: number;
+  languages: Record<string, number>;
   git: { branch: string | null; last_commit: string | null; last_commit_date: string | null } | null;
   runs: number;
   last_run: { id: string; mode: RunSummary["mode"]; status: RunStatus; created: string } | null;
@@ -217,3 +218,11 @@ export async function streamPlayground(body: object, onEvent: (e: PlaygroundEven
     }
   }
 }
+
+export const LANGUAGE_NAMES: Record<string, string> = {
+  python: "Python",
+  javascript: "JavaScript",
+  typescript: "TypeScript",
+  java: "Java",
+  go: "Go",
+};

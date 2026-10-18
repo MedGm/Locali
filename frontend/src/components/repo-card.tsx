@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { StatusBadge } from "@/components/badges";
 import { Button } from "@/components/ui/button";
-import { shortDate, type Repo } from "@/lib/api";
+import { LANGUAGE_NAMES, shortDate, type Repo } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 export function RepoCard({ repo, onRun }: { repo: Repo; onRun: () => void }) {
@@ -42,8 +42,12 @@ export function RepoCard({ repo, onRun }: { repo: Repo; onRun: () => void }) {
                 <span>·</span>
               </>
             )}
-            <span className="shrink-0">
-              {repo.python_files} Python file{repo.python_files === 1 ? "" : "s"}
+            <span className="flex shrink-0 gap-1">
+              {Object.entries(repo.languages ?? { python: repo.python_files }).map(([lang, n]) => (
+                <span key={lang} className="rounded bg-muted px-1.5 py-px text-[11px]" title={`${n} files`}>
+                  {LANGUAGE_NAMES[lang] ?? lang}
+                </span>
+              ))}
             </span>
           </p>
         </div>

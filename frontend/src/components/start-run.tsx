@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { api, post, shortDate, type Repo, type RunSummary } from "@/lib/api";
+import { api, LANGUAGE_NAMES, post, shortDate, type Repo, type RunSummary } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 type Mode = RunSummary["mode"];
@@ -19,15 +19,15 @@ const MODES: { mode: Mode; title: string; icon: typeof Zap; time: string; text: 
     title: "Quick scan",
     icon: Zap,
     time: "about a minute",
-    text: "Static tools only. No model needed.",
-    does: ["Bugs and code smells (Ruff, Radon)", "Security issues (Bandit, Semgrep)", "Hard-coded secrets and injected instructions"],
+    text: "Static tools only, no model. Python, JavaScript, TypeScript, Java and Go.",
+    does: ["Bugs and code smells (Ruff, Radon, for Python)", "Security issues (Bandit, Semgrep)", "Hard-coded secrets and injected instructions"],
   },
   {
     mode: "agents",
     title: "Full assistant",
     icon: Sparkles,
     time: "10–15 minutes on a laptop CPU",
-    text: "Everything in the quick scan, plus the model.",
+    text: "Everything in the quick scan, plus the model. Python code.",
     does: [
       "Reviews every function",
       "Writes regression tests and runs them in a sandbox",
@@ -52,7 +52,9 @@ export function StartRunDialog({
   const repos = useQuery({ queryKey: ["repos"], queryFn: () => api<Repo[]>("/repos"), enabled: open });
   const status = useQuery({ queryKey: ["status"], queryFn: () => api<{ model_configured: boolean }>("/status") });
   const modelReady = status.data?.model_configured ?? false;
-  const effective: Mode = modelReady ? mode : "analyze";
+  const selected = repos.data?.find((r) => r.name === repo);
+  const hasPython = selected ? selected.python_files > 0 : true;
+  const effective: Mode = modelReady && hasPython ? mode : "analyze";
   const router = useRouter();
   const queryClient = useQueryClient();
   const start = useMutation({
@@ -111,7 +113,7 @@ export function StartRunDialog({
                     <span className="min-w-0">
                       <span className="block truncate font-medium">{r.name}</span>
                       <span className="block text-xs text-muted-foreground">
-                        {r.python_files} Python file{r.python_files === 1 ? "" : "s"} ·{" "}
+                        {Object.keys(r.languages ?? {}).map((l) => LANGUAGE_NAMES[l] ?? l).join(", ")} ·{" "}
                         {r.last_run ? `last run ${shortDate(r.last_run.created)}` : "never analysed"}
                       </span>
                     </span>
@@ -130,7 +132,7 @@ export function StartRunDialog({
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
             {MODES.map((m) => {
-              const disabled = m.mode === "agents" && !modelReady;
+              const disabled = m.mode === "agents" && (!modelReady || !hasPython);
               const selected = effective === m.mode;
               return (
                 <button
@@ -164,7 +166,9 @@ export function StartRunDialog({
                   </ul>
                   {disabled && (
                     <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
-                      Needs a model server. See Settings.
+                      {hasPython
+                        ? "Needs a model server. See Settings."
+                        : "Works on Python code; this repository has none. The quick scan covers its languages."}
                     </span>
                   )}
                 </button>

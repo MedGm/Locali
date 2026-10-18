@@ -39,6 +39,7 @@ from backend.agents.model import guarded
 from backend.agents.workflow import STEPS, run_workflow
 from backend.analysis import analyze
 from backend.audit import AuditLog
+from backend.languages import count_languages
 from backend.llmops import Tracker
 from backend.patches import ApprovalMismatch, PatchConflict, PatchStore, StalePatch, propose
 from backend.playground import build_messages
@@ -349,6 +350,9 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
         if req.mode == "agents" and model is None:
             raise HTTPException(503, "no model configured for agent runs (set LOCALI_MODEL_URL)")
         path = resolve_repo(req.repo)
+        if req.mode == "agents" and not python_files(path):
+            raise HTTPException(422, "The full assistant works on Python code, and this repository has none. "
+                                     "A quick scan works on JavaScript, TypeScript, Java and Go too.")
         run_id = uuid.uuid4().hex[:12]
         audit.write("run.created", run_id=run_id, repo=req.repo, mode=req.mode)
         if req.mode == "agents":
@@ -406,15 +410,16 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
         for path in sorted(p for p in repos_root.iterdir() if p.is_dir()):
             if path.name.startswith(".") or path.name in SKIP_DIRS:
                 continue
-            files = python_files(path)
-            if not files:
+            languages = count_languages(path)
+            if not languages:
                 continue
             mine = [r for r in runs if r["repo"] == path.name]
             ids = {r["id"] for r in mine}
             agents = [r for r in mine if r["mode"] == "agents" and r["status"] == "done"]
             last = mine[0] if mine else None
             out.append({
-                "name": path.name, "python_files": len(files), "git": git_info(path), "runs": len(mine),
+                "name": path.name, "python_files": languages.get("python", 0), "languages": languages,
+                "git": git_info(path), "runs": len(mine),
                 "last_run": {k: last.get(k) for k in ("id", "mode", "status", "created")} if last else None,
                 "open_patches": sum(p.run_id in ids and p.status in ("proposed", "approved") for p in patches.all()),
                 "ready_to_merge": (agents[0].get("devops") or {}).get("ready_to_merge") if agents else None,

@@ -10,7 +10,7 @@ disk); the VM is disposable, holds no secrets, and every program has a timeout.
 2. serve the merged fine-tune on GPU 0 and the base model on GPU 1 with vLLM, greedy, 768 tokens
 3. generate one fix per problem and language, then compile and run each one
 
-Environment: PILOT=1 runs 5 problems per language.
+Environment: PILOT=1 runs 5 problems per language; LANGS=rust runs only the listed languages.
 """
 
 import json
@@ -32,7 +32,7 @@ VLLM_VERSION = "0.29.0"
 RESULTS = WORK / "results"
 LOGS = WORK / "logs"
 LIMIT = 5 if os.environ.get("PILOT") == "1" else None
-LANGS = ["js", "java", "go", "cpp", "rust"]
+LANGS = os.environ.get("LANGS", "js,java,go,cpp,rust").split(",")
 MODELS = {
     "ft": ("MedGm/Llama-Locali-Qwen2.5-Coder-1.5B", "a1b0b1189d2050dd20013371fc327362ea6b2964", 0, 8000),
     "base": ("Qwen/Qwen2.5-Coder-1.5B-Instruct", "2e1fd397ee46e1388853d2af2c993145b0f1098a", 1, 8001),

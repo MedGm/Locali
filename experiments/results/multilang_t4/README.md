@@ -54,8 +54,8 @@ Three corrections were needed, each found by looking at why answers failed, not 
    (it scored 1 of 164 before this was fixed, then 39), the JS test function (19 answers), the C++
    helper `issame` (about 30 answers). Repeated test code is now removed before the real test is
    added, in every language, so an answer is judged on its fix. The fine-tuned model echoes much
-   less, which is why fixing this mattered: it would have overstated the fine-tune by about 47 Go
-   problems.
+   less, which is why fixing this mattered: in Go the fine-tune's lead was 47 problems before the
+   fix and 12 after.
 
 **This is the only experiment that ran model-written code outside the laptop's Docker sandbox.**
 The toolchains for five languages did not fit the laptop's disk, so the answers were compiled and

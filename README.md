@@ -45,7 +45,7 @@ The brief's pipeline, and where each step lives:
 | Step | What Locali does | Code |
 |---|---|---|
 | Repository | Works on any folder under a configured root; a run never writes to it | `backend/workspace.py` |
-| Code analysis | Ruff, Bandit, Radon, Semgrep (own rules), a secret scanner and a prompt-injection detector | `backend/analysis.py`, `security/` |
+| Code analysis | Ruff, Bandit, Radon, Semgrep (own rules for Python, JavaScript/TypeScript, Java and Go), a secret scanner and a prompt-injection detector | `backend/analysis.py`, `security/` |
 | AI review | The model reviews each function; findings must quote a line that exists | `backend/agents/review.py` |
 | Test generation | Regression tests for untested functions, kept only if they pass | `backend/agents/testgen.py` |
 | Automated testing | pytest with coverage in a Docker sandbox: no network, read-only, CPU/memory/process limits | `security/sandbox.py` |
@@ -55,6 +55,11 @@ The brief's pipeline, and where each step lives:
 | CI/CD | A GitHub Action reviews pull requests and blocks new security issues | `.github/workflows/` |
 | Deployment assistance | Dependency typosquat check, CI suggestion, blockers and warnings | `backend/agents/devops.py` |
 | Monitoring/audit | Audit log of every action, MLflow runs and traces, a security center | `backend/audit.py`, `backend/llmops.py` |
+| Ask the model | A playground: paste code in any language, pick a task, compare two models side by side | `backend/playground.py` |
+
+Quick scans (static tools only) work on Python, JavaScript, TypeScript, Java and Go projects. The
+full assistant (tests, repair loop, patch validation) works on Python code, because those steps run
+pytest and use Python's parser.
 
 ```mermaid
 flowchart LR
@@ -250,9 +255,10 @@ and the web app's security center lists the security-relevant ones.
   trajectory, plus a trace with one span per step and per model call (prompts already redacted).
   All 235 evaluation runs, the 7 training runs and both datasets are backfilled into the same
   store (`experiments/scripts/log_to_mlflow.py`).
-- **Web app** (Next.js, React, TypeScript; FastAPI backend): dashboard, repositories, runs with live
-  progress, a patch review page with the diff and its validation record, the security center,
-  models, quality trends, benchmark results and settings. The API needs a token; the browser
+- **Web app** (Next.js, React, TypeScript; FastAPI backend): a home page that guides a first run,
+  repositories, runs with live progress, a patch review page with the diff, its validation record
+  and what to check before approving, a playground, the security center, models, quality trends,
+  research results and settings, in light and dark themes. The API needs a token; the browser
   never sees it.
 
 ## 8. The five ablations of the brief
@@ -292,6 +298,10 @@ energy per correct answer is what changes between options.
 - **Phi-4-mini got worse** from training on targets weaker than it already was.
 - **Vulnerability detection stayed at chance level** (about 50 %) for every model, fine-tuned or not.
 - **Open-ended repair remains far below the 9B model** (36 % vs 66 %).
+- **The fine-tune was trained on Python only.** On HumanEvalFix in other languages it gains in
+  JavaScript (+9.8, p = 0.0025) and Go (+8.1, p = 0.041), is level in C++ and Rust, and lower in Java
+  (−6.7, p = 0.10) ([results](experiments/results/multilang_t4/README.md)). That experiment is the
+  only one that ran model-written code outside the laptop's sandbox, on a disposable Kaggle VM.
 - **Dense vs hybrid attention (RQ5)** is answered only by computed KV-cache sizes, not measured.
 - **Single runs.** Most configurations ran once at temperature 0; paired tests on the same items
   are what makes differences meaningful, and differences without them are marked as such.
@@ -306,22 +316,22 @@ Requirements: Python 3.12 with [uv](https://docs.astral.sh/uv/), Docker, Node 22
 ```bash
 uv sync
 uv run python -c "from security.sandbox import ensure_image; ensure_image()"   # test sandbox
-
-# model: the fine-tuned Q8_0 GGUF from Hugging Face
-llama-server -m qwen2.5-coder-1.5b-qlora-v2-q8_0.gguf --jinja --parallel 1 --cache-ram 0 \
-    -c 4096 --host 127.0.0.1 --port 8093 --api-key "$LOCALI_MODEL_KEY"
-
-# API
-export LOCALI_API_TOKEN=... LOCALI_MODEL_URL=http://127.0.0.1:8093/v1 LOCALI_MODEL_KEY=...
-export LOCALI_MODEL_ID=ft-q8 LOCALI_REPOS_ROOT=/path/to/your/repos
-uv run uvicorn backend.app:default_app --factory --port 8000
-
-# web app
-cd frontend && npm ci && LOCALI_API_TOKEN=... npm run dev     # http://localhost:3000
+(cd frontend && npm ci)
+cp .env.example .env    # then set the token, the keys and the path to the GGUF model
 ```
 
-All settings are in [.env.example](.env.example). Without a model server, static-analysis runs
-still work; agent runs are refused.
+Then, one per terminal:
+
+```bash
+scripts/run.sh model      # the fine-tuned Q8_0 model with llama.cpp
+scripts/run.sh compare    # optional: a second model for the playground
+scripts/run.sh backend    # the API
+scripts/run.sh web        # http://localhost:3000
+```
+
+The backend, the web app and the model servers all read the one `.env`, so the token and keys are
+written once ([.env.example](.env.example) explains each line). Without a model server, quick scans
+still work; the assistant and the playground say they need one.
 
 ## 12. Reproducing the results
 

@@ -1,10 +1,7 @@
-import os
 
-import pytest
+from evaluation.isolated import network_isolation, run_isolated
 
-from evaluation.isolated import run_isolated
-
-NET = os.geteuid() == 0  # network isolation needs root (as on Kaggle); the rest is tested everywhere
+NET = "none"  # network isolation is tested on its own below
 
 
 def test_a_passing_program_passes():
@@ -33,7 +30,15 @@ def test_the_program_runs_in_its_own_empty_folder_without_inherited_secrets(monk
     assert r.passed, r.error
 
 
-@pytest.mark.skipif(not NET, reason="network isolation needs root")
-def test_no_network_when_isolated():
-    r = run_isolated("import socket\nsocket.create_connection(('1.1.1.1', 53), timeout=3)\n", isolate_network=True)
-    assert not r.passed
+CONNECT = "import socket\nsocket.create_connection(('1.1.1.1', 53), timeout=3)\n"
+
+
+def test_the_guard_blocks_sockets():
+    r = run_isolated(CONNECT, isolate_network="guard")
+    assert not r.passed and "network disabled" in r.error
+
+
+def test_auto_picks_a_working_method_and_says_which():
+    mode = network_isolation()
+    assert mode in ("namespace", "guard")
+    assert not run_isolated(CONNECT, isolate_network="auto").passed

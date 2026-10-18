@@ -97,6 +97,10 @@ def validate(items) -> dict:
             report[key] = {"passed": sum(p for _, p, _ in rows), "n": len(rows),
                            "unexpected": [(t, e) for t, p, e in rows if p != (which == "canonical_solution")][:10]}
             log(f"validation {key}: {report[key]['passed']}/{len(rows)} pass")
+    from evaluation.isolated import network_isolation
+
+    report["network_isolation"] = network_isolation()
+    log(f"network isolation: {report['network_isolation']}")
     (WORK / "validation.json").write_text(json.dumps(report, indent=1))
     return report
 

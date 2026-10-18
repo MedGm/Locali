@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense, useState } from "react";
 
+import { BackendBanner } from "@/components/backend-banner";
 import { Wordmark } from "@/components/brand";
 import { CommandMenu, useCommandMenu } from "@/components/command-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -64,6 +65,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <ThemeToggle />
         </header>
         <main className="mx-auto w-full max-w-7xl min-w-0 flex-1 px-4 py-6 md:px-8 md:py-8">
+          <BackendBanner />
           <Suspense fallback={null}>{children}</Suspense>
         </main>
       </div>

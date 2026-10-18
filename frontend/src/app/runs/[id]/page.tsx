@@ -1,24 +1,55 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, Circle, Loader2, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Bug,
+  Check,
+  Circle,
+  FlaskConical,
+  Loader2,
+  RotateCw,
+  ShieldAlert,
+  Wrench,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { KindBadge, SeverityBadge, StatusBadge } from "@/components/badges";
+import { EmptyState } from "@/components/empty-state";
+import { StartRunDialog } from "@/components/start-run";
+import { Term } from "@/components/term";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { api, PIPELINE, type Devops, type Finding, type ModelCall, type Run } from "@/lib/api";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { api, PIPELINE, shortDate, type Devops, type Finding, type ModelCall, type Run } from "@/lib/api";
 import { cn } from "@/lib/utils";
+
+const STEPS: Record<string, { label: string; text: string }> = {
+  prepare: { label: "Copy", text: "Making a private copy of the repository to work on." },
+  analyze: { label: "Static analysis", text: "Ruff, Bandit, Radon, Semgrep and the secret scanner read the code." },
+  review: { label: "Model review", text: "The model reviews each function for bugs and security issues." },
+  testgen: { label: "Write tests", text: "The model writes regression tests; they run in the sandbox." },
+  debug: { label: "Fix failing tests", text: "Failing tests go to the model with their error, up to three attempts." },
+  docs: { label: "Docstrings", text: "Undocumented public functions get a one-line docstring." },
+  propose: { label: "Propose patches", text: "Each change is checked alone on a fresh copy." },
+  devops: { label: "Merge check", text: "Blockers, dependencies and CI for this repository." },
+  report: { label: "Report", text: "Writing the summary." },
+};
 
 export default function RunPage() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
+  const [again, setAgain] = useState(false);
   // Live progress: the backend streams the run's state and any change refreshes the run. The browser
   // reconnects the stream by itself after an error; slow polling is a safety net on top of that.
   const run = useQuery({
@@ -34,62 +65,119 @@ export default function RunPage() {
     return () => events.close();
   }, [id, live, queryClient]);
 
-  if (run.isError) return <p className="text-sm text-red-700">Run not found.</p>;
-  if (!run.data) return <p className="text-sm text-muted-foreground">Loading…</p>;
+  if (run.isError)
+    return (
+      <EmptyState icon={X} title="Run not found" action={<Button render={<Link href="/runs" />}>All runs</Button>}>
+        It may have been made with another data folder.
+      </EmptyState>
+    );
+  if (!run.data)
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-16 rounded-xl" />
+        <Skeleton className="h-12 rounded-xl" />
+        <Skeleton className="h-28 rounded-xl" />
+      </div>
+    );
   const r = run.data;
+  const agents = r.mode === "agents";
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-3">
-        <h1 className="font-mono text-2xl font-semibold">{r.id}</h1>
-        <StatusBadge status={r.status} />
-        <span className="text-sm text-muted-foreground">
-          {r.repo} · {r.mode === "agents" ? "agents" : "static analysis"}
-        </span>
+      <div className="space-y-3">
+        <Link href="/runs" className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="size-3.5" /> All runs
+        </Link>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h1 className="text-2xl font-semibold tracking-tight">{r.repo}</h1>
+              <StatusBadge status={r.status} />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {agents ? "Full assistant run" : "Quick scan"} · {shortDate(r.created)} ·{" "}
+              <span className="font-mono text-xs">{r.id}</span>
+            </p>
+          </div>
+          {!live && (
+            <Button variant="outline" onClick={() => setAgain(true)}>
+              <RotateCw /> Run again
+            </Button>
+          )}
+        </div>
       </div>
 
-      {r.mode === "agents" && <Pipeline run={r} />}
+      {agents && <Pipeline run={r} />}
+
+      {live && r.step && STEPS[r.step] && (
+        <div className="flex items-center gap-3 rounded-xl border border-primary/30 bg-accent/40 px-4 py-3 text-sm">
+          <Loader2 className="size-4 animate-spin text-primary" />
+          <span>
+            <span className="font-medium">{STEPS[r.step].label}.</span>{" "}
+            <span className="text-muted-foreground">{STEPS[r.step].text}</span>
+          </span>
+          <span className="ml-auto hidden text-xs text-muted-foreground sm:block">
+            A full run takes 10–15 minutes on a laptop CPU. You can leave this page.
+          </span>
+        </div>
+      )}
 
       {r.status === "failed" && (
         <Alert variant="destructive">
-          <AlertTitle>The run failed</AlertTitle>
+          <AlertTitle>The run stopped with an error</AlertTitle>
           <AlertDescription>{r.error}</AlertDescription>
         </Alert>
       )}
 
+      <Summary run={r} />
+
       {r.patches && r.patches.length > 0 && (
-        <Alert>
-          <AlertTitle>
-            {r.patches.length} patch{r.patches.length === 1 ? "" : "es"} to review, each on its own
-          </AlertTitle>
-          <AlertDescription>
-            <ul className="mt-1 space-y-1">
-              {r.patches.map((p) => (
-                <li key={p.id} className="flex flex-wrap items-center gap-2">
+        <section className="rounded-xl border border-amber-300/70 bg-amber-50/60 p-4 dark:border-amber-500/30 dark:bg-amber-500/5">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="font-semibold">
+              {r.patches.length} change{r.patches.length === 1 ? "" : "s"} waiting for your decision
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              Each <Term name="patch">patch</Term> is separate: accept the fix and reject a test, or the other way round.
+              Nothing has been written to the repository.
+            </p>
+          </div>
+          <ul className="space-y-2">
+            {r.patches.map((p) => (
+              <li key={p.id}>
+                <Link
+                  href={`/patches/${p.id}`}
+                  className="flex items-center gap-3 rounded-lg border bg-card px-3 py-2.5 transition-colors hover:border-primary/40"
+                >
                   <KindBadge kind={p.kind} />
-                  <Link href={`/patches/${p.id}`} className="underline">
-                    {p.title}
-                  </Link>
-                  <span className={p.ok ? "text-xs text-emerald-700" : "text-xs text-red-700"}>
-                    {p.ok ? "validation passed" : "validation failed"}
+                  <span className="min-w-0 flex-1 truncate text-sm font-medium">{p.title}</span>
+                  <span
+                    className={cn(
+                      "hidden text-xs sm:block",
+                      p.ok ? "text-emerald-700 dark:text-emerald-400" : "text-red-700 dark:text-red-400",
+                    )}
+                  >
+                    {p.ok ? "checks passed" : "checks failed"}
                   </span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-2 text-xs">Nothing has been written to the repository.</p>
-          </AlertDescription>
-        </Alert>
+                  <span className="flex items-center gap-1 text-xs font-medium text-primary">
+                    Review <ArrowRight className="size-3.5" />
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       <Tabs defaultValue="findings">
         <TabsList>
           <TabsTrigger value="findings">Findings ({r.findings?.length ?? 0})</TabsTrigger>
-          {r.mode === "agents" && (
+          {agents && (
             <>
               <TabsTrigger value="tests">Tests & suspects</TabsTrigger>
               <TabsTrigger value="fixes">Fixes ({r.fixes?.length ?? 0})</TabsTrigger>
+              <TabsTrigger value="devops">Merge check</TabsTrigger>
               <TabsTrigger value="trajectory">Model calls</TabsTrigger>
-              <TabsTrigger value="devops">DevOps</TabsTrigger>
               <TabsTrigger value="report">Report</TabsTrigger>
             </>
           )}
@@ -107,21 +195,65 @@ export default function RunPage() {
           <Trajectory id={r.id} live={!!live} />
         </TabsContent>
         <TabsContent value="devops">
-          {r.devops ? <DevopsPanel devops={r.devops} /> : <p className="text-sm text-muted-foreground">Not ready yet.</p>}
+          {r.devops ? (
+            <DevopsPanel devops={r.devops} />
+          ) : (
+            <p className="py-4 text-sm text-muted-foreground">
+              {live ? "Not ready yet." : "This run was made before the merge check existed."}
+            </p>
+          )}
         </TabsContent>
         <TabsContent value="report">
-          <pre className="whitespace-pre-wrap rounded-md border bg-muted/30 p-4 text-sm">{r.report ?? "Not ready yet."}</pre>
+          <pre className="whitespace-pre-wrap rounded-xl border bg-muted/30 p-4 font-mono text-xs leading-relaxed">
+            {r.report ?? "Not ready yet."}
+          </pre>
         </TabsContent>
       </Tabs>
+
+      <StartRunDialog open={again} repo={r.repo} onOpenChange={setAgain} />
     </div>
+  );
+}
+
+function Summary({ run }: { run: Run }) {
+  const findings = run.findings ?? [];
+  const high = findings.filter((f) => f.severity === "high").length;
+  const toolSecurity = findings.filter((f) => f.category === "security" && f.tool !== "model").length;
+  const tiles: { icon: typeof Bug; label: string; value: React.ReactNode; note: string }[] = [
+    { icon: Bug, label: "Findings", value: findings.length, note: high ? `${high} high severity` : "none high severity" },
+    { icon: ShieldAlert, label: "Security issues", value: toolSecurity, note: "found by the static tools" },
+  ];
+  if (run.mode === "agents") {
+    const fixed = run.fixes?.filter((f) => f.fixed).length ?? 0;
+    tiles.push(
+      { icon: FlaskConical, label: "Tests added", value: run.tests_added?.length ?? 0, note: `${run.suspects?.length ?? 0} possible bugs to check` },
+      { icon: Wrench, label: "Bugs fixed", value: `${fixed} / ${run.fixes?.length ?? 0}`, note: "failing tests repaired" },
+    );
+  }
+  return (
+    <section className={cn("grid gap-3 sm:grid-cols-2", run.mode === "agents" ? "lg:grid-cols-4" : "lg:grid-cols-2")}>
+      {tiles.map((t) => (
+        <div key={t.label} className="flex items-center gap-3 rounded-xl border bg-card p-4">
+          <span className="flex size-9 items-center justify-center rounded-lg bg-brand-soft text-primary">
+            <t.icon className="size-4.5" />
+          </span>
+          <span>
+            <span className="block text-xs text-muted-foreground">{t.label}</span>
+            <span className="block text-xl font-semibold tabular-nums">{t.value}</span>
+            <span className="block text-xs text-muted-foreground">{t.note}</span>
+          </span>
+        </div>
+      ))}
+    </section>
   );
 }
 
 function Pipeline({ run }: { run: Run }) {
   const done = new Set(run.steps_done ?? []);
-  const steps = PIPELINE.filter((s) => s !== "analyze" || done.has("analyze") || run.step === "analyze" || run.status !== "done");
+  const finished = run.status === "done" || run.status === "failed";
+  const steps = PIPELINE.filter((s) => s !== "analyze" || done.has("analyze") || run.step === "analyze" || !finished);
   return (
-    <ol className="flex flex-wrap items-center gap-2">
+    <ol className="flex flex-wrap items-center gap-1.5">
       {steps.map((step, i) => {
         const state = done.has(step)
           ? "done"
@@ -129,25 +261,35 @@ function Pipeline({ run }: { run: Run }) {
             ? run.status === "failed"
               ? "failed"
               : "running"
-            : "pending";
+            : finished
+              ? "skipped"
+              : "pending";
+        const info = STEPS[step];
         return (
-          <li key={step} className="flex items-center gap-2">
-            <span
-              className={cn(
-                "flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm",
-                state === "done" && "border-emerald-300 bg-emerald-50 text-emerald-800",
-                state === "running" && "border-sky-300 bg-sky-50 text-sky-800",
-                state === "failed" && "border-red-300 bg-red-50 text-red-800",
-                state === "pending" && "text-muted-foreground",
-              )}
-            >
-              {state === "done" && <Check className="size-3.5" />}
-              {state === "running" && <Loader2 className="size-3.5 animate-spin" />}
-              {state === "failed" && <X className="size-3.5" />}
-              {state === "pending" && <Circle className="size-3.5" />}
-              {step}
-            </span>
-            {i < steps.length - 1 && <span className="text-muted-foreground">→</span>}
+          <li key={step} className="flex items-center gap-1.5">
+            <Tooltip>
+              <TooltipTrigger
+                render={<span />}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium",
+                  state === "done" && "border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300",
+                  state === "running" && "border-primary/40 bg-accent text-accent-foreground",
+                  state === "failed" && "border-red-300 bg-red-50 text-red-800 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300",
+                  state === "pending" && "text-muted-foreground",
+                  state === "skipped" && "border-dashed text-muted-foreground/70",
+                )}
+              >
+                {state === "done" && <Check className="size-3.5" />}
+                {state === "running" && <Loader2 className="size-3.5 animate-spin" />}
+                {state === "failed" && <X className="size-3.5" />}
+                {(state === "pending" || state === "skipped") && <Circle className="size-3.5" />}
+                {info?.label ?? step}
+              </TooltipTrigger>
+              <TooltipContent>
+                {state === "skipped" ? "Not part of this run (made before this step existed)." : info?.text}
+              </TooltipContent>
+            </Tooltip>
+            {i < steps.length - 1 && <span className="h-px w-3 bg-border" />}
           </li>
         );
       })}

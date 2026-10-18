@@ -1,13 +1,15 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ArrowLeft, Check, FileDiff, Lightbulb } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Diff, Hunk, parseDiff } from "react-diff-view";
 import { toast } from "sonner";
 
-import { KindBadge, SeverityBadge, StatusBadge } from "@/components/badges";
+import { KindBadge, SeverityBadge } from "@/components/badges";
+import { EmptyState } from "@/components/empty-state";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,7 +23,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { api, post, type Patch } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
+import { api, post, type Patch, type PatchStatus } from "@/lib/api";
+import { cn } from "@/lib/utils";
 
 const REVIEWER_KEY = "locali.reviewer";
 
@@ -95,37 +99,44 @@ export default function PatchPage() {
 
   const files = useMemo(() => (patch.data ? parseDiff(patch.data.diff) : []), [patch.data]);
 
-  if (patch.isError) return <p className="text-sm text-red-700">Patch not found.</p>;
-  if (!patch.data) return <p className="text-sm text-muted-foreground">Loading…</p>;
+  if (patch.isError)
+    return (
+      <EmptyState icon={FileDiff} title="Patch not found" action={<Button render={<Link href="/patches" />}>All patches</Button>}>
+        It may belong to another data folder.
+      </EmptyState>
+    );
+  if (!patch.data)
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-16 rounded-xl" />
+        <Skeleton className="h-64 rounded-xl" />
+      </div>
+    );
   const p = patch.data;
   const v = p.validation;
   const busy = approve.isPending || reject.isPending || apply.isPending || revert.isPending || revalidate.isPending;
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-semibold">{p.title || p.id}</h1>
-        <KindBadge kind={p.kind} />
-        <StatusBadge status={p.status} />
-        <span className="font-mono text-sm text-muted-foreground">{p.id}</span>
-        <span className="text-sm text-muted-foreground">
-          from run{" "}
-          <Link href={`/runs/${p.run_id}`} className="font-mono underline">
-            {p.run_id}
+      <div className="space-y-3">
+        <Link href="/patches" className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="size-3.5" /> All patches
+        </Link>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <KindBadge kind={p.kind} />
+          <h1 className="text-2xl font-semibold tracking-tight">{p.title || p.id}</h1>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          {p.repo.split("/").pop()} · {p.files.length} file{p.files.length === 1 ? "" : "s"} · from{" "}
+          <Link href={`/runs/${p.run_id}`} className="underline underline-offset-2">
+            run {p.run_id}
           </Link>
-          {p.reviewer && ` · reviewed by ${p.reviewer}`}
-        </span>
+          {p.reviewer && ` · decided by ${p.reviewer}`} · <span className="font-mono text-xs">{p.id}</span>
+        </p>
+        <Progress status={p.status} />
       </div>
 
-      {p.kind === "tests" && (
-        <Alert>
-          <AlertTitle>These tests record what the code does now</AlertTitle>
-          <AlertDescription>
-            They were generated and kept because they pass on the current code. If the current behaviour is wrong,
-            a test like this would lock it in: read the expected values before approving.
-          </AlertDescription>
-        </Alert>
-      )}
+      {p.status === "proposed" && <WhatToCheck kind={p.kind} />}
 
       {p.status === "stale" && (
         <Alert>
@@ -302,5 +313,85 @@ function Hash({ label, value }: { label: string; value: string }) {
       <dt className="text-muted-foreground">{label}</dt>
       <dd className="font-mono break-all">{value}</dd>
     </div>
+  );
+}
+
+const STAGES: { status: PatchStatus[]; label: string }[] = [
+  { status: ["proposed", "stale"], label: "Proposed" },
+  { status: ["approved"], label: "Approved" },
+  { status: ["applied", "reverted"], label: "Applied" },
+];
+
+function Progress({ status }: { status: PatchStatus }) {
+  if (status === "rejected")
+    return <p className="text-sm font-medium text-muted-foreground">Rejected. Nothing was written to the repository.</p>;
+  const reached = STAGES.findIndex((s) => s.status.includes(status));
+  return (
+    <ol className="flex items-center gap-2 text-xs font-medium">
+      {STAGES.map((stage, i) => (
+        <li key={stage.label} className="flex items-center gap-2">
+          <span
+            className={cn(
+              "flex items-center gap-1.5 rounded-full border px-2.5 py-1",
+              i < reached && "border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300",
+              i === reached && "border-primary/40 bg-accent text-accent-foreground",
+              i > reached && "text-muted-foreground",
+            )}
+          >
+            {i < reached ? <Check className="size-3.5" /> : <span className="size-1.5 rounded-full bg-current" />}
+            {stage.label}
+            {i === reached && status === "stale" && " (stale)"}
+            {i === reached && status === "reverted" && " (then reverted)"}
+          </span>
+          {i < STAGES.length - 1 && <span className="h-px w-4 bg-border" />}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+const CHECKS: Record<string, { title: string; points: string[] }> = {
+  fix: {
+    title: "Before approving a fix",
+    points: [
+      "Read the changed lines: is this the bug, and is the fix the right one?",
+      "The validation lists the tests it makes pass; nothing that passed before fails.",
+      "Small models can fix the symptom only. If in doubt, reject; nothing is lost.",
+    ],
+  },
+  tests: {
+    title: "Before approving tests",
+    points: [
+      "These tests were kept because they pass on the current code: they record what it does now.",
+      "Read the expected values. If the current behaviour is a bug, these tests would lock it in.",
+      "Functions with a suspected bug or a security finding get no tests, for that reason.",
+    ],
+  },
+  docs: {
+    title: "Before approving docstrings",
+    points: [
+      "Only docstrings change: the code is checked to be identical once they are removed.",
+      "Read each sentence: a wrong docstring misleads the next reader.",
+    ],
+  },
+};
+
+function WhatToCheck({ kind }: { kind: string }) {
+  const c = CHECKS[kind];
+  if (!c) return null;
+  return (
+    <section className="rounded-xl border bg-brand-soft/50 p-4">
+      <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold">
+        <Lightbulb className="size-4 text-primary" /> {c.title}
+      </h2>
+      <ul className="space-y-1 text-sm text-muted-foreground">
+        {c.points.map((point) => (
+          <li key={point} className="flex gap-2">
+            <span className="mt-2 size-1 shrink-0 rounded-full bg-primary" />
+            {point}
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

@@ -391,7 +391,8 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
 
     @app.get("/runs/{run_id}")
     def get_run(run_id: str):
-        return load_run(run_id)
+        run = load_run(run_id)  # 404 for an unknown id
+        return {"created": _mtime(runs_dir / f"{run_id}.json"), **run}
 
     @app.get("/runs/{run_id}/trajectory")
     def get_trajectory(run_id: str):

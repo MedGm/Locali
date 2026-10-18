@@ -85,3 +85,10 @@ def test_settings_show_configuration_but_never_secrets(tmp_path, monkeypatch):
     assert s["repos_root"] == str(root.resolve()) and "devops" in s["workflow"]["steps"]
     assert all("env" in item for item in s["variables"])
     assert os.environ["LOCALI_MODEL_KEY"]  # untouched
+
+
+def test_a_run_from_before_timestamps_gets_its_file_time(tmp_path):
+    root, data = make_repos(tmp_path), tmp_path / "data"
+    save_run(data, {"id": "old", "repo": "shop", "mode": "analyze", "status": "done", "findings": []})
+    run = TestClient(create_app(repos_root=root, data_dir=data)).get("/runs/old").json()
+    assert run["created"].endswith("Z")

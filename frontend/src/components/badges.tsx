@@ -37,5 +37,5 @@ const KIND_COLORS: Record<PatchKind, string> = {
 };
 
 export function KindBadge({ kind }: { kind: PatchKind }) {
-  return <Badge className={cn("border-0", KIND_COLORS[kind])}>{kind}</Badge>;
+  return <Badge className={cn("w-12 justify-center border-0", KIND_COLORS[kind])}>{kind}</Badge>;
 }

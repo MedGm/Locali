@@ -7,7 +7,6 @@ import {
   Circle,
   FileDiff,
   FolderGit2,
-  GitBranch,
   ListChecks,
   Play,
   ScanSearch,
@@ -22,6 +21,7 @@ import { useState, useSyncExternalStore } from "react";
 
 import { KindBadge, StatusBadge } from "@/components/badges";
 import { EmptyState } from "@/components/empty-state";
+import { RepoCard } from "@/components/repo-card";
 import { StartRunDialog } from "@/components/start-run";
 import { Term } from "@/components/term";
 import { Button } from "@/components/ui/button";
@@ -269,52 +269,6 @@ function Stat({
         </span>
       </span>
     </Link>
-  );
-}
-
-function RepoCard({ repo, onRun }: { repo: Repo; onRun: () => void }) {
-  return (
-    <div className="flex flex-col justify-between gap-4 rounded-xl border bg-card p-4">
-      <div className="space-y-1">
-        <div className="flex items-center justify-between gap-2">
-          <span className="truncate font-medium">{repo.name}</span>
-          {repo.ready_to_merge !== null && (
-            <span
-              className={cn(
-                "rounded-full px-2 py-0.5 text-[11px] font-medium",
-                repo.ready_to_merge
-                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300"
-                  : "bg-red-100 text-red-800 dark:bg-red-500/15 dark:text-red-300",
-              )}
-            >
-              {repo.ready_to_merge ? "ready to merge" : "blocked"}
-            </span>
-          )}
-        </div>
-        <p className="flex items-center gap-1 text-xs text-muted-foreground">
-          {repo.git?.branch && (
-            <>
-              <GitBranch className="size-3" /> {repo.git.branch} ·{" "}
-            </>
-          )}
-          {repo.python_files} Python file{repo.python_files === 1 ? "" : "s"}
-        </p>
-        <p className="text-xs text-muted-foreground">
-          {repo.last_run ? `Last run ${shortDate(repo.last_run.created)}` : "Never analysed"}
-          {repo.open_patches > 0 && ` · ${repo.open_patches} patch${repo.open_patches === 1 ? "" : "es"} open`}
-        </p>
-      </div>
-      <div className="flex gap-2">
-        <Button size="sm" onClick={onRun}>
-          <Play /> Run
-        </Button>
-        {repo.runs > 0 && (
-          <Button size="sm" variant="ghost" render={<Link href={`/trends?repo=${encodeURIComponent(repo.name)}`} />}>
-            Trends
-          </Button>
-        )}
-      </div>
-    </div>
   );
 }
 

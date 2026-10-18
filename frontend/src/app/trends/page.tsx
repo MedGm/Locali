@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -9,6 +8,7 @@ import { PageHeader } from "@/components/page-header";
 import { RunLines } from "@/components/charts/lines";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useApiQuery } from "@/lib/use-hydrated";
 import { api, shortDate, type Repo, type TrendPoint } from "@/lib/api";
 
 const FINDINGS = [
@@ -28,9 +28,9 @@ export default function TrendsPage() {
 function Trends() {
   const params = useSearchParams();
   const router = useRouter();
-  const repos = useQuery({ queryKey: ["repos"], queryFn: () => api<Repo[]>("/repos") });
+  const repos = useApiQuery({ queryKey: ["repos"], queryFn: () => api<Repo[]>("/repos") });
   const repo = params.get("repo") ?? repos.data?.find((r) => r.runs > 0)?.name ?? repos.data?.[0]?.name;
-  const points = useQuery({
+  const points = useApiQuery({
     queryKey: ["trends", repo],
     queryFn: () => api<TrendPoint[]>(`/trends?repo=${encodeURIComponent(repo!)}`),
     enabled: !!repo,

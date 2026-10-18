@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
@@ -9,6 +8,7 @@ import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useApiQuery } from "@/lib/use-hydrated";
 import { api } from "@/lib/api";
 
 type AuditEvent = { time: string; action: string } & Record<string, unknown>;
@@ -27,12 +27,12 @@ const SECURITY_LABELS: Record<string, { label: string; meaning: string }> = {
 const DETAIL_SKIP = new Set(["time", "action"]);
 
 export default function SecurityPage() {
-  const events = useQuery({
+  const events = useApiQuery({
     queryKey: ["security"],
     queryFn: () => api<{ counts: Record<string, number>; events: AuditEvent[] }>("/security/events"),
   });
   const [action, setAction] = useState("all");
-  const audit = useQuery({
+  const audit = useApiQuery({
     queryKey: ["audit", action],
     queryFn: () => api<AuditEvent[]>(action === "all" ? "/audit?limit=500" : `/audit?limit=500&action=${action}`),
   });

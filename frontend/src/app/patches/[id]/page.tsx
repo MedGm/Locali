@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Check, FileDiff, Lightbulb } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useApiQuery } from "@/lib/use-hydrated";
 import { api, post, type Patch, type PatchStatus } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -33,7 +34,7 @@ export default function PatchPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const patch = useQuery({ queryKey: ["patch", id], queryFn: () => api<Patch>(`/patches/${id}`) });
+  const patch = useApiQuery({ queryKey: ["patch", id], queryFn: () => api<Patch>(`/patches/${id}`) });
   // The reviewer field only renders after the patch has loaded in the browser, so reading
   // localStorage here cannot cause a hydration mismatch.
   const [reviewer, setReviewer] = useState(() =>

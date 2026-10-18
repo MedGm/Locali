@@ -60,7 +60,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           >
             <Search className="size-3.5" />
             <span className="flex-1 text-left">Search or jump to…</span>
-            <kbd className="rounded border bg-background px-1.5 font-mono text-[10px]">Ctrl K</kbd>
+            <kbd className="hidden rounded border bg-background px-1.5 font-mono text-[10px] sm:inline">Ctrl K</kbd>
           </button>
           <ThemeToggle />
         </header>
@@ -76,7 +76,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
 function PageTitle() {
   const item = navFor(usePathname());
-  return <span className="truncate text-sm font-medium text-muted-foreground">{item?.label}</span>;
+  return <span className="hidden truncate text-sm font-medium text-muted-foreground sm:inline">{item?.label}</span>;
 }
 
 function ActiveSideNav({ onNavigate }: { onNavigate: () => void }) {

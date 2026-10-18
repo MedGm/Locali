@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
   CheckCircle2,
@@ -26,20 +25,21 @@ import { StartRunDialog } from "@/components/start-run";
 import { Term } from "@/components/term";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useApiQuery } from "@/lib/use-hydrated";
 import { api, shortDate, type PatchSummary, type Repo, type RunSummary } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 const HIDE_GUIDE = "locali.hide-getting-started";
 
 export default function Home() {
-  const status = useQuery({ queryKey: ["status"], queryFn: () => api<{ model_configured: boolean }>("/status") });
-  const repos = useQuery({ queryKey: ["repos"], queryFn: () => api<Repo[]>("/repos") });
-  const runs = useQuery({
+  const status = useApiQuery({ queryKey: ["status"], queryFn: () => api<{ model_configured: boolean }>("/status") });
+  const repos = useApiQuery({ queryKey: ["repos"], queryFn: () => api<Repo[]>("/repos") });
+  const runs = useApiQuery({
     queryKey: ["runs"],
     queryFn: () => api<RunSummary[]>("/runs"),
     refetchInterval: (q) => (q.state.data?.some((r) => r.status === "running" || r.status === "queued") ? 3000 : false),
   });
-  const patches = useQuery({ queryKey: ["patches", "all"], queryFn: () => api<PatchSummary[]>("/patches") });
+  const patches = useApiQuery({ queryKey: ["patches", "all"], queryFn: () => api<PatchSummary[]>("/patches") });
 
   const params = useSearchParams();
   const router = useRouter();
@@ -55,7 +55,9 @@ export default function Home() {
         <div className="pointer-events-none absolute -top-24 -right-16 size-72 rounded-full bg-primary/10 blur-3xl" />
         <div className="relative flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-xl space-y-2">
-            <p className="text-sm font-medium text-primary">{greeting()}</p>
+            <p className="text-sm font-medium text-primary">
+              {useSyncExternalStore(noSubscription, greeting, () => "Welcome")}
+            </p>
             <h1 className="text-3xl font-semibold tracking-tight">Review, test and fix your code, on your machine.</h1>
             <p className="text-muted-foreground">
               Locali checks a repository with static tools and a small model running locally, then proposes changes as{" "}
@@ -118,7 +120,7 @@ export default function Home() {
       </section>
 
       <div className="grid gap-6 lg:grid-cols-5">
-        <section className="space-y-3 lg:col-span-3">
+        <section className="min-w-0 space-y-3 lg:col-span-3">
           <SectionTitle title="Your repositories" href="/repos" />
           {repos.isLoading ? (
             <div className="grid gap-3 sm:grid-cols-2">
@@ -140,7 +142,7 @@ export default function Home() {
           )}
         </section>
 
-        <section className="space-y-3 lg:col-span-2">
+        <section className="min-w-0 space-y-3 lg:col-span-2">
           <SectionTitle title="Waiting for your decision" href="/patches" />
           {patches.isLoading ? (
             <Skeleton className="h-40 rounded-xl" />
@@ -221,6 +223,9 @@ export default function Home() {
     </div>
   );
 }
+
+// the greeting depends on the visitor's clock, so the server renders a neutral one
+const noSubscription = () => () => {};
 
 function greeting() {
   const h = new Date().getHours();

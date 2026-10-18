@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
   ArrowRight,
@@ -31,6 +31,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useApiQuery } from "@/lib/use-hydrated";
 import { api, PIPELINE, shortDate, type Devops, type Finding, type ModelCall, type Run } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -52,7 +53,7 @@ export default function RunPage() {
   const [again, setAgain] = useState(false);
   // Live progress: the backend streams the run's state and any change refreshes the run. The browser
   // reconnects the stream by itself after an error; slow polling is a safety net on top of that.
-  const run = useQuery({
+  const run = useApiQuery({
     queryKey: ["run", id],
     queryFn: () => api<Run>(`/runs/${id}`),
     refetchInterval: (q) => (q.state.data?.status === "queued" || q.state.data?.status === "running" ? 5000 : false),
@@ -170,7 +171,7 @@ export default function RunPage() {
       )}
 
       <Tabs defaultValue="findings">
-        <TabsList>
+        <TabsList className="max-w-full justify-start overflow-x-auto">
           <TabsTrigger value="findings">Findings ({r.findings?.length ?? 0})</TabsTrigger>
           {agents && (
             <>
@@ -460,7 +461,7 @@ function Fixes({ run }: { run: Run }) {
 }
 
 function Trajectory({ id, live }: { id: string; live: boolean }) {
-  const calls = useQuery({
+  const calls = useApiQuery({
     queryKey: ["trajectory", id],
     queryFn: () => api<ModelCall[]>(`/runs/${id}/trajectory`),
     refetchInterval: live ? 3000 : false,

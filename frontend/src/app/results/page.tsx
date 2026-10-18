@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { BarChart3 } from "lucide-react";
 
 import { EmptyState } from "@/components/empty-state";
@@ -11,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MlflowLink } from "@/components/mlflow-link";
+import { useApiQuery } from "@/lib/use-hydrated";
 import { api } from "@/lib/api";
 
 type Test = { n: number; only_a: number; only_b: number; p: number } | null;
@@ -80,7 +80,7 @@ const fmtP = (t: Test) => (t ? (t.p < 0.001 ? "< 0.001" : t.p.toFixed(3)) : "—
 const mark = (t: Test) => (t && t.p < 0.05 ? " *" : "");
 
 export default function ResultsPage() {
-  const summary = useQuery({ queryKey: ["results"], queryFn: () => api<Summary>("/results") });
+  const summary = useApiQuery({ queryKey: ["results"], queryFn: () => api<Summary>("/results") });
   if (summary.isError)
     return (
       <EmptyState icon={BarChart3} title="No results summary yet">

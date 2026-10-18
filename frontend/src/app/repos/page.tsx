@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { FolderGit2, Search } from "lucide-react";
 import { useState } from "react";
 
@@ -9,17 +8,18 @@ import { PageHeader } from "@/components/page-header";
 import { RepoCard } from "@/components/repo-card";
 import { StartRunDialog } from "@/components/start-run";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useApiQuery } from "@/lib/use-hydrated";
 import { api, type Repo } from "@/lib/api";
 
 const HOW = [
-  { title: "Found automatically", text: "Every folder with Python code under the repositories root is listed here." },
+  { title: "Found automatically", text: "Every folder with Python, JavaScript, TypeScript, Java or Go code under the repositories root is listed here." },
   { title: "Run on a copy", text: "A run works in a temporary copy; your files stay as they are." },
   { title: "Results per repository", text: "The last run, open patches and merge readiness show on each card." },
   { title: "Follow the trend", text: "Quality trends compare every finished run of a repository." },
 ];
 
 export default function ReposPage() {
-  const repos = useQuery({ queryKey: ["repos"], queryFn: () => api<Repo[]>("/repos") });
+  const repos = useApiQuery({ queryKey: ["repos"], queryFn: () => api<Repo[]>("/repos") });
   const [filter, setFilter] = useState("");
   const [starting, setStarting] = useState<{ open: boolean; repo?: string }>({ open: false });
   const list = (repos.data ?? []).filter((r) => r.name.toLowerCase().includes(filter.trim().toLowerCase()));

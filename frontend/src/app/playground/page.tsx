@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { BookOpen, Bug, FlaskConical, MessageSquare, ScanSearch, Sparkles, Square, Wand2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -9,6 +8,7 @@ import { Answer, CopyButton } from "@/components/answer";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
+import { useApiQuery } from "@/lib/use-hydrated";
 import { api, streamPlayground, type PlaygroundDone } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -70,7 +70,7 @@ const EXAMPLES: Record<Task, { code: string; test?: string; error?: string; prom
 type Pane = { text: string; done?: PlaygroundDone; error?: string; running: boolean };
 
 export default function PlaygroundPage() {
-  const models = useQuery({
+  const models = useApiQuery({
     queryKey: ["playground-models"],
     queryFn: () => api<{ key: string; id: string }[]>("/playground/models"),
   });

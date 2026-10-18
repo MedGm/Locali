@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, FileDiff } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -10,6 +9,7 @@ import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { Segmented } from "@/components/segmented";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useApiQuery } from "@/lib/use-hydrated";
 import { api, type PatchStatus, type PatchSummary } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +32,7 @@ const HOW = [
 
 export default function PatchesPage() {
   const [tab, setTab] = useState<Tab>("proposed");
-  const patches = useQuery({ queryKey: ["patches", "all"], queryFn: () => api<PatchSummary[]>("/patches") });
+  const patches = useApiQuery({ queryKey: ["patches", "all"], queryFn: () => api<PatchSummary[]>("/patches") });
   const all = patches.data ?? [];
   const count = (t: (typeof TABS)[number]) => (t.statuses ? all.filter((p) => t.statuses!.includes(p.status)).length : all.length);
   const current = TABS.find((t) => t.value === tab)!;

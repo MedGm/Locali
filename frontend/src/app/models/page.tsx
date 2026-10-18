@@ -1,12 +1,12 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MlflowLink } from "@/components/mlflow-link";
+import { useApiQuery } from "@/lib/use-hydrated";
 import { api } from "@/lib/api";
 
 type Measured = { score: number; tokens_per_s: number; j_per_solved: number | null };
@@ -32,7 +32,7 @@ const TASKS: [string, string][] = [
 ];
 
 export default function ModelsPage() {
-  const models = useQuery({ queryKey: ["models"], queryFn: () => api<{ note: string; models: Model[] }>("/models") });
+  const models = useApiQuery({ queryKey: ["models"], queryFn: () => api<{ note: string; models: Model[] }>("/models") });
   return (
     <div className="space-y-6">
       <PageHeader

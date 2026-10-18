@@ -1,15 +1,14 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-
 import { PageHeader } from "@/components/page-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useApiQuery } from "@/lib/use-hydrated";
 import { api, type Settings } from "@/lib/api";
 
 export default function SettingsPage() {
-  const settings = useQuery({ queryKey: ["settings"], queryFn: () => api<Settings>("/settings") });
+  const settings = useApiQuery({ queryKey: ["settings"], queryFn: () => api<Settings>("/settings") });
   const s = settings.data;
   if (!s) return settings.isError ? <p className="text-sm text-muted-foreground">Could not load settings.</p> : <Skeleton className="h-96 rounded-xl" />;
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, FileDiff, ListChecks, Play, ScanSearch, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -12,6 +11,7 @@ import { Segmented } from "@/components/segmented";
 import { StartRunDialog } from "@/components/start-run";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useApiQuery } from "@/lib/use-hydrated";
 import { api, shortDate, type RunSummary } from "@/lib/api";
 
 type Tab = "all" | "active" | "done" | "failed";
@@ -31,7 +31,7 @@ const STEP_LABEL: Record<string, string> = {
 export default function RunsPage() {
   const [tab, setTab] = useState<Tab>("all");
   const [starting, setStarting] = useState(false);
-  const runs = useQuery({
+  const runs = useApiQuery({
     queryKey: ["runs"],
     queryFn: () => api<RunSummary[]>("/runs"),
     refetchInterval: (q) => (q.state.data?.some((r) => r.status === "running" || r.status === "queued") ? 2000 : false),

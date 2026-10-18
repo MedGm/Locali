@@ -25,6 +25,15 @@ export function Answer({ text, streaming }: { text: string; streaming?: boolean 
 }
 
 function leadingJson(text: string): { json: Record<string, unknown> | null; rest: string } {
+  // some models wrap the object in a ```json block
+  const fenced = text.trimStart().match(/^```(?:json)?\s*\n(\{[\s\S]*?\})\s*\n```/);
+  if (fenced) {
+    try {
+      return { json: JSON.parse(fenced[1]), rest: text.trimStart().slice(fenced[0].length) };
+    } catch {
+      // not JSON after all: show it as it is
+    }
+  }
   const t = text.trimStart();
   if (!t.startsWith("{")) return { json: null, rest: text };
   let depth = 0;

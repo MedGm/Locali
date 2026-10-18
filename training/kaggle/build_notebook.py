@@ -47,6 +47,16 @@ def build(script: Path, env: dict[str, str] | None = None) -> Path:
                 "print('exit code', proc.wait())"
             ),
         ),
+        # An interactive session's files are not kept as outputs: zip them for the download button.
+        (
+            "code",
+            (
+                "import shutil\n\n"
+                "if os.environ.get('KAGGLE_KERNEL_RUN_TYPE') == 'Interactive':\n"
+                f"    print(shutil.make_archive('/tmp/{script.stem}', 'zip', '/kaggle/working'))\n"
+                f"    shutil.move('/tmp/{script.stem}.zip', '/kaggle/working/{script.stem}.zip')"
+            ),
+        ),
     ]
     notebook = {
         "cells": [

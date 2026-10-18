@@ -12,6 +12,8 @@ Environment variables (set through build_notebook.py):
     EPOCHS=2   MAX_STEPS=   (MAX_STEPS set => short smoke run, e.g. 30)
     SKIP_GENERATE=1         (train only)
     LIMIT=3                 (items per task during generation; smoke runs)
+    SEED=3407               (another value names the outputs ...-seed<N>, for a repeat run)
+    UNSLOTH=2026.10.4       (pin Unsloth, e.g. to the version of the run being repeated)
 """
 
 import json
@@ -37,7 +39,8 @@ TASKS = ["humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect", "cruxeval_o
          "testgen", "refactor", "completion", "securecodegen", "vulndetect",
          "humanevalfix_t1fmt", "bugdetect_t3fmt", "internal_t1", "internal_t2", "internal_t3", "internal_t4"]
 SEQ_LEN = 2048
-SEED = 3407
+SEED = int(os.environ.get("SEED", "3407"))
+RUN_SUFFIX = "" if SEED == 3407 else f"-seed{SEED}"
 
 
 def log(msg: str) -> None:
@@ -50,8 +53,9 @@ def setup() -> None:
         subprocess.run(["git", "clone", REPO, str(CODE)], check=True)
     subprocess.run(["git", "-C", str(CODE), "checkout", COMMIT], check=True)
     sys.path.insert(0, str(CODE))
+    unsloth = [f"unsloth=={os.environ['UNSLOTH']}"] if os.environ.get("UNSLOTH") else ["--upgrade", "unsloth"]
     with open(WORK / "logs" / "setup.log", "a") as fh:
-        subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--upgrade", "unsloth", "unsloth_zoo",
+        subprocess.run([sys.executable, "-m", "pip", "install", "-q", *unsloth, "unsloth_zoo",
                         "radon", "bandit", "datasets"], stdout=fh, stderr=subprocess.STDOUT, check=True)
 
 
@@ -141,7 +145,7 @@ def train(model_id: str, method: str, epochs: float, max_steps: int | None) -> d
     model.save_pretrained(str(adapter_dir))
     tok.save_pretrained(str(adapter_dir))
     report = {
-        "model": model_id, "method": method, "train_examples": len(train_ds), "val_examples": len(val_ds),
+        "model": model_id, "method": method, "seed": SEED, "train_examples": len(train_ds), "val_examples": len(val_ds),
         "dropped_too_long": train_dropped + val_dropped, "train_seconds": round(time.time() - start),
         "train_loss": result.training_loss, **diagnostic, "log_history": trainer.state.log_history,
         "peak_memory_gb": round(torch.cuda.max_memory_reserved() / 2**30, 2), "commit": COMMIT,
@@ -174,15 +178,15 @@ def generate(model_id: str, method: str) -> None:
         from evaluation.gpu_energy import attach_gpu_energy
 
         for task in TASKS:
-            out = WORK / "results" / task / f"{model_id}-ft-{method}__fp16__kaggle-t4"
+            out = WORK / "results" / task / f"{model_id}-ft-{method}{RUN_SUFFIX}__fp16__kaggle-t4"
             start = time.time()
             with open(logs / "generate.log", "a") as gen_log:
                 rc = subprocess.run(
                     [sys.executable, "-m", "evaluation.run", "--benchmark", task, "--generate-only", "--workers", "16",
-                     "--model-id", f"{model_id}-ft-{method}", "--model-revision", spec["revision"],
+                     "--model-id", f"{model_id}-ft-{method}{RUN_SUFFIX}", "--model-revision", spec["revision"],
                      "--quantization", "fp16", "--runtime", "vLLM T4x1 eager + LoRA adapter",
                      "--base-url", "http://127.0.0.1:8000/v1", "--served-model", "adapter", "--out", str(out),
-                     "--notes", f"fine-tuned ({method}) adapter at commit {COMMIT}",
+                     "--notes", f"fine-tuned ({method}, seed {SEED}) adapter at commit {COMMIT}",
                      *(["--limit", os.environ["LIMIT"]] if os.environ.get("LIMIT") else [])],
                     cwd=CODE, stdout=gen_log, stderr=subprocess.STDOUT, check=False,
                     env={**os.environ, "LOCALI_MIX_DIR": str(find_input("test.jsonl").parent)},

@@ -81,3 +81,13 @@ def test_rust_use_lines_are_not_repeated():
     it = item("rust", declaration="\nuse rand::Rng;\nuse std::cmp::max;\n\nfn f() -> i32{\n")
     src = program(it, "use rand::Rng;\nuse std::cmp::max;\n\nfn f() -> i32 { 1 }")["src/lib.rs"]
     assert src.count("use rand::Rng;") == 1 and src.count("use std::cmp::max;") == 1
+
+
+def test_helpers_the_test_defines_are_dropped_from_the_answer():
+    js_test = "const testF = () => {\n  console.assert(f() === 1)\n}\n\ntestF()\n"
+    js = program(item("js", test=js_test), "const f = () => 1\n\nconst testF = () => {\n  console.assert(f() === 2)\n}\ntestF()\n")
+    src = js["main.js"]
+    assert src.count("const testF") == 1 and src.count("testF()") == 1 and "f() === 2" not in src
+    cpp_test = "#include<assert.h>\nbool issame(vector<int> a,vector<int>b){\n    return a==b;\n}\nint main(){\n assert(issame(f(),{}));\n}"
+    cpp = program(item("cpp", test=cpp_test), "vector<int> f(){ return {}; }\nbool issame(vector<int> a, vector<int> b){ return a == b; }\n")
+    assert cpp["main.cpp"].count("bool issame") == 1

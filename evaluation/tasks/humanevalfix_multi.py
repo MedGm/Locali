@@ -18,7 +18,7 @@ the HumanEvalPack harness:
   merged without repeats
 
 Test code a model repeats from the prompt (Go Test functions, Java's Main class, Rust's tests module,
-a C++ main) is removed before the real test is added, so an answer is judged on its fix, not on
+a C++ main, JS test functions and C++ helpers the test defines) is removed before the real test is added, so an answer is judged on its fix, not on
 whether it echoed the tests.
 
 This runs model-written code outside the Docker sandbox, which no other experiment does. It is meant
@@ -139,9 +139,25 @@ def _rust_file(item: "Item", code: str) -> str:
     return "#![allow(unused, deprecated)]\n" + "\n".join(uses) + f"\n\n{body.strip()}\n\n{item.test}"
 
 
+def drop_test_helpers(item: "Item", code: str) -> str:
+    """Remove from an answer what the test file itself defines (JS test functions and their calls,
+    C++ helpers such as issame); the test adds its own copy, and a second one does not compile."""
+    if item.language == "js":
+        names = re.findall(r"^\s*(?:const|let|var|function)\s+(\w+)", item.test, re.MULTILINE)
+        for name in names:
+            code = drop_blocks(code, rf"^\s*(?:const|let|var|function)\s+{name}\b")
+            code = re.sub(rf"^\s*{name}\(\)\s*;?\s*$", "", code, flags=re.MULTILINE)
+    if item.language == "cpp":
+        names = set(re.findall(r"^[\w:<>,\*& ]+?\b(\w+)\s*\([^;{]*\)\s*\{", item.test, re.MULTILINE)) - {"main"}
+        for name in names:
+            code = drop_blocks(code, rf"^[\w:<>,\*& ]+?\b{name}\s*\(")
+    return code
+
+
 def program(item: Item, code: str) -> dict[str, str]:
     """Files to write for one answer, by name."""
     lang = item.language
+    code = drop_test_helpers(item, code)
     if lang == "js":
         return {"main.js": JS_ASSERT + code + "\n\n" + item.test}
     if lang == "cpp":

@@ -1,0 +1,24 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating test split:   0%|          | 0/164 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 164/164 [00:00<00:00, 972.87 examples/s]Generating test split: 100%|██████████| 164/164 [00:00<00:00, 959.33 examples/s]
+{
+  "metrics": {
+    "n": 8,
+    "status_counts": {
+      "unscored": 8
+    },
+    "truncated": 0,
+    "mean_input_tokens": 152.125,
+    "mean_output_tokens": 156.25,
+    "mean_ttft_s": 0.1803,
+    "median_ttft_s": 0.047,
+    "mean_total_s": 2.4866,
+    "mean_decode_tok_per_s": 67.78,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 8,
+    "resumed": 0,
+    "wall_s": 19.9
+  }
+}

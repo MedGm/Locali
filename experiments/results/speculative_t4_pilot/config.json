@@ -1,0 +1,24 @@
+{
+ "draft": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
+ "draft_revision": "ea3f2471cf1b1f0db85067f1ef93848e38e88c25",
+ "network_isolation": "guard",
+ "settings": {
+  "none": null,
+  "draft-n4": {
+   "method": "draft_model",
+   "model": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
+   "revision": "ea3f2471cf1b1f0db85067f1ef93848e38e88c25",
+   "num_speculative_tokens": 4
+  },
+  "ngram-n4": {
+   "method": "ngram",
+   "num_speculative_tokens": 4,
+   "prompt_lookup_min": 2,
+   "prompt_lookup_max": 4
+  }
+ },
+ "concurrency": [
+  1
+ ],
+ "limit": 8
+}

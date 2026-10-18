@@ -1,0 +1,35 @@
+[{"stream_name":"stderr","time":8.683145425,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.683196452,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.683203374,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.683207641,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.358097448,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.358133903,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.35813767,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.35814035,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":10.553901407,"data":"Writing /kaggle/working/kaggle_speculative.py\n"}
+,{"stream_name":"stdout","time":81.08127018,"data":"[22:42:06] setup done\n"}
+,{"stream_name":"stdout","time":82.335361637,"data":"[22:42:07] draft Qwen/Qwen2.5-Coder-0.5B-Instruct@ea3f2471cf1b1f0db85067f1ef93848e38e88c25, network isolation: guard\n"}
+,{"stream_name":"stdout","time":271.57913579,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stdout","time":272.894185757,"data":"[22:45:18] ft/humaneval_plus/none__c1: 7/8 passed, 44.6 tok/s, 1240.8 J, acceptance None\n"}
+,{"stream_name":"stdout","time":274.798270965,"data":"[22:45:20] base/humaneval_plus/none__c1: 7/8 passed, 47.9 tok/s, 1467.2 J, acceptance None\n"}
+,{"stream_name":"stdout","time":287.321596268,"data":"[22:45:32] ft/humanevalfix/none__c1: 5/8 passed, 44.4 tok/s, 755.7 J, acceptance None\n"}
+,{"stream_name":"stdout","time":292.307034016,"data":"[22:45:37] base/humanevalfix/none__c1: 3/8 passed, 54.1 tok/s, 1008.9 J, acceptance None\n"}
+,{"stream_name":"stdout","time":428.900991007,"data":"[22:47:54] ft/humaneval_plus/draft-n4__c1: 7/8 passed, 51.7 tok/s, 1079.7 J, acceptance 0.901\n"}
+,{"stream_name":"stdout","time":431.857801456,"data":"[22:47:57] base/humaneval_plus/draft-n4__c1: 7/8 passed, 54.8 tok/s, 1295.6 J, acceptance 0.912\n"}
+,{"stream_name":"stdout","time":442.850607009,"data":"[22:48:08] ft/humanevalfix/draft-n4__c1: 5/8 passed, 45.4 tok/s, 691.1 J, acceptance 0.823\n"}
+,{"stream_name":"stdout","time":448.808769076,"data":"[22:48:14] base/humanevalfix/draft-n4__c1: 3/8 passed, 55.4 tok/s, 951.9 J, acceptance 0.871\n"}
+,{"stream_name":"stdout","time":546.737892883,"data":"[22:49:52] ft/humaneval_plus/ngram-n4__c1: 7/8 passed, 59.9 tok/s, 810.1 J, acceptance 0.676\n"}
+,{"stream_name":"stdout","time":554.277231935,"data":"[22:49:59] base/humaneval_plus/ngram-n4__c1: 7/8 passed, 67.2 tok/s, 1009.4 J, acceptance 0.725\n"}
+,{"stream_name":"stdout","time":555.230248715,"data":"[22:50:00] ft/humanevalfix/ngram-n4__c1: 5/8 passed, 75.5 tok/s, 361.6 J, acceptance 0.852\n"}
+,{"stream_name":"stdout","time":564.196240844,"data":"[22:50:09] base/humanevalfix/ngram-n4__c1: 3/8 passed, 96.7 tok/s, 456.8 J, acceptance 0.783\n"}
+,{"stream_name":"stdout","time":564.866021053,"data":"[22:50:10] all done\n"}
+,{"stream_name":"stdout","time":565.191019715,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":567.974715183,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":567.97476963,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":568.153722419,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":568.153762343,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":568.993560095,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":569.083003165,"data":"[NbConvertApp] Writing 20403 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":571.700760358,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":572.278967723,"data":"[NbConvertApp] Writing 340657 bytes to __results__.html\n"}
+]

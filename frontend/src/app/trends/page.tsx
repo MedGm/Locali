@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
+import { Choice } from "@/components/choice";
 import { PageHeader } from "@/components/page-header";
 import { RunLines } from "@/components/charts/lines";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,20 +47,13 @@ function Trends() {
         title="Quality trends"
         description="How each finished run of a repository compares with the ones before: findings, tests, coverage and merge readiness."
         actions={
-        <label className="flex items-center gap-2 text-sm">
-          <span className="text-muted-foreground">Repository</span>
-          <select
-            value={repo ?? ""}
-            onChange={(e) => router.replace(`/trends?repo=${encodeURIComponent(e.target.value)}`)}
-            className="h-8 rounded-lg border bg-transparent px-2 text-sm"
-          >
-            {repos.data?.map((r) => (
-              <option key={r.name} value={r.name}>
-                {r.name} ({r.runs} run{r.runs === 1 ? "" : "s"})
-              </option>
-            ))}
-          </select>
-        </label>
+        <Choice
+          label="Repository"
+          value={repo ?? ""}
+          onChange={(v) => router.replace(`/trends?repo=${encodeURIComponent(v)}`)}
+          options={(repos.data ?? []).map((r) => ({ value: r.name, label: `${r.name} (${r.runs} run${r.runs === 1 ? "" : "s"})` }))}
+          className="min-w-56 bg-card"
+        />
         }
       />
 

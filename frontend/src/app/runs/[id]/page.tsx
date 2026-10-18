@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import { Choice } from "@/components/choice";
 import { KindBadge, SeverityBadge, StatusBadge } from "@/components/badges";
 import { EmptyState } from "@/components/empty-state";
 import { StartRunDialog } from "@/components/start-run";
@@ -358,19 +359,12 @@ function Findings({ findings }: { findings: Finding[] }) {
 
 function Filter(props: { label: string; all: string; value: string; onChange: (v: string) => void; options: string[] }) {
   return (
-    <select
-      aria-label={props.label}
+    <Choice
+      label={props.label}
       value={props.value}
-      onChange={(e) => props.onChange(e.target.value)}
-      className="h-8 rounded-lg border bg-transparent px-2 text-sm"
-    >
-      <option value="all">{props.all}</option>
-      {props.options.map((o) => (
-        <option key={o} value={o}>
-          {o}
-        </option>
-      ))}
-    </select>
+      onChange={props.onChange}
+      options={[{ value: "all", label: props.all }, ...props.options.map((o) => ({ value: o, label: o }))]}
+    />
   );
 }
 

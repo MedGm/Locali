@@ -4,6 +4,7 @@ import { BookOpen, Bug, FlaskConical, MessageSquare, ScanSearch, Sparkles, Squar
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
+import { Choice } from "@/components/choice";
 import { Answer, CopyButton } from "@/components/answer";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
@@ -173,18 +174,12 @@ export default function PlaygroundPage() {
           </p>
 
           <div className="flex flex-wrap items-center gap-2">
-            <select
-              aria-label="Language"
+            <Choice
+              label="Language"
               value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="h-8 rounded-lg border bg-card px-2 text-sm"
-            >
-              {LANGUAGES.map(([v, l]) => (
-                <option key={v} value={v}>
-                  {l}
-                </option>
-              ))}
-            </select>
+              onChange={setLanguage}
+              options={LANGUAGES.map(([value, label]) => ({ value, label }))}
+            />
             <Button variant="outline" size="sm" onClick={example}>
               <Wand2 /> Try an example
             </Button>

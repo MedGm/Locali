@@ -3,6 +3,7 @@
 import { ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
+import { Choice } from "@/components/choice";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -73,21 +74,18 @@ export default function SecurityPage() {
         </TabsContent>
         <TabsContent value="audit">
           <div className="flex items-center gap-2 pt-2">
-            <select
-              aria-label="Action"
+            <Choice
+              label="Action"
               value={action}
-              onChange={(e) => setAction(e.target.value)}
-              className="h-8 rounded-lg border bg-transparent px-2 text-sm"
-            >
-              <option value="all">All actions</option>
-              {[...new Set((audit.data ?? []).map((e) => e.action).concat(action === "all" ? [] : [action]))]
-                .sort()
-                .map((a) => (
-                  <option key={a} value={a}>
-                    {a}
-                  </option>
-                ))}
-            </select>
+              onChange={setAction}
+              options={[
+                { value: "all", label: "All actions" },
+                ...[...new Set((audit.data ?? []).map((e) => e.action).concat(action === "all" ? [] : [action]))]
+                  .sort()
+                  .map((a) => ({ value: a, label: ACTION_TEXT[a] ?? a })),
+              ]}
+              className="min-w-64 bg-card"
+            />
             <span className="text-xs text-muted-foreground">Newest first, last 500 entries.</span>
           </div>
           <EventTable events={audit.data ?? []} />

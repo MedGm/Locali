@@ -1,6 +1,6 @@
 # Reproducing the results from a clean checkout
 
-Checked on 2026-10-17 at commit `1e6fccd`.
+Checked on 2026-10-17 at commit `1e6fccd`, and again on 2026-10-18 at `de96799` with the results added since (agent context, red-team, serving, other languages).
 
 What "clean" means here: a new git worktree of the commit, its own environment from the lock file
 (`uv sync --frozen`), and only committed files as input. Model generations were not repeated: they
@@ -12,7 +12,7 @@ them was.
 
 GitHub Actions does this on every push (`.github/workflows/ci.yml`): `uv sync --frozen`, Ruff, the
 sandbox image build, the full test suite, and the frontend's type check, lint and production
-build. Green on `1e6fccd`.
+build. Green on both commits.
 
 ## 2. Every derived result, rebuilt
 
@@ -21,9 +21,10 @@ the committed files (lines naming the commit or the generation time are ignored)
 
 | File | Built by | Result |
 |---|---|---|
-| `summary.json` (what the web app's Results page shows) | `export_results.py` | identical |
+| `summary.json` (what the web app's Results page shows, every study) | `export_results.py` | identical |
 | `context_agents/table.md` | `context_table.py`, rescored from the saved runs | identical |
 | `serving_t4/tables.md` | `serving_table.py` | identical |
+| `multilang_t4_rescore/table.md` | `multilang_table.py`, from the saved answers of both rescoring runs | identical |
 | `serving_t4/throughput.png`, `latency.png` | `serving_table.py` | identical, byte for byte |
 | `redteam/model.md`, `model.jsonl` | `redteam_model.py`, rescored from the saved answers | identical |
 | `redteam/controls.md` | `redteam.py`: the 16 attack cases executed again, Docker included | identical |

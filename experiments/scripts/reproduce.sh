@@ -7,6 +7,7 @@
 #   - the results summary the web app shows (export_results.py)
 #   - the agent context table (context_table.py, rescored from the saved runs)
 #   - the serving tables and plots (serving_table.py)
+#   - the other-languages table (multilang_table.py)
 #   - the model red-team report, rescored from the saved answers (redteam_model.py, no model calls)
 #   - the 16 red-team control cases, executed again (redteam.py, needs Docker)
 # and every regenerated file is diffed against the committed one. Lines naming the commit are
@@ -29,6 +30,8 @@ export PYTHONPATH=.
 "$UV" run python experiments/scripts/export_results.py >/dev/null
 "$UV" run python experiments/scripts/context_table.py >/dev/null
 "$UV" run python experiments/scripts/serving_table.py >/dev/null
+"$UV" run python experiments/scripts/multilang_table.py experiments/results/multilang_t4_rescore \
+    experiments/results/multilang_t4_rescore2 >/dev/null
 LOCALI_MODEL_URL=http://127.0.0.1:9/v1 "$UV" run python experiments/scripts/redteam_model.py >/dev/null
 "$UV" run python experiments/scripts/redteam.py >/dev/null
 
@@ -36,6 +39,7 @@ status=0
 for f in experiments/results/summary.json \
          experiments/results/context_agents/table.md \
          experiments/results/serving_t4/tables.md \
+         experiments/results/multilang_t4_rescore/table.md \
          experiments/results/serving_t4/throughput.png \
          experiments/results/serving_t4/latency.png \
          experiments/results/redteam/model.md \

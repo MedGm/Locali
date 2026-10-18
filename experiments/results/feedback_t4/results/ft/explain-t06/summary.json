@@ -1,0 +1,19 @@
+{
+ "model": "ft",
+ "config": "explain-t06",
+ "explain": true,
+ "retry_temperature": 0.6,
+ "n": 164,
+ "fixed_within": {
+  "1": 59,
+  "2": 67,
+  "3": 68
+ },
+ "rate_within": {
+  "1": 36.0,
+  "2": 40.9,
+  "3": 41.5
+ },
+ "model_calls": 366,
+ "seconds": 167
+}

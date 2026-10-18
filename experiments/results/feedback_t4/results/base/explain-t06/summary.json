@@ -1,0 +1,19 @@
+{
+ "model": "base",
+ "config": "explain-t06",
+ "explain": true,
+ "retry_temperature": 0.6,
+ "n": 164,
+ "fixed_within": {
+  "1": 41,
+  "2": 48,
+  "3": 49
+ },
+ "rate_within": {
+  "1": 25.0,
+  "2": 29.3,
+  "3": 29.9
+ },
+ "model_calls": 403,
+ "seconds": 269
+}

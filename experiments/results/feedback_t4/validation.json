@@ -1,0 +1,23 @@
+{
+ "original tests, canonical_solution": {
+  "passed": 164,
+  "n": 164,
+  "unexpected": []
+ },
+ "original tests, buggy_solution": {
+  "passed": 0,
+  "n": 164,
+  "unexpected": []
+ },
+ "explained tests, canonical_solution": {
+  "passed": 164,
+  "n": 164,
+  "unexpected": []
+ },
+ "explained tests, buggy_solution": {
+  "passed": 0,
+  "n": 164,
+  "unexpected": []
+ },
+ "network_isolation": "guard"
+}

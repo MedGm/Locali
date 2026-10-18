@@ -1,0 +1,19 @@
+{
+ "model": "ft",
+ "config": "plain",
+ "explain": false,
+ "retry_temperature": 0.0,
+ "n": 164,
+ "fixed_within": {
+  "1": 59,
+  "2": 65,
+  "3": 65
+ },
+ "rate_within": {
+  "1": 36.0,
+  "2": 39.6,
+  "3": 39.6
+ },
+ "model_calls": 368,
+ "seconds": 169
+}

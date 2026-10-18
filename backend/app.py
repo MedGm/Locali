@@ -27,7 +27,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 from urllib.parse import urlsplit, urlunsplit
 
 from fastapi import FastAPI, HTTPException, Request
@@ -41,6 +41,7 @@ from backend.analysis import analyze
 from backend.audit import AuditLog
 from backend.llmops import Tracker
 from backend.patches import ApprovalMismatch, PatchConflict, PatchStore, StalePatch, propose
+from backend.playground import build_messages
 from backend.validation import validate_workspace
 from backend.workspace import open_workspace
 from security import commands, sandbox
@@ -53,6 +54,20 @@ MODELS_FILE = Path(__file__).with_name("models.json")
 # audit actions shown in the security center
 SECURITY_ACTIONS = {"auth.refused", "run.refused", "command.refused", "model.redacted", "patch.stale",
                     "patch.conflict", "patch.revert_refused", "patch.rejected"}
+
+
+# A model the playground can stream from: (messages, on_token) -> completion with text and counts
+PlaygroundModel = Callable[[list[dict], Callable[[str], None]], Any]
+
+
+class PlaygroundRequest(BaseModel):
+    task: Literal["review", "tests", "fix", "explain", "free"]
+    language: str = "python"
+    code: Annotated[str, StringConstraints(max_length=20000)] = ""
+    prompt: Annotated[str, StringConstraints(max_length=4000)] = ""
+    test: Annotated[str, StringConstraints(max_length=10000)] = ""
+    error: Annotated[str, StringConstraints(max_length=10000)] = ""
+    model: str = "main"
 
 
 class RunRequest(BaseModel):
@@ -149,10 +164,13 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
                model: Callable[[list[dict]], str] | None = None, tools: bool = True,
                api_token: str | None = None, heartbeat_s: float = 15.0,
                results_file: str | Path | None = None, mlflow_uri: str | None = None,
-               mlflow_artifacts: str | None = None) -> FastAPI:
+               mlflow_artifacts: str | None = None,
+               playground: dict[str, tuple[str, PlaygroundModel]] | None = None) -> FastAPI:
     """validate replaces the full workspace validation (tests use a stub); model answers chat messages
     for agent runs; tools=False drops the static-analysis step of agent runs (ablation); api_token,
-    when set, is required as a Bearer token on every endpoint except /health."""
+    when set, is required as a Bearer token on every endpoint except /health; playground maps "main"
+    (and optionally "compare") to (model id, streaming model) for the playground page."""
+    playground = playground or {}
     repos_root = Path(repos_root).resolve()
     runs_dir = Path(data_dir) / "runs"
     runs_dir.mkdir(parents=True, exist_ok=True)
@@ -232,6 +250,52 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
             audit.write("run.refused", repo=repo, reason="not found")
             raise HTTPException(404, "repo not found")
         return path
+
+    @app.get("/playground/models")
+    def playground_models():
+        return [{"key": key, "id": model_id} for key, (model_id, _) in playground.items()]
+
+    @app.post("/playground")
+    async def playground_call(req: PlaygroundRequest):
+        if req.model not in playground:
+            raise HTTPException(404, f"no {req.model!r} model configured")
+        try:
+            messages = build_messages(req.task, req.language, code=redact(req.code), prompt=redact(req.prompt),
+                                      test=redact(req.test), error=redact(req.error))
+        except ValueError as e:
+            raise HTTPException(422, str(e)) from None
+        model_id, stream = playground[req.model]
+        loop = asyncio.get_running_loop()
+        queue: asyncio.Queue = asyncio.Queue()
+
+        def work():
+            try:
+                done = stream(messages, lambda piece: loop.call_soon_threadsafe(queue.put_nowait, ("token", piece)))
+                loop.call_soon_threadsafe(queue.put_nowait, ("done", done))
+            except Exception as e:  # noqa: BLE001 - reported to the page
+                loop.call_soon_threadsafe(queue.put_nowait, ("error", e))
+
+        async def events():
+            loop.run_in_executor(None, work)
+            while True:
+                kind, value = await queue.get()
+                if kind == "token":
+                    yield f"data: {json.dumps({'type': 'token', 'text': value})}\n\n"
+                    continue
+                if kind == "error":
+                    audit.write("playground.failed", task=req.task, model=model_id, error=type(value).__name__)
+                    yield f"data: {json.dumps({'type': 'error', 'message': redact(str(value))})}\n\n"
+                    return
+                answer = redact(value.text)
+                audit.write("playground.call", task=req.task, language=req.language, model=model_id,
+                            input_tokens=value.input_tokens, output_tokens=value.output_tokens)
+                yield "data: " + json.dumps({
+                    "type": "done", "answer": answer, "model": model_id, "input_tokens": value.input_tokens,
+                    "output_tokens": value.output_tokens, "ttft_s": value.ttft_s, "total_s": value.total_s,
+                }) + "\n\n"
+                return
+
+        return StreamingResponse(events(), media_type="text/event-stream")
 
     @app.get("/health")
     def health():
@@ -373,6 +437,9 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
             ("LOCALI_MODEL_ID", "Which registry model is running (Models page)", env("LOCALI_MODEL_ID")),
             ("LOCALI_MODEL_KEY", "API key of the model server", "set" if env("LOCALI_MODEL_KEY") else None),
             ("LOCALI_API_TOKEN", "Token every API call must carry", "set" if api_token else None),
+            ("LOCALI_COMPARE_URL", "Optional second model, shown beside the first in the playground",
+             _without_credentials(env("LOCALI_COMPARE_URL"))),
+            ("LOCALI_COMPARE_ID", "Which registry model the second server runs", env("LOCALI_COMPARE_ID")),
             ("LOCALI_MLFLOW_URI", "MLflow tracking store for agent runs", tracker.uri),
             ("LOCALI_MLFLOW_UI", "Link to the MLflow interface", env("LOCALI_MLFLOW_UI")),
         ]
@@ -474,19 +541,30 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
     return app
 
 
-def default_app() -> FastAPI:
-    model = None
-    if url := os.environ.get("LOCALI_MODEL_URL"):
-        from evaluation.client import ChatClient
+def _playground_model(client) -> PlaygroundModel:
+    return lambda messages, on_token: client.complete(messages, max_tokens=1024, on_token=on_token)
 
+
+def default_app() -> FastAPI:
+    from evaluation.client import ChatClient
+
+    model = None
+    playground: dict[str, tuple[str, PlaygroundModel]] = {}
+    if url := os.environ.get("LOCALI_MODEL_URL"):
         client = ChatClient(url, model=os.environ.get("LOCALI_MODEL_NAME", "local"),
                             api_key=os.environ.get("LOCALI_MODEL_KEY", "local"))
 
         def model(messages):
             return client.complete(messages, max_tokens=768)  # the run's guard reads text and token counts
+
+        playground["main"] = (os.environ.get("LOCALI_MODEL_ID", "local"), _playground_model(client))
+    if url := os.environ.get("LOCALI_COMPARE_URL"):  # optional second model, shown beside the first
+        compare = ChatClient(url, model=os.environ.get("LOCALI_COMPARE_NAME", "local"),
+                             api_key=os.environ.get("LOCALI_COMPARE_KEY", "local"))
+        playground["compare"] = (os.environ.get("LOCALI_COMPARE_ID", "compare"), _playground_model(compare))
     token = os.environ.get("LOCALI_API_TOKEN")
     if not token:
         raise RuntimeError("set LOCALI_API_TOKEN; the API does not run without a token")
     return create_app(os.environ.get("LOCALI_REPOS_ROOT", "."), os.environ.get("LOCALI_DATA_DIR", "data/backend"),
                       model=model, api_token=token, mlflow_uri=os.environ.get("LOCALI_MLFLOW_URI"),
-                      mlflow_artifacts=os.environ.get("LOCALI_MLFLOW_ARTIFACTS"))
+                      mlflow_artifacts=os.environ.get("LOCALI_MLFLOW_ARTIFACTS"), playground=playground)

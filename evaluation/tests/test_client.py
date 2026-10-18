@@ -100,3 +100,11 @@ def test_reports_truncation(fake_server):
     out = ChatClient(fake_server["base_url"]).complete([{"role": "user", "content": "hi"}], max_tokens=1)
 
     assert out.finish_reason == "length"
+
+
+def test_hands_each_piece_to_on_token(fake_server):
+    fake_server["script"] = [delta("def "), delta("f(): "), delta("pass", finish="stop"), USAGE]
+    pieces = []
+    out = ChatClient(fake_server["base_url"]).complete([{"role": "user", "content": "hi"}], max_tokens=16,
+                                                       on_token=pieces.append)
+    assert pieces == ["def ", "f(): ", "pass"] and out.text == "".join(pieces)

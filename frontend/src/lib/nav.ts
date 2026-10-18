@@ -7,6 +7,7 @@ import {
   ListChecks,
   type LucideIcon,
   Settings,
+  Sparkles,
   ShieldCheck,
   TrendingUp,
 } from "lucide-react";
@@ -14,7 +15,13 @@ import {
 export type NavItem = { href: string; label: string; icon: LucideIcon; hint: string };
 
 export const NAV_GROUPS: { label: string | null; items: NavItem[] }[] = [
-  { label: null, items: [{ href: "/", label: "Home", icon: Home, hint: "Start here: what to do next" }] },
+  {
+    label: null,
+    items: [
+      { href: "/", label: "Home", icon: Home, hint: "Start here: what to do next" },
+      { href: "/playground", label: "Playground", icon: Sparkles, hint: "Ask the model directly about any code" },
+    ],
+  },
   {
     label: "Work",
     items: [

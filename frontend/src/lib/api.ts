@@ -176,3 +176,44 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const post = <T>(path: string, body?: unknown) =>
   api<T>(path, { method: "POST", body: body === undefined ? undefined : JSON.stringify(body) });
+
+export type PlaygroundDone = {
+  type: "done";
+  answer: string;
+  model: string;
+  input_tokens: number | null;
+  output_tokens: number | null;
+  ttft_s: number;
+  total_s: number;
+};
+export type PlaygroundEvent = { type: "token"; text: string } | PlaygroundDone | { type: "error"; message: string };
+
+// POST /playground answers with Server-Sent Events: tokens as they come, then the final (redacted) answer.
+export async function streamPlayground(body: object, onEvent: (e: PlaygroundEvent) => void, signal?: AbortSignal) {
+  const res = await fetch("/api/playground", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+    signal,
+  });
+  if (!res.ok || !res.body) {
+    const data = await res.json().catch(() => ({}));
+    throw new ApiError(res.status, typeof data.detail === "string" ? data.detail : res.statusText);
+  }
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    let cut;
+    while ((cut = buffer.indexOf("\n\n")) >= 0) {
+      const chunk = buffer.slice(0, cut);
+      buffer = buffer.slice(cut + 2);
+      for (const line of chunk.split("\n")) {
+        if (line.startsWith("data: ")) onEvent(JSON.parse(line.slice(6)) as PlaygroundEvent);
+      }
+    }
+  }
+}

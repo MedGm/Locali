@@ -6,6 +6,7 @@ Streaming is used so time-to-first-token can be measured on the client side.
 import json
 import time
 import urllib.request
+from collections.abc import Callable
 from dataclasses import dataclass
 
 
@@ -43,7 +44,9 @@ class ChatClient:
         max_tokens: int,
         temperature: float = 0.0,
         seed: int | None = None,
+        on_token: Callable[[str], None] | None = None,
     ) -> Completion:
+        """on_token receives each piece of the answer as it arrives (the playground streams them)."""
         body = {
             "model": self.model,
             "messages": messages,
@@ -78,6 +81,8 @@ class ChatClient:
                         first_token_at = time.perf_counter()
                     if piece:
                         text.append(piece)
+                        if on_token:
+                            on_token(piece)
                     if thought:
                         reasoning.append(thought)
                     finish_reason = choice.get("finish_reason") or finish_reason

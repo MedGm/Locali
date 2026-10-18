@@ -1,0 +1,459 @@
+== speculative 2026-10-18T21:14:04+02:00, llama.cpp 987498f, benchmarks: humaneval_plus humanevalfix, limit: 20
+-- 2026-10-18T21:14:04+02:00 llama-server none
+-- 2026-10-18T21:14:06+02:00 none / humaneval_plus
+Generating test split:   0%|          | 0/164 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 164/164 [00:00<00:00, 3541.56 examples/s]
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "failed": 3,
+      "passed": 17
+    },
+    "truncated": 0,
+    "mean_input_tokens": 146.45,
+    "mean_output_tokens": 143.5,
+    "mean_ttft_s": 2.4751,
+    "median_ttft_s": 2.2269,
+    "mean_total_s": 18.4874,
+    "mean_decode_tok_per_s": 9.0,
+    "total_energy_j": 4932.2,
+    "mean_energy_j_per_task": 246.61,
+    "pass@1": 0.85
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 398.5
+  }
+}
+-- 2026-10-18T21:20:48+02:00 none / humanevalfix
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "passed": 9,
+      "failed": 9,
+      "timeout": 2
+    },
+    "truncated": 0,
+    "mean_input_tokens": 230.7,
+    "mean_output_tokens": 65.45,
+    "mean_ttft_s": 4.5285,
+    "median_ttft_s": 4.8301,
+    "mean_total_s": 11.5151,
+    "mean_decode_tok_per_s": 9.5,
+    "total_energy_j": 3043.6,
+    "mean_energy_j_per_task": 152.18,
+    "pass@1": 0.45,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.5,
+      "missing logic": 0.6,
+      "operator misuse": 0.3333,
+      "value misuse": 0.2,
+      "variable misuse": 0.6
+    }
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 362.5
+  }
+}
+-- none peak RSS 1845564 kB
+-- 2026-10-18T21:26:54+02:00 llama-server draft-q8-n2
+-- 2026-10-18T21:26:57+02:00 draft-q8-n2 / humaneval_plus
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "failed": 3,
+      "passed": 17
+    },
+    "truncated": 0,
+    "mean_input_tokens": 146.45,
+    "mean_output_tokens": 143.5,
+    "mean_ttft_s": 2.8627,
+    "median_ttft_s": 2.7069,
+    "mean_total_s": 18.7497,
+    "mean_decode_tok_per_s": 9.19,
+    "total_energy_j": 4936.3,
+    "mean_energy_j_per_task": 246.82,
+    "draft_tokens": 1970,
+    "draft_accepted": 1885,
+    "draft_acceptance": 0.9569,
+    "pass@1": 0.85
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 400.3
+  }
+}
+-- 2026-10-18T21:33:41+02:00 draft-q8-n2 / humanevalfix
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "passed": 10,
+      "failed": 8,
+      "timeout": 2
+    },
+    "truncated": 0,
+    "mean_input_tokens": 230.7,
+    "mean_output_tokens": 65.45,
+    "mean_ttft_s": 6.43,
+    "median_ttft_s": 5.7222,
+    "mean_total_s": 14.5483,
+    "mean_decode_tok_per_s": 8.29,
+    "total_energy_j": 3915.7,
+    "mean_energy_j_per_task": 195.78,
+    "draft_tokens": 916,
+    "draft_accepted": 849,
+    "draft_acceptance": 0.9269,
+    "pass@1": 0.5,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.5,
+      "missing logic": 0.6,
+      "operator misuse": 0.6667,
+      "value misuse": 0.2,
+      "variable misuse": 0.6
+    }
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 423.3
+  }
+}
+-- draft-q8-n2 peak RSS 2629320 kB
+-- 2026-10-18T21:40:48+02:00 llama-server draft-q8-n4
+-- 2026-10-18T21:40:51+02:00 draft-q8-n4 / humaneval_plus
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "failed": 3,
+      "passed": 17
+    },
+    "truncated": 0,
+    "mean_input_tokens": 146.45,
+    "mean_output_tokens": 143.5,
+    "mean_ttft_s": 2.8527,
+    "median_ttft_s": 2.7714,
+    "mean_total_s": 16.8578,
+    "mean_decode_tok_per_s": 10.54,
+    "total_energy_j": 4667.6,
+    "mean_energy_j_per_task": 233.38,
+    "draft_tokens": 2456,
+    "draft_accepted": 2289,
+    "draft_acceptance": 0.932,
+    "pass@1": 0.85
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 361.8
+  }
+}
+-- 2026-10-18T21:46:55+02:00 draft-q8-n4 / humanevalfix
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "passed": 10,
+      "failed": 8,
+      "timeout": 2
+    },
+    "truncated": 0,
+    "mean_input_tokens": 230.7,
+    "mean_output_tokens": 65.45,
+    "mean_ttft_s": 5.0743,
+    "median_ttft_s": 5.0004,
+    "mean_total_s": 11.1478,
+    "mean_decode_tok_per_s": 10.74,
+    "total_energy_j": 3405.3,
+    "mean_energy_j_per_task": 170.26,
+    "draft_tokens": 1160,
+    "draft_accepted": 1035,
+    "draft_acceptance": 0.8922,
+    "pass@1": 0.5,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.5,
+      "missing logic": 0.6,
+      "operator misuse": 0.6667,
+      "value misuse": 0.2,
+      "variable misuse": 0.6
+    }
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 353.3
+  }
+}
+-- draft-q8-n4 peak RSS 2631088 kB
+-- 2026-10-18T21:52:53+02:00 llama-server draft-q8-n8
+-- 2026-10-18T21:52:56+02:00 draft-q8-n8 / humaneval_plus
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "failed": 3,
+      "passed": 17
+    },
+    "truncated": 0,
+    "mean_input_tokens": 146.45,
+    "mean_output_tokens": 143.5,
+    "mean_ttft_s": 2.5547,
+    "median_ttft_s": 2.4326,
+    "mean_total_s": 14.585,
+    "mean_decode_tok_per_s": 12.05,
+    "total_energy_j": 4469.0,
+    "mean_energy_j_per_task": 223.45,
+    "draft_tokens": 2928,
+    "draft_accepted": 2538,
+    "draft_acceptance": 0.8668,
+    "pass@1": 0.85
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 315.6
+  }
+}
+-- 2026-10-18T21:58:14+02:00 draft-q8-n8 / humanevalfix
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "passed": 10,
+      "failed": 8,
+      "timeout": 2
+    },
+    "truncated": 0,
+    "mean_input_tokens": 230.7,
+    "mean_output_tokens": 65.45,
+    "mean_ttft_s": 5.1616,
+    "median_ttft_s": 5.1139,
+    "mean_total_s": 11.4169,
+    "mean_decode_tok_per_s": 10.42,
+    "total_energy_j": 3484.6,
+    "mean_energy_j_per_task": 174.23,
+    "draft_tokens": 1464,
+    "draft_accepted": 1152,
+    "draft_acceptance": 0.7869,
+    "pass@1": 0.5,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.5,
+      "missing logic": 0.6,
+      "operator misuse": 0.6667,
+      "value misuse": 0.2,
+      "variable misuse": 0.6
+    }
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 358.9
+  }
+}
+-- draft-q8-n8 peak RSS 2634444 kB
+-- 2026-10-18T22:04:16+02:00 llama-server draft-q4-n4
+-- 2026-10-18T22:04:19+02:00 draft-q4-n4 / humaneval_plus
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "failed": 3,
+      "passed": 17
+    },
+    "truncated": 0,
+    "mean_input_tokens": 146.45,
+    "mean_output_tokens": 143.5,
+    "mean_ttft_s": 2.7989,
+    "median_ttft_s": 2.6152,
+    "mean_total_s": 15.0175,
+    "mean_decode_tok_per_s": 11.84,
+    "total_energy_j": 4598.8,
+    "mean_energy_j_per_task": 229.94,
+    "draft_tokens": 2448,
+    "draft_accepted": 2291,
+    "draft_acceptance": 0.9359,
+    "pass@1": 0.85
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 324.9
+  }
+}
+-- 2026-10-18T22:09:47+02:00 draft-q4-n4 / humanevalfix
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "passed": 10,
+      "failed": 8,
+      "timeout": 2
+    },
+    "truncated": 0,
+    "mean_input_tokens": 230.7,
+    "mean_output_tokens": 65.45,
+    "mean_ttft_s": 5.3344,
+    "median_ttft_s": 5.3004,
+    "mean_total_s": 11.0091,
+    "mean_decode_tok_per_s": 11.45,
+    "total_energy_j": 3363.7,
+    "mean_energy_j_per_task": 168.18,
+    "draft_tokens": 1156,
+    "draft_accepted": 1032,
+    "draft_acceptance": 0.8927,
+    "pass@1": 0.5,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.5,
+      "missing logic": 0.6,
+      "operator misuse": 0.6667,
+      "value misuse": 0.2,
+      "variable misuse": 0.6
+    }
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 350.7
+  }
+}
+-- draft-q4-n4 peak RSS 2451228 kB
+-- 2026-10-18T22:15:41+02:00 llama-server ngram-simple
+-- 2026-10-18T22:15:43+02:00 ngram-simple / humaneval_plus
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "failed": 3,
+      "passed": 17
+    },
+    "truncated": 0,
+    "mean_input_tokens": 146.45,
+    "mean_output_tokens": 143.5,
+    "mean_ttft_s": 2.0031,
+    "median_ttft_s": 1.9209,
+    "mean_total_s": 10.9129,
+    "mean_decode_tok_per_s": 16.26,
+    "total_energy_j": 3306.0,
+    "mean_energy_j_per_task": 165.3,
+    "draft_tokens": 2160,
+    "draft_accepted": 1637,
+    "draft_acceptance": 0.7579,
+    "pass@1": 0.85
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 241.4
+  }
+}
+-- 2026-10-18T22:19:47+02:00 ngram-simple / humanevalfix
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "passed": 10,
+      "failed": 8,
+      "timeout": 2
+    },
+    "truncated": 0,
+    "mean_input_tokens": 230.7,
+    "mean_output_tokens": 65.45,
+    "mean_ttft_s": 3.8958,
+    "median_ttft_s": 3.8625,
+    "mean_total_s": 7.8816,
+    "mean_decode_tok_per_s": 16.57,
+    "total_energy_j": 2419.8,
+    "mean_energy_j_per_task": 120.99,
+    "draft_tokens": 1392,
+    "draft_accepted": 855,
+    "draft_acceptance": 0.6142,
+    "pass@1": 0.5,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.5,
+      "missing logic": 0.6,
+      "operator misuse": 0.6667,
+      "value misuse": 0.2,
+      "variable misuse": 0.6
+    }
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 287.9
+  }
+}
+-- ngram-simple peak RSS 1883452 kB
+-- 2026-10-18T22:24:39+02:00 llama-server ngram-mod
+-- 2026-10-18T22:24:41+02:00 ngram-mod / humaneval_plus
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "failed": 3,
+      "passed": 17
+    },
+    "truncated": 0,
+    "mean_input_tokens": 146.45,
+    "mean_output_tokens": 143.5,
+    "mean_ttft_s": 2.077,
+    "median_ttft_s": 1.9222,
+    "mean_total_s": 12.3222,
+    "mean_decode_tok_per_s": 14.31,
+    "total_energy_j": 3737.2,
+    "mean_energy_j_per_task": 186.86,
+    "draft_tokens": 2037,
+    "draft_accepted": 1410,
+    "draft_acceptance": 0.6922,
+    "pass@1": 0.85
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 270.3
+  }
+}
+-- 2026-10-18T22:29:14+02:00 ngram-mod / humanevalfix
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "passed": 10,
+      "failed": 9,
+      "timeout": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 230.7,
+    "mean_output_tokens": 65.75,
+    "mean_ttft_s": 4.1422,
+    "median_ttft_s": 3.956,
+    "mean_total_s": 10.7355,
+    "mean_decode_tok_per_s": 10.49,
+    "total_energy_j": 3270.4,
+    "mean_energy_j_per_task": 163.52,
+    "draft_tokens": 2720,
+    "draft_accepted": 700,
+    "draft_acceptance": 0.2574,
+    "pass@1": 0.5,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.5,
+      "missing logic": 0.6,
+      "operator misuse": 0.6667,
+      "value misuse": 0.2,
+      "variable misuse": 0.6
+    }
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 285.9
+  }
+}
+-- ngram-mod peak RSS 1909564 kB
+== done 2026-10-18T22:34:03+02:00

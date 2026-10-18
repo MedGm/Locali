@@ -8,7 +8,10 @@
 #   stop other model servers, close the browser and IDE, keep the laptop on mains power
 #
 #   LIMIT=20 bash experiments/scripts/laptop_speculative.sh                    # pilot, every setting
-#   RUN="none draft-q8-n4 ngram-mod" bash experiments/scripts/laptop_speculative.sh   # full run
+#   RUN="ngram-simple none draft-q4-n4 draft-q4-n8 draft-q8-n8" bash experiments/scripts/laptop_speculative.sh
+#
+# The full run starts with a speculative setting so plain decoding is not the one that pays for the
+# cold start (the pilot ran it first, right after the model was read from disk).
 #
 # Greedy speculative decoding verifies every drafted token with the target model, so answers should
 # match plain decoding; the summary compares them. Re-running resumes.
@@ -38,6 +41,7 @@ ALL_CONFIGS=(
   "draft-q8-n4|-md $DRAFT_Q8 --spec-type draft-simple --spec-draft-n-max 4 -td 4"
   "draft-q8-n8|-md $DRAFT_Q8 --spec-type draft-simple --spec-draft-n-max 8 -td 4"
   "draft-q4-n4|-md $DRAFT_Q4 --spec-type draft-simple --spec-draft-n-max 4 -td 4"
+  "draft-q4-n8|-md $DRAFT_Q4 --spec-type draft-simple --spec-draft-n-max 8 -td 4"
   "ngram-simple|--spec-type ngram-simple"
   "ngram-mod|--spec-type ngram-mod"
 )

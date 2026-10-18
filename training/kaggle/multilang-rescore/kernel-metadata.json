@@ -1,0 +1,15 @@
+{
+  "id": "elgorrimmohamed/locali-multilang-rescore",
+  "title": "locali-multilang-rescore",
+  "code_file": "kaggle_multilang.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": ["elgorrimmohamed/locali-multilang"],
+  "model_sources": []
+}

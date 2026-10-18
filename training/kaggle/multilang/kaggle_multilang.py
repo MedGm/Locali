@@ -10,7 +10,8 @@ disk); the VM is disposable, holds no secrets, and every program has a timeout.
 2. serve the merged fine-tune on GPU 0 and the base model on GPU 1 with vLLM, greedy, 768 tokens
 3. generate one fix per problem and language, then compile and run each one
 
-Environment: PILOT=1 runs 5 problems per language; LANGS=rust runs only the listed languages.
+Environment: PILOT=1 runs 5 problems per language; LANGS=rust runs only the listed languages;
+RESCORE=1 skips generation and scores the answers of an earlier run attached as input (CPU only).
 """
 
 import json
@@ -32,6 +33,7 @@ VLLM_VERSION = "0.29.0"
 RESULTS = WORK / "results"
 LOGS = WORK / "logs"
 LIMIT = 5 if os.environ.get("PILOT") == "1" else None
+RESCORE = os.environ.get("RESCORE") == "1"
 LANGS = os.environ.get("LANGS", "js,java,go,cpp,rust").split(",")
 MODELS = {
     "ft": ("MedGm/Llama-Locali-Qwen2.5-Coder-1.5B", "a1b0b1189d2050dd20013371fc327362ea6b2964", 0, 8000),
@@ -60,7 +62,7 @@ def setup() -> None:
     assert sh(["apt-get", "install", "-y", "-qq", "nodejs", "npm", "default-jdk-headless", "golang-go", "g++", "cargo",
                                          "libboost-dev", "libssl-dev"],
               setup_log, env={**os.environ, "DEBIAN_FRONTEND": "noninteractive"}) == 0, "toolchains failed"
-    if not (VLLM_VENV / "bin" / "python").exists():
+    if not RESCORE and not (VLLM_VENV / "bin" / "python").exists():
         for step in (
             [sys.executable, "-m", "pip", "install", "-q", "uv"],
             [sys.executable, "-m", "uv", "venv", str(VLLM_VENV), "--python", "3.12"],
@@ -169,16 +171,30 @@ def score() -> None:
     (WORK / "summary.json").write_text(json.dumps(summary, indent=1))
 
 
+def copy_earlier_answers() -> None:
+    """RESCORE: take answers.jsonl from an earlier run's output attached under /kaggle/input."""
+    found = sorted(Path("/kaggle/input").rglob("answers.jsonl"))
+    for path in found:
+        key, lang = path.parent.parent.name, path.parent.name
+        if key in MODELS and lang in LANGS:
+            (RESULTS / key / lang).mkdir(parents=True, exist_ok=True)
+            (RESULTS / key / lang / "answers.jsonl").write_text(path.read_text())
+    log(f"copied {len(found)} answer files from the earlier run")
+
+
 def main() -> None:
     setup()
     report = validate()
     if any(r["canonical_solution"]["passed"] < r["canonical_solution"]["n"] for r in report.values()):
         log("some reference solutions fail; see validation.json (scores are still computed)")
-    threads = [threading.Thread(target=generate, args=(key,)) for key in MODELS]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
+    if RESCORE:
+        copy_earlier_answers()
+    else:
+        threads = [threading.Thread(target=generate, args=(key,)) for key in MODELS]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
     score()
     log("all done")
 

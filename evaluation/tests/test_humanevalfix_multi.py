@@ -39,13 +39,45 @@ def test_java_moves_imports_up_and_wraps_a_bare_method():
     assert "public class Solution" not in full and "class Solution {" in full
 
 
-def test_go_uses_the_problems_imports_not_the_answers():
+def test_go_drops_imports_nothing_uses():
     it = item("go", test_setup="package main\n\nimport (\n    \"testing\"\n)\n", imports='import (\n    "math"\n)\n')
     src = program(it, 'package main\n\nimport (\n    "fmt"\n)\n\nfunc F() int { return 1 }\n')["main_test.go"]
-    assert '"fmt"' not in src and '"math"' in src and src.count("package main") == 1 and "func F()" in src
+    assert '"fmt"' not in src and '"math"' not in src and src.count("package main") == 1 and "func F()" in src
 
 
 def test_rust_is_a_library_with_the_declarations_uses():
     it = item("rust", declaration="\nuse std::cmp::max;\nuse regex::Regex;\n\nfn f() -> i32{\n")
     src = program(it, "fn f() -> i32 { 1 }")["src/lib.rs"]
     assert src.startswith("#![allow(unused, deprecated)]") and "use regex::Regex;" in src and src.endswith("TEST")
+
+
+def test_echoed_test_code_is_removed_before_the_real_test_is_added():
+    go = item("go", test_setup='package main\n\nimport (\n    "testing"\n    "github.com/stretchr/testify/assert"\n)\n',
+              test="func TestF(t *testing.T) {\n    assert := assert.New(t)\n    assert.Equal(1, F())\n}\n")
+    answer = ('package main\n\nimport (\n\t"math"\n\t"testing"\n)\n\nfunc F() int { return int(math.Floor(1.5)) }\n\n'
+              'func TestF(t *testing.T) {\n\tif F() != 1 { t.Fail() }\n}\n')
+    src = program(go, answer)["main_test.go"]
+    assert src.count("func TestF") == 1 and src.count("package main") == 1
+    java = program(item("java", test="public class Main { public static void main(String[] a) {} }"),
+                   "class Solution { int f() { return 1; } }\npublic class Main { public static void main(String[] a) { } }")
+    assert java["Main.java"].count("class Main") == 1
+    rust = program(item("rust", test="#[cfg(test)]\nmod tests {\n    #[test]\n    fn t() {}\n}\n"),
+                   "fn f() -> i32 { 1 }\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n    #[test]\n    fn mine() { assert_eq!(f(), 1); }\n}\n")
+    assert rust["src/lib.rs"].count("mod tests") == 1 and "fn mine" not in rust["src/lib.rs"]
+
+
+def test_go_gets_one_import_block_with_exactly_the_packages_used():
+    it = item("go", test_setup='package main\n\nimport (\n    "testing"\n    "github.com/stretchr/testify/assert"\n)\n',
+              imports='import (\n    "math"\n    "strings"\n)\n',
+              test="func TestF(t *testing.T) {\n    assert := assert.New(t)\n    assert.Equal(true, math.Abs(F()) < 1)\n}\n")
+    src = program(it, 'import "math"\n\nfunc F() float64 { return math.Sqrt(0) + float64(len(strconv.Itoa(1))) }\n')["main_test.go"]
+    imports = src[src.index("import ("):src.index(")") + 1]
+    assert '"math"' in imports and '"strconv"' in imports and '"testing"' in imports
+    assert '"github.com/stretchr/testify/assert"' in imports and '"strings"' not in imports
+    assert src.count("import") == 1
+
+
+def test_rust_use_lines_are_not_repeated():
+    it = item("rust", declaration="\nuse rand::Rng;\nuse std::cmp::max;\n\nfn f() -> i32{\n")
+    src = program(it, "use rand::Rng;\nuse std::cmp::max;\n\nfn f() -> i32 { 1 }")["src/lib.rs"]
+    assert src.count("use rand::Rng;") == 1 and src.count("use std::cmp::max;") == 1

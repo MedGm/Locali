@@ -7,13 +7,19 @@ the HumanEvalPack harness:
 - js: Node; console.assert only prints, so failed asserts are turned into errors
 - java: one Main.java (imports moved to the top, the test's Main class, then Solution), run with the
   single-file launcher so compiling and running use the same JDK
-- go: one main_test.go (package, test imports, the problem's imports, code, test) in a module with
-  testify; the problem's import list is used, because Go rejects unused or repeated imports
+- go: one main_test.go in a module with testify. Go rejects unused, missing or repeated imports, so
+  every import line is dropped (answer, problem, test setup) and one block is written with exactly
+  the packages the file uses
 - cpp: g++ with the problem's includes, the answer (any main() of its own removed) and the test,
   linked with OpenSSL (Boost headers needed for two problems). CPP/38's declaration already holds
   part of the body, so declaration + reference does not compile; answers are not affected, since
   only the declaration's #include lines are used
-- rust: a library crate with rand, regex and md5, built and run with cargo test
+- rust: a library crate with rand, regex and md5, built and run with cargo test; use lines are
+  merged without repeats
+
+Test code a model repeats from the prompt (Go Test functions, Java's Main class, Rust's tests module,
+a C++ main) is removed before the real test is added, so an answer is judged on its fix, not on
+whether it echoed the tests.
 
 This runs model-written code outside the Docker sandbox, which no other experiment does. It is meant
 for a disposable Kaggle VM (training/kaggle/multilang), with a timeout per program.
@@ -87,6 +93,52 @@ def _without_main(code: str, pattern: str) -> str:
     return code[: m.start()] if m else code
 
 
+GO_PACKAGES = {  # package name used in code -> import path
+    "math": "math", "strings": "strings", "strconv": "strconv", "sort": "sort", "fmt": "fmt",
+    "unicode": "unicode", "bytes": "bytes", "regexp": "regexp", "reflect": "reflect", "time": "time",
+    "errors": "errors", "os": "os", "rand": "math/rand", "md5": "crypto/md5", "sha256": "crypto/sha256",
+    "hex": "encoding/hex", "heap": "container/heap", "big": "math/big", "utf8": "unicode/utf8", "bits": "math/bits",
+    "testing": "testing", "assert": "github.com/stretchr/testify/assert",
+}
+GO_IMPORT = re.compile(r'^\s*import\s*\([^)]*\)\s*$|^\s*import\s+(\w+\s+)?"[^"]+"\s*$', re.MULTILINE)
+
+
+def drop_blocks(code: str, header: str) -> str:
+    """Remove every block that starts with the header regex and runs to its matching closing brace
+    (test functions, test classes or modules that a model repeated from the prompt)."""
+    pattern = re.compile(header, re.MULTILINE)
+    while (m := pattern.search(code)) is not None:
+        open_at = code.find("{", m.end())
+        if open_at < 0:
+            break
+        depth, i = 0, open_at
+        while i < len(code):
+            depth += {"{": 1, "}": -1}.get(code[i], 0)
+            if depth == 0:
+                break
+            i += 1
+        code = code[: m.start()] + code[i + 1:]
+    return code
+
+
+def _go_file(item: "Item", code: str) -> str:
+    body = drop_blocks(code, r"^func\s+Test\w*\s*\(")
+    body = GO_IMPORT.sub("", "\n".join(line for line in body.splitlines() if not line.startswith("package ")))
+    used = [path for name, path in GO_PACKAGES.items() if re.search(rf"\b{name}\.", body + "\n" + item.test)]
+    block = "import (\n" + "".join(f'    "{path}"\n' for path in used) + ")\n" if used else ""
+    return f"package main\n\n{block}\n{body.strip()}\n\n{item.test}"
+
+
+def _rust_file(item: "Item", code: str) -> str:
+    body = drop_blocks(code, r"^\s*(#\[cfg\(test\)\]\s*)?mod\s+tests\b")
+    uses = []
+    for line in (item.declaration + "\n" + body).splitlines():
+        if line.strip().startswith("use ") and line.strip() not in uses:
+            uses.append(line.strip())
+    body = "\n".join(line for line in body.splitlines() if not line.strip().startswith("use "))
+    return "#![allow(unused, deprecated)]\n" + "\n".join(uses) + f"\n\n{body.strip()}\n\n{item.test}"
+
+
 def program(item: Item, code: str) -> dict[str, str]:
     """Files to write for one answer, by name."""
     lang = item.language
@@ -98,19 +150,17 @@ def program(item: Item, code: str) -> dict[str, str]:
         return {"main.cpp": f"{includes}\n{body}\n{item.test}"}
     if lang == "java":
         imports = {line.strip() for line in (item.declaration + "\n" + code).splitlines() if line.strip().startswith("import ")}
-        body = "\n".join(line for line in code.splitlines() if not line.strip().startswith("import "))
+        body = drop_blocks(code, r"^\s*(public\s+)?class\s+Main\b")  # a repeated test class
+        body = "\n".join(line for line in body.splitlines() if not line.strip().startswith("import "))
         if not re.search(r"\bclass\s+Solution\b", body):
             body = f"class Solution {{\n{body}\n}}"
         body = re.sub(r"\bpublic\s+class\s+Solution\b", "class Solution", body)
         # the source launcher (java Main.java) runs the first class of the file, so the test's Main goes first
         return {"Main.java": "\n".join(sorted(imports)) + "\n\n" + item.test + "\n\n" + body}
     if lang == "go":
-        body = "\n".join(line for line in code.splitlines() if not line.startswith("package "))
-        body = re.sub(r"^import\s*\([^)]*\)\s*$|^import\s+\"[^\"]+\"\s*$", "", body, flags=re.MULTILINE)
-        return {"main_test.go": f"{item.test_setup}\n{item.imports}\n{body}\n\n{item.test}"}
+        return {"main_test.go": _go_file(item, code)}
     if lang == "rust":
-        uses = "\n".join(line for line in item.declaration.splitlines() if line.strip().startswith("use "))
-        return {"src/lib.rs": f"#![allow(unused, deprecated)]\n{uses}\n\n{code}\n\n{item.test}"}
+        return {"src/lib.rs": _rust_file(item, code)}
     raise ValueError(lang)
 
 

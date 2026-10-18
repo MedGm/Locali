@@ -19,6 +19,7 @@ class Completion:
     ttft_s: float
     total_s: float
     finish_reason: str | None
+    timings: dict | None = None  # llama.cpp's own timings, incl. draft_n / draft_n_accepted with speculation
 
 
 class ChatClient:
@@ -64,7 +65,7 @@ class ChatClient:
         )
 
         text, reasoning = [], []
-        usage, finish_reason, first_token_at = {}, None, None
+        usage, finish_reason, first_token_at, timings = {}, None, None, None
         start = time.perf_counter()
         with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
             for raw in response:
@@ -73,6 +74,7 @@ class ChatClient:
                     continue
                 chunk = json.loads(line[6:])
                 usage = chunk.get("usage") or usage
+                timings = chunk.get("timings") or timings
                 for choice in chunk.get("choices", []):
                     d = choice.get("delta") or {}
                     piece = d.get("content")
@@ -96,4 +98,5 @@ class ChatClient:
             ttft_s=round((first_token_at or end) - start, 4),
             total_s=round(end - start, 4),
             finish_reason=finish_reason,
+            timings=timings,
         )

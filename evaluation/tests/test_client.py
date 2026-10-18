@@ -108,3 +108,10 @@ def test_hands_each_piece_to_on_token(fake_server):
     out = ChatClient(fake_server["base_url"]).complete([{"role": "user", "content": "hi"}], max_tokens=16,
                                                        on_token=pieces.append)
     assert pieces == ["def ", "f(): ", "pass"] and out.text == "".join(pieces)
+
+
+def test_keeps_the_servers_timings_with_speculative_counts(fake_server):
+    timings = {"predicted_n": 3, "draft_n": 4, "draft_n_accepted": 3}
+    fake_server["script"] = [delta("a"), delta("b", finish="stop"), {**USAGE, "timings": timings}]
+    out = ChatClient(fake_server["base_url"]).complete([{"role": "user", "content": "hi"}], max_tokens=4)
+    assert out.timings == timings

@@ -141,6 +141,8 @@ def run_benchmark(
             "energy_j": energy.joules if config.workers == 1 else None,
             "completion": completion.text,
             "reasoning": completion.reasoning,
+            **({"draft_n": completion.timings["draft_n"], "draft_n_accepted": completion.timings["draft_n_accepted"]}
+               if completion.timings and "draft_n" in completion.timings else {}),
         }
         with lock, samples_path.open("a") as fh:
             fh.write(json.dumps(record) + "\n")
@@ -187,7 +189,17 @@ def aggregate(records: list[dict]) -> dict:
         "mean_decode_tok_per_s": round(statistics.fmean(decode), 2) if decode else None,
         "total_energy_j": round(sum(energy), 1) if energy else None,
         "mean_energy_j_per_task": round(statistics.fmean(energy), 2) if energy else None,
+        **_speculative(records),
     }
+
+
+def _speculative(records: list[dict]) -> dict:
+    """Share of drafted tokens the target accepted, when the server ran speculative decoding."""
+    drafted = sum(r.get("draft_n") or 0 for r in records)
+    if not drafted:
+        return {}
+    accepted = sum(r.get("draft_n_accepted") or 0 for r in records)
+    return {"draft_tokens": drafted, "draft_accepted": accepted, "draft_acceptance": round(accepted / drafted, 4)}
 
 
 def main() -> None:

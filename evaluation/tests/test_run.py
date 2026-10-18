@@ -143,3 +143,14 @@ def test_generate_only_run_can_be_scored_later(tmp_path, config):
     summary = rescore_run(out, HUMANEVAL_PLUS_TASK, problems)
 
     assert summary["metrics"]["pass@1"] == 0.5
+
+
+def test_speculative_counts_are_kept_and_summarised(tmp_path, config):
+    def generate(problem):
+        return Completion(text=GOOD, reasoning="", input_tokens=50, output_tokens=20, ttft_s=0.5, total_s=2.5,
+                          finish_reason="stop", timings={"draft_n": 8, "draft_n_accepted": 6})
+    problems = [replace(HUMANEVAL_STYLE, task_id="toy/a"), replace(HUMANEVAL_STYLE, task_id="toy/b")]
+    summary = run_benchmark(config, HUMANEVAL_PLUS_TASK, problems, generate, tmp_path / "out")
+    samples = [json.loads(line) for line in (tmp_path / "out" / "samples.jsonl").read_text().splitlines()]
+    assert all(s["draft_n"] == 8 and s["draft_n_accepted"] == 6 for s in samples)
+    assert summary["metrics"]["draft_acceptance"] == 0.75 and summary["metrics"]["draft_tokens"] == 16

@@ -22,6 +22,7 @@ GENERATION_FIELDS = (
     "task_id", "input_tokens", "output_tokens", "ttft_s", "total_s", "finish_reason",
     "energy_j", "completion", "reasoning",
 )
+OPTIONAL_FIELDS = ("draft_n", "draft_n_accepted")  # only in runs with speculative decoding
 
 
 def rescore_run(run_dir: Path, task: Task, items: list, workers: int = 4) -> dict:
@@ -42,7 +43,7 @@ def rescore_run(run_dir: Path, task: Task, items: list, workers: int = 4) -> dic
             record.get("output_tokens"), record.get("ttft_s", 0.0), record.get("total_s", 0.0),
             record.get("finish_reason"),
         )
-        generation = {k: record.get(k) for k in GENERATION_FIELDS}
+        generation = {k: record.get(k) for k in GENERATION_FIELDS} | {k: record[k] for k in OPTIONAL_FIELDS if k in record}
         return {"task_id": record["task_id"], **task.score(by_id[record["task_id"]], completion, timeout),
                 **generation}
 

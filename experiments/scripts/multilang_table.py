@@ -36,14 +36,9 @@ def load(folders: list[Path]) -> dict[str, dict]:
     return langs
 
 
-def main() -> None:
-    folders = [Path(a) for a in sys.argv[1:]] or [DEFAULT]
+def collect(folders: list[Path]) -> list[dict]:
     langs = load(folders)
-    lines = [
-        "| Language | Problems scored | Base | Fine-tuned | Change | Only base fixed / only fine-tuned fixed | p (exact McNemar) |",
-        "|---|---|---|---|---|---|---|",
-        "| Python (for reference, [finetune_v2](../finetune_v2/README.md)) | 164 | 25.0 | 36.0 | +11.0 | | 0.006 |",
-    ]
+    rows = []
     for lang in [lg for lg in NAMES if lg in langs]:
         d = langs[lang]
         ids = [t for t in d["base"] if t not in d["excluded"] and t in d["ft"]]
@@ -51,15 +46,30 @@ def main() -> None:
         ft = [d["ft"][t]["passed"] for t in ids]
         b = sum(x and not y for x, y in zip(base, ft, strict=True))
         c = sum(y and not x for x, y in zip(base, ft, strict=True))
-        pb, pf = 100 * sum(base) / len(ids), 100 * sum(ft) / len(ids)
-        lines.append(f"| {NAMES[lang]} | {len(ids)} of 164 | {pb:.1f} | {pf:.1f} | {pf - pb:+.1f} | {b} / {c} | "
-                     f"{mcnemar_exact(b, c):.3g} |")
+        rows.append({"language": NAMES[lang], "n": len(ids), "base": round(100 * sum(base) / len(ids), 1),
+                     "ft": round(100 * sum(ft) / len(ids), 1),
+                     "change": round(100 * (sum(ft) - sum(base)) / len(ids), 1), "only_base": b, "only_ft": c,
+                     "p": float(f"{mcnemar_exact(b, c):.3g}"), "excluded": sorted(d["excluded"])})
+    return rows
+
+
+def main() -> None:
+    folders = [Path(a) for a in sys.argv[1:]] or [DEFAULT]
+    lines = [
+        "| Language | Problems scored | Base | Fine-tuned | Change | Only base fixed / only fine-tuned fixed | p (exact McNemar) |",
+        "|---|---|---|---|---|---|---|",
+        "| Python (for reference, [finetune_v2](../finetune_v2/README.md)) | 164 | 25.0 | 36.0 | +11.0 | | 0.006 |",
+    ]
+    rows = collect(folders)
+    for r in rows:
+        lines.append(f"| {r['language']} | {r['n']} of 164 | {r['base']:.1f} | {r['ft']:.1f} | {r['change']:+.1f} | "
+                     f"{r['only_base']} / {r['only_ft']} | {r['p']:.3g} |")
     out = folders[0] / "table.md"
     out.write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
-    for lang, d in langs.items():
-        if d["excluded"]:
-            print(f"\n{NAMES[lang]}: excluded {sorted(d['excluded'])}")
+    for r in rows:
+        if r["excluded"]:
+            print(f"\n{r['language']}: excluded {r['excluded']}")
 
 
 if __name__ == "__main__":

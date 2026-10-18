@@ -173,9 +173,67 @@ def agents() -> dict:
                     "laptop. 'restock boundary' counts as suspected only through a wrong generated test.", "rows": rows}
 
 
+def agent_context() -> dict:
+    from context_table import collect
+
+    return {"note": "Full workflow on demo_repo, fine-tuned Q8 on the laptop CPU, one run per setting.",
+            "rows": collect()}
+
+
+def redteam() -> dict:
+    controls = [json.loads(line) for line in (R / "redteam" / "controls.jsonl").read_text().splitlines()]
+    threats: dict[str, dict] = {}
+    for c in controls:
+        t = threats.setdefault(c["threat"], {"threat": c["threat"], "on": 0, "off": 0, "cases": 0})
+        t["on" if c["defended"] else "off"] += c["attack_succeeded"]
+        t["cases"] += c["defended"]
+    cases = [{"id": c["id"], "threat": c["threat"], "attack": c["attack"], "control": c["control"],
+              "detail": c["detail"]} for c in controls if c["defended"]]
+    model = [json.loads(line) for line in (R / "redteam" / "model.jsonl").read_text().splitlines()]
+    attacked = [m for m in model if m["placement"] != "none"]
+    by_threat = {}
+    for m in attacked:
+        t = by_threat.setdefault(m["threat"], {"threat": m["threat"], "attacks": 0, "complied": 0,
+                                                "harm_with": 0, "harm_without": 0})
+        t["attacks"] += 1
+        t["complied"] += bool(m["model_complied"])
+        t["harm_with"] += bool(m["harm_with_controls"])
+        t["harm_without"] += bool(m["harm_without_controls"])
+    return {"controls": sorted(threats.values(), key=lambda t: t["threat"]), "cases": cases,
+            "model": sorted(by_threat.values(), key=lambda t: t["threat"])}
+
+
+def serving() -> dict:
+    from serving_table import usable
+
+    base = R / "serving_t4"
+    vllm = []
+    for r in json.loads((base / "vllm_runs.json").read_text()):
+        metrics = json.loads((base / "results" / "internal_t1" / r["run"] / "summary.json").read_text())["metrics"]
+        vllm.append({"config": r["config"], "warm": bool(r.get("warm")), "workers": r["workers"],
+                     "throughput": r["throughput_tok_s"], "ttft_s": r["mean_ttft_s"], "request_s": r["mean_total_s"],
+                     "j_per_item": round(r["gpu_energy_j"] / r["items"]), "pass1": round(metrics["pass@1"] * 100, 1)})
+    hf = json.loads((base / "hf_runs.json").read_text())
+    answers = json.loads((base / "hf_answers.json").read_text())
+    rows = [{"run": r["run"], "batch": r["batch"], "use_cache": r["use_cache"], "tokens_per_s": r["tokens_per_s"],
+             "peak_memory_gb": r["peak_memory_gb"],
+             "usable": f"{sum(map(usable, answers[r['run']]))}/{len(answers[r['run']])}"} for r in hf["rows"]]
+    return {"note": "64 held-out repair problems on one T4 (vLLM 0.29.0); transformers on 16 of them.",
+            "vllm": vllm, "transformers": rows}
+
+
+def multilang() -> dict:
+    from multilang_table import collect
+
+    return {"note": "HumanEvalFix in other languages; the fine-tune was trained on Python only. Python for reference: "
+                    "25.0 -> 36.0 (p = 0.006).",
+            "rows": collect([R / "multilang_t4_rescore", R / "multilang_t4_rescore2"])}
+
+
 def main() -> None:
     out = {"generated_at": datetime.now(UTC).isoformat(timespec="seconds"), "baselines": baselines(),
-           "finetuning": finetuning(), "ladder": ladder(), "context_ablation": context_ablation(), "agents": agents()}
+           "finetuning": finetuning(), "ladder": ladder(), "context_ablation": context_ablation(), "agents": agents(),
+           "agent_context": agent_context(), "redteam": redteam(), "serving": serving(), "multilang": multilang()}
     (R / "summary.json").write_text(json.dumps(out, indent=1))
     print(f"wrote {R / 'summary.json'}")
 

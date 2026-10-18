@@ -10,6 +10,7 @@ loadEnvConfig(path.resolve(process.cwd(), ".."));
 const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
+  devIndicators: false, // the floating dev badge covers the sidebar's model card
   partialPrefetching: true,
   turbopack: {
     rules: {

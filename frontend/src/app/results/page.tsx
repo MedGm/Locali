@@ -493,7 +493,7 @@ function Languages({ data }: { data: Summary["multilang"] }) {
             { key: "ft", label: "Fine-tuned (QLoRA v2)", color: TUNED },
           ]}
           unit="%"
-          max={50}
+          max={40}
         />
         <SimpleTable
           head={["Language", "Problems", "Base", "Fine-tuned", "Change", "p"]}

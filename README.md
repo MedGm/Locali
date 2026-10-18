@@ -81,6 +81,19 @@ a patch by sending back its SHA-256, the hashes of the files it was made against
 its validation record; if anything differs, or the files changed since, it is refused or marked
 stale and can be revalidated. Applied patches can be reverted.
 
+### The web app
+
+| | |
+|---|---|
+| ![Home](docs/screenshots/home.png) | ![Repositories](docs/screenshots/repositories.png) |
+| **Home**: what to do next, repositories, changes waiting for a decision | **Repositories**: languages, last run, patches waiting |
+| ![A run](docs/screenshots/run.png) | ![Patch review](docs/screenshots/patch-review.png) |
+| **A run**: the steps, a summary, then every finding, test, fix and model call | **Patch review**: what to check, the validation record, approve the exact patch |
+| ![Playground](docs/screenshots/playground.png) | ![Research results](docs/screenshots/results.png) |
+| **Playground**: the fine-tuned model (left) finds and fixes the bug; the base model (right) does not | **Research results**: every study, here the other languages |
+
+Dark theme: [home-dark.png](docs/screenshots/home-dark.png).
+
 ## 2. Models and benchmark
 
 **Models** ([research design](docs/research-design.md)): Qwen2.5-Coder-1.5B, Phi-4-mini (3.8B),

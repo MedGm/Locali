@@ -12,11 +12,11 @@ Qwen2.5-Coder-0.5B-Instruct GGUF (Q4_K_M or Q8_0) @ebb2015. The pilot (20 proble
 
 | Setting | HE+ passed (163) | HE+ tok/s | HE+ J per correct | Fix passed (164) | Fix tok/s | Fix J per correct | Acceptance HE+ / fix |
 |---|---|---|---|---|---|---|---|
-| none | 103 | 10.2 | 387 | 52 | 10.4 | 607 | |
+| none | 103 | 10.2 | 386 | 52 | 10.4 | 606 | |
 | **ngram-simple** | 102 | **15.1** | **288 (−25 %)** | 53 | **16.3** | **478 (−21 %)** | 0.76 / 0.58 |
 | draft Q4, 4 tokens | 105 | 12.0 | 367 (−5 %) | 53 | 11.5 | 665 (+10 %) | 0.91 / 0.89 |
 | draft Q4, 8 tokens | 105 | 12.2 | 362 (−6 %) | 53 | 11.3 | 663 (+9 %) | 0.82 / 0.79 |
-| draft Q8, 8 tokens | 105 | 11.3 | 378 (−2 %) | 53 | 10.7 | 658 (+8 %) | 0.81 / 0.79 |
+| draft Q8, 8 tokens | 105 | 11.3 | 378 (−2 %) | 53 | 10.7 | 658 (+9 %) | 0.81 / 0.79 |
 
 The draft Q8 repair run was measured twice. The first time (07:02-07:59, kept in `spoiled/`) the
 second-seed answers were being scored in the Docker sandbox on the same machine from 07:26, which

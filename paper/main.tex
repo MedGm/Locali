@@ -4,6 +4,7 @@
 \usepackage{lmodern}
 \usepackage{microtype}
 \usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
@@ -119,7 +120,18 @@ Peak RAM (GB) & 3.27 & 1.29 & 3.21 & 1.79 & 1.16 \\
 \label{tab:cpu}
 \end{table}
 
-Table~\ref{tab:cpu} shows two independent levers. \textbf{Quantization} works as expected for a
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_cpu_energy.pdf}
+\caption{Energy per correct answer on the laptop CPU, from the base model in F16 to the fine-tune
+in Q4 with n-gram lookup. Base and fine-tuned F16 are from the quantization runs of 14 October,
+Q8 and Q4 from the speculative runs of 19 October (Section~\ref{sec:spec}); the base model in F16
+was not run on HumanEvalFix.}
+\label{fig:cpu}
+\end{figure}
+
+Table~\ref{tab:cpu} shows two independent levers, and Figure~\ref{fig:cpu} how they combine with
+speculative decoding. \textbf{Quantization} works as expected for a
 memory-bound CPU: decode speed follows model size (Q8 1.8$\times$, Q4 2.8$\times$ faster than F16).
 Q8 is lossless against F16 (2 of 163 and 9 of 377 answers change, $p\geq0.5$); Q4 costs the
 fine-tune 2--4 points on all three benchmarks, none significant alone.
@@ -144,10 +156,10 @@ model, and fixes 8 points more ($p=0.024$).
 \cmidrule(lr){3-4}\cmidrule(lr){5-6}
 Device & Setting & Speed-up & J/correct & Speed-up & J/correct \\
 \midrule
-CPU, FT Q8 & none & 1.00 & 387 & 1.00 & 607 \\
+CPU, FT Q8 & none & 1.00 & 386 & 1.00 & 606 \\
  & draft Q4, 4 tokens & 1.17 & 367 ($-5\%$) & 1.10 & 665 ($+10\%$) \\
  & draft Q4, 8 tokens & 1.19 & 362 ($-6\%$) & 1.09 & 663 ($+9\%$) \\
- & draft Q8, 8 tokens & 1.10 & 378 ($-2\%$) & 1.03 & 658 ($+8\%$) \\
+ & draft Q8, 8 tokens & 1.10 & 378 ($-2\%$) & 1.03 & 658 ($+9\%$) \\
  & n-gram & \textbf{1.48} & \textbf{288 ($-25\%$)} & \textbf{1.57} & \textbf{478 ($-21\%$)} \\
 \midrule
 CPU, FT Q4 & none & 1.00 & 220 & 1.00 & 467 \\
@@ -213,8 +225,16 @@ Speed-up, fine-tuned target & 1.88 & 1.44 & 1.33 & 1.47 & 1.37 & 0.96 \\
 \label{tab:shift}
 \end{table}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_acceptance.pdf}
+\caption{Acceptance of the same stock 0.5B draft for the base and the fine-tuned 1.5B target on
+the T4, one request at a time.}
+\label{fig:shift}
+\end{figure}
+
 The draft model is the base 0.5B model, so it imitates the base 1.5B model better than the
-fine-tune. Table~\ref{tab:shift} shows the cost. Acceptance is lower for the fine-tuned target at
+fine-tune. Figure~\ref{fig:shift} and Table~\ref{tab:shift} show the cost. Acceptance is lower for the fine-tuned target at
 every length on both benchmarks, and the gap widens with length and on the task the fine-tune was
 trained for: on repair it is 0.09 at 2 tokens and 0.24 at 8. With 8 drafted tokens the fine-tune
 repairs bugs 4\% more slowly than without speculation, while the base model still gains 1.47$\times$.

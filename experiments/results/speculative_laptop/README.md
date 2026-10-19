@@ -16,12 +16,28 @@ Qwen2.5-Coder-0.5B-Instruct GGUF (Q4_K_M or Q8_0) @ebb2015. The pilot (20 proble
 | **ngram-simple** | 102 | **15.1** | **288 (−25 %)** | 53 | **16.3** | **478 (−21 %)** | 0.76 / 0.58 |
 | draft Q4, 4 tokens | 105 | 12.0 | 367 (−5 %) | 53 | 11.5 | 665 (+10 %) | 0.91 / 0.89 |
 | draft Q4, 8 tokens | 105 | 12.2 | 362 (−6 %) | 53 | 11.3 | 663 (+9 %) | 0.82 / 0.79 |
-| draft Q8, 8 tokens | 105 | 11.3 | 378 (−2 %) | 53 | *see below* | *see below* | 0.81 / 0.79 |
+| draft Q8, 8 tokens | 105 | 11.3 | 378 (−2 %) | 53 | 10.7 | 658 (+8 %) | 0.81 / 0.79 |
 
-**The draft Q8 / repair row is not a valid measurement.** From 07:26 to 07:58 the second-seed
-answers were being scored in the Docker sandbox on the same machine, overlapping most of that run
-(07:02-07:59), so its time and energy (9.1 tok/s, 887 J per correct) are inflated. Its answers
-and pass count are fine. The run is kept as recorded in `spoiled/`, and was repeated.
+The draft Q8 repair run was measured twice. The first time (07:02-07:59, kept in `spoiled/`) the
+second-seed answers were being scored in the Docker sandbox on the same machine from 07:26, which
+inflated its time and energy (9.1 tok/s, 887 J per correct). The row above is the repeat, run alone
+at 10:21-11:03 the same day; its answers match the first run's.
+
+## Q4_K_M target
+
+The same study on the Q4_K_M fine-tune, run on 2026-10-19, 08:34-10:21, with
+`QUANT=q4km RUN="ngram-simple none"`:
+
+| Setting | HE+ passed | HE+ tok/s | HE+ J per correct | Fix passed | Fix tok/s | Fix J per correct | Acceptance HE+ / fix |
+|---|---|---|---|---|---|---|---|
+| none | 97 | 15.9 | 220 | 49 | 16.1 | 467 | |
+| **ngram-simple** | 99 | **19.1** | **189 (−14 %)** | 49 | **21.5** | **405 (−13 %)** | 0.71 / 0.59 |
+
+N-gram lookup saves about half as much on Q4 as on Q8 (13-14 % vs 21-25 %), since the cheaper target
+leaves less to save per verified token. Q4 with n-gram is the cheapest configuration measured: 189 J
+per solved HumanEval+ problem against 962 J for the base model in F16 (`../ladder_laptop`), at
+99 vs 106 solved (24 / 17 problems differ, p = 0.35). Q4 against Q8, both plain, solved 97 vs 103
+(p = 0.26) and 49 vs 52 (p = 0.55).
 
 ## What it says
 

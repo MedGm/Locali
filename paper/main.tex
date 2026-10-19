@@ -28,8 +28,8 @@ bug repair, on a laptop CPU (RAPL) and on an NVIDIA T4 (board power), and decomp
 levers: fine-tuning, weight quantization, request batching and speculative decoding. On the CPU
 the levers compound: from the base model in F16 to the fine-tune in Q8 with n-gram lookup, energy
 per solved HumanEval+ problem falls from 962\,J to 288\,J with no significant change in accuracy
-(106 vs.\ 102 of 163 solved, $p=0.63$), and fine-tuning alone cuts it by a third, by making
-answers shorter. Speculative decoding behaves differently on
+(106 vs.\ 102 of 163 solved, $p=0.63$), and to 189\,J with Q4 weights (99 solved, $p=0.35$);
+fine-tuning alone cuts it by a third, by making answers shorter. Speculative decoding behaves differently on
 the two devices: a 0.5B draft model is accepted 79--91\% of the time on the CPU yet saves at most
 6\% energy, while draft-free n-gram lookup saves 21--25\% on the CPU and 50--67\% on the T4.
 Fine-tuning also moves the target away from its stock draft: acceptance is lower for the
@@ -147,7 +147,11 @@ Device & Setting & Speed-up & J/correct & Speed-up & J/correct \\
 CPU, FT Q8 & none & 1.00 & 387 & 1.00 & 607 \\
  & draft Q4, 4 tokens & 1.17 & 367 ($-5\%$) & 1.10 & 665 ($+10\%$) \\
  & draft Q4, 8 tokens & 1.19 & 362 ($-6\%$) & 1.09 & 663 ($+9\%$) \\
+ & draft Q8, 8 tokens & 1.10 & 378 ($-2\%$) & 1.03 & 658 ($+8\%$) \\
  & n-gram & \textbf{1.48} & \textbf{288 ($-25\%$)} & \textbf{1.57} & \textbf{478 ($-21\%$)} \\
+\midrule
+CPU, FT Q4 & none & 1.00 & 220 & 1.00 & 467 \\
+ & n-gram & \textbf{1.20} & \textbf{189 ($-14\%$)} & \textbf{1.34} & \textbf{405 ($-13\%$)} \\
 \midrule
 T4, FT FP16 & none & 1.00 & 325 & 1.00 & 332 \\
  & draft, 2 tokens & 1.88 & 172 ($-47\%$) & 1.47 & 223 ($-33\%$) \\
@@ -171,6 +175,9 @@ has to read the prompt, which raises time to first token on repair from 5.7\,s t
 lookup proposes tokens at almost no cost, so it wins with lower acceptance (76\% and 58\%): 1.5$\times$
 faster, 21--25\% less energy, and no extra memory (1.89\,GB peak vs.\ 2.48--2.66\,GB with a draft).
 A Q8 draft was slower than a Q4 draft at equal length, in line with draft latency dominating.
+With a Q4 target, n-gram lookup saves about half as much (13--14\%), since a cheaper target leaves
+less to save per token; Q4 with n-gram lookup is the cheapest configuration we measured, at 189\,J
+per solved HumanEval+ problem and 405\,J per fixed bug.
 
 On the \textbf{T4} verification of a block costs little more than one token, so both methods
 help; short drafts work best (2 tokens), and n-gram lookup is again the best setting, halving energy
@@ -255,10 +262,10 @@ hardware it is meant for, and normalise by correct answers.
 One model family and size, two devices, Python only, and one run per configuration except for the
 seed check; differences under about 10\% in time or energy should not be read as findings.
 RAPL covers the CPU package and not memory or the rest of the laptop; T4 board energy includes idle
-draw and so favours whatever finishes sooner. The CPU numbers come from two nights a few days
-apart; plain Q8 decoding gave 250 and 244\,J per HumanEval+ problem on the two, so conditions were
-comparable. Kaggle GPUs are shared. We did not combine Q4 with n-gram lookup on the CPU, the
-combination we expect to be cheapest.
+draw and so favours whatever finishes sooner. The CPU numbers come from unattended sessions on
+14 and 19 October; plain decoding measured on both gave 250 and 244\,J per HumanEval+ problem for
+Q8 and 141 and 131\,J for Q4, so cross-session comparisons carry a few percent of drift, and the
+speculative comparisons are all within one session. Kaggle GPUs are shared.
 
 \section*{Reproducibility and use of AI tools}
 

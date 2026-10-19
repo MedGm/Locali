@@ -9,6 +9,7 @@
 #
 #   LIMIT=20 bash experiments/scripts/laptop_speculative.sh                    # pilot, every setting
 #   RUN="ngram-simple none draft-q4-n4 draft-q4-n8 draft-q8-n8" bash experiments/scripts/laptop_speculative.sh
+#   QUANT=q4km RUN="ngram-simple none" bash experiments/scripts/laptop_speculative.sh   # Q4_K_M target
 #
 # The full run starts with a speculative setting so plain decoding is not the one that pays for the
 # cold start (the pilot ran it first, right after the model was read from disk).
@@ -28,7 +29,12 @@ PORT=8081
 STAMP=$(date +%Y%m%d)
 [[ -n "$LIMIT" ]] && OUT_ROOT=${OUT_ROOT}_pilot
 
-TARGET=$GGUF_DIR/qwen2.5-coder-1.5b-qlora-v2-q8_0.gguf
+QUANT=${QUANT:-q80}  # target model: q80 (deployed default) or q4km
+case "$QUANT" in
+  q80) TARGET=$GGUF_DIR/qwen2.5-coder-1.5b-qlora-v2-q8_0.gguf; QUANT_LABEL=Q8_0 ;;
+  q4km) TARGET=$GGUF_DIR/qwen2.5-coder-1.5b-qlora-v2-q4_k_m.gguf; QUANT_LABEL=Q4_K_M ;;
+  *) echo "QUANT must be q80 or q4km" >&2; exit 1 ;;
+esac
 TARGET_ID=qwen2.5-coder-1.5b-ft-qlora-v2
 TARGET_REV=f1a367a8c08f5c97fbd25ae8ff9f16cdf0231791
 DRAFT_Q8=$GGUF_DIR/qwen2.5-coder-0.5b-instruct-q8_0.gguf  # Qwen/Qwen2.5-Coder-0.5B-Instruct-GGUF@ebb2015
@@ -69,10 +75,10 @@ run_all() {
   trap stop_server EXIT
   for entry in "${CONFIGS[@]}"; do
     IFS='|' read -r key flags <<<"$entry"
-    echo "-- $(date -Is) llama-server $key"
+    echo "-- $(date -Is) llama-server $QUANT $key"
     # shellcheck disable=SC2086
     "$LLAMA_SERVER" -m "$TARGET" $flags --jinja --load-mode none --cache-ram 0 --host 127.0.0.1 --port "$PORT" \
-      -t 4 -c 4096 --parallel 1 >"$OUT_ROOT/server_${key}_${STAMP}.log" 2>&1 &
+      -t 4 -c 4096 --parallel 1 >"$OUT_ROOT/server_${QUANT}-${key}_${STAMP}.log" 2>&1 &
     server_pid=$!
     for _ in $(seq 1 180); do curl -sf "http://127.0.0.1:$PORT/health" >/dev/null && break; sleep 1; done
     curl -sf "http://127.0.0.1:$PORT/health" >/dev/null || { echo "server $key did not start" >&2; exit 1; }
@@ -80,13 +86,13 @@ run_all() {
     for bench in "${BENCHMARKS[@]}"; do
       echo "-- $(date -Is) $key / $bench"
       "$UV" run python -m evaluation.run --benchmark "$bench" \
-        --model-id "$TARGET_ID" --model-revision "$TARGET_REV" --quantization Q8_0 \
+        --model-id "$TARGET_ID" --model-revision "$TARGET_REV" --quantization "$QUANT_LABEL" \
         --runtime "llama.cpp $LLAMA_COMMIT CPU t=4, speculative: $key" --base-url "http://127.0.0.1:$PORT/v1" \
         --notes "speculative decoding study ($key: $flags), unattended laptop run with RAPL energy" \
-        ${LIMIT:+--limit "$LIMIT"} --out "$OUT_ROOT/$bench/${TARGET_ID}__q80-${key}__laptop-cpu__${STAMP}"
+        ${LIMIT:+--limit "$LIMIT"} --out "$OUT_ROOT/$bench/${TARGET_ID}__${QUANT}-${key}__laptop-cpu__${STAMP}"
     done
     peak=$(awk '/VmHWM/ {print $2}' "/proc/$server_pid/status")
-    printf '%s\t%s\t%s\t%s\n' "$(date -Is)" "$key" "$peak" "${BENCHMARKS[*]}" >>"$OUT_ROOT/server_memory.tsv"
+    printf '%s\t%s\t%s\t%s\n' "$(date -Is)" "$QUANT-$key" "$peak" "${BENCHMARKS[*]}" >>"$OUT_ROOT/server_memory.tsv"
     echo "-- $key peak RSS ${peak} kB"
     stop_server
   done
@@ -95,7 +101,7 @@ run_all() {
 
 if command -v systemd-inhibit >/dev/null; then
   export -f run_all stop_server
-  export LLAMA_SERVER UV PORT STAMP LLAMA_COMMIT OUT_ROOT LIMIT TARGET TARGET_ID TARGET_REV
+  export LLAMA_SERVER UV PORT STAMP LLAMA_COMMIT OUT_ROOT LIMIT TARGET TARGET_ID TARGET_REV QUANT QUANT_LABEL
   systemd-inhibit --what=sleep:idle --who=locali --why="speculative decoding study" \
     bash -c "$(declare -p CONFIGS BENCHMARKS); server_pid=''; run_all"
 else

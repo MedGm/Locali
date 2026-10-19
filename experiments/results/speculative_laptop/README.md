@@ -21,8 +21,7 @@ Qwen2.5-Coder-0.5B-Instruct GGUF (Q4_K_M or Q8_0) @ebb2015. The pilot (20 proble
 **The draft Q8 / repair row is not a valid measurement.** From 07:26 to 07:58 the second-seed
 answers were being scored in the Docker sandbox on the same machine, overlapping most of that run
 (07:02-07:59), so its time and energy (9.1 tok/s, 887 J per correct) are inflated. Its answers
-and pass count are fine. The run is kept as recorded; a clean rerun is
-`RUN=draft-q8-n8 BENCHMARKS=humanevalfix` after moving the folder aside.
+and pass count are fine. The run is kept as recorded in `spoiled/`, and was repeated.
 
 ## What it says
 

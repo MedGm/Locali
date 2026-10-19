@@ -1,0 +1,70 @@
+{
+  "config": {
+    "benchmark": "humanevalfix",
+    "model_id": "qwen2.5-coder-1.5b-ft-qlora-v2",
+    "runtime": "llama.cpp 987498f CPU t=4, speculative: draft-q8-n8",
+    "max_tokens": 768,
+    "model_revision": "f1a367a8c08f5c97fbd25ae8ff9f16cdf0231791",
+    "quantization": "Q8_0",
+    "base_url": "http://127.0.0.1:8081/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 1,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "bigcode/humanevalpack",
+    "dataset_revision": "9a41762f73a8cb23bb5811b73d5aab164efcf378",
+    "notes": "speculative decoding study (draft-q8-n8: -md /home/medgm/models/gguf/qwen2.5-coder-0.5b-instruct-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 8 -td 4), unattended laptop run with RAPL energy",
+    "generate_only": false
+  },
+  "environment": {
+    "started_at": "2026-10-19T05:02:52+00:00",
+    "git_commit": "9ee9edb6cfb67fe014ca6132f81ca1f9b5583f9c",
+    "git_dirty": true,
+    "host": "medgm-HP-EliteBook-840-G7-Notebook-PC",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "cpu": "Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz",
+    "ram_gb": 15.4,
+    "gpus": [],
+    "rapl_energy_available": true
+  },
+  "metrics": {
+    "n": 164,
+    "status_counts": {
+      "passed": 53,
+      "failed": 108,
+      "timeout": 2,
+      "crashed": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 327.25,
+    "mean_output_tokens": 72.439,
+    "mean_ttft_s": 10.3564,
+    "median_ttft_s": 7.7071,
+    "mean_total_s": 19.0186,
+    "mean_decode_tok_per_s": 9.09,
+    "total_energy_j": 47009.6,
+    "mean_energy_j_per_task": 286.64,
+    "draft_tokens": 13208,
+    "draft_accepted": 10449,
+    "draft_acceptance": 0.7911,
+    "pass@1": 0.3232,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.2903,
+      "function misuse": 0.5,
+      "missing logic": 0.2424,
+      "operator misuse": 0.4,
+      "value misuse": 0.3409,
+      "variable misuse": 0.3043
+    }
+  },
+  "excluded": {},
+  "this_session": {
+    "generated": 164,
+    "resumed": 0,
+    "wall_s": 3378.9
+  }
+}

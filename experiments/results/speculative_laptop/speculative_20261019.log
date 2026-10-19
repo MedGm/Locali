@@ -1,0 +1,340 @@
+== speculative 2026-10-19T00:42:12+02:00, llama.cpp 987498f, benchmarks: humaneval_plus humanevalfix, limit: all
+-- 2026-10-19T00:42:12+02:00 llama-server ngram-simple
+-- 2026-10-19T00:42:15+02:00 ngram-simple / humaneval_plus
+{
+  "metrics": {
+    "n": 163,
+    "status_counts": {
+      "failed": 60,
+      "passed": 102,
+      "timeout": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 183.4724,
+    "mean_output_tokens": 144.8466,
+    "mean_ttft_s": 2.616,
+    "median_ttft_s": 2.3146,
+    "mean_total_s": 12.0118,
+    "mean_decode_tok_per_s": 15.13,
+    "total_energy_j": 29421.3,
+    "mean_energy_j_per_task": 180.5,
+    "draft_tokens": 15708,
+    "draft_accepted": 11980,
+    "draft_acceptance": 0.7627,
+    "pass@1": 0.6258
+  },
+  "this_session": {
+    "generated": 163,
+    "resumed": 0,
+    "wall_s": 2181.2
+  }
+}
+-- 2026-10-19T01:18:40+02:00 ngram-simple / humanevalfix
+{
+  "metrics": {
+    "n": 164,
+    "status_counts": {
+      "passed": 53,
+      "failed": 108,
+      "timeout": 2,
+      "crashed": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 327.25,
+    "mean_output_tokens": 72.4878,
+    "mean_ttft_s": 5.6974,
+    "median_ttft_s": 5.003,
+    "mean_total_s": 10.1487,
+    "mean_decode_tok_per_s": 16.33,
+    "total_energy_j": 25355.5,
+    "mean_energy_j_per_task": 154.61,
+    "draft_tokens": 13884,
+    "draft_accepted": 8015,
+    "draft_acceptance": 0.5773,
+    "pass@1": 0.3232,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.2903,
+      "function misuse": 0.5,
+      "missing logic": 0.2424,
+      "operator misuse": 0.4,
+      "value misuse": 0.3409,
+      "variable misuse": 0.3043
+    }
+  },
+  "this_session": {
+    "generated": 164,
+    "resumed": 0,
+    "wall_s": 1898.0
+  }
+}
+-- ngram-simple peak RSS 1893876 kB
+-- 2026-10-19T01:50:21+02:00 llama-server none
+-- 2026-10-19T01:50:23+02:00 none / humaneval_plus
+{
+  "metrics": {
+    "n": 163,
+    "status_counts": {
+      "failed": 59,
+      "passed": 103,
+      "timeout": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 183.4724,
+    "mean_output_tokens": 144.6012,
+    "mean_ttft_s": 2.6183,
+    "median_ttft_s": 2.3195,
+    "mean_total_s": 16.8646,
+    "mean_decode_tok_per_s": 10.23,
+    "total_energy_j": 39808.6,
+    "mean_energy_j_per_task": 244.22,
+    "pass@1": 0.6319
+  },
+  "this_session": {
+    "generated": 163,
+    "resumed": 0,
+    "wall_s": 2968.2
+  }
+}
+-- 2026-10-19T02:39:54+02:00 none / humanevalfix
+{
+  "metrics": {
+    "n": 164,
+    "status_counts": {
+      "passed": 52,
+      "failed": 109,
+      "timeout": 2,
+      "crashed": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 327.25,
+    "mean_output_tokens": 72.3354,
+    "mean_ttft_s": 5.6813,
+    "median_ttft_s": 4.9199,
+    "mean_total_s": 12.6935,
+    "mean_decode_tok_per_s": 10.42,
+    "total_energy_j": 31535.7,
+    "mean_energy_j_per_task": 192.29,
+    "pass@1": 0.3171,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.2903,
+      "function misuse": 0.5,
+      "missing logic": 0.2424,
+      "operator misuse": 0.36,
+      "value misuse": 0.3409,
+      "variable misuse": 0.3043
+    }
+  },
+  "this_session": {
+    "generated": 164,
+    "resumed": 0,
+    "wall_s": 2314.4
+  }
+}
+-- none peak RSS 1862176 kB
+-- 2026-10-19T03:18:31+02:00 llama-server draft-q4-n4
+-- 2026-10-19T03:18:34+02:00 draft-q4-n4 / humaneval_plus
+{
+  "metrics": {
+    "n": 163,
+    "status_counts": {
+      "failed": 57,
+      "passed": 105,
+      "timeout": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 183.4724,
+    "mean_output_tokens": 144.589,
+    "mean_ttft_s": 3.5518,
+    "median_ttft_s": 3.1255,
+    "mean_total_s": 15.4865,
+    "mean_decode_tok_per_s": 12.0,
+    "total_energy_j": 38562.5,
+    "mean_energy_j_per_task": 236.58,
+    "draft_tokens": 20588,
+    "draft_accepted": 18697,
+    "draft_acceptance": 0.9082,
+    "pass@1": 0.6442
+  },
+  "this_session": {
+    "generated": 163,
+    "resumed": 0,
+    "wall_s": 2751.8
+  }
+}
+-- 2026-10-19T04:04:28+02:00 draft-q4-n4 / humanevalfix
+{
+  "metrics": {
+    "n": 164,
+    "status_counts": {
+      "passed": 53,
+      "failed": 108,
+      "timeout": 2,
+      "crashed": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 327.25,
+    "mean_output_tokens": 72.439,
+    "mean_ttft_s": 7.8669,
+    "median_ttft_s": 6.7684,
+    "mean_total_s": 14.1518,
+    "mean_decode_tok_per_s": 11.49,
+    "total_energy_j": 35224.7,
+    "mean_energy_j_per_task": 214.78,
+    "draft_tokens": 10556,
+    "draft_accepted": 9369,
+    "draft_acceptance": 0.8876,
+    "pass@1": 0.3232,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.2903,
+      "function misuse": 0.5,
+      "missing logic": 0.2424,
+      "operator misuse": 0.4,
+      "value misuse": 0.3409,
+      "variable misuse": 0.3043
+    }
+  },
+  "this_session": {
+    "generated": 164,
+    "resumed": 0,
+    "wall_s": 2556.2
+  }
+}
+-- draft-q4-n4 peak RSS 2476768 kB
+-- 2026-10-19T04:47:07+02:00 llama-server draft-q4-n8
+-- 2026-10-19T04:47:10+02:00 draft-q4-n8 / humaneval_plus
+{
+  "metrics": {
+    "n": 163,
+    "status_counts": {
+      "failed": 57,
+      "passed": 105,
+      "timeout": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 183.4724,
+    "mean_output_tokens": 144.589,
+    "mean_ttft_s": 3.5583,
+    "median_ttft_s": 3.1274,
+    "mean_total_s": 15.2295,
+    "mean_decode_tok_per_s": 12.21,
+    "total_energy_j": 37957.5,
+    "mean_energy_j_per_task": 232.87,
+    "draft_tokens": 25200,
+    "draft_accepted": 20687,
+    "draft_acceptance": 0.8209,
+    "pass@1": 0.6442
+  },
+  "this_session": {
+    "generated": 163,
+    "resumed": 0,
+    "wall_s": 2711.6
+  }
+}
+-- 2026-10-19T05:32:24+02:00 draft-q4-n8 / humanevalfix
+{
+  "metrics": {
+    "n": 164,
+    "status_counts": {
+      "passed": 53,
+      "failed": 108,
+      "timeout": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 327.25,
+    "mean_output_tokens": 72.439,
+    "mean_ttft_s": 7.8056,
+    "median_ttft_s": 6.7645,
+    "mean_total_s": 14.1192,
+    "mean_decode_tok_per_s": 11.31,
+    "total_energy_j": 35158.2,
+    "mean_energy_j_per_task": 214.38,
+    "draft_tokens": 13280,
+    "draft_accepted": 10449,
+    "draft_acceptance": 0.7868,
+    "pass@1": 0.3232,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.2903,
+      "function misuse": 0.5,
+      "missing logic": 0.2424,
+      "operator misuse": 0.4,
+      "value misuse": 0.3409,
+      "variable misuse": 0.3043
+    }
+  },
+  "this_session": {
+    "generated": 164,
+    "resumed": 0,
+    "wall_s": 2586.0
+  }
+}
+-- draft-q4-n8 peak RSS 2480092 kB
+-- 2026-10-19T06:15:33+02:00 llama-server draft-q8-n8
+-- 2026-10-19T06:15:36+02:00 draft-q8-n8 / humaneval_plus
+{
+  "metrics": {
+    "n": 163,
+    "status_counts": {
+      "failed": 57,
+      "passed": 105,
+      "timeout": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 183.4724,
+    "mean_output_tokens": 144.589,
+    "mean_ttft_s": 3.373,
+    "median_ttft_s": 2.9787,
+    "mean_total_s": 15.9684,
+    "mean_decode_tok_per_s": 11.29,
+    "total_energy_j": 39725.8,
+    "mean_energy_j_per_task": 243.72,
+    "draft_tokens": 25448,
+    "draft_accepted": 20679,
+    "draft_acceptance": 0.8126,
+    "pass@1": 0.6442
+  },
+  "this_session": {
+    "generated": 163,
+    "resumed": 0,
+    "wall_s": 2831.2
+  }
+}
+-- 2026-10-19T07:02:50+02:00 draft-q8-n8 / humanevalfix
+{
+  "metrics": {
+    "n": 164,
+    "status_counts": {
+      "passed": 53,
+      "failed": 108,
+      "timeout": 2,
+      "crashed": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 327.25,
+    "mean_output_tokens": 72.439,
+    "mean_ttft_s": 10.3564,
+    "median_ttft_s": 7.7071,
+    "mean_total_s": 19.0186,
+    "mean_decode_tok_per_s": 9.09,
+    "total_energy_j": 47009.6,
+    "mean_energy_j_per_task": 286.64,
+    "draft_tokens": 13208,
+    "draft_accepted": 10449,
+    "draft_acceptance": 0.7911,
+    "pass@1": 0.3232,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.2903,
+      "function misuse": 0.5,
+      "missing logic": 0.2424,
+      "operator misuse": 0.4,
+      "value misuse": 0.3409,
+      "variable misuse": 0.3043
+    }
+  },
+  "this_session": {
+    "generated": 164,
+    "resumed": 0,
+    "wall_s": 3378.9
+  }
+}
+-- draft-q8-n8 peak RSS 2657600 kB
+== done 2026-10-19T07:59:14+02:00

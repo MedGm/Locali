@@ -138,3 +138,7 @@ Bold means a significant change from Phi base (p < 0.05).
 4. **Fine-tuned Phi vs fine-tuned Qwen:** Phi leads on CRUXEval-O (+6.8, p = 2e-5), internal T1 (+7.1, p = 0.049), internal T3 (+15.7, p = 3e-5) and vulnerability detection (+2.2, p = 0.02). Qwen leads on MBPP+ (+13.8, p = 2e-6, mostly the naming effect). The other 11 tasks show no significant difference. Phi is 2.5× the parameters, 2.9× the training time and 2.1× the GPU energy for generating all 16 tasks (287 kJ vs 135 kJ, unmerged LoRA serving).
 
 **Consequence.** For the platform, **Qwen2.5-Coder-1.5B + QLoRA v2** stays the model to deploy: it gains everywhere it was trained and loses nowhere. Phi-4-mini gives better reasoning and review but, after this fine-tune, worse instruction following and repair, at a much higher cost. For a stronger base model, the training targets would need to be better than the model (teacher-written repairs and test suites instead of minimal ones), and the replay share should include "write a function named X" tasks. Neither was done here.
+
+Update (2026-10-19): a second seed of QLoRA v2 confirmed this. Its bug detection accuracy is 54.6 %
+(recall 0.95), not 65.5 %, while its MBPP+ and HumanEvalFix gains match the first seed
+([second seed](../finetune_qwen25_qlora_v2_seed1234/README.md)).

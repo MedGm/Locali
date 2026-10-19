@@ -152,14 +152,26 @@ execution traces in v2 were added for that and removed the drop.
 | Refactoring: behaviour preserved | 69.9 | **93.9** | 9e-10 |
 | Bug repair (HumanEvalFix) | 25.0 | **36.0** | 0.006 |
 | MBPP+ | 56.2 | **62.1** | 0.005 |
-| Bug detection accuracy | 53.0 | **65.5** | 0.0004 |
+| Bug detection accuracy (not replicated, see below) | 53.0 | 65.5 | 0.0004 |
 | HumanEval+ | 65.0 | 62.0 | 0.51 |
 | CRUXEval-O (not trained) | 30.1 | 28.7 | 0.31 |
 | Held-out repair, trained format | 2.4 | **63.7** | |
 
 QLoRA took 2 h 04 min with a 3.09 GB peak (16-bit LoRA: 4.85 GB, same quality). The test
-generation, refactoring and in-format gains hold in all three variants at p < 1e-4; the bug
-detection gain appeared in one variant only and needs a second seed before I would claim it.
+generation, refactoring and in-format gains hold in all three variants at p < 1e-4.
+
+**Second seed** ([results](experiments/results/finetune_qwen25_qlora_v2_seed1234/README.md)): I
+repeated QLoRA v2 with seed 1234 instead of 3407, same data and versions. The MBPP+ gain (234 vs
+212 solved, p = 0.005) and the HumanEvalFix gain (58 vs 41, p = 0.008) replicate. The bug
+detection gain does not: the second seed answers "buggy" almost every time (accuracy 54.6 %,
+recall 0.95), while both seeds score 66 % in the trained review format. I therefore do not claim
+it.
+
+**Repair with execution feedback** ([results](experiments/results/feedback_t4/README.md)): when
+the failing test's error is shown back and the model may try again, up to 3 attempts, the
+fine-tune fixes 41.5 % of HumanEvalFix (36.0 % in one attempt, p = 0.004) and the base model
+29.9 % (25.0 %). The fine-tune keeps its lead (p = 0.007). The gain is small because the model
+mostly repeats its first answer.
 
 **Phi-4-mini** got worse on several tasks from the same data (repair in the trained format
 46.3 → 24.4, MBPP+ 54.1 → 48.3): fine-tuning imitates the targets, and for a stronger model my
@@ -184,6 +196,18 @@ by the Llama 3.1 license, because part of the training tests came from a Llama-g
 Q8_0 changes 2 of 163 answers against F16 and is the default; Q4_K_M costs 2–4 points (not
 significant one by one, all in the same direction) and is the fast option. The fine-tuned model
 also writes about a third fewer tokens than the base, which saves time and energy on its own.
+
+**Speculative decoding** ([laptop](experiments/results/speculative_laptop/README.md),
+[T4](experiments/results/speculative_t4/README.md)): draft-free n-gram lookup is the best
+setting on both devices. On the laptop it makes the Q8 model about 1.5× faster and saves 21–25 %
+of the CPU energy per correct answer; the fine-tuned Q4_K_M model with n-gram lookup is the
+cheapest configuration measured (189 J per solved HumanEval+ problem, against 962 J for the base
+model in F16). A 0.5B draft model barely helps on the CPU (at most 6 % less energy, and more on
+repair), because it competes with the target for the same four cores. On a T4 both help, n-gram
+lookup most (50–67 % less energy per correct answer). The stock draft predicts the fine-tune worse
+than the base model (acceptance on repair 0.63 vs 0.87 at 8 drafted tokens), so fine-tuning
+makes long drafts a net loss. Greedy speculative decoding keeps the pass counts but is not
+bit-exact: a few answers change.
 
 **Serving on a T4** (vLLM and transformers, [results](experiments/results/serving_t4/README.md)):
 16 concurrent requests give 13.6× the throughput of one and use 15× less energy per answer; CUDA
@@ -318,7 +342,9 @@ energy per correct answer is what changes between options.
   only one that ran model-written code outside the laptop's sandbox, on a disposable Kaggle VM.
 - **Dense vs hybrid attention (RQ5)** is answered only by computed KV-cache sizes, not measured.
 - **Single runs.** Most configurations ran once at temperature 0; paired tests on the same items
-  are what makes differences meaningful, and differences without them are marked as such.
+  are what makes differences meaningful, and differences without them are marked as such. The
+  fine-tune was repeated with a second seed: its MBPP+ and repair gains held, its bug detection
+  gain did not.
 - **Scale of the agent evaluation.** The agent results come from one small repository built for the
   purpose; they show behaviour, not general accuracy.
 

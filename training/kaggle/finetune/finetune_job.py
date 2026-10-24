@@ -14,6 +14,7 @@ Environment variables (set through build_notebook.py):
     LIMIT=3                 (items per task during generation; smoke runs)
     SEED=3407               (another value names the outputs ...-seed<N>, for a repeat run)
     UNSLOTH=2026.10.4       (pin Unsloth, e.g. to the version of the run being repeated)
+    RUN_TAG=v3              (appended to the output names, e.g. to tell data mixtures apart)
 """
 
 import json
@@ -41,7 +42,7 @@ TASKS = ["humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect", "cruxeval_o
          "humanevalfix_t1fmt", "bugdetect_t3fmt", "internal_t1", "internal_t2", "internal_t3", "internal_t4"]
 SEQ_LEN = 2048
 SEED = int(os.environ.get("SEED", "3407"))
-RUN_SUFFIX = "" if SEED == 3407 else f"-seed{SEED}"
+RUN_SUFFIX = ("" if SEED == 3407 else f"-seed{SEED}") + (f"-{os.environ['RUN_TAG']}" if os.environ.get("RUN_TAG") else "")
 
 
 def log(msg: str) -> None:

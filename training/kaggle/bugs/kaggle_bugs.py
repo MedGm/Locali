@@ -137,16 +137,21 @@ def main() -> None:
                 reasons.append(reason)
             return False, base | {"reason": reasons[-1], "reasons": reasons, "reply": text[:2000]}
 
-        with ThreadPoolExecutor(32) as pool:
-            for accepted, row in pool.map(one, jobs):
+        # results are appended as they come, so a run stopped by Kaggle's time limit keeps what it made
+        with ThreadPoolExecutor(32) as pool, (WORK / "bugs.jsonl").open("w") as good, \
+                (WORK / "rejected.jsonl").open("w") as bad:
+            for i, (accepted, row) in enumerate(pool.map(one, jobs), 1):
                 (kept if accepted else rejected).append(row)
+                (good if accepted else bad).write(json.dumps(row) + "\n")
+                if i % 250 == 0:
+                    good.flush()
+                    bad.flush()
+                    log(f"{i} of {len(jobs)} problems done, {len(kept)} bugs kept")
         log(f"teacher and checks done in {time.time() - start:.0f}s")
     finally:
         stop_server(server)
         power.terminate()
 
-    (WORK / "bugs.jsonl").write_text("".join(json.dumps(r) + "\n" for r in kept))
-    (WORK / "rejected.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rejected))
     stats = {"problems": len(seeds), "kept": len(kept), "kept_by_kind": dict(Counter(r["kind"] for r in kept)),
              "rejected_by_reason": dict(Counter(r["reason"] for r in rejected)),
              "kept_by_attempt": dict(Counter(r["attempt"] for r in kept)),

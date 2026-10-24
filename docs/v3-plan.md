@@ -8,7 +8,8 @@ same benchmarks with the same paired tests as v2.
 - **Its bugs are not real bugs.** v2 repair data comes from single-line mutations (`<` → `<=`,
   `-` → `+`). The model fixes 64 % of held-out bugs of that kind but 36 % of HumanEvalFix, whose bugs
   are written by people: several lines, missing cases, wrong logic.
-- **Its fixes are minimal edits**, so it learned to patch a line, not to rethink a function.
+- **Its fixes always change one line** (the target is the whole function, but it differs from the
+  buggy input in one line), so it learned to patch a line, not to rethink a function.
 - **It was trained on Python only**, and it is level or worse in C++, Rust and Java.
 - **It cannot use feedback.** With the test error and two more tries it went from 31.7 % to 34.8 %;
   in 49 of 66 failures its second answer was identical to its first. It has never seen an example

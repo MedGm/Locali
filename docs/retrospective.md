@@ -110,7 +110,8 @@ operator. **The model learned the shape of our synthetic bugs, not repair in gen
 
 **In the data (the main limit).**
 - Bugs were single-line mutations; real bugs (HumanEvalFix) are often multi-line or missing logic.
-- Targets were minimal edits, so the model learned to patch a token, not to reread a function.
+- The target was the whole fixed function, but it always differed from the input in one line, so
+  the model learned to find and patch one token, not to reread a function.
 - Explanations came from the 9B teacher, but the fixes did not: the teacher's stronger repair
   ability (65.8 %) was never distilled.
 - No example ever showed a failed attempt and its error, so feedback could not be used.

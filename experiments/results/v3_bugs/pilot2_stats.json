@@ -1,0 +1,39 @@
+{
+ "problems": 150,
+ "kept": 103,
+ "kept_by_kind": {
+  "wrong_update": 14,
+  "wrong_value": 12,
+  "missing_logic": 22,
+  "wrong_variable": 13,
+  "wrong_condition": 11,
+  "excess_logic": 17,
+  "off_by_one": 14
+ },
+ "rejected_by_reason": {
+  "unchanged": 5,
+  "too many changed lines": 13,
+  "timeout": 2,
+  "tests still pass": 17,
+  "no statement removed": 8,
+  "signature changed": 1,
+  "no statement added": 1
+ },
+ "kept_by_attempt": {
+  "1": 74,
+  "3": 12,
+  "2": 17
+ },
+ "teacher": [
+  "Qwen/Qwen3.5-9B",
+  "c202236235762e1c871ad0ccb60c8ee5ba337b9a"
+ ],
+ "temperature": 0.6,
+ "attempts": 3,
+ "kind_weights": {
+  "missing_logic": 3,
+  "excess_logic": 2
+ },
+ "sample_seed": 41,
+ "commit": "3dd815a31a39c48f8a5b2e0dc08c66bef2fb10d0"
+}

@@ -1,0 +1,39 @@
+{
+  "bugs_in": 3271,
+  "t1r_kept": 3220,
+  "decontam_dropped_by_source": {
+    "mbpp_plus": 30,
+    "humanevalpack": 21,
+    "humaneval_plus": 4
+  },
+  "splits": {
+    "train": {
+      "v2": 14152,
+      "t1r": 2898
+    },
+    "val": {
+      "v2": 752,
+      "t1r": 173
+    },
+    "test": {
+      "v2": 784,
+      "t1r": 149
+    }
+  },
+  "t1r_formats": {
+    "benchmark": 1351,
+    "repair": 1869
+  },
+  "t1r_kinds": {
+    "wrong_update": 393,
+    "wrong_value": 371,
+    "missing_logic": 732,
+    "wrong_variable": 388,
+    "wrong_condition": 354,
+    "excess_logic": 612,
+    "off_by_one": 370
+  },
+  "bugs_files": [
+    "data/v3/full/bugs.jsonl"
+  ]
+}

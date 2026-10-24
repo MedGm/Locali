@@ -1,0 +1,85 @@
+[{"stream_name":"stderr","time":10.548647092,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":10.548692731,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":10.548699205,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":10.548703133,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":11.298096038,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":11.298120665,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":11.298125703,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":11.298129801,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":12.71363185,"data":"Writing /kaggle/working/kaggle_bugs.py\n"}
+,{"stream_name":"stdout","time":12.851409407,"data":"Cloning into '/tmp/locali'...\n"}
+,{"stream_name":"stdout","time":16.645140023,"data":"Note: switching to '63de80390bef5a163bd8108c9341dad7849d3e10'.\n"}
+,{"stream_name":"stdout","time":16.646487401999998,"data":"\n"}
+,{"stream_name":"stdout","time":16.647659694,"data":"You are in 'detached HEAD' state. You can look around, make experimental\n"}
+,{"stream_name":"stdout","time":16.648689479,"data":"changes and commit them, and you can discard any commits you make in this\n"}
+,{"stream_name":"stdout","time":16.649748434,"data":"state without impacting any branches by switching back to a branch.\n"}
+,{"stream_name":"stdout","time":16.650734057,"data":"\n"}
+,{"stream_name":"stdout","time":16.65178045,"data":"If you want to create a new branch to retain commits you create, you may\n"}
+,{"stream_name":"stdout","time":16.652819243,"data":"do so (now or later) by using -c with the switch command. Example:\n"}
+,{"stream_name":"stdout","time":16.653853242,"data":"\n"}
+,{"stream_name":"stdout","time":16.654960093,"data":"  git switch -c \u003cnew-branch-name\u003e\n"}
+,{"stream_name":"stdout","time":16.656014854,"data":"\n"}
+,{"stream_name":"stdout","time":16.657049417,"data":"Or undo this operation with:\n"}
+,{"stream_name":"stdout","time":16.658038155,"data":"\n"}
+,{"stream_name":"stdout","time":16.659095337,"data":"  git switch -\n"}
+,{"stream_name":"stdout","time":16.660087084,"data":"\n"}
+,{"stream_name":"stdout","time":16.661062178,"data":"Turn off this advice by setting config variable advice.detachedHead to false\n"}
+,{"stream_name":"stdout","time":16.662107217,"data":"\n"}
+,{"stream_name":"stdout","time":16.66335419,"data":"HEAD is now at 63de803 coder 3B and 7B baselines: the untrained 3B repairs more bugs than the fine-tuned 1.5B\n"}
+,{"stream_name":"stdout","time":24.946116195,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stdout","time":34.538311102,"data":"\n"}
+,{"stream_name":"stdout","time":43.00223332,"data":"Generating train split: 0 examples [00:00, ? examples/s]\n"}
+,{"stream_name":"stdout","time":43.187081218,"data":"Generating train split: 14292 examples [00:08, 1688.93 examples/s]\n"}
+,{"stream_name":"stdout","time":44.017275615,"data":"Generating train split: 17562 examples [00:08, 2173.51 examples/s]\n"}
+,{"stream_name":"stdout","time":44.01801989,"data":"Generating train split: 17562 examples [00:09, 1853.02 examples/s]\n"}
+,{"stream_name":"stdout","time":44.019482334,"data":"\n"}
+,{"stream_name":"stdout","time":55.850080399,"data":"Generating test split: 0 examples [00:00, ? examples/s]\n"}
+,{"stream_name":"stdout","time":65.816629064,"data":"Generating test split: 28090 examples [00:11, 2374.24 examples/s]\n"}
+,{"stream_name":"stdout","time":74.445303677,"data":"Generating test split: 45338 examples [00:21, 2022.63 examples/s]\n"}
+,{"stream_name":"stdout","time":74.778516761,"data":"Generating test split: 59630 examples [00:30, 1875.41 examples/s]\n"}
+,{"stream_name":"stdout","time":74.868721885,"data":"Generating test split: 62900 examples [00:30, 2047.58 examples/s]\n"}
+,{"stream_name":"stdout","time":74.869752228,"data":"Generating test split: 62900 examples [00:30, 2038.92 examples/s]\n"}
+,{"stream_name":"stdout","time":96.154685926,"data":"\u003cunknown\u003e:6: SyntaxWarning: invalid escape sequence '\\l'\n"}
+,{"stream_name":"stdout","time":97.187617911,"data":"\u003cunknown\u003e:3: SyntaxWarning: invalid escape sequence '\\s'\n"}
+,{"stream_name":"stdout","time":98.071593286,"data":"\u003cunknown\u003e:5: SyntaxWarning: invalid escape sequence '\\d'\n"}
+,{"stream_name":"stdout","time":98.213510161,"data":"\u003cunknown\u003e:5: SyntaxWarning: invalid escape sequence '\\('\n"}
+,{"stream_name":"stdout","time":100.614745798,"data":"\u003cunknown\u003e:5: SyntaxWarning: invalid escape sequence '\\['\n"}
+,{"stream_name":"stdout","time":100.616018886,"data":"\u003cunknown\u003e:9: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":100.616950597,"data":"\u003cunknown\u003e:12: SyntaxWarning: invalid escape sequence '\\]'\n"}
+,{"stream_name":"stdout","time":100.61775577,"data":"\u003cunknown\u003e:19: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":104.421348785,"data":"[12:15:31] 8623 unused problems with a reliable suite; network isolation: guard\n"}
+,{"stream_name":"stdout","time":467.307561949,"data":"[12:21:34] 8600 of 8623 reference solutions pass; using 4500\n"}
+,{"stream_name":"stdout","time":1187.672247035,"data":"[12:33:34] teacher ready\n"}
+,{"stream_name":"stdout","time":9619.971717148,"data":"\u003cunknown\u003e:5: SyntaxWarning: invalid escape sequence '\\['\n"}
+,{"stream_name":"stdout","time":9619.97312638,"data":"\u003cunknown\u003e:9: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":9619.974331518,"data":"\u003cunknown\u003e:12: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":9619.975439178,"data":"\u003cunknown\u003e:5: SyntaxWarning: invalid escape sequence '\\['\n"}
+,{"stream_name":"stdout","time":9619.976478606,"data":"\u003cunknown\u003e:9: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":9619.977591771,"data":"\u003cunknown\u003e:12: SyntaxWarning: invalid escape sequence '\\]'\n"}
+,{"stream_name":"stdout","time":9619.978653299,"data":"\u003cunknown\u003e:19: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":9668.948384233,"data":"\u003cunknown\u003e:5: SyntaxWarning: invalid escape sequence '\\['\n"}
+,{"stream_name":"stdout","time":9668.951402815,"data":"\u003cunknown\u003e:9: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":9668.954241027,"data":"\u003cunknown\u003e:12: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":9668.958584658,"data":"\u003cunknown\u003e:5: SyntaxWarning: invalid escape sequence '\\['\n"}
+,{"stream_name":"stdout","time":9668.959892272,"data":"\u003cunknown\u003e:9: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":9668.961529882,"data":"\u003cunknown\u003e:12: SyntaxWarning: invalid escape sequence '\\]'\n"}
+,{"stream_name":"stdout","time":9668.963966844,"data":"\u003cunknown\u003e:19: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":9730.485564752,"data":"\u003cunknown\u003e:5: SyntaxWarning: invalid escape sequence '\\['\n"}
+,{"stream_name":"stdout","time":9730.491952747,"data":"\u003cunknown\u003e:9: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":9730.493331992,"data":"\u003cunknown\u003e:16: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":9730.497919537,"data":"\u003cunknown\u003e:5: SyntaxWarning: invalid escape sequence '\\['\n"}
+,{"stream_name":"stdout","time":9730.50300415,"data":"\u003cunknown\u003e:9: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":9730.508369332,"data":"\u003cunknown\u003e:12: SyntaxWarning: invalid escape sequence '\\]'\n"}
+,{"stream_name":"stdout","time":9730.509723735,"data":"\u003cunknown\u003e:19: SyntaxWarning: invalid escape sequence '\\+'\n"}
+,{"stream_name":"stdout","time":10457.673370127,"data":"[15:08:04] teacher and checks done in 9270s\n"}
+,{"stream_name":"stdout","time":10459.053046945,"data":"[15:08:05] {\"problems\": 4500, \"kept\": 3271, \"kept_by_kind\": {\"wrong_update\": 400, \"wrong_value\": 375, \"missing_logic\": 745, \"wrong_variable\": 395, \"wrong_condition\": 358, \"excess_logic\": 625, \"off_by_one\": 373}, \"rejected_by_reason\": {\"unchanged\": 154, \"too many changed lines\": 318, \"timeout\": 28, \"tests still pass\": 372, \"no statement removed\": 260, \"signature changed\": 26, \"no statement added\": 27, \"syntax error\": 39, \"request failed: HTTPError\": 5}, \"kept_by_attempt\": {\"1\": 2268, \"3\": 326, \"2\": 677}, \"teacher\": [\"Qwen/Qwen3.5-9B\", \"c202236235762e1c871ad0ccb60c8ee5ba337b9a\"], \"temperature\": 0.6, \"attempts\": 3, \"kind_weights\": {\"missing_logic\": 3, \"excess_logic\": 2}, \"sample_seed\": 41, \"commit\": \"63de80390bef5a163bd8108c9341dad7849d3e10\"}\n"}
+,{"stream_name":"stdout","time":10459.73019424,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":10463.287797496,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":10463.287852102,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":10463.713811263,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":10463.713845716,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":10465.417771466,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":10465.510976155,"data":"[NbConvertApp] Writing 17961 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":10468.272505858,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":10469.101342363,"data":"[NbConvertApp] Writing 318371 bytes to __results__.html\n"}
+]

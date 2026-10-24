@@ -7,7 +7,7 @@ Phases (one session):
      task (same runtime and prompts as the baselines); scoring happens locally in the sandbox.
 
 Environment variables (set through build_notebook.py):
-    MODEL=qwen2.5-coder-1.5b | phi-4-mini
+    MODEL=qwen2.5-coder-1.5b | qwen2.5-coder-3b | phi-4-mini
     METHOD=qlora (4-bit NF4 base) | lora16 (16-bit base) | rslora (QLoRA + rank-stabilised LoRA)
     EPOCHS=2   MAX_STEPS=   (MAX_STEPS set => short smoke run, e.g. 30)
     SKIP_GENERATE=1         (train only)
@@ -34,6 +34,7 @@ INPUT_ROOT = Path("/kaggle/input")
 MODELS = {
     "qwen2.5-coder-1.5b": {"repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct", "revision": "2e1fd397ee46e1388853d2af2c993145b0f1098a"},
     "phi-4-mini": {"repo": "unsloth/Phi-4-mini-instruct", "revision": "75becc471c56fc34761ec998615ca6f8535c5a61"},
+    "qwen2.5-coder-3b": {"repo": "Qwen/Qwen2.5-Coder-3B-Instruct", "revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5"},
 }
 TASKS = ["humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect", "cruxeval_o",
          "testgen", "refactor", "completion", "securecodegen", "vulndetect",

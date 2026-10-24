@@ -15,7 +15,9 @@ from pathlib import Path
 def show(row: dict) -> str:
     diff = difflib.unified_diff(row["fixed_code"].splitlines(), row["buggy_code"].splitlines(),
                                 "correct", "with the bug", lineterm="", n=2)
-    return f"== {row['source']}  [{row['kind']}]\n" + "\n".join(diff) + f"\n-> {row['error'][:200]}\n"
+    said = f"\nteacher: {row['description']}" if row.get("description") else ""
+    return (f"== {row['source']}  [{row['kind']}]{said}\n" + "\n".join(diff)
+            + f"\n-> {row['error'][:200]}\n")
 
 
 def main() -> None:

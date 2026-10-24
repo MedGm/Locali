@@ -3,8 +3,8 @@
 1. sample CodeRM-UnitTest problems not used by mixtures v1/v2 (training/data/coderm_used_ids.txt),
    short functions with a reliable test suite, as for T1
 2. run each problem's tests on its reference solution in evaluation/isolated.py; keep those that pass
-3. ask the teacher for one bug of a given kind (training/data/realistic_bugs.py), kinds assigned
-   round-robin, temperature 0.6
+3. ask the teacher for one bug of a given kind (training/data/realistic_bugs.py), logic bugs
+   weighted up, temperature 0.6, up to 3 attempts per problem
 4. keep a bug only if it passes the static checks and the tests fail on it
 
 Output: bugs.jsonl (kept, with the failing test's error), rejected.jsonl (with the reason), stats.json.
@@ -31,6 +31,8 @@ PORT = 8000
 N = int(os.environ.get("N", "300"))
 SAMPLE_SEED = int(os.environ.get("SAMPLE_SEED", "41"))
 TEMPERATURE = 0.6
+ATTEMPTS = 3  # a rejected bug is asked for again, with another sampling seed
+KIND_WEIGHTS = {"missing_logic": 3, "excess_logic": 2}
 
 
 def setup() -> None:
@@ -57,12 +59,12 @@ def main() -> None:
     setup()
     from datasets import load_dataset
 
-    from evaluation.extract import extract_code
     from evaluation.isolated import network_isolation, run_isolated
     from training.data.realistic_bugs import (
         BUG_KINDS,
         bug_messages,
         check_candidate,
+        parse_reply,
         strip_comments,
         unittest_program,
     )
@@ -89,7 +91,8 @@ def main() -> None:
     seeds = [s for s, good in zip(candidates, ok, strict=True) if good][:N]
     log(f"{sum(ok)} of {len(candidates)} reference solutions pass; using {len(seeds)}")
 
-    kinds = list(BUG_KINDS)
+    # logic bugs are where the v2 model is weakest (docs/retrospective.md), so they get a larger share
+    kinds = [k for k in BUG_KINDS for _ in range(KIND_WEIGHTS.get(k, 1))]
     random.Random(SAMPLE_SEED).shuffle(kinds)
     jobs = [(s, kinds[i % len(kinds)]) for i, s in enumerate(seeds)]
 
@@ -103,27 +106,36 @@ def main() -> None:
         log("teacher ready")
         start = time.time()
 
-        def one(job):
-            seed_obj, kind = job
-            base = {"source": f"{SOURCE}:{seed_obj.task_id}", "kind": kind}
+        def attempt(seed_obj, kind, n):
             try:
-                reply = teacher_bug(PORT, bug_messages(seed_obj.question, seed_obj.code, kind), SAMPLE_SEED)
+                reply = teacher_bug(PORT, bug_messages(seed_obj.question, seed_obj.code, kind), SAMPLE_SEED + n)
                 text = reply["choices"][0]["message"]["content"]
             except Exception as e:
-                return False, base | {"reason": f"request failed: {type(e).__name__}"}
-            candidate = extract_code(text)
-            accepted, reason = check_candidate(seed_obj.code, candidate)
+                return None, f"request failed: {type(e).__name__}", ""
+            description, candidate = parse_reply(text)
+            accepted, reason = check_candidate(seed_obj.code, candidate, kind=kind)
             if not accepted:
-                return False, base | {"reason": reason, "reply": text[:2000]}
+                return None, reason, text
             buggy = strip_comments(candidate)
             result = run_isolated(unittest_program(buggy, seed_obj.tests), timeout_s=30)
             if result.passed:
-                return False, base | {"reason": "tests still pass", "reply": text[:2000]}
+                return None, "tests still pass", text
             if result.status == "timeout":
-                return False, base | {"reason": "timeout", "reply": text[:2000]}
-            return True, base | {"question": seed_obj.question, "buggy_code": buggy,
-                                 "fixed_code": strip_comments(seed_obj.code), "original_code": seed_obj.code,
-                                 "tests": seed_obj.tests, "error": result.error}
+                return None, "timeout", text
+            return {"buggy_code": buggy, "description": description, "error": result.error}, "ok", text
+
+        def one(job):
+            seed_obj, kind = job
+            base = {"source": f"{SOURCE}:{seed_obj.task_id}", "kind": kind}
+            reasons = []
+            for n in range(ATTEMPTS):
+                bug, reason, text = attempt(seed_obj, kind, n)
+                if bug:
+                    return True, base | bug | {"attempt": n + 1, "question": seed_obj.question,
+                                               "fixed_code": strip_comments(seed_obj.code),
+                                               "original_code": seed_obj.code, "tests": seed_obj.tests}
+                reasons.append(reason)
+            return False, base | {"reason": reasons[-1], "reasons": reasons, "reply": text[:2000]}
 
         with ThreadPoolExecutor(32) as pool:
             for accepted, row in pool.map(one, jobs):
@@ -137,7 +149,8 @@ def main() -> None:
     (WORK / "rejected.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rejected))
     stats = {"problems": len(seeds), "kept": len(kept), "kept_by_kind": dict(Counter(r["kind"] for r in kept)),
              "rejected_by_reason": dict(Counter(r["reason"] for r in rejected)),
-             "teacher": TEACHER, "temperature": TEMPERATURE, "sample_seed": SAMPLE_SEED, "commit": COMMIT}
+             "kept_by_attempt": dict(Counter(r["attempt"] for r in kept)),
+             "teacher": TEACHER, "temperature": TEMPERATURE, "attempts": ATTEMPTS, "kind_weights": KIND_WEIGHTS, "sample_seed": SAMPLE_SEED, "commit": COMMIT}
     (WORK / "stats.json").write_text(json.dumps(stats, indent=1))
     log(json.dumps(stats))
 

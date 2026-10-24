@@ -37,7 +37,9 @@
   "metrics": {
     "n": 163,
     "status_counts": {
-      "unscored": 163
+      "failed": 70,
+      "passed": 92,
+      "crashed": 1
     },
     "truncated": 0,
     "mean_input_tokens": 231.1963,
@@ -47,7 +49,9 @@
     "mean_total_s": 2.1271,
     "mean_decode_tok_per_s": 15.31,
     "total_energy_j": null,
-    "mean_energy_j_per_task": null
+    "mean_energy_j_per_task": null,
+    "pass@1": 0.5644,
+    "full_function_rate": 0.0
   },
   "excluded": {
     "HumanEval/32": "HF test calls _poly(*candidate(*inp), inp), unpacking a float: TypeError for any solution"
@@ -66,5 +70,24 @@
     "j_per_task": 9.49,
     "peak_memory_mib_per_gpu": 13657.0,
     "method": "trapezoidal integral of nvidia-smi power.draw at 1 s, whole board"
+  },
+  "rescored": {
+    "at": "2026-10-24T11:14:44+00:00",
+    "harness_commit": "3d949489d7e669e6e8d32f3a338f44966cabb27f",
+    "previous_metrics": {
+      "n": 163,
+      "status_counts": {
+        "unscored": 163
+      },
+      "truncated": 0,
+      "mean_input_tokens": 231.1963,
+      "mean_output_tokens": 25.6687,
+      "mean_ttft_s": 0.3565,
+      "median_ttft_s": 0.2628,
+      "mean_total_s": 2.1271,
+      "mean_decode_tok_per_s": 15.31,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
   }
 }

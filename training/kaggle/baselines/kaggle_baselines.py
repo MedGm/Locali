@@ -55,6 +55,11 @@ MODELS = {
                                               "revision": "a1b0b1189d2050dd20013371fc327362ea6b2964", "extra": []},
     "qwen3.5-9b": {"repo": "Qwen/Qwen3.5-9B",
                    "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a", "extra": TEXT_ONLY},
+    # larger bases from the same family, to decide what v3 should be trained on
+    "qwen2.5-coder-3b": {"repo": "Qwen/Qwen2.5-Coder-3B-Instruct",  # Qwen research licence
+                         "revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5", "extra": []},
+    "qwen2.5-coder-7b-awq": {"repo": "Qwen/Qwen2.5-Coder-7B-Instruct-AWQ",  # 4-bit AWQ: FP16 7B does not fit a T4
+                             "revision": "8e8ed243bbe6f9a5aff549a0924562fc719b2b8a", "extra": []},
 }
 QUEUE_SETS = {
     # (gpus, port, models)
@@ -62,6 +67,7 @@ QUEUE_SETS = {
               ([1], 8001, ["qwen3.5-2b", "qwen3.5-4b"])],
     "reference": [([0, 1], 8000, ["qwen3.5-9b"])],
     "merged": [([0], 8000, ["qwen2.5-coder-1.5b-ft-qlora-v2-merged"])],
+    "coder": [([0], 8000, ["qwen2.5-coder-3b"]), ([1], 8001, ["qwen2.5-coder-7b-awq"])],
 }
 
 

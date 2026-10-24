@@ -20,6 +20,6 @@ many changed lines 318, no statement removed 260, unchanged 154, syntax error 39
 statement added 27, signature changed 26. Kept at attempt 1/2/3: 2,268 / 677 / 326.
 
 Mixture v3 (`build_mix_v3.py`): 13-gram decontamination dropped 51 bugs (MBPP+ 30, HumanEvalPack
-21, HumanEval+ 4); 3,220 remain, split by problem into 2,898 train, 173 validation, 149 test, on top
+21, HumanEval+ 4; a bug can match several); 3,220 remain, split by problem into 2,898 train, 173 validation, 149 test, on top
 of the unchanged v2 rows. Formats: 1,869 in the repair format with the test error, 1,351 as
 "Fix bugs in f" with the failing tests.

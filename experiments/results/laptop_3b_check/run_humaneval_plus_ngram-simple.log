@@ -1,0 +1,27 @@
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "passed": 19,
+      "failed": 1
+    },
+    "truncated": 0,
+    "mean_input_tokens": 146.45,
+    "mean_output_tokens": 160.7,
+    "mean_ttft_s": 2.9407,
+    "median_ttft_s": 2.7278,
+    "mean_total_s": 16.5882,
+    "mean_decode_tok_per_s": 12.13,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "draft_tokens": 2208,
+    "draft_accepted": 1671,
+    "draft_acceptance": 0.7568,
+    "pass@1": 0.95
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 356.0
+  }
+}

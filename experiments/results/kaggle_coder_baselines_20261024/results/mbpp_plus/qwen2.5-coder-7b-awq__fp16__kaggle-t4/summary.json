@@ -1,0 +1,70 @@
+{
+  "config": {
+    "benchmark": "mbpp_plus",
+    "model_id": "qwen2.5-coder-7b-awq",
+    "runtime": "vLLM 0.29.0 T4x1 eager",
+    "max_tokens": 768,
+    "model_revision": "8e8ed243bbe6f9a5aff549a0924562fc719b2b8a",
+    "quantization": "fp16",
+    "base_url": "http://127.0.0.1:8001/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "evalplus/mbppplus",
+    "dataset_revision": "b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+    "notes": "Kaggle generate-only; scored locally in Docker sandbox",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-10-24T10:50:46+00:00",
+    "git_commit": "9032abf4322b93782bfe0a17c099be19fd348f74",
+    "git_dirty": false,
+    "host": "df5a29ac93b8",
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 377,
+    "status_counts": {
+      "unscored": 377
+    },
+    "truncated": 0,
+    "mean_input_tokens": 102.3979,
+    "mean_output_tokens": 127.3873,
+    "mean_ttft_s": 0.1835,
+    "median_ttft_s": 0.1402,
+    "mean_total_s": 5.5141,
+    "mean_decode_tok_per_s": 23.96,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "excluded": {
+    "Mbpp/255": "one input yields 1.66M tuples of length 77; reference comparison needs >2 GiB, above the sandbox limit"
+  },
+  "this_session": {
+    "generated": 377,
+    "resumed": 0,
+    "wall_s": 134.3
+  },
+  "gpu_energy": {
+    "gpus": [
+      1
+    ],
+    "window_s": 137.4,
+    "total_j": 9007.5,
+    "j_per_task": 23.89,
+    "peak_memory_mib_per_gpu": 13563.0,
+    "method": "trapezoidal integral of nvidia-smi power.draw at 1 s, whole board"
+  }
+}

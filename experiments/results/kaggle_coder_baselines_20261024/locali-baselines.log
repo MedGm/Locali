@@ -1,0 +1,47 @@
+[{"stream_name":"stderr","time":11.863652217,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":11.863702134,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":11.863706252,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":11.863708779,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":12.670161361,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":12.670194843,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":12.670200009,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":12.670204662,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":14.110483675,"data":"Writing /kaggle/working/kaggle_baselines.py\n"}
+,{"stream_name":"stdout","time":203.03802766,"data":"[10:45:59] setup done\n"}
+,{"stream_name":"stdout","time":203.038059097,"data":"[10:45:59] qwen2.5-coder-3b: starting vLLM on GPU [0]\n"}
+,{"stream_name":"stdout","time":203.040740088,"data":"[10:45:59] qwen2.5-coder-7b-awq: starting vLLM on GPU [1]\n"}
+,{"stream_name":"stdout","time":368.134729825,"data":"[10:48:44] qwen2.5-coder-7b-awq: server ready\n"}
+,{"stream_name":"stdout","time":368.157713304,"data":"[10:48:44] qwen2.5-coder-3b: server ready\n"}
+,{"stream_name":"stdout","time":487.278506628,"data":"[10:50:43] qwen2.5-coder-7b-awq/humaneval_plus: 163 answers in 119s, GPU energy 7490.8 J\n"}
+,{"stream_name":"stdout","time":501.18089943,"data":"[10:50:57] qwen2.5-coder-3b/humaneval_plus: 163 answers in 133s, GPU energy 8413.4 J\n"}
+,{"stream_name":"stdout","time":624.653859379,"data":"[10:53:01] qwen2.5-coder-7b-awq/mbpp_plus: 377 answers in 137s, GPU energy 9007.5 J\n"}
+,{"stream_name":"stdout","time":639.641608805,"data":"[10:53:16] qwen2.5-coder-3b/mbpp_plus: 377 answers in 138s, GPU energy 8958.0 J\n"}
+,{"stream_name":"stdout","time":729.322612867,"data":"[10:54:45] qwen2.5-coder-3b/humanevalfix: 164 answers in 90s, GPU energy 5781.0 J\n"}
+,{"stream_name":"stdout","time":743.978488384,"data":"[10:55:00] qwen2.5-coder-7b-awq/humanevalfix: 164 answers in 119s, GPU energy 7747.6 J\n"}
+,{"stream_name":"stdout","time":784.358998901,"data":"[10:55:40] qwen2.5-coder-3b/bugdetect: 328 answers in 55s, GPU energy 3485.3 J\n"}
+,{"stream_name":"stdout","time":817.939264984,"data":"[10:56:14] qwen2.5-coder-7b-awq/bugdetect: 328 answers in 74s, GPU energy 4774.6 J\n"}
+,{"stream_name":"stdout","time":912.550734384,"data":"[10:57:49] qwen2.5-coder-3b/cruxeval_o: 800 answers in 128s, GPU energy 8321.2 J\n"}
+,{"stream_name":"stdout","time":958.673082175,"data":"[10:58:35] qwen2.5-coder-7b-awq/cruxeval_o: 800 answers in 141s, GPU energy 9239.4 J\n"}
+,{"stream_name":"stdout","time":1178.867599669,"data":"[11:02:15] qwen2.5-coder-7b-awq/testgen: 164 answers in 220s, GPU energy 14518.9 J\n"}
+,{"stream_name":"stdout","time":1216.228293352,"data":"[11:02:52] qwen2.5-coder-3b/testgen: 164 answers in 304s, GPU energy 19937.5 J\n"}
+,{"stream_name":"stdout","time":1299.80355705,"data":"[11:04:16] qwen2.5-coder-7b-awq/refactor: 163 answers in 121s, GPU energy 7864.5 J\n"}
+,{"stream_name":"stdout","time":1327.843828691,"data":"[11:04:44] qwen2.5-coder-3b/refactor: 163 answers in 112s, GPU energy 7274.3 J\n"}
+,{"stream_name":"stdout","time":1342.572591917,"data":"[11:04:59] qwen2.5-coder-7b-awq/completion: 163 answers in 43s, GPU energy 2715.7 J\n"}
+,{"stream_name":"stdout","time":1353.29223815,"data":"[11:05:09] qwen2.5-coder-3b/completion: 163 answers in 25s, GPU energy 1546.5 J\n"}
+,{"stream_name":"stdout","time":1410.261317877,"data":"[11:06:06] qwen2.5-coder-3b/securecodegen: 121 answers in 57s, GPU energy 3584.8 J\n"}
+,{"stream_name":"stdout","time":1412.123386532,"data":"[11:06:08] qwen2.5-coder-7b-awq/securecodegen: 121 answers in 70s, GPU energy 4426.8 J\n"}
+,{"stream_name":"stdout","time":1534.769229542,"data":"[11:08:11] qwen2.5-coder-3b/vulndetect: 712 answers in 124s, GPU energy 8055.7 J\n"}
+,{"stream_name":"stdout","time":1535.380001002,"data":"[11:08:11] qwen2.5-coder-3b: server stopped\n"}
+,{"stream_name":"stdout","time":1565.007144292,"data":"[11:08:41] qwen2.5-coder-7b-awq/vulndetect: 712 answers in 153s, GPU energy 9923.5 J\n"}
+,{"stream_name":"stdout","time":1565.618999076,"data":"[11:08:42] qwen2.5-coder-7b-awq: server stopped\n"}
+,{"stream_name":"stdout","time":1565.619826912,"data":"[11:08:42] all queues done\n"}
+,{"stream_name":"stdout","time":1565.636705312,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":1568.704999825,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1568.705027858,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1568.972595892,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1568.972623177,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1569.871228154,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":1569.955180973,"data":"[NbConvertApp] Writing 17330 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":1572.42435855,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1572.996701179,"data":"[NbConvertApp] Writing 319973 bytes to __results__.html\n"}
+]

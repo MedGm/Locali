@@ -1,0 +1,17 @@
+{
+  "id": "elgorrimmohamed/locali-gguf",
+  "title": "locali-gguf",
+  "code_file": "kaggle_gguf.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "elgorrimmohamed/locali-adapters-3b"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

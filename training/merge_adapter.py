@@ -21,6 +21,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 BASES = {
     "Qwen/Qwen2.5-Coder-1.5B-Instruct": "2e1fd397ee46e1388853d2af2c993145b0f1098a",
     "unsloth/Phi-4-mini-instruct": "75becc471c56fc34761ec998615ca6f8535c5a61",
+    "Qwen/Qwen2.5-Coder-3B-Instruct": "488639f1ff808d1d3d0ba301aef8c11461451ec5",
 }
 PROMPTS = [
     "Write a Python function that returns the n-th Fibonacci number.",

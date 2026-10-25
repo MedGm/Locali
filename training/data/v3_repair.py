@@ -94,8 +94,15 @@ def diagnosis_messages(buggy: str, fixed: str, note: str, kind: str) -> list[dic
     return [{"role": "user", "content": user}]
 
 
-def _identifiers(text: str) -> set[str]:
-    return {w for w in re.findall(r"[A-Za-z_][A-Za-z0-9_]*", text) if w not in _KEYWORDS and len(w) > 1}
+def _identifiers(text: str, short: bool = False) -> set[str]:
+    """Names in code or prose; one-letter names only when short=True (in prose, "a" is a word)."""
+    return {w for w in re.findall(r"[A-Za-z_][A-Za-z0-9_]*", text) if w not in _KEYWORDS and (short or len(w) > 1)}
+
+
+def _named(text: str) -> set[str]:
+    """Names a diagnosis mentions: longer words anywhere, any name inside backticks."""
+    quoted = " ".join(re.findall(r"`([^`]+)`", text))
+    return _identifiers(text) | _identifiers(quoted, short=True)
 
 
 def accept_diagnosis(text: str, bug_line: str, changed: str = "") -> str | None:
@@ -105,7 +112,7 @@ def accept_diagnosis(text: str, bug_line: str, changed: str = "") -> str | None:
         return None
     if not text.endswith((".", "!", "?")):
         return None
-    if not (_identifiers(text) & (_identifiers(bug_line) | _identifiers(changed))):
+    if not (_named(text) & (_identifiers(bug_line, short=True) | _identifiers(changed, short=True))):
         return None
     return text
 

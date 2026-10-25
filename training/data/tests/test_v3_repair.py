@@ -63,3 +63,11 @@ def test_template_names_the_line_when_no_diagnosis_is_accepted():
 
     text = template_diagnosis("        s = helper(x)", "wrong_update")
     assert "`s = helper(x)`" in text and text.endswith(".")
+
+
+def test_one_letter_names_in_backticks_count_as_naming_the_bug():
+    from training.data.v3_repair import accept_diagnosis
+
+    text = "The batch count divides `n` by `m` instead of `m + 1`, so the free item is counted too often."
+    assert accept_diagnosis(text, "        f = n // m * m") == text
+    assert accept_diagnosis("It is a mistake in a loop.", "        f = n // m * m") is None

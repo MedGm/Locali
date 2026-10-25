@@ -32,6 +32,11 @@ QLoRA on Qwen2.5-Coder-3B, paired against the base on the same problems:
 
 Refactoring is restored and repair keeps most of its gain (the difference to v3 is not significant). HumanEval+ did not recover, so the mutation bugs were not its cause. A likely reason is that the fine-tuned models answer with bare code (88 tokens) while the base explains before coding (242 tokens); that remains to be tested.
 
+
+## Revision (25 Oct 2026)
+
+The first upload of this version had a defect in the explanations of the realistic-bug repair examples (task `T1R`, repair format, 1,869 rows). Each explanation was the teacher's own note on the bug it had made ("Changed `x` to `y`"), so it described the edit from the wrong side, and 40 % were cut off mid-sentence at 240 characters. The teacher now rewrites each one as a reviewer's diagnosis of the buggy code (which construct is wrong, what it should do), kept only if it is complete, at most 320 characters, not phrased as an edit, and names something in the changed lines: 3,138 teacher diagnoses, 133 template fallbacks (`training/kaggle/diagnosis`). Code and all other rows are unchanged, so the models trained on the first upload were trained on the same code targets; only the explanation text differs.
+
 ## Sources and licences
 
 CodeRM-UnitTest (Apache-2.0; tests generated with Llama-3.1-70B-Instruct, Llama 3.1 licence), self-oss-instruct-sc2-exec-filter-50k (ODC-BY), bugs and explanations written by Qwen3.5-9B (Apache-2.0).

@@ -20,7 +20,7 @@ from pathlib import Path
 
 from training.data.decontam import evaluation_index
 from training.data.mix import _bucket, assign_split
-from training.data.v3_repair import v3_format, v3_messages
+from training.data.v3_repair import first_changed_line, template_diagnosis, v3_format, v3_messages
 
 
 def main() -> None:
@@ -30,9 +30,13 @@ def main() -> None:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--t1-keep", type=float, default=1.0)
     parser.add_argument("--replay-total", type=int, default=0)
+    parser.add_argument("--diagnoses", type=Path, help="reviewer diagnoses per bug (source, diagnosis)")
     args = parser.parse_args()
 
     bugs = [json.loads(line) for path in args.bugs for line in path.read_text().splitlines() if line.strip()]
+    diagnoses = {}
+    if args.diagnoses:
+        diagnoses = {r["source"]: r["diagnosis"] for r in map(json.loads, args.diagnoses.read_text().splitlines())}
     index = evaluation_index()
     rows, dropped = [], Counter()
     for bug in bugs:
@@ -42,6 +46,9 @@ def main() -> None:
             continue
         if not bug.get("description"):
             bug = bug | {"description": f"A {bug['kind'].replace('_', ' ')} bug makes the tests fail."}
+        if args.diagnoses:
+            line = first_changed_line(bug["fixed_code"], bug["buggy_code"])
+            bug = bug | {"diagnosis": diagnoses.get(bug["source"]) or template_diagnosis(line, bug["kind"])}
         fmt = v3_format(bug)
         task_id = bug["source"].split(":")[-1]
         rows.append({"id": f"t1r-{task_id}", "task": "T1R", "group": bug["source"], "format": fmt,
@@ -84,7 +91,8 @@ def main() -> None:
     stats = {"bugs_in": len(bugs), "t1r_kept": sum(r["task"] == "T1R" for r in rows),
              "t1_keep": args.t1_keep, "extra_replay": len(extra_replay), "decontam_dropped_by_source": dict(dropped),
              "splits": counts, "t1r_formats": dict(Counter(r["format"] for r in rows if r["task"] == "T1R")),
-             "t1r_kinds": dict(Counter(r["kind"] for r in rows if r["task"] == "T1R")), "bugs_files": [str(p) for p in args.bugs]}
+             "t1r_kinds": dict(Counter(r["kind"] for r in rows if r["task"] == "T1R")), "bugs_files": [str(p) for p in args.bugs],
+             "diagnoses": str(args.diagnoses) if args.diagnoses else None}
     (args.out / "stats.json").write_text(json.dumps(stats, indent=2))
     print(json.dumps(stats, indent=2))
 

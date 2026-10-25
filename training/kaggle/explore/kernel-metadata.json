@@ -1,0 +1,20 @@
+{
+  "id": "elgorrimmohamed/locali-fine-tuning-data-explorer",
+  "title": "Locali fine-tuning data explorer",
+  "code_file": "locali_data_explorer.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "dataset_sources": [
+    "elgorrimmohamed/locali-mix-v1",
+    "elgorrimmohamed/locali-mix-v2",
+    "elgorrimmohamed/locali-mix-v3",
+    "elgorrimmohamed/locali-mix-v3b"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

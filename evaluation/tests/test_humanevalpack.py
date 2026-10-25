@@ -100,3 +100,35 @@ def test_fix_ignores_model_written_asserts():
     text = f"```python\n{fixed}\nassert has_close_elements([1.0], 0.5) is True\n```"
 
     assert FIX_TASK.score(item, answer(text), eval_timeout_s=60)["passed"]
+
+
+# ---- reworded repair prompts (robustness check of the v3 result) ----
+
+def _item():
+    from evaluation.tasks.humanevalpack import PackItem
+
+    return PackItem(task_id="Python/0", prompt='def f(x):\n    """Return x plus one."""\n', declaration="def f(x):\n",
+                    canonical_solution="    return x + 1\n", buggy_solution="    return x - 1\n", bug_type="operator misuse",
+                    entry_point="f", imports="", test_setup="", test="def check(f):\n    assert f(1) == 2\ncheck(f)\n")
+
+
+def test_reworded_prompt_keeps_the_tests_but_not_the_benchmark_wording():
+    from evaluation.tasks.humanevalpack import FIX_REWORDED_TASK
+
+    text = FIX_REWORDED_TASK.messages(_item())[0]["content"]
+    assert "return x - 1" in text and "assert f(1) == 2" in text
+    assert "Fix bugs in" not in text and "These tests fail" not in text
+
+
+def test_no_tests_prompt_shows_the_docstring_and_no_tests():
+    from evaluation.tasks.humanevalpack import FIX_NO_TESTS_TASK
+
+    text = FIX_NO_TESTS_TASK.messages(_item())[0]["content"]
+    assert "Return x plus one." in text and "return x - 1" in text
+    assert "assert" not in text and "Fix bugs in" not in text
+
+
+def test_reworded_tasks_are_scored_like_humanevalfix():
+    from evaluation.run import TASKS
+
+    assert {"humanevalfix_reworded", "humanevalfix_notests"} <= set(TASKS)

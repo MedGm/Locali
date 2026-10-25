@@ -116,6 +116,36 @@ class FixTask:
         return f"```python\n{item.declaration}{item.canonical_solution}```"
 
 
+class FixRewordedTask(FixTask):
+    """HumanEvalFix in wording that matches neither the benchmark's nor any training prompt."""
+
+    name = "humanevalfix_reworded"
+
+    def messages(self, item: PackItem) -> list[dict]:
+        content = (
+            f"A colleague's Python function `{item.entry_point}` does not behave as intended. "
+            "Its unit tests are below the code, and at least one of them currently fails.\n\n"
+            f"Code:\n```python\n{item.declaration}{item.buggy_solution}```\n\n"
+            f"Unit tests:\n```python\n{item.test.strip()}\n```\n\n"
+            "Please write the corrected version of the whole function."
+        )
+        return [{"role": "user", "content": content}]
+
+
+class FixNoTestsTask(FixTask):
+    """HumanEvalFix without the tests: only the documented function, as a user would paste it."""
+
+    name = "humanevalfix_notests"
+
+    def messages(self, item: PackItem) -> list[dict]:
+        content = (
+            f"I think there is a mistake in this function, it does not do what its docstring says:\n\n"
+            f"```python\n{item.prompt}{item.buggy_solution}```\n\n"
+            "Can you give me a corrected version of the whole function?"
+        )
+        return [{"role": "user", "content": content}]
+
+
 _THINK = re.compile(r"<think>.*?</think>", re.DOTALL)
 
 
@@ -200,4 +230,6 @@ class BugDetectTask:
 
 
 FIX_TASK = FixTask()
+FIX_REWORDED_TASK = FixRewordedTask()
+FIX_NO_TESTS_TASK = FixNoTestsTask()
 BUG_DETECT_TASK = BugDetectTask()

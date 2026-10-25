@@ -15,8 +15,12 @@ set +a
 
 port() { local p=${1##*:}; echo "${p%%/*}"; }
 serve() {  # model file, url, key
+    # n-gram lookup (speculative decoding without a draft model) cut CPU energy per correct answer by
+    # 13-25 % in experiments/results/speculative_laptop; LOCALI_SPEC=none turns it off
+    local spec=()
+    [[ "${LOCALI_SPEC:-ngram-simple}" != none ]] && spec=(--spec-type "${LOCALI_SPEC:-ngram-simple}")
     exec "${LOCALI_LLAMA_SERVER:-$HOME/tools/llama.cpp/build/bin/llama-server}" -m "$1" --jinja --parallel 1 \
-        --cache-ram 0 -c 4096 --host 127.0.0.1 --port "$(port "$2")" --api-key "$3"
+        --cache-ram 0 -c 4096 --host 127.0.0.1 --port "$(port "$2")" --api-key "$3" "${spec[@]}"
 }
 
 case "${1:-}" in

@@ -335,8 +335,10 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
         measured = {(r["model"], r["quant"]): r for r in (load_summary() or {}).get("ladder", {}).get("rows", [])}
         out = []
         for m in registry["models"]:
-            row = measured.get(("fine-tuned" if m["fine_tuned"] else "base", m["quant"]), {})
-            out.append({**m, "laptop": row.get("tasks", {}), "peak_ram_gb": row.get("peak_ram_gb"),
+            # ladder rows are the 1.5B models; an entry with "ladder": null was measured elsewhere
+            key = m["ladder"] if "ladder" in m else ("fine-tuned" if m["fine_tuned"] else "base", m["quant"])
+            row = measured.get(tuple(key), {}) if key else {}
+            out.append({"highlights": [], **m, "laptop": row.get("tasks", {}), "peak_ram_gb": row.get("peak_ram_gb"),
                         "active": os.environ.get("LOCALI_MODEL_ID") == m["id"]})
         return {"note": registry["note"], "models": out}
 

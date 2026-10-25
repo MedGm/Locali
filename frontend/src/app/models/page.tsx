@@ -18,7 +18,8 @@ type Model = {
   quant: string;
   file: string;
   size_gib: number;
-  hf_repo: string;
+  hf_repo: string | null;
+  highlights: string[];
   recommended: "default" | "fast" | null;
   laptop: Record<string, Measured>;
   peak_ram_gb: number | null;
@@ -37,12 +38,12 @@ export default function ModelsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Models"
-        description="The fine-tuned model in its three sizes, and the base model it came from. The highlighted card is the one this installation runs."
+        description="The fine-tuned 3B model, the smaller 1.5B in three sizes, and the base model they came from. The highlighted card is the one this installation runs."
         actions={<MlflowLink />}
         howItWorks={[
-          { title: "One model, three sizes", text: "F16 is the full model; Q8 and Q4 are compressed copies that run faster in less memory." },
-          { title: "Q8 is the default", text: "It gives the same answers as F16 in our tests, in half the memory." },
-          { title: "Q4 is the fast option", text: "About 60 % faster than Q8 for 2–4 points of accuracy." },
+          { title: "The 3B is the default", text: "It fixes far more bugs than the 1.5B (61 % vs 36 %) and takes about 15 s per fix on a laptop." },
+          { title: "The 1.5B Q4 is the fast option", text: "About 6 s per fix, for simpler bugs or slower machines." },
+          { title: "Sizes", text: "F16 is a full model; Q8 and Q4 are compressed copies that run faster in less memory." },
           { title: "Measured here", text: "Scores and speed come from benchmark runs on a 4-core laptop CPU." },
         ]}
       />
@@ -63,17 +64,28 @@ export default function ModelsPage() {
                   {m.quant} · {m.size_gib} GiB
                   {m.peak_ram_gb != null && ` · ${m.peak_ram_gb} GB RAM`}
                 </span>
-                <a
-                  href={`https://huggingface.co/${m.hf_repo}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1 underline"
-                >
-                  {m.hf_repo} <ExternalLink className="size-3" />
-                </a>
+                {m.hf_repo ? (
+                  <a
+                    href={`https://huggingface.co/${m.hf_repo}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 underline"
+                  >
+                    {m.hf_repo} <ExternalLink className="size-3" />
+                  </a>
+                ) : (
+                  <span className="block">Built locally: {m.file}</span>
+                )}
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {m.highlights?.length > 0 && (
+                <ul className="mb-3 list-disc space-y-1 pl-5 text-sm">
+                  {m.highlights.map((h) => (
+                    <li key={h}>{h}</li>
+                  ))}
+                </ul>
+              )}
               {Object.keys(m.laptop).length ? (
                 <table className="w-full text-sm">
                   <thead>
@@ -96,7 +108,7 @@ export default function ModelsPage() {
                   </tbody>
                 </table>
               ) : (
-                <p className="text-sm text-muted-foreground">Not measured on the laptop.</p>
+                !m.highlights?.length && <p className="text-sm text-muted-foreground">Not measured on the laptop.</p>
               )}
             </CardContent>
           </Card>

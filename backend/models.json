@@ -1,6 +1,24 @@
 {
-  "note": "Models the assistant can run on the laptop with llama.cpp. Quality, speed, RAM and energy come from the quantization ladder (experiments/results/summary.json).",
+  "note": "Models the assistant can run on the laptop with llama.cpp. For the 1.5B models, quality, speed, RAM and energy come from the quantization ladder (experiments/results/summary.json); the 3B was measured separately (experiments/results/finetune_qwen25_3b_qlora_mixv3b, laptop_3b_check).",
   "models": [
+    {
+      "id": "ft3b-q4",
+      "name": "Locali Qwen2.5-Coder-3B, fine-tuned (QLoRA, mixture v3b), Q4_K_M",
+      "base": "Qwen/Qwen2.5-Coder-3B-Instruct",
+      "fine_tuned": true,
+      "quant": "Q4_K_M",
+      "file": "qwen2.5-coder-3b-locali-mixv3b-q4_k_m.gguf (built by training/kaggle/gguf)",
+      "size_gib": 1.8,
+      "hf_repo": null,
+      "recommended": "default",
+      "ladder": null,
+      "highlights": [
+        "HumanEvalFix 61.0 % (1.5B fine-tuned: 36.0 %), 71 % with 3 attempts and test feedback",
+        "Tests that catch the bug: 80.5 %; refactoring that keeps behaviour: 88.3 %",
+        "Laptop CPU: about 14-15 s per bug fix, 2.2 GB RAM",
+        "Base model under the Qwen research licence (non-commercial)"
+      ]
+    },
     {
       "id": "ft-q8",
       "name": "Locali Qwen2.5-Coder-1.5B, fine-tuned (QLoRA v2), Q8_0",
@@ -10,7 +28,7 @@
       "file": "llama-locali-qwen2.5-coder-1.5b-q8_0.gguf",
       "size_gib": 1.5,
       "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF",
-      "recommended": "default"
+      "recommended": null
     },
     {
       "id": "ft-q4",

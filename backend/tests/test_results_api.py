@@ -28,3 +28,13 @@ def test_models_list_the_registry_with_measured_numbers(tmp_path):
     q8 = next(m for m in models["models"] if m["id"] == "ft-q8")
     assert q8["hf_repo"].startswith("MedGm/Llama-Locali") and q8["laptop"]["humaneval_plus"]["score"] == 63.2
     assert q8["peak_ram_gb"] == 1.79
+
+
+def test_the_fine_tuned_3b_is_the_default_and_does_not_borrow_the_1_5b_measurements(tmp_path):
+    client = TestClient(create_app(repos_root=ROOT, data_dir=tmp_path))
+    models = {m["id"]: m for m in client.get("/models").json()["models"]}
+    ft3b = models["ft3b-q4"]
+    assert ft3b["recommended"] == "default" and ft3b["laptop"] == {} and ft3b["peak_ram_gb"] is None
+    assert any("HumanEvalFix" in h for h in ft3b["highlights"])
+    assert [m["id"] for m in models.values() if m["recommended"] == "default"] == ["ft3b-q4"]
+    assert models["ft-q4"]["laptop"]  # the 1.5B entries keep their ladder numbers

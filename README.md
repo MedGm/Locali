@@ -202,8 +202,14 @@ mutations. The untrained Qwen2.5-Coder-3B already repaired more (46.3 %) than th
 The gain is in repair from failing tests, holds when the prompt is reworded, and is largest on
 excess logic (11 → 21) and missing logic (12 → 15). Test generation keeps the v2 gain (62 → 82 %
 of bugs caught). Two costs remain: refactoring falls to 78.5 % (base 86.5 %) and HumanEval+ stays
-six points below the base (a cost of the v2 data). A third run with half of the mutation bugs and
-twice the general replay data addresses both.
+six points below the base (a cost of the v2 data). A third run
+([run C](experiments/results/finetune_qwen25_3b_qlora_mixv3b/README.md)), with half of the mutation
+bugs and twice the general replay data, restores refactoring (88.3 %) and keeps most of the repair
+gain (61.0 %, p = 0.001 against the base), but not HumanEval+ (73.0 %). **Run C is Locali's default
+model since 25 October**: merged and exported to Q4_K_M (1.93 GB), it fixes a bug in about 15 s on
+the laptop with 2.2 GB of RAM ([laptop check](experiments/results/laptop_3b_check/README.md)); the
+1.5B Q4_K_M stays as the fast option (about 6 s). Its base model is under the Qwen research licence,
+so it is not redistributed; `training/kaggle/gguf` rebuilds it from the adapter.
 
 ## 4. Performance optimization
 
@@ -216,8 +222,8 @@ twice the general replay data addresses both.
 | CPU energy per solved HumanEval+ item | 638 J | 396 J | 234 J |
 | Peak RAM | 3.21 GB | 1.79 GB | 1.16 GB |
 
-Q8_0 changes 2 of 163 answers against F16 and is the default; Q4_K_M costs 2–4 points (not
-significant one by one, all in the same direction) and is the fast option. The fine-tuned model
+Q8_0 changes 2 of 163 answers against F16; Q4_K_M costs 2–4 points (not significant one by one,
+all in the same direction) and is the fast option of the 1.5B. The fine-tuned model
 also writes about a third fewer tokens than the base, which saves time and energy on its own.
 
 **Speculative decoding** ([laptop](experiments/results/speculative_laptop/README.md),
@@ -386,7 +392,7 @@ cp .env.example .env    # then set the token, the keys and the path to the GGUF 
 Then, one per terminal:
 
 ```bash
-scripts/run.sh model      # the fine-tuned Q8_0 model with llama.cpp
+scripts/run.sh model      # the fine-tuned 3B (Q4_K_M) with llama.cpp and n-gram lookup
 scripts/run.sh compare    # optional: a second model for the playground
 scripts/run.sh backend    # the API
 scripts/run.sh web        # http://localhost:3000

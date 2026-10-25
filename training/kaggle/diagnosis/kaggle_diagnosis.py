@@ -42,7 +42,14 @@ def main() -> None:
     subprocess.run(["git", "-C", str(CODE), "checkout", "-q", COMMIT], check=True)
     sys.path.insert(0, str(CODE))
     from training.data.v3_repair import accept_diagnosis, diagnosis_messages
-    from training.kaggle.common import TEXT_ONLY, install_vllm, log, start_server, stop_server, wait_healthy
+    from training.kaggle.common import (
+        TEXT_ONLY,
+        install_vllm,
+        log,
+        start_server,
+        stop_server,
+        wait_healthy,
+    )
 
     found = next(Path("/kaggle/input").rglob("diag_inputs.jsonl"))
     rows = [json.loads(line) for line in found.read_text().splitlines() if line.strip()]

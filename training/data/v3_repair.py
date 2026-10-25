@@ -44,10 +44,9 @@ def bug_function(buggy: str, fixed: str) -> str:
     return top[-1].name if top else "the code"
 
 
-def first_sentence(text: str, limit: int = 240) -> str:
+def first_sentence(text: str) -> str:
     match = re.match(r"(.+?[.!?])(\s|$)", text.strip())
-    sentence = match.group(1) if match else text.strip()
-    return sentence[:limit]
+    return match.group(1) if match else text.strip()
 
 
 def v3_format(bug: dict) -> str:
@@ -66,6 +65,60 @@ def v3_messages(bug: dict, fmt: str) -> list[dict]:
     user = (f"The following Python function has a bug.\n\n```python\n{buggy}\n```\n\n"
             f"Running its tests gives:\n```\n{bug['error'].strip()}\n```\n\n{REPAIR_INSTRUCTION}")
     diagnosis = {"bug_location": first_changed_line(fixed, buggy), "bug_type": bug["kind"].replace("_", " "),
-                 "explanation": first_sentence(bug.get("description", ""))}
+                 "explanation": bug.get("diagnosis") or first_sentence(bug.get("description", ""))}
     return [{"role": "user", "content": user},
             {"role": "assistant", "content": f"{json.dumps(diagnosis)}\n```python\n{fixed}\n```"}]
+
+
+# The teacher wrote each bug and a note on what it changed ("Changed x to y"). That note describes
+# the edit from the bug-maker's side; a repair answer needs the reviewer's side: what is wrong in
+# the code shown and what it should be. These rewrite it, check it, or fall back to a template.
+
+MAX_DIAGNOSIS_CHARS = 320
+_BUG_MAKER = re.compile(r"^(I\b|Changed|Removed|Added|Introduced|Replaced|Modified|Swapped|Omitted|Altered|"
+                        r"Inserted|Deleted|Moved|Updated)\b", re.IGNORECASE)
+_KEYWORDS = {"if", "else", "elif", "for", "while", "in", "return", "and", "or", "not", "is", "def", "None", "True",
+             "False", "range", "len", "the", "self"}
+
+
+def diagnosis_messages(buggy: str, fixed: str, note: str, kind: str) -> list[dict]:
+    user = (
+        f"A code reviewer looks at this buggy Python code:\n```python\n{buggy.strip()}\n```\n\n"
+        f"The correct version is:\n```python\n{fixed.strip()}\n```\n\n"
+        f"(Notes from whoever introduced the bug, a {kind.replace('_', ' ')}: {note.strip()})\n\n"
+        "Write the reviewer's diagnosis of the buggy code in one or two short sentences: which line or "
+        "construct is wrong, what it does wrong, and what it should do instead. Refer to the code as it is "
+        "now, do not describe an edit (never start with 'Changed', 'Removed' or 'Added'). Reply with the "
+        "diagnosis only."
+    )
+    return [{"role": "user", "content": user}]
+
+
+def _identifiers(text: str) -> set[str]:
+    return {w for w in re.findall(r"[A-Za-z_][A-Za-z0-9_]*", text) if w not in _KEYWORDS and len(w) > 1}
+
+
+def accept_diagnosis(text: str, bug_line: str, changed: str = "") -> str | None:
+    """The diagnosis if it is complete, short, written from the reviewer's side and about the bug."""
+    text = " ".join(text.strip().strip('"').split())
+    if not text or len(text) > MAX_DIAGNOSIS_CHARS or _BUG_MAKER.match(text):
+        return None
+    if not text.endswith((".", "!", "?")):
+        return None
+    if not (_identifiers(text) & (_identifiers(bug_line) | _identifiers(changed))):
+        return None
+    return text
+
+
+def template_diagnosis(bug_line: str, kind: str) -> str:
+    return f"`{bug_line.strip()}` has a {kind.replace('_', ' ')} bug, so the tests fail; it is corrected below."
+
+
+def changed_text(fixed: str, buggy: str) -> str:
+    """The lines that differ between the two versions, from both sides."""
+    a, b = fixed.splitlines(), buggy.splitlines()
+    out = []
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(a=a, b=b, autojunk=False).get_opcodes():
+        if tag != "equal":
+            out += a[i1:i2] + b[j1:j2]
+    return "\n".join(out)

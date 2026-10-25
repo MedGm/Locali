@@ -33,3 +33,33 @@ def test_benchmark_format_names_the_function_and_answers_with_code_only():
     assert "These tests fail:" in user["content"]
     assert assistant["content"] == f"```python\n{FIXED.rstrip()}\n```"
     json.dumps([user, assistant])
+
+
+def test_diagnosis_prompt_gives_both_versions_and_asks_for_the_reviewer_view():
+    from training.data.v3_repair import diagnosis_messages
+
+    text = diagnosis_messages(BUGGY, FIXED, BUG["description"], "wrong_update")[-1]["content"]
+    assert BUGGY.strip() in text and FIXED.strip() in text and "reviewer" in text
+
+
+def test_a_reviewer_diagnosis_is_accepted():
+    from training.data.v3_repair import accept_diagnosis
+
+    good = "The loop assigns `s = helper(x)` instead of adding to `s`, so only the last element is counted."
+    assert accept_diagnosis(good, "        s = helper(x)") == good
+
+
+def test_bug_maker_wording_cut_sentences_and_unrelated_text_are_rejected():
+    from training.data.v3_repair import accept_diagnosis
+
+    line = "        s = helper(x)"
+    assert accept_diagnosis("Changed `s += helper(x)` to `s = helper(x)`.", line) is None
+    assert accept_diagnosis("The loop assigns `s = helper(x)` instead of adding to it, so only the la", line) is None
+    assert accept_diagnosis("The function has a logic error in its main loop.", line) is None
+
+
+def test_template_names_the_line_when_no_diagnosis_is_accepted():
+    from training.data.v3_repair import template_diagnosis
+
+    text = template_diagnosis("        s = helper(x)", "wrong_update")
+    assert "`s = helper(x)`" in text and text.endswith(".")

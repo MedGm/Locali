@@ -182,6 +182,29 @@ v2**, merged into the base and published on Hugging Face
 [dataset](https://huggingface.co/datasets/MedGm/locali-mix-v2)). The "Llama" prefix is required
 by the Llama 3.1 license, because part of the training tests came from a Llama-generated dataset.
 
+**v3: realistic bugs on a 3B base** ([retrospective](docs/retrospective.md),
+[bugs](experiments/results/v3_bugs/README.md), [3B baselines](experiments/results/kaggle_coder_baselines_20261024/README.md),
+[run A](experiments/results/finetune_qwen25_3b_qlora_mixv2/README.md),
+[run B](experiments/results/finetune_qwen25_3b_qlora_mixv3/README.md),
+[robustness](experiments/results/robust_3b_t4/README.md)). The fine-tuned 1.5B fixed operator bugs
+better than the 9B teacher but barely moved on logic bugs: it had learned the shape of the one-line
+mutations. The untrained Qwen2.5-Coder-3B already repaired more (46.3 %) than the fine-tuned 1.5B
+(36.0 %). I had the teacher write 3,271 realistic bugs of seven kinds into unused, verified problems
+(kept only when the problem's tests catch them) and trained the 3B twice with the same recipe:
+
+| HumanEvalFix, % fixed | 3B base | + v2 data | + v2 + realistic bugs |
+|---|---|---|---|
+| Benchmark prompt | 46.3 | 43.9 | **64.6** (p = 4e-5 vs base) |
+| Reworded prompt, same tests | 40.2 | 38.4 | **56.7** (p = 4e-4) |
+| 3 attempts with explained errors | 54.9 | 52.4 | **71.3** |
+| Docstring instead of tests | 73.8 | 59.2 | 75.0 (n.s.) |
+
+The gain is in repair from failing tests, holds when the prompt is reworded, and is largest on
+excess logic (11 → 21) and missing logic (12 → 15). Test generation keeps the v2 gain (62 → 82 %
+of bugs caught). Two costs remain: refactoring falls to 78.5 % (base 86.5 %) and HumanEval+ stays
+six points below the base (a cost of the v2 data). A third run with half of the mutation bugs and
+twice the general replay data addresses both.
+
 ## 4. Performance optimization
 
 **Quantization** on the laptop CPU, llama.cpp ([ladder](experiments/results/ladder_laptop/README.md)):

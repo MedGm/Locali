@@ -11,7 +11,7 @@
 \usepackage[numbers,sort&compress]{natbib}
 
 \title{Joules per Correct Answer: Fine-Tuning, Quantization, Batching and\\
-Speculative Decoding for a 1.5B Code Model}
+Speculative Decoding for Small Code Models}
 \author{Mohamed El Gorrim\\
 Universit\'e Abdelmalek Essa\^adi\\
 \texttt{elgorrim.mohamed@etu.uae.ac.ma}}
@@ -37,7 +37,10 @@ Fine-tuning also moves the target away from its stock draft: acceptance is lower
 fine-tune than for the base model at every draft length, and with 8 drafted tokens the fine-tune
 repairs bugs more slowly than without speculation while the base model still gains. On the GPU,
 serving 8 requests at a time lowers energy per correct answer 6--9$\times$, more than any
-decoding change. All answers, logs and scripts are public, and every accuracy comparison is a paired exact
+decoding change. Finally, what fine-tuning teaches depends on its bugs: trained on one-line
+mutations the model learns to patch one token; with test-verified realistic bugs on a 3B base,
+repair rises from 46\% to 65\% (71\% with test feedback), a gain that survives a reworded prompt,
+and the fine-tuned 3B answers in half the tokens of its base. All answers, logs and scripts are public, and every accuracy comparison is a paired exact
 test on the same problems.
 \end{abstract}
 
@@ -67,6 +70,8 @@ Our contributions:
 \item Evidence that fine-tuning lowers the acceptance of a stock draft model, enough to make long
   drafts a net loss for the fine-tune (Section~\ref{sec:shift}).
 \item A check that the fine-tuning gains replicate with a second seed (Section~\ref{sec:seed}).
+\item Evidence that one-line mutation data teaches the shape of its bugs, and that realistic,
+  test-verified bugs on a 3B base raise repair by 18 points without prompt matching (Section~\ref{sec:v3}).
 \end{itemize}
 
 \section{Setup}
@@ -265,6 +270,54 @@ detection in HumanEvalPack's yes/no format, where the second seed labels almost 
 buggy (recall 0.95, precision 0.53; accuracy 54.6\% vs.\ 65.6\%), although both seeds score 66\% in
 the format they were trained on. We therefore report the generation and repair gains and not the
 detection gain.
+
+\section{What the fine-tuning data teaches, and a larger base}
+\label{sec:v3}
+
+The 1.5B fine-tune repairs bugs better than its base, but a breakdown by HumanEvalFix bug type shows
+how: it fixes more operator bugs than the 9B teacher (16 vs.\ 13 of 25) and barely moves on missing
+logic (4 $\rightarrow$ 7 of 33; teacher: 22). Its training bugs were all one-line mutations, and it
+learned that shape. The untrained Qwen2.5-Coder-3B already repairs more than our fine-tuned 1.5B
+(46.3 vs.\ 36.0\%, $p=0.027$), so we moved to the 3B and changed the data: the teacher wrote one bug
+of a given kind (missing or excess logic, wrong condition, off-by-one, wrong variable, value or
+update) into 4{,}500 unused, verified problems, and a bug was kept only if the problem's own unit
+tests failed on it, it kept all signatures, and missing/excess-logic bugs removed/added a statement
+(3{,}271 kept, 44\% spanning several lines). Three QLoRA runs used the same recipe:
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+ & 3B base & A: v2 data & B: + real.\ bugs & C: B, $\frac12$ mutations, 2$\times$ replay \\
+\midrule
+HumanEvalFix (164) & 46.3 & 43.9 & \textbf{64.6} & 61.0 \\
+\quad reworded prompt & 40.2 & 38.4 & \textbf{56.7} & -- \\
+\quad 3 attempts, explained errors & 54.9 & 52.4 & \textbf{71.3} & -- \\
+Refactoring, behaviour kept & 86.5 & 92.0 & 78.5 & \textbf{88.3} \\
+Test generation, bug caught & 62.2 & \textbf{85.4} & 82.3 & 80.5 \\
+HumanEval+ (163) & \textbf{81.0} & 74.8 & 74.8 & 73.0 \\
+\bottomrule
+\end{tabular}
+\caption{Qwen2.5-Coder-3B, \% on the T4 (FP16). B vs.\ base on HumanEvalFix: 41 problems gained,
+11 lost ($p=4\cdot10^{-5}$); with a reworded prompt that no training example uses, 41 / 14
+($p=4\cdot10^{-4}$). For reference, Qwen2.5-Coder-7B (4-bit AWQ) fixes 59.2\% and the 9B teacher 65.8\%.}
+\label{tab:v3}
+\end{table}
+
+Table~\ref{tab:v3} separates the effects. The v2 data alone (A) teaches tests and refactoring but
+not repair. The realistic bugs (B) add 18 points of repair, the largest gains on excess logic
+(11 $\rightarrow$ 21 of 31) and missing logic (12 $\rightarrow$ 15), and the gain survives a reworded prompt, so
+it is not the benchmark's phrasing. Given a docstring instead of failing tests, the base already
+fixes 73.8\% and B adds nothing (75.0\%): what the data teaches is repair \emph{from failing tests},
+the situation of a repair agent. Run C restores refactoring at no significant cost in repair
+(61.0 vs.\ 64.6\%, $p=0.29$). HumanEval+ stays 6--8 points below the base in every run, including A, so
+the bug data is not its cause; we suspect the bare-code answers (88 vs.\ 242 output tokens).
+
+For the energy question the length matters too: on the laptop, the fine-tuned 3B answers a repair
+in 65 tokens against the base 3B's 123, and fixes a bug in about 15\,s (Q4\_K\_M, 2.2\,GB RAM)
+against 21\,s for the base and 6\,s for the fine-tuned 1.5B. [CPU energy per fixed bug for the 3B
+to be measured with RAPL.]
 
 \section{Related work}
 

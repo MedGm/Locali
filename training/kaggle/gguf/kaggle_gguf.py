@@ -42,6 +42,8 @@ def main() -> None:
     adapter = next(p.parent for p in Path("/kaggle/input").rglob("adapter_config.json") if p.parent.name == ADAPTER)
     merged = TMP / "merged"
     run([sys.executable, "-m", "pip", "install", "-q", "peft"])
+    # Kaggle's preinstalled torchao is too old for peft's import check; the merge does not use it
+    run([sys.executable, "-m", "pip", "uninstall", "-y", "-q", "torchao"])
     run([sys.executable, "-m", "training.merge_adapter", str(adapter), str(merged)], cwd=CODE)
     shutil.copy(merged / "merge_report.json", WORK / f"{NAME}.merge_report.json")
 

@@ -1,0 +1,18 @@
+{
+ "model": "base",
+ "config": "plain",
+ "explain": false,
+ "retry_temperature": 0.0,
+ "n": 164,
+ "fixed_within": {
+  "1": 76,
+  "2": 84,
+  "3": 85
+ },
+ "rate_within": {
+  "1": 46.3,
+  "2": 51.2,
+  "3": 51.8
+ },
+ "seconds": 302
+}

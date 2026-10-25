@@ -1,0 +1,18 @@
+{
+ "model": "mixv3",
+ "config": "plain",
+ "explain": false,
+ "retry_temperature": 0.0,
+ "n": 164,
+ "fixed_within": {
+  "1": 105,
+  "2": 111,
+  "3": 112
+ },
+ "rate_within": {
+  "1": 64.0,
+  "2": 67.7,
+  "3": 68.3
+ },
+ "seconds": 244
+}

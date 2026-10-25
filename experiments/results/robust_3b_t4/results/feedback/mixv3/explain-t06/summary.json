@@ -1,0 +1,18 @@
+{
+ "model": "mixv3",
+ "config": "explain-t06",
+ "explain": true,
+ "retry_temperature": 0.6,
+ "n": 164,
+ "fixed_within": {
+  "1": 105,
+  "2": 114,
+  "3": 117
+ },
+ "rate_within": {
+  "1": 64.0,
+  "2": 69.5,
+  "3": 71.3
+ },
+ "seconds": 202
+}

@@ -1,0 +1,88 @@
+{
+  "config": {
+    "benchmark": "humanevalfix_notests",
+    "model_id": "qwen2.5-coder-3b-mixv3",
+    "runtime": "vLLM 0.29.0 T4 + LoRA",
+    "max_tokens": 768,
+    "model_revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5",
+    "quantization": "fp16",
+    "base_url": "http://127.0.0.1:8000/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "bigcode/humanevalpack",
+    "dataset_revision": "9a41762f73a8cb23bb5811b73d5aab164efcf378",
+    "notes": "prompt robustness check, model mixv3",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-10-25T01:36:16+00:00",
+    "git_commit": "5db8284236b14a93a8f42089462f18e14a95e43d",
+    "git_dirty": false,
+    "host": "7b2f78fd0ba0",
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 164,
+    "status_counts": {
+      "passed": 123,
+      "failed": 39,
+      "timeout": 2
+    },
+    "truncated": 0,
+    "mean_input_tokens": 252.6585,
+    "mean_output_tokens": 203.0549,
+    "mean_ttft_s": 0.5951,
+    "median_ttft_s": 0.4119,
+    "mean_total_s": 22.2691,
+    "mean_decode_tok_per_s": 9.39,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "pass@1": 0.75,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.6774,
+      "function misuse": 0.875,
+      "missing logic": 0.5758,
+      "operator misuse": 0.92,
+      "value misuse": 0.8409,
+      "variable misuse": 0.6957
+    }
+  },
+  "excluded": {},
+  "this_session": {
+    "generated": 164,
+    "resumed": 0,
+    "wall_s": 242.3
+  },
+  "rescored": {
+    "at": "2026-10-25T01:41:24+00:00",
+    "harness_commit": "",
+    "previous_metrics": {
+      "n": 164,
+      "status_counts": {
+        "unscored": 164
+      },
+      "truncated": 0,
+      "mean_input_tokens": 252.6585,
+      "mean_output_tokens": 203.0549,
+      "mean_ttft_s": 0.5951,
+      "median_ttft_s": 0.4119,
+      "mean_total_s": 22.2691,
+      "mean_decode_tok_per_s": 9.39,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
+  }
+}

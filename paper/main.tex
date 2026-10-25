@@ -316,8 +316,11 @@ the bug data is not its cause; we suspect the bare-code answers (88 vs.\ 242 out
 
 For the energy question the length matters too: on the laptop, the fine-tuned 3B answers a repair
 in 65 tokens against the base 3B's 123, and fixes a bug in about 15\,s (Q4\_K\_M, 2.2\,GB RAM)
-against 21\,s for the base and 6\,s for the fine-tuned 1.5B. [CPU energy per fixed bug for the 3B
-to be measured with RAPL.]
+against 21\,s for the base and 6\,s for the fine-tuned 1.5B. With n-gram lookup on all 164
+problems it fixes 100 (61.0\%, the same as in FP16 on the T4) for 446\,J of CPU energy per fixed bug,
+against 405\,J for the fine-tuned 1.5B in Q4 with n-gram lookup, which fixes 49: twice the repairs for
+10\% more energy per repair, within the day-to-day drift we measured. Per correct answer, the larger
+model is not more expensive.
 
 \section{Related work}
 

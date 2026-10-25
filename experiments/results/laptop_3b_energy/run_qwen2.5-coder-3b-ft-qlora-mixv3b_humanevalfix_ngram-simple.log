@@ -1,0 +1,39 @@
+'[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/datasets/bigcode/humanevalpack/resolve/9a41762f73a8cb23bb5811b73d5aab164efcf378/humanevalpack.py
+Retrying in 1s [Retry 1/5].
+Using the latest cached version of the dataset since bigcode/humanevalpack couldn't be found on the Hugging Face Hub
+Found the latest cached dataset configuration 'python' at /home/medgm/.cache/huggingface/datasets/bigcode___humanevalpack/python/0.0.0/9a41762f73a8cb23bb5811b73d5aab164efcf378 (last modified on Sun Oct 18 19:52:48 2026).
+{
+  "metrics": {
+    "n": 164,
+    "status_counts": {
+      "passed": 100,
+      "failed": 64
+    },
+    "truncated": 0,
+    "mean_input_tokens": 327.25,
+    "mean_output_tokens": 68.1159,
+    "mean_ttft_s": 8.8246,
+    "median_ttft_s": 7.6483,
+    "mean_total_s": 14.8839,
+    "mean_decode_tok_per_s": 10.97,
+    "total_energy_j": 44591.6,
+    "mean_energy_j_per_task": 271.9,
+    "draft_tokens": 13980,
+    "draft_accepted": 7137,
+    "draft_acceptance": 0.5105,
+    "pass@1": 0.6098,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.5806,
+      "function misuse": 0.625,
+      "missing logic": 0.4545,
+      "operator misuse": 0.64,
+      "value misuse": 0.7273,
+      "variable misuse": 0.6087
+    }
+  },
+  "this_session": {
+    "generated": 164,
+    "resumed": 0,
+    "wall_s": 2523.4
+  }
+}

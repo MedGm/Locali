@@ -1,0 +1,24 @@
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "passed": 18,
+      "failed": 2
+    },
+    "truncated": 0,
+    "mean_input_tokens": 146.45,
+    "mean_output_tokens": 144.15,
+    "mean_ttft_s": 3.4356,
+    "median_ttft_s": 3.3149,
+    "mean_total_s": 21.9155,
+    "mean_decode_tok_per_s": 7.83,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "pass@1": 0.9
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 461.8
+  }
+}

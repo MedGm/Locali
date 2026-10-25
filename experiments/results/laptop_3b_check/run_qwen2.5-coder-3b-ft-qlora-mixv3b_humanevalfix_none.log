@@ -1,0 +1,31 @@
+{
+  "metrics": {
+    "n": 20,
+    "status_counts": {
+      "passed": 16,
+      "failed": 4
+    },
+    "truncated": 0,
+    "mean_input_tokens": 230.7,
+    "mean_output_tokens": 64.75,
+    "mean_ttft_s": 6.552,
+    "median_ttft_s": 6.9383,
+    "mean_total_s": 14.6104,
+    "mean_decode_tok_per_s": 8.13,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "pass@1": 0.8,
+    "pass@1_by_bug_type": {
+      "excess logic": 1.0,
+      "missing logic": 0.6,
+      "operator misuse": 0.6667,
+      "value misuse": 0.8,
+      "variable misuse": 1.0
+    }
+  },
+  "this_session": {
+    "generated": 20,
+    "resumed": 0,
+    "wall_s": 303.3
+  }
+}

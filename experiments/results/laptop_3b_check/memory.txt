@@ -1,2 +1,4 @@
 none peak_rss_kb 2352648
 ngram-simple peak_rss_kb 2386316
+qwen2.5-coder-3b-ft-qlora-mixv3b none peak_rss_kb 2181572
+qwen2.5-coder-3b-ft-qlora-mixv3b ngram-simple peak_rss_kb 2215376

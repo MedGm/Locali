@@ -205,8 +205,11 @@ of bugs caught). Two costs remain: refactoring falls to 78.5 % (base 86.5 %) and
 six points below the base (a cost of the v2 data). A third run
 ([run C](experiments/results/finetune_qwen25_3b_qlora_mixv3b/README.md)), with half of the mutation
 bugs and twice the general replay data, restores refactoring (88.3 %) and keeps most of the repair
-gain (61.0 %, p = 0.001 against the base), but not HumanEval+ (73.0 %). **Run C is Locali's default
-model since 25 October**: merged and exported to Q4_K_M (1.93 GB), it fixes a bug in about 15 s on
+gain (61.0 %, p = 0.001 against the base), but not HumanEval+ (73.0 %). Run D
+([README](experiments/results/finetune_qwen25_3b_qlora_mixv3b_diag/README.md)) repeats run C on the
+corrected v3b data (reviewer-side explanations for the realistic bugs): same scores within noise on
+all 16 tasks, no explanation phrased as an edit. **Run D is Locali's default model since 1 November**
+(run C from 25 October before it): merged and exported to Q4_K_M (1.93 GB), it fixes a bug in about 15 s on
 the laptop with 2.2 GB of RAM ([laptop check](experiments/results/laptop_3b_check/README.md)); the
 1.5B Q4_K_M stays as the fast option (about 6 s). Its base model is under the Qwen research licence,
 so it is not redistributed; `training/kaggle/gguf` rebuilds it from the adapter.

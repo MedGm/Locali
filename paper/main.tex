@@ -320,7 +320,9 @@ against 21\,s for the base and 6\,s for the fine-tuned 1.5B. With n-gram lookup 
 problems it fixes 100 (61.0\%, the same as in FP16 on the T4) for 446\,J of CPU energy per fixed bug,
 against 405\,J for the fine-tuned 1.5B in Q4 with n-gram lookup, which fixes 49: twice the repairs for
 10\% more energy per repair, within the day-to-day drift we measured. Per correct answer, the larger
-model is not more expensive.
+model is not more expensive. Retraining C on the same data with corrected explanation text (run D,
+now the deployed model) changes no score significantly and repeats the laptop measurement a week
+later: 100 fixed, 456\,J per fixed bug.
 
 \section{Related work}
 

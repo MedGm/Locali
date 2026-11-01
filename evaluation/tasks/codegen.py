@@ -196,4 +196,25 @@ class CodegenTask:
 
 
 HUMANEVAL_PLUS_TASK = CodegenTask("humaneval_plus", HUMANEVAL_PLUS, load_humaneval_plus, "HumanEval/")
+
+
+PLAN_INSTRUCTION = (
+    "First write a short plan of how you will solve it (a few sentences), then give a "
+    "self-contained Python script in a markdown code block."
+)
+
+
+@dataclass
+class PlanCodegenTask(CodegenTask):
+    """The same problems and scoring, but the answer starts with a short plan before the code.
+
+    Tests whether the fine-tuned models lose HumanEval+ points because they answer with bare code
+    (the base model explains first).
+    """
+
+    def messages(self, item: Problem) -> list[dict]:
+        return [{"role": "user", "content": f"Solve the following problem.\n```\n{item.prompt.strip()}\n```\n\n{PLAN_INSTRUCTION}"}]
+
+
+HUMANEVAL_PLUS_PLAN_TASK = PlanCodegenTask("humaneval_plus_plan", HUMANEVAL_PLUS, load_humaneval_plus, "HumanEval/")
 MBPP_PLUS_TASK = CodegenTask("mbpp_plus", MBPP_PLUS, load_mbpp_plus, "Mbpp/")

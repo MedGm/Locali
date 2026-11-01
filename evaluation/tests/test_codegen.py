@@ -138,3 +138,14 @@ def test_truncated_answer_with_complete_function_passes():
     scored = HUMANEVAL_PLUS_TASK.score(HUMANEVAL_STYLE, Completion(text, "", 1, 1, 0, 0, "length"), 60)
 
     assert scored["passed"], scored
+
+
+def test_plan_variant_asks_for_a_plan_before_the_code():
+    from evaluation.run import TASKS
+
+    problem = Problem("humaneval_plus", "HumanEval/0", "def f(x):\n    \"\"\"Return x.\"\"\"\n", "f", "", "")
+    plain = TASKS["humaneval_plus"].messages(problem)[0]["content"]
+    plan = TASKS["humaneval_plus_plan"].messages(problem)[0]["content"]
+    assert "def f(x):" in plan
+    assert "plan" in plan.lower() and "plan" not in plain.lower()
+    assert TASKS["humaneval_plus_plan"].excluded == TASKS["humaneval_plus"].excluded

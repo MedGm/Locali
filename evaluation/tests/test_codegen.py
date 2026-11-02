@@ -212,3 +212,19 @@ def test_format_swap_tasks_use_the_standard_instruction_and_tests():
     assert english.startswith(INSTRUCTION + "\n```\n") and "Return True if" in english
     assert stub.startswith(INSTRUCTION + "\n```\n") and "def add_two(a, b):" in stub
     assert TASKS["mbpp_plus_stub"].excluded == TASKS["mbpp_plus"].excluded
+
+
+def test_comment_steps_prompt_asks_for_a_comment_before_each_step():
+    from evaluation.tasks.codegen import HUMANEVAL_PLUS_COMMENTS_TASK
+
+    problem = Problem("humaneval_plus", "HumanEval/0", "def f(x):\n    \"\"\"Return x.\"\"\"\n", "f", "", "")
+    content = HUMANEVAL_PLUS_COMMENTS_TASK.messages(problem)[0]["content"]
+    assert "comment" in content
+    assert content.endswith('```\ndef f(x):\n    """Return x."""\n```\n')
+
+
+def test_scaffold_prefix_repeats_the_stub_and_opens_a_comment_in_the_body():
+    from evaluation.tasks.codegen import scaffold_prefix
+
+    problem = Problem("humaneval_plus", "HumanEval/0", "def f(x):\n    \"\"\"Return x.\"\"\"\n\n", "f", "", "")
+    assert scaffold_prefix(problem, "```python\n") == '```python\ndef f(x):\n    """Return x."""\n    # '

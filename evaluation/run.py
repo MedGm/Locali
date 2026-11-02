@@ -30,6 +30,7 @@ from evaluation.client import ChatClient, Completion
 from evaluation.energy import RaplMeter
 from evaluation.tasks.base import Task
 from evaluation.tasks.codegen import (
+    HUMANEVAL_PLUS_COMMENTS_TASK,
     HUMANEVAL_PLUS_ENGLISH_TASK,
     HUMANEVAL_PLUS_KEEPDOC_TASK,
     HUMANEVAL_PLUS_PLAN_TASK,
@@ -62,6 +63,7 @@ TASKS: dict[str, Task] = {
                  SECURE_CODEGEN_TASK, VULN_DETECT_TASK, INTERNAL_T1_TASK, INTERNAL_T2_TASK, INTERNAL_T3_TASK, INTERNAL_T4_TASK,
                  T1_FORMAT_FIX_TASK, REVIEW_FORMAT_DETECT_TASK, FIX_REWORDED_TASK, FIX_NO_TESTS_TASK,
                  FULL_CONTEXT_REPAIR_TASK, COMPRESSED_REPAIR_TASK, HUMANEVAL_PLUS_PLAN_TASK, HUMANEVAL_PLUS_KEEPDOC_TASK,
+                 HUMANEVAL_PLUS_COMMENTS_TASK,
                  HUMANEVAL_PLUS_ENGLISH_TASK, MBPP_PLUS_STUB_TASK]
 }
 

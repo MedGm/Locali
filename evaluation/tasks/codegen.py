@@ -242,6 +242,34 @@ HUMANEVAL_PLUS_KEEPDOC_TASK = KeepDocCodegenTask("humaneval_plus_keepdoc", HUMAN
 MBPP_PLUS_TASK = CodegenTask("mbpp_plus", MBPP_PLUS, load_mbpp_plus, "Mbpp/")
 
 
+COMMENT_INSTRUCTION = (
+    "Please provide a self-contained Python script that solves the following problem in a markdown "
+    "code block. Before each step of the code, write a short comment that says what the step does."
+)
+
+
+@dataclass
+class CommentStepsCodegenTask(CodegenTask):
+    """The same problems and scoring; the answer should comment each step of the code.
+
+    Capability study step 3: where a fine-tuned model's wrong answer and the base's right one part,
+    the base often writes a step comment and the fine-tuned model a one-liner.
+    """
+
+    def messages(self, item: Problem) -> list[dict]:
+        return [{"role": "user", "content": f"{COMMENT_INSTRUCTION}\n```\n{item.prompt.strip()}\n```\n"}]
+
+
+HUMANEVAL_PLUS_COMMENTS_TASK = CommentStepsCodegenTask(
+    "humaneval_plus_comments", HUMANEVAL_PLUS, load_humaneval_plus, "HumanEval/"
+)
+
+
+def scaffold_prefix(problem: Problem, fence: str) -> str:
+    """Start of an answer that repeats the stub and opens a comment as the first line of the body."""
+    return f"{fence}{problem.prompt.rstrip()}\n    # "
+
+
 def english_prompt(problem: Problem) -> str:
     """A HumanEval+ prompt rewritten in the shape of an MBPP+ prompt: quoted English, no code.
 

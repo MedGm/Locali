@@ -1,0 +1,5 @@
+draft-ft15-n4 peak_rss_kb 3391124
+draft-base15-n4 peak_rss_kb 3391076
+draft-base05-n4 peak_rss_kb 2808508
+none peak_rss_kb 2197008
+draft-ft15-n8 peak_rss_kb 3393488

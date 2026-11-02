@@ -1,0 +1,35 @@
+{
+  "metrics": {
+    "n": 164,
+    "status_counts": {
+      "passed": 99,
+      "failed": 65
+    },
+    "truncated": 0,
+    "mean_input_tokens": 327.25,
+    "mean_output_tokens": 68.9207,
+    "mean_ttft_s": 13.2825,
+    "median_ttft_s": 11.4111,
+    "mean_total_s": 22.2194,
+    "mean_decode_tok_per_s": 7.78,
+    "total_energy_j": 66163.2,
+    "mean_energy_j_per_task": 403.43,
+    "draft_tokens": 9400,
+    "draft_accepted": 9093,
+    "draft_acceptance": 0.9673,
+    "pass@1": 0.6037,
+    "pass@1_by_bug_type": {
+      "excess logic": 0.5484,
+      "function misuse": 0.625,
+      "missing logic": 0.5152,
+      "operator misuse": 0.64,
+      "value misuse": 0.7045,
+      "variable misuse": 0.5652
+    }
+  },
+  "this_session": {
+    "generated": 164,
+    "resumed": 0,
+    "wall_s": 3729.6
+  }
+}

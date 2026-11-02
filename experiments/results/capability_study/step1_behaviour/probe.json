@@ -1,0 +1,1190 @@
+{
+ "HumanEval/100": {
+  "base": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 112,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def make_a_pile(n):\n    \"\"\"\n    Given a positive integer n, you have to make a pile of n levels of stones.\n    The first level has n stones.\n    The number of stones in the next level is:\n        - the next odd number if n is odd.\n        - the next even number if n is even.\n    Return the number of stones in each level in a list, where element at index\n    i represents the number of stones in the level (i+1).\n\n    Examples:\n    >>> make_a_pile(3)\n    [3, 5, 7]\n    \"\"\"\n    stones = []\n    current_stones = n\n    for _ in range(n):\n        stones.append(current_stones)\n        if n % 2 == 0:\n            current_stones += 2\n        else:\n            current_stones += 2\n    return stones"
+  },
+  "A": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 112,
+    "wrong": 56,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "[4]",
+      "expected": "[4, 6, 8, 10]",
+      "got": "[4, 5, 7, 9]"
+     },
+     {
+      "args": "[6]",
+      "expected": "[6, 8, 10, 12, 14, 16]",
+      "got": "[6, 7, 9, 11, 13, 15]"
+     },
+     {
+      "args": "[8]",
+      "expected": "[8, 10, 12, 14, 16, 18, 20, 22]",
+      "got": "[8, 9, 11, 13, 15, 17, 19, 21]"
+     }
+    ]
+   },
+   "code": "def make_a_pile(n):\n    \"\"\"\n    Given a positive integer n, you have to make a pile of n levels of stones.\n    The first level has n stones.\n    The number of stones in the next level is:\n        - the next odd number if n is odd.\n        - the next even number if n is even.\n    Return the number of stones in each level in a list, where element at index\n    i represents the number of stones in the level (i+1).\n\n    Examples:\n    >>> make_a_pile(3)\n    [3, 5, 7]\n    \"\"\"\n    pile = [n]\n    for _ in range(1, n):\n        if n % 2 == 0:\n            n += 1\n        else:\n            n += 2\n        pile.append(n)\n    return pile"
+  },
+  "D": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 112,
+    "wrong": 56,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "[4]",
+      "expected": "[4, 6, 8, 10]",
+      "got": "[4, 5, 7, 9]"
+     },
+     {
+      "args": "[6]",
+      "expected": "[6, 8, 10, 12, 14, 16]",
+      "got": "[6, 7, 9, 11, 13, 15]"
+     },
+     {
+      "args": "[8]",
+      "expected": "[8, 10, 12, 14, 16, 18, 20, 22]",
+      "got": "[8, 9, 11, 13, 15, 17, 19, 21]"
+     }
+    ]
+   },
+   "code": "def make_a_pile(n):\n    \"\"\"\n    Given a positive integer n, you have to make a pile of n levels of stones.\n    The first level has n stones.\n    The number of stones in the next level is:\n        - the next odd number if n is odd.\n        - the next even number if n is even.\n    Return the number of stones in each level in a list, where element at index\n    i represents the number of stones in the level (i+1).\n\n    Examples:\n    >>> make_a_pile(3)\n    [3, 5, 7]\n    \"\"\"\n    result = [n]\n    for _ in range(n - 1):\n        if n % 2 == 0:\n            n += 1\n        else:\n            n += 2\n        result.append(n)\n    return result"
+  },
+  "E": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 112,
+    "wrong": 56,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "[4]",
+      "expected": "[4, 6, 8, 10]",
+      "got": "[4, 5, 7, 9]"
+     },
+     {
+      "args": "[6]",
+      "expected": "[6, 8, 10, 12, 14, 16]",
+      "got": "[6, 7, 9, 11, 13, 15]"
+     },
+     {
+      "args": "[8]",
+      "expected": "[8, 10, 12, 14, 16, 18, 20, 22]",
+      "got": "[8, 9, 11, 13, 15, 17, 19, 21]"
+     }
+    ]
+   },
+   "code": "def make_a_pile(n):\n    \"\"\"\n    Given a positive integer n, you have to make a pile of n levels of stones.\n    The first level has n stones.\n    The number of stones in the next level is:\n        - the next odd number if n is odd.\n        - the next even number if n is even.\n    Return the number of stones in each level in a list, where element at index\n    i represents the number of stones in the level (i+1).\n\n    Examples:\n    >>> make_a_pile(3)\n    [3, 5, 7]\n    \"\"\"\n    result = [n]\n    for _ in range(1, n):\n        if n % 2 == 0:\n            n += 1\n        else:\n            n += 2\n        result.append(n)\n    return result"
+  }
+ },
+ "HumanEval/141": {
+  "base": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 1026,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def file_name_check(file_name):\n    \"\"\"Create a function which takes a string representing a file's name, and returns\n    'Yes' if the the file's name is valid, and returns 'No' otherwise.\n    A file's name is considered to be valid if and only if all the following conditions \n    are met:\n    - There should not be more than three digits ('0'-'9') in the file's name.\n    - The file's name contains exactly one dot '.'\n    - The substring before the dot should not be empty, and it starts with a letter from \n    the latin alphapet ('a'-'z' and 'A'-'Z').\n    - The substring after the dot should be one of these: ['txt', 'exe', 'dll']\n    Examples:\n    file_name_check(\"example.txt\") # => 'Yes'\n    file_name_check(\"1example.dll\") # => 'No' (the name should start with a latin alphapet letter)\n    \"\"\"\n    parts = file_name.split('.')\n    \n    # Check for exactly one dot\n    if len(parts) != 2:\n        return 'No'\n    \n    # Check if the substring before the dot is not empty and starts with a letter\n    if not parts[0] or not parts[0][0].isalpha():\n        return 'No'\n    \n    # Check if the substring after the dot is one of the allowed extensions\n    if parts[1] not in ['txt', 'exe', 'dll']:\n        return 'No'\n    \n    # Count the number of digits in the substring before the dot\n    digit_count = sum(c.isdigit() for c in parts[0])\n    \n    # Check if there are more than three digits\n    if digit_count > 3:\n        return 'No'\n    \n    return 'Yes'"
+  },
+  "A": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 1026,
+    "wrong": 12,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['this_is_valid.txt']",
+      "expected": "'Yes'",
+      "got": "'No'"
+     },
+     {
+      "args": "['I563_No.exe']",
+      "expected": "'Yes'",
+      "got": "'No'"
+     },
+     {
+      "args": "['no_one#knows.dll']",
+      "expected": "'Yes'",
+      "got": "'No'"
+     }
+    ]
+   },
+   "code": "import re\n\ndef file_name_check(file_name):\n    pattern = r'^[a-zA-Z][a-zA-Z0-9]{0,}(\\.[a-zA-Z0-9]{1,}){1}$'\n    match = re.match(pattern, file_name)\n    if match:\n        name_parts = file_name.split('.')\n        if len(name_parts) == 2 and name_parts[1] in ['txt', 'exe', 'dll']:\n            digit_count = sum(c.isdigit() for c in file_name)\n            if digit_count <= 3:\n                return 'Yes'\n    return 'No'"
+  },
+  "D": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 1026,
+    "wrong": 18,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['His12FILE94.exe']",
+      "expected": "'No'",
+      "got": "'Yes'"
+     },
+     {
+      "args": "['this_is_valid.txt']",
+      "expected": "'Yes'",
+      "got": "'No'"
+     },
+     {
+      "args": "['I563_No.exe']",
+      "expected": "'Yes'",
+      "got": "'No'"
+     }
+    ]
+   },
+   "code": "import re\n\ndef file_name_check(file_name):\n    pattern = r'^[a-zA-Z][a-zA-Z0-9]{0,}(\\d{0,3})\\.(txt|exe|dll)$'\n    match = re.match(pattern, file_name)\n    if match:\n        digit_count = len(match.group(1))\n        if digit_count <= 3:\n            return 'Yes'\n    return 'No'"
+  },
+  "E": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 1026,
+    "wrong": 18,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['His12FILE94.exe']",
+      "expected": "'No'",
+      "got": "'Yes'"
+     },
+     {
+      "args": "['this_is_valid.txt']",
+      "expected": "'Yes'",
+      "got": "'No'"
+     },
+     {
+      "args": "['I563_No.exe']",
+      "expected": "'Yes'",
+      "got": "'No'"
+     }
+    ]
+   },
+   "code": "import re\n\ndef file_name_check(file_name):\n    \"\"\"Create a function which takes a string representing a file's name, and returns\n    'Yes' if the the file's name is valid, and returns 'No' otherwise.\n    A file's name is considered to be valid if and only if all the following conditions \n    are met:\n    - There should not be more than three digits ('0'-'9') in the file's name.\n    - The file's name contains exactly one dot '.'\n    - The substring before the dot should not be empty, and it starts with a letter from \n    the latin alphapet ('a'-'z' and 'A'-'Z').\n    - The substring after the dot should be one of these: ['txt', 'exe', 'dll']\n    Examples:\n    file_name_check(\"example.txt\") # => 'Yes'\n    file_name_check(\"1example.dll\") # => 'No' (the name should start with a latin alphapet letter)\n    \"\"\"\n    pattern = r'^[a-zA-Z][a-zA-Z0-9]{0,}(\\d{0,3})\\.(txt|exe|dll)$'\n    match = re.match(pattern, file_name)\n    if match:\n        return 'Yes'\n    else:\n        return 'No'"
+  }
+ },
+ "HumanEval/144": {
+  "base": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 1010,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "from fractions import Fraction\n\ndef simplify(x, n):\n    \"\"\"Your task is to implement a function that will simplify the expression\n    x * n. The function returns True if x * n evaluates to a whole number and False\n    otherwise. Both x and n, are string representation of a fraction, and have the following format,\n    <numerator>/<denominator> where both numerator and denominator are positive whole numbers.\n\n    You can assume that x, and n are valid fractions, and do not have zero as denominator.\n\n    simplify(\"1/5\", \"5/1\") = True\n    simplify(\"1/6\", \"2/1\") = False\n    simplify(\"7/10\", \"10/2\") = False\n    \"\"\"\n    # Convert the string representations of the fractions to Fraction objects\n    fraction_x = Fraction(x)\n    fraction_n = Fraction(n)\n    \n    # Multiply the two fractions\n    result = fraction_x * fraction_n\n    \n    # Check if the result is a whole number\n    return result.denominator == 1"
+  },
+  "A": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 1010,
+    "wrong": 168,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['1/5', '5/1']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['5/1', '3/1']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['2/10', '50/10']",
+      "expected": "True",
+      "got": "False"
+     }
+    ]
+   },
+   "code": "from fractions import Fraction\n\ndef simplify(x, n):\n    return Fraction(x) * Fraction(n).denominator == Fraction(n) * Fraction(x).denominator"
+  },
+  "D": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 1010,
+    "wrong": 168,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['1/5', '5/1']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['5/1', '3/1']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['2/10', '50/10']",
+      "expected": "True",
+      "got": "False"
+     }
+    ]
+   },
+   "code": "from fractions import Fraction\n\ndef simplify(x, n):\n    return Fraction(x) * Fraction(n).denominator == Fraction(n) * Fraction(x).denominator"
+  },
+  "E": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 1010,
+    "wrong": 180,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['1/5', '5/1']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['5/1', '3/1']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['2/10', '50/10']",
+      "expected": "True",
+      "got": "False"
+     }
+    ]
+   },
+   "code": "def simplify(x, n):\n    num_x, den_x = map(int, x.split('/'))\n    num_n, den_n = map(int, n.split('/'))\n    return (num_x * den_n) % (den_x * num_n) == 0"
+  }
+ },
+ "HumanEval/154": {
+  "base": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 1006,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def cycpattern_check(a, b):\n    \"\"\"You are given 2 words. You need to return True if the second word or any of its rotations is a substring in the first word\n    cycpattern_check(\"abcd\",\"abd\") => False\n    cycpattern_check(\"hello\",\"ell\") => True\n    cycpattern_check(\"whassup\",\"psus\") => False\n    cycpattern_check(\"abab\",\"baa\") => True\n    cycpattern_check(\"efef\",\"eeff\") => False\n    cycpattern_check(\"himenss\",\"simen\") => True\n\n    \"\"\"\n    # Check if the second word is a substring of the first word\n    if b in a:\n        return True\n    \n    # Generate all rotations of the second word\n    rotations = [b[i:] + b[:i] for i in range(len(b))]\n    \n    # Check if any rotation of the second word is a substring of the first word\n    for rotation in rotations:\n        if rotation in a:\n            return True\n    \n    return False"
+  },
+  "A": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 1006,
+    "wrong": 3,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['', '']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['racanagramecar', '']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['abc', '']",
+      "expected": "True",
+      "got": "False"
+     }
+    ]
+   },
+   "code": "def cycpattern_check(a, b):\n    if len(b) > len(a):\n        return False\n    for i in range(len(b)):\n        rotated_b = b[i:] + b[:i]\n        if rotated_b in a:\n            return True\n    return False"
+  },
+  "D": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 1006,
+    "wrong": 19,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['efef', 'fee']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['winemtt', 'tinem']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['banana', 'nab']",
+      "expected": "False",
+      "got": "True"
+     }
+    ]
+   },
+   "code": "def cycpattern_check(a, b):\n    return any(b in a[i:] + a[:i] for i in range(len(b)))"
+  },
+  "E": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 1006,
+    "wrong": 3,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['', '']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['racanagramecar', '']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['abc', '']",
+      "expected": "True",
+      "got": "False"
+     }
+    ]
+   },
+   "code": "def cycpattern_check(a, b):\n    \"\"\"You are given 2 words. You need to return True if the second word or any of its rotations is a substring in the first word\n    cycpattern_check(\"abcd\",\"abd\") => False\n    cycpattern_check(\"hello\",\"ell\") => True\n    cycpattern_check(\"whassup\",\"psus\") => False\n    cycpattern_check(\"abab\",\"baa\") => True\n    cycpattern_check(\"efef\",\"eeff\") => False\n    cycpattern_check(\"himenss\",\"simen\") => True\n\n    \"\"\"\n    if len(b) > len(a):\n        return False\n    for i in range(len(b)):\n        rotated_b = b[i:] + b[:i]\n        if rotated_b in a:\n            return True\n    return False"
+  }
+ },
+ "HumanEval/54": {
+  "base": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 1006,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "from typing import *\nfrom collections import *\n\ndef same_chars(s0: str, s1: str) -> bool:\n    \"\"\"\n    Check if two words have the same characters.\n    >>> same_chars('eabcdzzzz', 'dddzzzzzzzddeddabc')\n    True\n    >>> same_chars('abcd', 'dddddddabc')\n    True\n    >>> same_chars('dddddddabc', 'abcd')\n    True\n    >>> same_chars('eabcd', 'dddddddabc')\n    False\n    >>> same_chars('abcd', 'dddddddabce')\n    False\n    >>> same_chars('eabcdzzzz', 'dddzzzzzzzddddabc')\n    False\n    \"\"\"\n    return set(s0) == set(s1)"
+  },
+  "A": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 1006,
+    "wrong": 122,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['eabcdzzzz', 'dddzzzzzzzddeddabc']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['abcd', 'dddddddabc']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['dddddddabc', 'abcd']",
+      "expected": "True",
+      "got": "False"
+     }
+    ]
+   },
+   "code": "def same_chars(s0: str, s1: str) -> bool:\n    \"\"\"\n    Check if two words have the same characters.\n    \"\"\"\n    return sorted(s0) == sorted(s1)"
+  },
+  "D": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 1006,
+    "wrong": 122,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['eabcdzzzz', 'dddzzzzzzzddeddabc']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['abcd', 'dddddddabc']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['dddddddabc', 'abcd']",
+      "expected": "True",
+      "got": "False"
+     }
+    ]
+   },
+   "code": "def same_chars(s0: str, s1: str) -> bool:\n    return sorted(s0) == sorted(s1)"
+  },
+  "E": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 1006,
+    "wrong": 122,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['eabcdzzzz', 'dddzzzzzzzddeddabc']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['abcd', 'dddddddabc']",
+      "expected": "True",
+      "got": "False"
+     },
+     {
+      "args": "['dddddddabc', 'abcd']",
+      "expected": "True",
+      "got": "False"
+     }
+    ]
+   },
+   "code": "def same_chars(s0: str, s1: str) -> bool:\n    \"\"\"\n    Check if two words have the same characters.\n    \"\"\"\n    return sorted(s0) == sorted(s1)"
+  }
+ },
+ "HumanEval/55": {
+  "base": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 45,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def fib(n: int) -> int:\n    \"\"\"Return n-th Fibonacci number.\n    >>> fib(10)\n    55\n    >>> fib(1)\n    1\n    >>> fib(8)\n    21\n    \"\"\"\n    if n <= 0:\n        return 0\n    elif n == 1:\n        return 1\n    else:\n        a, b = 0, 1\n        for _ in range(2, n + 1):\n            a, b = b, a + b\n        return b"
+  },
+  "A": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 45,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 20,
+    "examples": [
+     {
+      "args": "[63]",
+      "expected": "6557470319842",
+      "got": "TimeoutError"
+     },
+     {
+      "args": "[64]",
+      "expected": "10610209857723",
+      "got": "TimeoutError"
+     },
+     {
+      "args": "[71]",
+      "expected": "308061521170129",
+      "got": "TimeoutError"
+     }
+    ]
+   },
+   "code": "def fib(n: int) -> int:\n    \"\"\"Return n-th Fibonacci number.\"\"\"\n    if n <= 1:\n        return n\n    else:\n        return fib(n - 1) + fib(n - 2)"
+  },
+  "D": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 45,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 20,
+    "examples": [
+     {
+      "args": "[63]",
+      "expected": "6557470319842",
+      "got": "TimeoutError"
+     },
+     {
+      "args": "[64]",
+      "expected": "10610209857723",
+      "got": "TimeoutError"
+     },
+     {
+      "args": "[71]",
+      "expected": "308061521170129",
+      "got": "TimeoutError"
+     }
+    ]
+   },
+   "code": "def fib(n: int) -> int:\n    \"\"\"Return n-th Fibonacci number.\"\"\"\n    if n <= 1:\n        return n\n    else:\n        return fib(n - 1) + fib(n - 2)"
+  },
+  "E": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 45,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 21,
+    "examples": [
+     {
+      "args": "[63]",
+      "expected": "6557470319842",
+      "got": "TimeoutError"
+     },
+     {
+      "args": "[64]",
+      "expected": "10610209857723",
+      "got": "TimeoutError"
+     },
+     {
+      "args": "[71]",
+      "expected": "308061521170129",
+      "got": "TimeoutError"
+     }
+    ]
+   },
+   "code": "def fib(n: int):\n    \"\"\"Return n-th Fibonacci number.\n    >>> fib(10)\n    55\n    >>> fib(1)\n    1\n    >>> fib(8)\n    21\n    \"\"\"\n    if n <= 1:\n        return n\n    else:\n        return fib(n-1) + fib(n-2)"
+  }
+ },
+ "HumanEval/83": {
+  "base": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 109,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def starts_one_ends(n):\n    \"\"\"\n    Given a positive integer n, return the count of the numbers of n-digit\n    positive integers that start or end with 1.\n    \"\"\"\n    if n == 1:\n        return 1  # Only '1' itself is a 1-digit number that starts or ends with 1.\n\n    # For n > 1, calculate the count of numbers starting with 1 and ending with 1 separately,\n    # then subtract the overlap (numbers that both start and end with 1).\n    count_starting_with_1 = 9 * (10 ** (n - 2))  # 9 options for the middle digits.\n    count_ending_with_1 = 10 ** (n - 1)  # 10 options for the first digit.\n    count_both_starting_and_ending_with_1 = 10 ** (n - 2)  # 10 options for the middle digits.\n\n    return count_starting_with_1 + count_ending_with_1 - count_both_starting_and_ending_with_1"
+  },
+  "A": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 109,
+    "wrong": 108,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "[2]",
+      "expected": "18",
+      "got": "10"
+     },
+     {
+      "args": "[3]",
+      "expected": "180",
+      "got": "98"
+     },
+     {
+      "args": "[4]",
+      "expected": "1800",
+      "got": "946"
+     }
+    ]
+   },
+   "code": "def starts_one_ends(n):\n    if n == 1:\n        return 1\n    else:\n        return 2 * (9 ** (n - 1)) - (8 ** (n - 1))"
+  },
+  "D": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 109,
+    "wrong": 108,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "[2]",
+      "expected": "18",
+      "got": "10"
+     },
+     {
+      "args": "[3]",
+      "expected": "180",
+      "got": "98"
+     },
+     {
+      "args": "[4]",
+      "expected": "1800",
+      "got": "946"
+     }
+    ]
+   },
+   "code": "def starts_one_ends(n):\n    if n == 1:\n        return 1\n    else:\n        return 2 * (9 ** (n - 1)) - (8 ** (n - 1))"
+  },
+  "E": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 109,
+    "wrong": 108,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "[2]",
+      "expected": "18",
+      "got": "10"
+     },
+     {
+      "args": "[3]",
+      "expected": "180",
+      "got": "98"
+     },
+     {
+      "args": "[4]",
+      "expected": "1800",
+      "got": "946"
+     }
+    ]
+   },
+   "code": "def starts_one_ends(n):\n    if n == 1:\n        return 1\n    else:\n        return 2 * (9 ** (n - 1)) - (8 ** (n - 1))"
+  }
+ },
+ "HumanEval/86": {
+  "base": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 1006,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def anti_shuffle(s):\n    \"\"\"\n    Write a function that takes a string and returns an ordered version of it.\n    Ordered version of string, is a string where all words (separated by space)\n    are replaced by a new word where all the characters arranged in\n    ascending order based on ascii value.\n    Note: You should keep the order of words and blank spaces in the sentence.\n\n    For example:\n    anti_shuffle('Hi') returns 'Hi'\n    anti_shuffle('hello') returns 'ehllo'\n    anti_shuffle('Hello World!!!') returns 'Hello !!!Wdlor'\n    \"\"\"\n    def sort_word(word):\n        return ''.join(sorted(word))\n\n    # Split the input string into words and spaces\n    words = s.split(' ')\n    \n    # Sort each word individually\n    sorted_words = [sort_word(word) for word in words]\n    \n    # Join the sorted words back with spaces\n    return ' '.join(sorted_words)"
+  },
+  "A": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 1006,
+    "wrong": 108,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['\\n\\n123 456\\n789\\n']",
+      "expected": "'\\n\\n123 \\n\\n456789'",
+      "got": "'123 456 789'"
+     },
+     {
+      "args": "['56\\n789\\n']",
+      "expected": "'\\n\\n56789'",
+      "got": "'56 789'"
+     },
+     {
+      "args": "['\\n\\n1232 456\\n789\\n']",
+      "expected": "'\\n\\n1223 \\n\\n456789'",
+      "got": "'1223 456 789'"
+     }
+    ]
+   },
+   "code": "def anti_shuffle(s):\n    \"\"\"\n    Write a function that takes a string and returns an ordered version of it.\n    Ordered version of string, is a string where all words (separated by space)\n    are replaced by a new word where all the characters arranged in\n    ascending order based on ascii value.\n    Note: You should keep the order of words and blank spaces in the sentence.\n\n    For example:\n    anti_shuffle('Hi') returns 'Hi'\n    anti_shuffle('hello') returns 'ehllo'\n    anti_shuffle('Hello World!!!') returns 'Hello !!!Wdlor'\n    \"\"\"\n    def sort_word(word):\n        return ''.join(sorted(word))\n\n    return ' '.join(map(sort_word, s.split()))"
+  },
+  "D": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 1006,
+    "wrong": 108,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['\\n\\n123 456\\n789\\n']",
+      "expected": "'\\n\\n123 \\n\\n456789'",
+      "got": "'123 456 789'"
+     },
+     {
+      "args": "['56\\n789\\n']",
+      "expected": "'\\n\\n56789'",
+      "got": "'56 789'"
+     },
+     {
+      "args": "['\\n\\n1232 456\\n789\\n']",
+      "expected": "'\\n\\n1223 \\n\\n456789'",
+      "got": "'1223 456 789'"
+     }
+    ]
+   },
+   "code": "def anti_shuffle(s):\n    return ' '.join([''.join(sorted(word)) for word in s.split()])"
+  },
+  "E": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 1006,
+    "wrong": 108,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['\\n\\n123 456\\n789\\n']",
+      "expected": "'\\n\\n123 \\n\\n456789'",
+      "got": "'123 456 789'"
+     },
+     {
+      "args": "['56\\n789\\n']",
+      "expected": "'\\n\\n56789'",
+      "got": "'56 789'"
+     },
+     {
+      "args": "['\\n\\n1232 456\\n789\\n']",
+      "expected": "'\\n\\n1223 \\n\\n456789'",
+      "got": "'1223 456 789'"
+     }
+    ]
+   },
+   "code": "def anti_shuffle(s):\n    \"\"\"\n    Write a function that takes a string and returns an ordered version of it.\n    Ordered version of string, is a string where all words (separated by space)\n    are replaced by a new word where all the characters arranged in\n    ascending order based on ascii value.\n    Note: You should keep the order of words and blank spaces in the sentence.\n\n    For example:\n    anti_shuffle('Hi') returns 'Hi'\n    anti_shuffle('hello') returns 'ehllo'\n    anti_shuffle('Hello World!!!') returns 'Hello !!!Wdlor'\n    \"\"\"\n    return ' '.join([''.join(sorted(word)) for word in s.split()])"
+  }
+ },
+ "HumanEval/89": {
+  "base": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 1003,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def encrypt(s):\n    \"\"\"Create a function encrypt that takes a string as an argument and\n    returns a string encrypted with the alphabet being rotated. \n    The alphabet should be rotated in a manner such that the letters \n    shift down by two multiplied to two places.\n    For example:\n    encrypt('hi') returns 'lm'\n    encrypt('asdfghjkl') returns 'ewhjklnop'\n    encrypt('gf') returns 'kj'\n    encrypt('et') returns 'ix'\n    \"\"\"\n    encrypted = \"\"\n    for char in s:\n        if char.isalpha():\n            shift = 2 * 2  # Shift by 4 places\n            if char.islower():\n                base = ord('a')\n            else:\n                base = ord('A')\n            encrypted += chr((ord(char) - base + shift) % 26 + base)\n        else:\n            encrypted += char\n    return encrypted"
+  },
+  "A": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 1003,
+    "wrong": 1002,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['hi']",
+      "expected": "'lm'",
+      "got": "'jk'"
+     },
+     {
+      "args": "['asdfghjkl']",
+      "expected": "'ewhjklnop'",
+      "got": "'cufhijlmn'"
+     },
+     {
+      "args": "['gf']",
+      "expected": "'kj'",
+      "got": "'ih'"
+     }
+    ]
+   },
+   "code": "def encrypt(s):\n    alphabet = 'abcdefghijklmnopqrstuvwxyz'\n    shifted_alphabet = alphabet[2:] + alphabet[:2]\n    translation_table = str.maketrans(alphabet, shifted_alphabet)\n    return s.translate(translation_table)"
+  },
+  "D": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 1003,
+    "wrong": 1002,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['hi']",
+      "expected": "'lm'",
+      "got": "'jk'"
+     },
+     {
+      "args": "['asdfghjkl']",
+      "expected": "'ewhjklnop'",
+      "got": "'cufhijlmn'"
+     },
+     {
+      "args": "['gf']",
+      "expected": "'kj'",
+      "got": "'ih'"
+     }
+    ]
+   },
+   "code": "def encrypt(s):\n    alphabet = 'abcdefghijklmnopqrstuvwxyz'\n    shifted_alphabet = alphabet[2:] + alphabet[:2]\n    translation_table = str.maketrans(alphabet, shifted_alphabet)\n    return s.translate(translation_table)"
+  },
+  "E": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 1003,
+    "wrong": 472,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['test123']",
+      "expected": "'xiwx123'",
+      "got": "'xiwxijk'"
+     },
+     {
+      "args": "['1a2b3c']",
+      "expected": "'1e2f3g'",
+      "got": "'iejfkg'"
+     },
+     {
+      "args": "['hello world']",
+      "expected": "'lipps asvph'",
+      "got": "'lippsrasvph'"
+     }
+    ]
+   },
+   "code": "def encrypt(s):\n    \"\"\"Create a function encrypt that takes a string as an argument and\n    returns a string encrypted with the alphabet being rotated. \n    The alphabet should be rotated in a manner such that the letters \n    shift down by two multiplied to two places.\n    For example:\n    encrypt('hi') returns 'lm'\n    encrypt('asdfghjkl') returns 'ewhjklnop'\n    encrypt('gf') returns 'kj'\n    encrypt('et') returns 'ix'\n    \"\"\"\n    return ''.join(chr((ord(c) - ord('a') + 4) % 26 + ord('a')) for c in s)"
+  }
+ },
+ "HumanEval/97": {
+  "base": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 976,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def multiply(a, b):\n    \"\"\"Complete the function that takes two integers and returns \n    the product of their unit digits.\n    Assume the input is always valid.\n    Examples:\n    multiply(148, 412) should return 16.\n    multiply(19, 28) should return 72.\n    multiply(2020, 1851) should return 0.\n    multiply(14,-15) should return 20.\n    \"\"\"\n    # Get the unit digit of each number\n    unit_digit_a = abs(a) % 10\n    unit_digit_b = abs(b) % 10\n    \n    # Return the product of the unit digits\n    return unit_digit_a * unit_digit_b"
+  },
+  "A": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 976,
+    "wrong": 441,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "[-6, -9]",
+      "expected": "54",
+      "got": "4"
+     },
+     {
+      "args": "[-87, 5]",
+      "expected": "35",
+      "got": "15"
+     },
+     {
+      "args": "[-15, -12]",
+      "expected": "10",
+      "got": "40"
+     }
+    ]
+   },
+   "code": "def multiply(a, b):\n    \"\"\"Complete the function that takes two integers and returns \n    the product of their unit digits.\n    Assume the input is always valid.\n    Examples:\n    multiply(148, 412) should return 16.\n    multiply(19, 28) should return 72.\n    multiply(2020, 1851) should return 0.\n    multiply(14,-15) should return 20.\n    \"\"\"\n    return abs(a % 10) * abs(b % 10)"
+  },
+  "D": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 976,
+    "wrong": 441,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "[-6, -9]",
+      "expected": "54",
+      "got": "4"
+     },
+     {
+      "args": "[-87, 5]",
+      "expected": "35",
+      "got": "15"
+     },
+     {
+      "args": "[-15, -12]",
+      "expected": "10",
+      "got": "40"
+     }
+    ]
+   },
+   "code": "def multiply(a, b):\n    return (a % 10) * (b % 10)"
+  },
+  "E": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 976,
+    "wrong": 441,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "[-6, -9]",
+      "expected": "54",
+      "got": "4"
+     },
+     {
+      "args": "[-87, 5]",
+      "expected": "35",
+      "got": "15"
+     },
+     {
+      "args": "[-15, -12]",
+      "expected": "10",
+      "got": "40"
+     }
+    ]
+   },
+   "code": "def multiply(a, b):\n    \"\"\"Complete the function that takes two integers and returns \n    the product of their unit digits.\n    Assume the input is always valid.\n    Examples:\n    multiply(148, 412) should return 16.\n    multiply(19, 28) should return 72.\n    multiply(2020, 1851) should return 0.\n    multiply(14,-15) should return 20.\n    \"\"\"\n    return (a % 10) * (b % 10)"
+  }
+ },
+ "HumanEval/160": {
+  "base": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 452,
+    "wrong": 382,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "[['+', '*', '-'], [2, 3, 4, 5]]",
+      "expected": "9",
+      "got": "15"
+     },
+     {
+      "args": "[['+', '-', '*', '//'], [5, 2, 3, 4, 7]]",
+      "expected": "6",
+      "got": "2"
+     },
+     {
+      "args": "[['**', '-', '//'], [9, 2, 5, 3]]",
+      "expected": "80",
+      "got": "25"
+     }
+    ]
+   },
+   "code": "def do_algebra(operator, operand):\n    \"\"\"\n    Given two lists operator, and operand. The first list has basic algebra operations, and \n    the second list is a list of integers. Use the two given lists to build the algebric \n    expression and return the evaluation of this expression.\n\n    The basic algebra operations:\n    Addition ( + ) \n    Subtraction ( - ) \n    Multiplication ( * ) \n    Floor division ( // ) \n    Exponentiation ( ** ) \n\n    Example:\n    operator['+', '*', '-']\n    array = [2, 3, 4, 5]\n    result = 2 + 3 * 4 - 5\n    => result = 9\n\n    Note:\n        The length of operator list is equal to the length of operand list minus one.\n        Operand is a list of of non-negative integers.\n        Operator list has at least one operator, and operand list has at least two operands.\n\n    \"\"\"\n    # Start with the first operand\n    result = operand[0]\n    \n    # Iterate over the operators and operands\n    for i, op in enumerate(operator):\n        if op == '+':\n            result += operand[i + 1]\n        elif op == '-':\n            result -= operand[i + 1]\n        elif op == '*':\n            result *= operand[i + 1]\n        elif op == '//':\n            result //= operand[i + 1]\n        elif op == '**':\n            result **= operand[i + 1]\n        else:\n            raise ValueError(f\"Unsupported operator: {op}\")\n    \n    return result\n\n# Example usage\noperator = ['+', '*', '-']\noperand = [2, 3, 4, 5]\nresult = do_algebra(operator, operand)"
+  },
+  "A": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 452,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def do_algebra(operator, operand):\n    \"\"\"\n    Given two lists operator, and operand. The first list has basic algebra operations, and \n    the second list is a list of integers. Use the two given lists to build the algebric \n    expression and return the evaluation of this expression.\n\n    The basic algebra operations:\n    Addition ( + ) \n    Subtraction ( - ) \n    Multiplication ( * ) \n    Floor division ( // ) \n    Exponentiation ( ** ) \n\n    Example:\n    operator['+', '*', '-']\n    array = [2, 3, 4, 5]\n    result = 2 + 3 * 4 - 5\n    => result = 9\n\n    Note:\n        The length of operator list is equal to the length of operand list minus one.\n        Operand is a list of of non-negative integers.\n        Operator list has at least one operator, and operand list has at least two operands.\n\n    \"\"\"\n    expression = str(operand[0])\n    for i in range(len(operator)):\n        expression += f' {operator[i]} {operand[i+1]}'\n    return eval(expression)"
+  },
+  "D": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 452,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def do_algebra(operator, operand):\n    expression = str(operand[0])\n    for i, op in enumerate(operator):\n        expression += f' {op} {operand[i + 1]}'\n    return eval(expression)"
+  },
+  "E": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 452,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def do_algebra(operator, operand):\n    \"\"\"\n    Given two lists operator, and operand. The first list has basic algebra operations, and \n    the second list is a list of integers. Use the two given lists to build the algebric \n    expression and return the evaluation of this expression.\n\n    The basic algebra operations:\n    Addition ( + ) \n    Subtraction ( - ) \n    Multiplication ( * ) \n    Floor division ( // ) \n    Exponentiation ( ** ) \n\n    Example:\n    operator['+', '*', '-']\n    array = [2, 3, 4, 5]\n    result = 2 + 3 * 4 - 5\n    => result = 9\n\n    Note:\n        The length of operator list is equal to the length of operand list minus one.\n        Operand is a list of of non-negative integers.\n        Operator list has at least one operator, and operand list has at least two operands.\n\n    \"\"\"\n    expression = str(operand[0])\n    for i in range(len(operator)):\n        expression += f\" {operator[i]} {operand[i+1]}\"\n    return eval(expression)"
+  }
+ },
+ "HumanEval/59": {
+  "base": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 176,
+    "wrong": 30,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "[27]",
+      "expected": "3",
+      "got": "1"
+     },
+     {
+      "args": "[100]",
+      "expected": "5",
+      "got": "1"
+     },
+     {
+      "args": "[256]",
+      "expected": "2",
+      "got": "1"
+     }
+    ]
+   },
+   "code": "def largest_prime_factor(n: int) -> int:\n    \"\"\"Return the largest prime factor of n. Assume n > 1 and is not a prime.\n    >>> largest_prime_factor(13195)\n    29\n    >>> largest_prime_factor(2048)\n    2\n    \"\"\"\n    factor = 2\n    while factor * factor <= n:\n        while (n % factor) == 0:\n            n //= factor\n        factor += 1\n    return n"
+  },
+  "A": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 176,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def largest_prime_factor(n: int) -> int:\n    \"\"\"\n    Return the largest prime factor of n. Assume n > 1 and is not a prime.\n    \"\"\"\n    i = 2\n    while i * i <= n:\n        if n % i:\n            i += 1\n        else:\n            n //= i\n    return n"
+  },
+  "D": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 176,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def largest_prime_factor(n: int) -> int:\n    \"\"\"Return the largest prime factor of n. Assume n > 1 and is not a prime.\"\"\"\n    i = 2\n    while i * i <= n:\n        if n % i:\n            i += 1\n        else:\n            n //= i\n    return n"
+  },
+  "E": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 176,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def largest_prime_factor(n: int):\n    \"\"\"Return the largest prime factor of n. Assume n > 1 and is not a prime.\n    >>> largest_prime_factor(13195)\n    29\n    >>> largest_prime_factor(2048)\n    2\n    \"\"\"\n    i = 2\n    while i * i <= n:\n        if n % i:\n            i += 1\n        else:\n            n //= i\n    return n"
+  }
+ },
+ "HumanEval/64": {
+  "base": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 999,
+    "wrong": 0,
+    "exception": 999,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['abcde']",
+      "expected": "2",
+      "got": "KeyError"
+     },
+     {
+      "args": "['Alone']",
+      "expected": "3",
+      "got": "KeyError"
+     },
+     {
+      "args": "['key']",
+      "expected": "2",
+      "got": "KeyError"
+     }
+    ]
+   },
+   "code": "import unittest\n\nclass TestVowelsCount(unittest.TestCase):\n    def test_vowels_count(self):\n        self.assertEqual(vowels_count(\"abcde\"), 2)\n        self.assertEqual(vowels_count(\"ACEDY\"), 3)\n        self.assertEqual(vowels_count(\"rhythm\"), 0)\n        self.assertEqual(vowels_count(\"SYZYGY\"), 1)\n        self.assertEqual(vowels_count(\"quickly\"), 2)\n        self.assertEqual(vowels_count(\"AEIOUY\"), 6)\n        self.assertEqual(vowels_count(\"bcdfghjklmnpqrstvwxyz\"), 0)"
+  },
+  "A": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 999,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def vowels_count(s):\n    \"\"\"Write a function vowels_count which takes a string representing\n    a word as input and returns the number of vowels in the string.\n    Vowels in this case are 'a', 'e', 'i', 'o', 'u'. Here, 'y' is also a\n    vowel, but only when it is at the end of the given word.\n\n    Example:\n    >>> vowels_count(\"abcde\")\n    2\n    >>> vowels_count(\"ACEDY\")\n    3\n    \"\"\"\n    count = 0\n    for char in s.lower():\n        if char in 'aeiou':\n            count += 1\n    if s.endswith('y') or s.endswith('Y'):\n        count += 1\n    return count"
+  },
+  "D": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 999,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def vowels_count(s):\n    \"\"\"Write a function vowels_count which takes a string representing\n    a word as input and returns the number of vowels in the string.\n    Vowels in this case are 'a', 'e', 'i', 'o', 'u'. Here, 'y' is also a\n    vowel, but only when it is at the end of the given word.\n\n    Example:\n    >>> vowels_count(\"abcde\")\n    2\n    >>> vowels_count(\"ACEDY\")\n    3\n    \"\"\"\n    count = 0\n    for i, c in enumerate(s):\n        if c.lower() in 'aeiou':\n            count += 1\n        elif c.lower() == 'y' and i == len(s) - 1:\n            count += 1\n    return count"
+  },
+  "E": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 999,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def vowels_count(s):\n    \"\"\"Write a function vowels_count which takes a string representing\n    a word as input and returns the number of vowels in the string.\n    Vowels in this case are 'a', 'e', 'i', 'o', 'u'. Here, 'y' is also a\n    vowel, but only when it is at the end of the given word.\n\n    Example:\n    >>> vowels_count(\"abcde\")\n    2\n    >>> vowels_count(\"ACEDY\")\n    3\n    \"\"\"\n    count = 0\n    for char in s.lower():\n        if char in 'aeiou':\n            count += 1\n    if s.endswith('y') or s.endswith('Y'):\n        count += 1\n    return count"
+  }
+ },
+ "HumanEval/99": {
+  "base": {
+   "original_tests": "failed",
+   "plus": {
+    "n": 714,
+    "wrong": 162,
+    "exception": 0,
+    "timeout": 0,
+    "examples": [
+     {
+      "args": "['-15.5']",
+      "expected": "-16",
+      "got": "-17"
+     },
+     {
+      "args": "['-2.8']",
+      "expected": "-3",
+      "got": "-2"
+     },
+     {
+      "args": "['3.6']",
+      "expected": "4",
+      "got": "3"
+     }
+    ]
+   },
+   "code": "def closest_integer(value):\n    '''\n    Create a function that takes a value (string) representing a number\n    and returns the closest integer to it. If the number is equidistant\n    from two integers, round it away from zero.\n\n    Examples\n    >>> closest_integer(\"10\")\n    10\n    >>> closest_integer(\"15.3\")\n    15\n\n    Note:\n    Rounding away from zero means that if the given number is equidistant\n    from two integers, the one you should return is the one that is the\n    farthest from zero. For example closest_integer(\"14.5\") should\n    return 15 and closest_integer(\"-14.5\") should return -15.\n    '''\n    # Convert the string to a float\n    num = float(value)\n    \n    # Get the floor and ceiling of the number\n    floor_num = int(num // 1)\n    ceil_num = int((num + 1) // 1)\n    \n    # Check if the number is equidistant from the floor and ceiling\n    if abs(num - floor_num) == abs(num - ceil_num):\n        # Round away from zero\n        if num > 0:\n            return ceil_num\n        else:\n            return floor_num - 1\n    else:\n        # Return the closest integer\n        return int(num)"
+  },
+  "A": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 714,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def closest_integer(value):\n    '''\n    Create a function that takes a value (string) representing a number\n    and returns the closest integer to it. If the number is equidistant\n    from two integers, round it away from zero.\n\n    Examples\n    >>> closest_integer(\"10\")\n    10\n    >>> closest_integer(\"15.3\")\n    15\n\n    Note:\n    Rounding away from zero means that if the given number is equidistant\n    from two integers, the one you should return is the one that is the\n    farthest from zero. For example closest_integer(\"14.5\") should\n    return 15 and closest_integer(\"-14.5\") should return -15.\n    '''\n    num = float(value)\n    if num > 0:\n        return int(num + 0.5)\n    else:\n        return int(num - 0.5)"
+  },
+  "D": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 714,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def closest_integer(value):\n    num = float(value)\n    if num > 0:\n        return int(num + 0.5)\n    else:\n        return int(num - 0.5)"
+  },
+  "E": {
+   "original_tests": "passed",
+   "plus": {
+    "n": 714,
+    "wrong": 0,
+    "exception": 0,
+    "timeout": 0,
+    "examples": []
+   },
+   "code": "def closest_integer(value):\n    '''\n    Create a function that takes a value (string) representing a number\n    and returns the closest integer to it. If the number is equidistant\n    from two integers, round it away from zero.\n\n    Examples\n    >>> closest_integer(\"10\")\n    10\n    >>> closest_integer(\"15.3\")\n    15\n\n    Note:\n    Rounding away from zero means that if the given number is equidistant\n    from two integers, the one you should return is the one that is the\n    farthest from zero. For example closest_integer(\"14.5\") should\n    return 15 and closest_integer(\"-14.5\") should return -15.\n    '''\n    num = float(value)\n    if num > 0:\n        return int(num + 0.5)\n    else:\n        return int(num - 0.5)"
+  }
+ }
+}

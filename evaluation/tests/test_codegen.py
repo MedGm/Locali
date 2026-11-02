@@ -157,3 +157,58 @@ def test_keepdoc_variant_asks_to_copy_the_docstring():
     problem = Problem("humaneval_plus", "HumanEval/0", "def f(x):\n    \"\"\"Return x.\"\"\"\n", "f", "", "")
     content = TASKS["humaneval_plus_keepdoc"].messages(problem)[0]["content"]
     assert "def f(x):" in content and "docstring" in content.lower()
+
+
+HE_PROMPT = (
+    "from typing import List\n\n\n"
+    "def below(numbers: List[int], limit: int) -> bool:\n"
+    "    \"\"\" Return True if every number is below limit.\n"
+    "    >>> below([1, 2], 3)\n    True\n    \"\"\"\n"
+)
+MBPP_PROMPT = '"""\nWrite a function to add two numbers.\nassert add_two(1, 2) == 3\n"""\n'
+MBPP_CODE = "def add_two(a, b):\n  return a + b\n"
+
+
+def test_english_variant_states_the_signature_and_the_docstring_as_text():
+    from evaluation.tasks.codegen import english_prompt
+
+    text = english_prompt(Problem("humaneval_plus", "HumanEval/1", HE_PROMPT, "below", "", ""))
+
+    assert "def " not in text
+    assert "`below(numbers: List[int], limit: int) -> bool`" in text
+    assert "Return True if every number is below limit." in text
+    assert ">>> below([1, 2], 3)" in text
+    assert text.startswith('"""\n') and text.endswith('"""\n')  # same shape as an MBPP+ prompt
+
+
+def test_english_variant_keeps_helper_code_it_cannot_rephrase():
+    from evaluation.tasks.codegen import english_prompt
+
+    prompt = "def helper(s):\n    return s[::-1]\n\n\ndef main(s):\n    \"\"\"Undo helper.\"\"\"\n"
+    text = english_prompt(Problem("humaneval_plus", "HumanEval/2", prompt, "main", "", ""))
+
+    assert "def helper(s):" in text and "Undo helper." in text
+
+
+def test_stub_variant_turns_an_mbpp_prompt_into_a_signature_with_docstring():
+    from evaluation.tasks.codegen import stub_prompt
+
+    text = stub_prompt(Problem("mbpp_plus", "Mbpp/1", MBPP_PROMPT, "add_two", "", MBPP_CODE))
+
+    assert text.startswith("def add_two(a, b):\n    \"\"\"\n")
+    assert "    Write a function to add two numbers.\n" in text
+    assert "    assert add_two(1, 2) == 3\n" in text
+
+
+def test_format_swap_tasks_use_the_standard_instruction_and_tests():
+    from evaluation.run import TASKS
+    from evaluation.tasks.codegen import INSTRUCTION
+
+    he = Problem("humaneval_plus", "HumanEval/1", HE_PROMPT, "below", "", "")
+    mb = Problem("mbpp_plus", "Mbpp/1", MBPP_PROMPT, "add_two", "", MBPP_CODE)
+    english = TASKS["humaneval_plus_english"].messages(he)[0]["content"]
+    stub = TASKS["mbpp_plus_stub"].messages(mb)[0]["content"]
+
+    assert english.startswith(INSTRUCTION + "\n```\n") and "Return True if" in english
+    assert stub.startswith(INSTRUCTION + "\n```\n") and "def add_two(a, b):" in stub
+    assert TASKS["mbpp_plus_stub"].excluded == TASKS["mbpp_plus"].excluded

@@ -240,3 +240,58 @@ class KeepDocCodegenTask(CodegenTask):
 
 HUMANEVAL_PLUS_KEEPDOC_TASK = KeepDocCodegenTask("humaneval_plus_keepdoc", HUMANEVAL_PLUS, load_humaneval_plus, "HumanEval/")
 MBPP_PLUS_TASK = CodegenTask("mbpp_plus", MBPP_PLUS, load_mbpp_plus, "Mbpp/")
+
+
+def english_prompt(problem: Problem) -> str:
+    """A HumanEval+ prompt rewritten in the shape of an MBPP+ prompt: quoted English, no code.
+
+    The signature is named inline and the docstring (with its examples) becomes the text. Other
+    functions in the prompt (3 problems have a helper) cannot be put into words and stay as code.
+    """
+    tree = ast.parse(problem.prompt)
+    helpers, target = [], None
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef) and node.name == problem.entry_point:
+            target = node
+        elif not isinstance(node, (ast.Import, ast.ImportFrom)):
+            helpers.append(ast.get_source_segment(problem.prompt, node))
+    signature = f"{target.name}({ast.unparse(target.args)})"
+    if target.returns is not None:
+        signature += f" -> {ast.unparse(target.returns)}"
+    text = f'"""\nWrite a Python function `{signature}`.\n{ast.get_docstring(target) or ""}\n"""\n'
+    if helpers:
+        text += "\n" + "\n\n".join(helpers) + "\n"
+    return text
+
+
+def stub_prompt(problem: Problem) -> str:
+    """An MBPP+ prompt rewritten in the shape of a HumanEval+ prompt: a signature with a docstring.
+
+    The argument names come from the reference solution; the docstring holds the same
+    description and example assertion as the original prompt.
+    """
+    lines = problem.prompt.strip().strip('"').strip("\n").splitlines()
+    target = next(n for n in ast.walk(ast.parse(problem.reference_solution))
+                  if isinstance(n, ast.FunctionDef) and n.name == problem.entry_point)
+    doc = "".join(f"    {line}\n" if line.strip() else "\n" for line in lines)
+    return f'def {target.name}({ast.unparse(target.args)}):\n    """\n{doc}    """\n'
+
+
+@dataclass
+class FormatSwapCodegenTask(CodegenTask):
+    """The same problems, tests and instruction; only the problem text changes shape.
+
+    The fine-tuned models write in a different style when the prompt holds code (HumanEval+) than
+    when it holds English (MBPP+); experiments/results/capability_study/step1_behaviour. These
+    variants swap the two shapes to test whether the shape causes it.
+    """
+
+    rewrite: Callable[[Problem], str] = english_prompt
+
+    def messages(self, item: Problem) -> list[dict]:
+        return [{"role": "user", "content": f"{INSTRUCTION}\n```\n{self.rewrite(item).strip()}\n```\n"}]
+
+
+HUMANEVAL_PLUS_ENGLISH_TASK = FormatSwapCodegenTask(
+    "humaneval_plus_english", HUMANEVAL_PLUS, load_humaneval_plus, "HumanEval/", english_prompt)
+MBPP_PLUS_STUB_TASK = FormatSwapCodegenTask("mbpp_plus_stub", MBPP_PLUS, load_mbpp_plus, "Mbpp/", stub_prompt)

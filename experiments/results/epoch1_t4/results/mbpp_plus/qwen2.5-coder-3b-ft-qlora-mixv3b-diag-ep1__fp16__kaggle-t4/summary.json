@@ -1,0 +1,82 @@
+{
+  "config": {
+    "benchmark": "mbpp_plus",
+    "model_id": "qwen2.5-coder-3b-ft-qlora-mixv3b-diag-ep1",
+    "runtime": "vLLM 0.29.0 T4 + LoRA",
+    "max_tokens": 1024,
+    "model_revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5",
+    "quantization": "fp16",
+    "base_url": "http://127.0.0.1:8000/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "evalplus/mbppplus",
+    "dataset_revision": "b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+    "notes": "plan-before-code check",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-11-02T00:40:11+00:00",
+    "git_commit": "14885c4d37c0b9186c2441462cf2c31d9c6f1f48",
+    "git_dirty": false,
+    "host": "e4136845dc04",
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 377,
+    "status_counts": {
+      "passed": 241,
+      "failed": 133,
+      "timeout": 3
+    },
+    "truncated": 0,
+    "mean_input_tokens": 102.3979,
+    "mean_output_tokens": 44.6578,
+    "mean_ttft_s": 0.4116,
+    "median_ttft_s": 0.3786,
+    "mean_total_s": 5.8296,
+    "mean_decode_tok_per_s": 8.32,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "pass@1": 0.6393
+  },
+  "excluded": {
+    "Mbpp/255": "one input yields 1.66M tuples of length 77; reference comparison needs >2 GiB, above the sandbox limit"
+  },
+  "this_session": {
+    "generated": 377,
+    "resumed": 0,
+    "wall_s": 142.5
+  },
+  "rescored": {
+    "at": "2026-11-02T00:44:25+00:00",
+    "harness_commit": "",
+    "previous_metrics": {
+      "n": 377,
+      "status_counts": {
+        "unscored": 377
+      },
+      "truncated": 0,
+      "mean_input_tokens": 102.3979,
+      "mean_output_tokens": 44.6578,
+      "mean_ttft_s": 0.4116,
+      "median_ttft_s": 0.3786,
+      "mean_total_s": 5.8296,
+      "mean_decode_tok_per_s": 8.32,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
+  }
+}

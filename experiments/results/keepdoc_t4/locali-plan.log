@@ -1,0 +1,26 @@
+[{"stream_name":"stderr","time":6.206237287,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.206272367,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.206278209,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.206281956,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":6.748788414,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.748816337,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.748821012,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.748832396,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":7.747875572,"data":"Writing /kaggle/working/kaggle_plan.py\n"}
+,{"stream_name":"stdout","time":133.529910367,"data":"[00:56:02] setup done\n"}
+,{"stream_name":"stdout","time":134.3493128,"data":"[00:56:02] adapter /kaggle/input/datasets/elgorrimmohamed/locali-adapters-3b/mixv3b-diag; network isolation guard\n"}
+,{"stream_name":"stdout","time":294.409507811,"data":"[00:58:42] server ready\n"}
+,{"stream_name":"stdout","time":467.102821389,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stdout","time":550.943854732,"data":"[01:02:59] humaneval_plus_keepdoc/qwen2.5-coder-3b: pass@1 0.8528\n"}
+,{"stream_name":"stdout","time":860.285022117,"data":"[01:08:08] humaneval_plus_keepdoc/qwen2.5-coder-3b-ft-qlora-mixv3b-diag: pass@1 0.7423\n"}
+,{"stream_name":"stdout","time":861.045703094,"data":"[01:08:09] all done\n"}
+,{"stream_name":"stdout","time":861.274659518,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":863.580576912,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":863.58060451,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":863.734133418,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":863.734158249,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":864.503960975,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":864.577721529,"data":"[NbConvertApp] Writing 12998 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":866.957734385,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":867.462066796,"data":"[NbConvertApp] Writing 312139 bytes to __results__.html\n"}
+]

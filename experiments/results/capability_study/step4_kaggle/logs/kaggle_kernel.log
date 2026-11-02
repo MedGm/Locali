@@ -1,0 +1,46 @@
+[{"stream_name":"stderr","time":6.195513538,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.195548483,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.195553722,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.19555738,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":6.745373569,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.745417108,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.745421823,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.74542441,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":7.757174783,"data":"Writing /kaggle/working/kaggle_scaffold.py\n"}
+,{"stream_name":"stdout","time":78.247939328,"data":"[22:28:55] setup done\n"}
+,{"stream_name":"stdout","time":79.38352047,"data":"[22:28:56] adapters {'mixv3b-diag': PosixPath('/kaggle/input/datasets/elgorrimmohamed/locali-adapters-3b/mixv3b-diag'), 'mixv3s': PosixPath('/kaggle/input/datasets/elgorrimmohamed/locali-adapters-3b/mixv3s')}; network isolation guard\n"}
+,{"stream_name":"stdout","time":229.436075969,"data":"[22:31:26] server ready\n"}
+,{"stream_name":"stdout","time":232.934346628,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stdout","time":237.28559549,"data":"\n"}
+,{"stream_name":"stdout","time":237.401083597,"data":"Generating test split:   0%|          | 0/164 [00:00\u003c?, ? examples/s]\n"}
+,{"stream_name":"stdout","time":237.402514237,"data":"Generating test split: 100%|██████████| 164/164 [00:00\u003c00:00, 1424.46 examples/s]\n"}
+,{"stream_name":"stdout","time":237.403310731,"data":"Generating test split: 100%|██████████| 164/164 [00:00\u003c00:00, 1399.87 examples/s]\n"}
+,{"stream_name":"stdout","time":425.059275265,"data":"[22:34:42] qwen2.5-coder-3b standard penalty 1.05: 132/163 in 188s\n"}
+,{"stream_name":"stdout","time":613.846181524,"data":"[22:37:51] qwen2.5-coder-3b comments penalty 1.05: 124/163 in 189s\n"}
+,{"stream_name":"stdout","time":741.390087276,"data":"[22:39:58] qwen2.5-coder-3b scaffold penalty 1.05: 116/163 in 128s\n"}
+,{"stream_name":"stdout","time":923.347726898,"data":"[22:43:00] qwen2.5-coder-3b standard penalty 1.0: 130/163 in 182s\n"}
+,{"stream_name":"stdout","time":1111.046876744,"data":"[22:46:08] qwen2.5-coder-3b comments penalty 1.0: 133/163 in 188s\n"}
+,{"stream_name":"stdout","time":1237.023600018,"data":"[22:48:14] qwen2.5-coder-3b scaffold penalty 1.0: 119/163 in 126s\n"}
+,{"stream_name":"stdout","time":1415.28824322,"data":"[22:51:12] qwen2.5-coder-3b-ft-qlora-mixv3b-diag standard penalty 1.05: 117/163 in 178s\n"}
+,{"stream_name":"stdout","time":1645.244109251,"data":"[22:55:02] qwen2.5-coder-3b-ft-qlora-mixv3b-diag comments penalty 1.05: 120/163 in 230s\n"}
+,{"stream_name":"stdout","time":1771.87374857,"data":"[22:57:09] qwen2.5-coder-3b-ft-qlora-mixv3b-diag scaffold penalty 1.05: 109/163 in 127s\n"}
+,{"stream_name":"stdout","time":1920.445709479,"data":"[22:59:37] qwen2.5-coder-3b-ft-qlora-mixv3b-diag standard penalty 1.0: 117/163 in 149s\n"}
+,{"stream_name":"stdout","time":2137.132077938,"data":"[23:03:14] qwen2.5-coder-3b-ft-qlora-mixv3b-diag comments penalty 1.0: 122/163 in 217s\n"}
+,{"stream_name":"stdout","time":2249.231581918,"data":"[23:05:06] qwen2.5-coder-3b-ft-qlora-mixv3b-diag scaffold penalty 1.0: 115/163 in 112s\n"}
+,{"stream_name":"stdout","time":2465.978758476,"data":"[23:08:43] qwen2.5-coder-3b-ft-qlora-mixv3s standard penalty 1.05: 121/163 in 217s\n"}
+,{"stream_name":"stdout","time":2730.062029932,"data":"[23:13:07] qwen2.5-coder-3b-ft-qlora-mixv3s comments penalty 1.05: 123/163 in 264s\n"}
+,{"stream_name":"stdout","time":2904.83850705,"data":"[23:16:02] qwen2.5-coder-3b-ft-qlora-mixv3s scaffold penalty 1.05: 121/163 in 175s\n"}
+,{"stream_name":"stdout","time":3108.776361511,"data":"[23:19:26] qwen2.5-coder-3b-ft-qlora-mixv3s standard penalty 1.0: 127/163 in 204s\n"}
+,{"stream_name":"stdout","time":3343.740784366,"data":"[23:23:21] qwen2.5-coder-3b-ft-qlora-mixv3s comments penalty 1.0: 126/163 in 235s\n"}
+,{"stream_name":"stdout","time":3497.380707366,"data":"[23:25:54] qwen2.5-coder-3b-ft-qlora-mixv3s scaffold penalty 1.0: 119/163 in 154s\n"}
+,{"stream_name":"stdout","time":3498.093117587,"data":"[23:25:55] all done\n"}
+,{"stream_name":"stdout","time":3498.359697304,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":3500.737443325,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3500.737470079,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3500.894567666,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3500.894591923,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":3501.646874171,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":3501.722100093,"data":"[NbConvertApp] Writing 16749 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":3504.221364683,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":3504.729430392,"data":"[NbConvertApp] Writing 321263 bytes to __results__.html\n"}
+]

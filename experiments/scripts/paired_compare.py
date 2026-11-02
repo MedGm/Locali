@@ -20,6 +20,7 @@ from pathlib import Path
 OUTCOME = {
     "humaneval_plus": lambda r: r["passed"],
     "humaneval_plus_plan": lambda r: r["passed"],
+    "humaneval_plus_keepdoc": lambda r: r["passed"],
     "mbpp_plus": lambda r: r["passed"],
     "completion": lambda r: r["passed"],
     "humanevalfix": lambda r: r["passed"],

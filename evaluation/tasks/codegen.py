@@ -217,4 +217,26 @@ class PlanCodegenTask(CodegenTask):
 
 
 HUMANEVAL_PLUS_PLAN_TASK = PlanCodegenTask("humaneval_plus_plan", HUMANEVAL_PLUS, load_humaneval_plus, "HumanEval/")
+
+
+KEEPDOC_INSTRUCTION = (
+    "Please provide a self-contained Python script that solves the following problem in a markdown "
+    "code block. Copy the function signature and its docstring, with the examples, unchanged, then "
+    "write the body."
+)
+
+
+@dataclass
+class KeepDocCodegenTask(CodegenTask):
+    """The same problems and scoring; the answer must repeat the docstring before the body.
+
+    The fine-tuned models drop the docstring in most answers (their training targets rarely have
+    one); this checks whether keeping it in the answer recovers the HumanEval+ loss.
+    """
+
+    def messages(self, item: Problem) -> list[dict]:
+        return [{"role": "user", "content": f"{KEEPDOC_INSTRUCTION}\n```\n{item.prompt.strip()}\n```\n"}]
+
+
+HUMANEVAL_PLUS_KEEPDOC_TASK = KeepDocCodegenTask("humaneval_plus_keepdoc", HUMANEVAL_PLUS, load_humaneval_plus, "HumanEval/")
 MBPP_PLUS_TASK = CodegenTask("mbpp_plus", MBPP_PLUS, load_mbpp_plus, "Mbpp/")

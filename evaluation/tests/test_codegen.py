@@ -149,3 +149,11 @@ def test_plan_variant_asks_for_a_plan_before_the_code():
     assert "def f(x):" in plan
     assert "plan" in plan.lower() and "plan" not in plain.lower()
     assert TASKS["humaneval_plus_plan"].excluded == TASKS["humaneval_plus"].excluded
+
+
+def test_keepdoc_variant_asks_to_copy_the_docstring():
+    from evaluation.run import TASKS
+
+    problem = Problem("humaneval_plus", "HumanEval/0", "def f(x):\n    \"\"\"Return x.\"\"\"\n", "f", "", "")
+    content = TASKS["humaneval_plus_keepdoc"].messages(problem)[0]["content"]
+    assert "def f(x):" in content and "docstring" in content.lower()

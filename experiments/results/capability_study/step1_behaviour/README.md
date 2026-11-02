@@ -47,7 +47,7 @@ is wrong on the original tests (59, 64, 99, 160), the fine-tuned runs are right 
 | | HumanEval+ answers with comments | output tokens | MBPP+ answers with comments | output tokens |
 |---|---|---|---|---|
 | base | 0.35 | 242 | 0.98 | 123 |
-| runs A to D | 0.01 | 87 to 97 | 0.00 | 47 (D) |
+| runs A to D | 0.01 | 97 (D) | 0.00 | 47 (D) |
 | E (self-distilled replay) | 0.07 | 159 | **0.94** | **123** |
 
 Comments themselves are not the cause: A to D dropped them on MBPP+ too and lost nothing there.
@@ -56,7 +56,7 @@ D. Both benchmarks use the same instruction with the problem in a code block; th
 what is in the block. MBPP+ puts an English sentence there, HumanEval+ puts Python code (a
 signature and a docstring).
 
-In the training mixture, every task row except replay (repair, review, tests, traces: 79 % of
+In the training mixture, every task row except replay (repair, review, tests, traces: 78 % of
 rows) has Python code in a fenced block in the prompt, and its answer is terse code without
 comments. Replay prompts are mostly English (62 % without a code block), and E changed exactly the
 replay answers. The reading this suggests: **fine-tuning taught a prompt-format-to-style mapping.

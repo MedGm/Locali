@@ -267,7 +267,7 @@ HUMANEVAL_PLUS_COMMENTS_TASK = CommentStepsCodegenTask(
 
 def scaffold_prefix(problem: Problem, fence: str) -> str:
     """Start of an answer that repeats the stub and opens a comment as the first line of the body."""
-    return f"{fence}{problem.prompt.rstrip()}\n    # "
+    return f"{fence}{problem.prompt.rstrip()}\n    #"
 
 
 def english_prompt(problem: Problem) -> str:

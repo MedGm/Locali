@@ -227,4 +227,4 @@ def test_scaffold_prefix_repeats_the_stub_and_opens_a_comment_in_the_body():
     from evaluation.tasks.codegen import scaffold_prefix
 
     problem = Problem("humaneval_plus", "HumanEval/0", "def f(x):\n    \"\"\"Return x.\"\"\"\n\n", "f", "", "")
-    assert scaffold_prefix(problem, "```python\n") == '```python\ndef f(x):\n    """Return x."""\n    # '
+    assert scaffold_prefix(problem, "```python\n") == '```python\ndef f(x):\n    """Return x."""\n    #'

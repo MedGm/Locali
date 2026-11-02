@@ -9,7 +9,7 @@ or for the docstring (keepdoc_t4) did not close the gap. This job tests comments
 - standard: the usual HumanEval+ prompt;
 - comments: the prompt asks for a short comment before each step (humaneval_plus_comments);
 - scaffold: the usual prompt, and the answer is started for the model: its code fence, the stub
-  (signature and docstring) and "    # ", so the body has to open with a comment.
+  (signature and docstring) and "    #", so the body has to open with a comment.
 
 Each for the base and the run D and E adapters, greedy, with vLLM's default repetition penalty from
 the model's generation_config (1.05, as in steps 2 and 3) and without it (1.0). Model-written code

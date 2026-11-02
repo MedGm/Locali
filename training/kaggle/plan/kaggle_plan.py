@@ -8,7 +8,8 @@ One vLLM server serves the base with the run D adapter (`mixv3b-diag`, Kaggle da
 `locali-adapters-3b`). Both models answer HumanEval+ twice on the same server: the standard
 prompt and the plan-first prompt (evaluation/tasks/codegen.py, humaneval_plus_plan). Greedy.
 
-Model-written code runs in evaluation/isolated.py. Environment: PILOT=1 runs 8 problems.
+Model-written code runs in evaluation/isolated.py. Environment: PILOT=1 runs 8 problems; ADAPTER,
+MODEL_ID and TASKS (space-separated) evaluate another adapter on other tasks; BASE_TOO=0 skips the base.
 """
 
 import os
@@ -27,9 +28,10 @@ VLLM_VERSION = "0.29.0"
 RESULTS = WORK / "results"
 LOGS = WORK / "logs"
 BASE = ("Qwen/Qwen2.5-Coder-3B-Instruct", "488639f1ff808d1d3d0ba301aef8c11461451ec5")
-ADAPTER = "mixv3b-diag"
-MODELS = {"qwen2.5-coder-3b": "local", "qwen2.5-coder-3b-ft-qlora-mixv3b-diag": ADAPTER}  # model id: served name
-TASKS = ("humaneval_plus_plan", "humaneval_plus")
+ADAPTER = os.environ.get("ADAPTER", "mixv3b-diag")
+MODELS = {"qwen2.5-coder-3b": "local"} if os.environ.get("BASE_TOO", "1") == "1" else {}  # model id: served name
+MODELS[os.environ.get("MODEL_ID", f"qwen2.5-coder-3b-ft-qlora-{ADAPTER}")] = ADAPTER
+TASKS = tuple(os.environ.get("TASKS", "humaneval_plus_plan humaneval_plus").split())
 PORT = 8000
 LIMIT = 8 if os.environ.get("PILOT") == "1" else None
 
@@ -63,19 +65,20 @@ def setup() -> None:
     import evaluation.rescore  # noqa: F401 - fail here, not after the server has started
     from evaluation.run import TASKS as REGISTERED
 
-    assert set(TASKS) <= set(REGISTERED), "this commit lacks humaneval_plus_plan"
+    assert set(TASKS) <= set(REGISTERED), f"unknown tasks: {set(TASKS) - set(REGISTERED)}"
     log("setup done")
 
 
 def score_in_isolation() -> str:
     from evaluation import isolated
-    from evaluation.tasks import codegen
+    from evaluation.tasks import codegen, humanevalpack
 
     def run_program(program: str, timeout_s: float = 60) -> codegen.Outcome:
         r = isolated.run_isolated(program, timeout_s=min(timeout_s, 60))
         return codegen.Outcome(r.passed, r.status, r.error or "", r.seconds)
 
     codegen.run_program = run_program
+    humanevalpack.run_program = run_program
     return isolated.network_isolation()
 
 

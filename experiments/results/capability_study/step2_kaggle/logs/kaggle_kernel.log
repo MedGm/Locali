@@ -1,0 +1,47 @@
+[{"stream_name":"stderr","time":8.002278975,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.002317942,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.002324607,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.00232864,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.626551713,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.626577619,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.626582293,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.626586222,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.789070523,"data":"Writing /kaggle/working/kaggle_capability.py\n"}
+,{"stream_name":"stdout","time":104.487070326,"data":"[18:52:59] setup done\n"}
+,{"stream_name":"stdout","time":104.520030488,"data":"[18:52:59] adapters {'mixv3b-diag': PosixPath('/kaggle/input/datasets/elgorrimmohamed/locali-adapters-3b/mixv3b-diag'), 'mixv3s': PosixPath('/kaggle/input/datasets/elgorrimmohamed/locali-adapters-3b/mixv3s')}; network isolation guard\n"}
+,{"stream_name":"stdout","time":239.596532628,"data":"[18:55:14] server ready\n"}
+,{"stream_name":"stdout","time":424.736817722,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stdout","time":509.386348628,"data":"[18:59:44] greedy humaneval_plus/qwen2.5-coder-3b: pass@1 0.8098\n"}
+,{"stream_name":"stdout","time":712.671240368,"data":"[19:03:07] greedy humaneval_plus_english/qwen2.5-coder-3b: pass@1 0.7975\n"}
+,{"stream_name":"stdout","time":937.36464374,"data":"\u003cunknown\u003e:6: SyntaxWarning: invalid escape sequence '\\w'\n"}
+,{"stream_name":"stdout","time":1019.184252183,"data":"[19:08:14] greedy mbpp_plus/qwen2.5-coder-3b: pass@1 0.6446\n"}
+,{"stream_name":"stdout","time":1351.996464211,"data":"[19:13:47] greedy mbpp_plus_stub/qwen2.5-coder-3b: pass@1 0.695\n"}
+,{"stream_name":"stdout","time":1583.543533122,"data":"[19:17:38] greedy humaneval_plus/qwen2.5-coder-3b-ft-qlora-mixv3b-diag: pass@1 0.7178\n"}
+,{"stream_name":"stdout","time":1749.7755746,"data":"[19:20:24] greedy humaneval_plus_english/qwen2.5-coder-3b-ft-qlora-mixv3b-diag: pass@1 0.7362\n"}
+,{"stream_name":"stdout","time":1982.660210223,"data":"[19:24:17] greedy mbpp_plus/qwen2.5-coder-3b-ft-qlora-mixv3b-diag: pass@1 0.6419\n"}
+,{"stream_name":"stdout","time":2263.086124216,"data":"[19:28:58] greedy mbpp_plus_stub/qwen2.5-coder-3b-ft-qlora-mixv3b-diag: pass@1 0.6817\n"}
+,{"stream_name":"stdout","time":2550.293218546,"data":"[19:33:45] greedy humaneval_plus/qwen2.5-coder-3b-ft-qlora-mixv3s: pass@1 0.7423\n"}
+,{"stream_name":"stdout","time":2763.50880395,"data":"[19:37:18] greedy humaneval_plus_english/qwen2.5-coder-3b-ft-qlora-mixv3s: pass@1 0.7607\n"}
+,{"stream_name":"stdout","time":3099.846571011,"data":"\u003cunknown\u003e:5: SyntaxWarning: invalid escape sequence '\\w'\n"}
+,{"stream_name":"stdout","time":3179.798084599,"data":"[19:44:14] greedy mbpp_plus/qwen2.5-coder-3b-ft-qlora-mixv3s: pass@1 0.6419\n"}
+,{"stream_name":"stdout","time":3552.651390492,"data":"[19:50:27] greedy mbpp_plus_stub/qwen2.5-coder-3b-ft-qlora-mixv3s: pass@1 0.6817\n"}
+,{"stream_name":"stdout","time":3893.437126417,"data":"[19:56:08] logprobs: 1467 scored in 339s\n"}
+,{"stream_name":"stdout","time":4549.449467743,"data":"[20:07:04] samples qwen2.5-coder-3b: generated in 655s\n"}
+,{"stream_name":"stdout","time":4877.238044557,"data":"\u003cunknown\u003e:13: SyntaxWarning: invalid escape sequence '\\s'\n"}
+,{"stream_name":"stdout","time":5076.097814407,"data":"[20:15:51] samples qwen2.5-coder-3b: 2498/3260 passed, 1181s\n"}
+,{"stream_name":"stdout","time":5638.141543222,"data":"[20:25:13] samples qwen2.5-coder-3b-ft-qlora-mixv3b-diag: generated in 562s\n"}
+,{"stream_name":"stdout","time":6182.340271285,"data":"[20:34:17] samples qwen2.5-coder-3b-ft-qlora-mixv3b-diag: 2218/3260 passed, 1106s\n"}
+,{"stream_name":"stdout","time":6978.408763911,"data":"[20:47:33] samples qwen2.5-coder-3b-ft-qlora-mixv3s: generated in 796s\n"}
+,{"stream_name":"stdout","time":7178.905688339,"data":"\u003cunknown\u003e:4: SyntaxWarning: invalid escape sequence '\\d'\n"}
+,{"stream_name":"stdout","time":7449.071242327,"data":"[20:55:24] samples qwen2.5-coder-3b-ft-qlora-mixv3s: 2377/3260 passed, 1267s\n"}
+,{"stream_name":"stdout","time":7450.088924632,"data":"[20:55:25] all done\n"}
+,{"stream_name":"stdout","time":7450.304825341,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":7452.904272103,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":7452.904329021,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":7453.097163054,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":7453.097200277,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":7453.915451809,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":7453.994145558,"data":"[NbConvertApp] Writing 19606 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":7456.506115759,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":7457.06492642,"data":"[NbConvertApp] Writing 338170 bytes to __results__.html\n"}
+]

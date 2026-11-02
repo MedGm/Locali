@@ -35,6 +35,7 @@ MODELS = {"qwen2.5-coder-3b": "local", "qwen2.5-coder-3b-ft-qlora-mixv3b-diag": 
           "qwen2.5-coder-3b-ft-qlora-mixv3s": "mixv3s"}  # model id: served name
 STEP2 = CODE / "experiments" / "results" / "capability_study" / "step2_kaggle" / "results" / "humaneval_plus"
 MAX_FORCED = 12
+N_CONTROL = 5  # control nudges per walk, of each kind
 PILOT = os.environ.get("PILOT") == "1"
 PORT = 8000
 URL = f"http://127.0.0.1:{PORT}"
@@ -117,7 +118,14 @@ def detok(served: str, tokens: list[int]) -> str:
 
 def walks() -> None:
     from evaluation.client import Completion
-    from evaluation.divergence import first_divergence, rank_of, refence
+    from evaluation.divergence import (
+        first_divergence,
+        nudge_positions,
+        rank_of,
+        refence,
+        second_choice,
+        uncertain_positions,
+    )
     from evaluation.run import TASKS
 
     task = TASKS["humaneval_plus"]
@@ -168,7 +176,32 @@ def walks() -> None:
                 break
             forced = j + 1
         return {"follower": follower, "leader": leader, "task_id": task_id, "leader_tokens": len(lead),
-                "passed": steps[-1]["passed"], "steps": steps}
+                "passed": steps[-1]["passed"], "steps": steps,
+                "controls": controls(follower, leader, item, prompt, steps[0])}
+
+    def controls(follower, leader, item, prompt, first):
+        """Force the follower's own second choice instead of the leader's token, at random positions
+        and at the positions where it was least sure, in its own greedy answer."""
+        served = MODELS[follower]
+        d = post("/v1/completions", {"model": served, "prompt": prompt, "max_tokens": 768, "temperature": 0.0,
+                                     "logprobs": 5, "return_tokens_as_token_ids": True})["choices"][0]["logprobs"]
+        own, chosen, tops = ids(d["tokens"]), d["token_logprobs"], d["top_logprobs"]
+        j0 = first.get("divergence", {}).get("position")
+        picks = [("random", p) for p in nudge_positions(len(own), N_CONTROL, seed=f"{follower}|{leader}|{item.task_id}")]
+        picks += [("uncertain", p) for p in uncertain_positions(chosen, N_CONTROL, exclude=j0)]
+        out = []
+        for kind, pos in picks:
+            alt = second_choice(own[pos], tops[pos])
+            if alt is None:
+                continue
+            prefix = [*own[:pos], alt]
+            c = post("/v1/completions", {"model": served, "prompt": prompt + prefix, "max_tokens": 768,
+                                         "temperature": 0.0})["choices"][0]
+            text = detok(served, prefix) + c["text"]
+            s = task.score(item, Completion(text, "", None, None, 0, 0, c["finish_reason"]), 20)
+            out.append({"kind": kind, "position": pos, "own_logprob": chosen[pos],
+                        "alt_logprob": tops[pos].get(f"token_id:{alt}"), "passed": s["passed"], "status": s["status"]})
+        return out
 
     start = time.time()
     with ThreadPoolExecutor(max_workers=8) as pool:
@@ -177,7 +210,9 @@ def walks() -> None:
         for r in rows:
             fh.write(json.dumps(r) + "\n")
     rescued = sum(r["passed"] for r in rows)
-    log(f"walks: {rescued}/{len(rows)} pass within {MAX_FORCED} forced tokens, {time.time() - start:.0f}s")
+    nudged = [c["passed"] for r in rows for c in r["controls"]]
+    log(f"walks: {rescued}/{len(rows)} pass within {MAX_FORCED} forced tokens; control nudges "
+        f"{sum(nudged)}/{len(nudged)} pass; {time.time() - start:.0f}s")
 
 
 def main() -> None:

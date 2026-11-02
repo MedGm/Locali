@@ -1,4 +1,11 @@
-from evaluation.divergence import first_divergence, rank_of, refence
+from evaluation.divergence import (
+    first_divergence,
+    nudge_positions,
+    rank_of,
+    refence,
+    second_choice,
+    uncertain_positions,
+)
 
 
 def test_first_divergence_is_the_first_differing_token_counted_in_the_leader():
@@ -36,3 +43,29 @@ def test_rank_of_a_token_among_the_top_alternatives():
     assert rank_of(9, top) == 2
     assert rank_of(5, top) == 1
     assert rank_of(7, top) is None
+
+
+def test_nudge_positions_are_distinct_reproducible_and_skip_the_fence():
+    first = nudge_positions(50, 3, seed="D|base|HumanEval/54")
+    assert first == nudge_positions(50, 3, seed="D|base|HumanEval/54")
+    assert len(set(first)) == 3
+    assert all(3 <= p < 49 for p in first)
+
+
+def test_nudge_positions_of_a_short_answer():
+    assert nudge_positions(5, 3, seed="x") == [3]
+    assert nudge_positions(3, 3, seed="x") == []
+
+
+def test_second_choice_is_the_best_other_token():
+    top = {"token_id:5": -0.1, "token_id:9": -2.5, "token_id:2": -1.0}
+    assert second_choice(5, top) == 2
+    assert second_choice(2, top) == 5
+    assert second_choice(5, {"token_id:5": -0.0}) is None
+
+
+def test_uncertain_positions_are_the_least_likely_chosen_tokens_after_the_fence():
+    chosen = [-5.0, -4.0, -3.0, -0.1, -2.0, -0.0, -1.5, -0.9, -0.3]
+    assert uncertain_positions(chosen, 2, exclude=None) == [4, 6]
+    assert uncertain_positions(chosen, 2, exclude=4) == [6, 7]
+    assert uncertain_positions([-1.0, -1.0, -1.0], 2, exclude=None) == []

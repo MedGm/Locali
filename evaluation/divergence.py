@@ -5,10 +5,12 @@ leader's token is forced and the follower continues. Token ids are those of the 
 tokenizer; top alternatives come from vLLM with return_tokens_as_token_ids ("token_id:<id>").
 """
 
+import random
 import re
 
 # The base model opens with "```\npython\n", the fine-tuned models with "```python\n".
 FENCE = re.compile(r"\A```(?:python\n|\npython\n)")
+FENCE_TOKENS = 3
 
 
 def first_divergence(continuation: list[int], leader: list[int], offset: int) -> int | None:
@@ -38,3 +40,25 @@ def rank_of(token: int, top: dict[str, float]) -> int | None:
     ordered = sorted(top, key=top.get, reverse=True)
     key = f"token_id:{token}"
     return ordered.index(key) + 1 if key in ordered else None
+
+
+def nudge_positions(n_tokens: int, k: int, seed: str) -> list[int]:
+    """Up to k distinct random positions in an answer of n_tokens, after the fence, before the last.
+
+    Used for the control: does forcing any other likely token, not the leader's, also flip the result?
+    """
+    candidates = range(FENCE_TOKENS, n_tokens - 1)
+    return sorted(random.Random(seed).sample(candidates, min(k, len(candidates))))
+
+
+def second_choice(token: int, top: dict[str, float]) -> int | None:
+    """The most likely alternative to `token` among the top alternatives."""
+    others = [t for t in sorted(top, key=top.get, reverse=True) if t != f"token_id:{token}"]
+    return int(others[0].split(":", 1)[1]) if others else None
+
+
+def uncertain_positions(chosen_logprobs: list[float], k: int, exclude: int | None) -> list[int]:
+    """The k positions after the fence (and before the last token) where the model was least sure
+    of the token it chose, in answer order. `exclude` (the first divergence) is skipped."""
+    candidates = [i for i in range(FENCE_TOKENS, len(chosen_logprobs) - 1) if i != exclude]
+    return sorted(sorted(candidates, key=lambda i: chosen_logprobs[i])[:k])

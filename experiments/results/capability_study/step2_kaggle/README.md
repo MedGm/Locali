@@ -120,6 +120,14 @@ Mean log-probability per token (in brackets: tokens below −2, i.e. probability
   (step 3): at the tokens where D and the base first diverge on the lost problems, what is chosen
   instead, and is the base's choice the first or second option for D?
 
+## Decoding settings (found in step 3)
+
+vLLM used the model's `generation_config.json` as defaults: repetition penalty 1.05 and top-k 20 were
+applied to every request here (greedy and samples); the requests set only temperature and, for
+samples, top-p. Same for all three models, so the comparisons hold, but these runs are not decoded
+exactly like the laptop's llama.cpp runs. The log-probabilities are raw, before the penalty. See
+`../step3_kaggle/README.md`.
+
 ## Files
 
 - `results/<task>/<model>__fp16__kaggle-t4/`: greedy answers and scores, four tasks × three models.

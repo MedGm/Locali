@@ -169,15 +169,15 @@ def workflow() -> None:
     d.label("One assistant run: 9 fixed steps (backend/agents/workflow.py)", 40, 10, 28)
     w, h, top, bottom = 240, 120, 100, 330
     xs = [40, 340, 640, 940, 1240]
-    d.box("prepare", "1 prepare\nisolated copy\nof the repository", xs[0], top, w, h, "core")
-    d.box("analyze", "2 analyze\nRuff · Bandit · Radon\nSemgrep · secrets", xs[1], top, w, h, "tool")
-    d.box("review", "3 review\nthe model reviews each\nfunction; a finding must\nquote a real line", xs[2], top, w, h, "model")
-    d.box("testgen", "4 testgen\ntests for untested\nfunctions, kept only\nif they pass", xs[3], top, w, h, "model")
-    d.box("debug", "5 debug\nfailing test + error\n→ the model fixes it\n(repair loop)", xs[4], top, w, h, "model")
-    d.box("docs", "6 docs\ndocstrings only,\nchecked on the\nsyntax tree", xs[4], bottom, w, h, "model")
-    d.box("propose", "7 propose\none patch per change,\nreplayed and validated\non a fresh copy", xs[3], bottom, w, h, "guard")
-    d.box("devops", "8 devops\nmerge readiness ·\ntyposquat check ·\nCI suggestion", xs[2], bottom, w, h, "tool")
-    d.box("report", "9 report\nsummary, findings,\ntests and patches", xs[1], bottom, w, h, "core")
+    d.box("prepare", "1 - prepare\nisolated copy\nof the repository", xs[0], top, w, h, "core")
+    d.box("analyze", "2 - analyze\nRuff · Bandit · Radon\nSemgrep · secrets", xs[1], top, w, h, "tool")
+    d.box("review", "3 - review\nthe model reviews each\nfunction; a finding must\nquote a real line", xs[2], top, w, h, "model")
+    d.box("testgen", "4 - testgen\ntests for untested\nfunctions, kept only\nif they pass", xs[3], top, w, h, "model")
+    d.box("debug", "5 - debug\nfailing test + error\n→ the model fixes it\n(repair loop)", xs[4], top, w, h, "model")
+    d.box("docs", "6 - docs\ndocstrings only,\nchecked on the\nsyntax tree", xs[4], bottom, w, h, "model")
+    d.box("propose", "7 - propose\none patch per change,\nreplayed and validated\non a fresh copy", xs[3], bottom, w, h, "guard")
+    d.box("devops", "8 - devops\nmerge readiness ·\ntyposquat check ·\nCI suggestion", xs[2], bottom, w, h, "tool")
+    d.box("report", "9 - report\nsummary, findings,\ntests and patches", xs[1], bottom, w, h, "core")
     d.box("wait", "patches wait\nfor a human", xs[0] + 20, bottom + 10, 200, 100, "store", shape="ellipse")
     order = ["prepare", "analyze", "review", "testgen", "debug", "docs", "propose", "devops", "report", "wait"]
     for a, b in pairwise(order):

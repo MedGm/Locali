@@ -26,6 +26,8 @@ as a reviewer; it becomes useful as one part of a workflow where static tools ca
 sandbox runs every test, and nothing reaches the repository without approval. In red-team tests,
 no attack got through those controls.
 
+![The brief's chain and what each stage gave](docs/diagrams/evaluation_chain.svg)
+
 ## Contents
 
 1. [The platform](#1-the-platform)
@@ -66,18 +68,7 @@ Quick scans (static tools only) work on Python, JavaScript, TypeScript, Java and
 full assistant (tests, repair loop, patch validation) works on Python code, because those steps run
 pytest and use Python's parser.
 
-```mermaid
-flowchart LR
-    UI[Next.js web app] -->|token, proxy| API[FastAPI]
-    API --> WF[LangGraph workflow]
-    WF --> M[Model server<br/>llama.cpp or vLLM]
-    WF --> T[Static tools]
-    WF --> S[Docker sandbox]
-    WF --> P[Patch store]
-    P -->|approve exact hash, apply, revert| R[(Repository)]
-    API --> A[Audit log]
-    WF --> ML[MLflow]
-```
+![Locali system architecture](docs/diagrams/architecture.svg)
 
 Every agent change becomes a **patch**: one per fixed file, per test file and per documented file,
 each applied alone to a fresh copy of the repository and validated there (no test that passed
@@ -85,6 +76,8 @@ before may fail, no new Bandit/Semgrep finding, no secret in the added lines). A
 a patch by sending back its SHA-256, the hashes of the files it was made against and the hash of
 its validation record; if anything differs, or the files changed since, it is refused or marked
 stale and can be revalidated. Applied patches can be reverted.
+
+![From an agent's change to the repository](docs/diagrams/patches.svg)
 
 ### The web app
 
@@ -135,6 +128,8 @@ first are therefore Qwen2.5-Coder-1.5B and Phi-4-mini; Qwen2.5-Coder-3B was adde
 stronger base that still runs on the laptop (end of section 3).
 
 ## 3. Fine-tuning
+
+![Fine-tuning pipeline](docs/diagrams/training.svg)
 
 **Data** ([mixture v2](experiments/results/data_mix_v2/README.md)): 14,151 training examples in
 four formats, all built and checked by execution rather than written by hand:
@@ -325,6 +320,8 @@ propose → devops → report`. Routing is fixed because the 1.5B model made no 
 calls in the first spike, and fixed steps make runs reproducible. The model has no tools: it only
 ever answers a prompt, and its answer is parsed into findings or code that is then checked.
 
+![One assistant run](docs/diagrams/workflow.svg)
+
 Tool access for other clients goes through three MCP servers with one or two tools each: a
 read-only repository server confined to its root, a test runner that only uses the sandbox, and
 the static analysis (`mcp_servers/`).
@@ -511,7 +508,7 @@ to this: they are the fine-tuned Qwen2.5-Coder-3B and 1.5B described above.
 | `mcp_servers/` | Repository, test-runner and static-analysis MCP servers |
 | `security/` | Sandbox, command allow-list, secret scanner, injection detector |
 | `demo_repo/` | The flawed shop application used for agent and security tests |
-| `docs/` | Research design, requirement checklist, UI notes, model cards |
+| `docs/` | Research design, requirement checklist, UI notes, model cards; `docs/diagrams/` holds the diagrams as Excalidraw files (`make_diagrams.py` builds them, `export.py` renders the SVGs) |
 
 Planning and status: [ROADMAP.md](ROADMAP.md); every requirement of the brief mapped to its code
 and evidence: [docs/spec-checklist.md](docs/spec-checklist.md).

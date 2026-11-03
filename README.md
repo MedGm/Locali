@@ -1,8 +1,9 @@
 # Locali
 
-A software-engineering assistant built on a 1.5-billion-parameter model that runs on a laptop CPU:
-it reviews a repository, writes tests, fixes failing ones, documents functions and checks merge
-readiness, and every change it proposes waits for a human to approve that exact patch.
+A software-engineering assistant built on small language models that run on a laptop CPU (a
+fine-tuned Qwen2.5-Coder-3B by default, a fine-tuned 1.5B as the fast option): it reviews a
+repository, writes tests, fixes failing ones, documents functions and checks merge readiness, and
+every change it proposes waits for a human to approve that exact patch.
 
 Course project *Efficient Small Language Models for Intelligent Software Engineering, Testing and
 DevOps* (2026). The brief was written for teams of five; I did it alone, with the hardware I have
@@ -16,10 +17,14 @@ DevOps* (2026). The brief was written for teams of five; I did it alone, with th
 hours on one T4 catches 82 % of bugs with the tests it writes (from 46 %), preserves behaviour in
 94 % of refactors (from 70 %) and repairs 36 % of HumanEvalFix bugs (from 25 %), without a
 significant loss in general code generation. Quantized to 8 bits it loses nothing measurable, needs 1.8 GB of RAM and
-answers at 10 tokens/s on the laptop CPU. It stays far behind a 9B model on open-ended repair
-(36 % vs 66 %), and on its own it is noisy as a reviewer; it becomes useful as one part of a
-workflow where static tools carry security, a sandbox runs every test, and nothing reaches the
-repository without approval. In red-team tests, no attack got through those controls.
+answers at 10 tokens/s on the laptop CPU. The same recipe on a 3B model, with realistic bugs added
+to the data, repairs 62 % of HumanEvalFix (from 46 %), close to the 9B model's 66 %; quantized to 4
+bits it fixes a bug in about 15 s on the laptop with 2.2 GB of RAM, for 456 J of CPU energy per
+fixed bug. The cost is general code generation on HumanEval+ (81 → 72 %): the model still knows
+the solutions (equal pass@20) but its first answer is less reliable. On its own the model is noisy
+as a reviewer; it becomes useful as one part of a workflow where static tools carry security, a
+sandbox runs every test, and nothing reaches the repository without approval. In red-team tests,
+no attack got through those controls.
 
 ## Contents
 
@@ -126,7 +131,8 @@ correct answer (8× less energy than the 9B) and the weakest exactly on repair, 
 refactoring, which leaves the most room for fine-tuning. And Unsloth could not train Qwen3.5 on a T4 at
 all: tested on the 2B in FP16, BF16 and FP32, all three failed in the same code path, which the 4B
 and 9B share ([W1 spikes](experiments/results/w1_spikes/README.md)). The two models I fine-tuned
-are therefore Qwen2.5-Coder-1.5B and Phi-4-mini.
+first are therefore Qwen2.5-Coder-1.5B and Phi-4-mini; Qwen2.5-Coder-3B was added later as a
+stronger base that still runs on the laptop (end of section 3).
 
 ## 3. Fine-tuning
 
@@ -214,6 +220,54 @@ the laptop with 2.2 GB of RAM ([laptop check](experiments/results/laptop_3b_chec
 1.5B Q4_K_M stays as the fast option (about 6 s). Its base model is under the Qwen research licence,
 so it is not redistributed; `training/kaggle/gguf` rebuilds it from the adapter.
 
+**Run E** ([README](experiments/results/finetune_qwen25_3b_qlora_mixv3s/README.md)) keeps run D's
+data but replaces 2,648 of the general replay answers (written by StarCoder2-15B) with the base
+3B's own answers to the same prompts, kept when they ran without error. Nothing gets worse, and it
+is the best 3B run on repair and completion:
+
+| Task (%), Qwen2.5-Coder-3B | Base | Run D (default) | Run E |
+|---|---|---|---|
+| Bug repair (HumanEvalFix) | 46.3 | 61.6 | **63.4** |
+| Test generation: bugs caught | 62.2 | 82.9 | 82.3 |
+| Refactoring: behaviour preserved | 86.5 | 87.7 | 87.7 |
+| Completion (infilling) | 56.4 | 62.0 | **65.6** |
+| MBPP+ | 64.7 | 64.2 | 64.2 |
+| CRUXEval-O | 42.2 | 43.4 | 43.6 |
+| HumanEval+ | **81.0** | 72.4 | 74.8 |
+
+HumanEval+ stays below the base (p = 0.013 for D, 0.076 for E). Run E is not deployed: that needs
+its own GGUF build and a laptop energy run.
+
+**Why HumanEval+ drops** ([capability study](experiments/results/capability_study/), four steps).
+Every fine-tuned 3B run scores 6 to 9 points below the base on HumanEval+, while matching it on
+MBPP+. Instead of trying more data, I looked at what changed in the model:
+
+1. The loss is concentrated: 10 problems that the base solves and all five runs fail, with wrong
+   logic rather than a format problem ([step 1](experiments/results/capability_study/step1_behaviour/README.md)).
+2. The solutions are still in the model. With 20 sampled answers per problem (temperature 0.8),
+   the fine-tuned runs solve as many problems as the base; only the first answer is worse
+   ([step 2](experiments/results/capability_study/step2_kaggle/README.md)):
+
+   | HumanEval+, % | pass@1 | pass@5 | pass@20 |
+   |---|---|---|---|
+   | 3B base | 76.6 | 88.8 | 92.0 |
+   | Run D | 68.0 | 86.8 | 92.0 |
+   | Run E | 72.9 | 87.0 | 92.0 |
+
+3. A wrong answer is one or two tokens away from a right one. Forcing the base's token where the
+   two answers part makes 69 of 70 failing answers pass, usually after one or two forced tokens,
+   and more often than forcing a random alternative. At those points the base spells the code out
+   (a step comment, a setup variable, a helper function) where the fine-tuned model writes a
+   one-liner ([step 3](experiments/results/capability_study/step3_kaggle/README.md)).
+4. Asking for a comment before each step, forcing the answer to start with one, or turning off the
+   repetition penalty does not bring the points back: every change for D and E is within noise,
+   and what it fixes on the lost problems it breaks elsewhere. Run D also ignores the comment
+   instruction (5 of 163 answers), the base follows it (149)
+   ([step 4](experiments/results/capability_study/step4_kaggle/README.md)).
+
+So fine-tuning kept what the 3B can do and made its first answer on this benchmark less reliable.
+Training on the base's own answers (run E) narrows the gap; a prompt does not.
+
 ## 4. Performance optimization
 
 **Quantization** on the laptop CPU, llama.cpp ([ladder](experiments/results/ladder_laptop/README.md)):
@@ -240,6 +294,13 @@ lookup most (50–67 % less energy per correct answer). The stock draft predicts
 than the base model (acceptance on repair 0.63 vs 0.87 at 8 drafted tokens), so fine-tuning
 makes long drafts a net loss. Greedy speculative decoding keeps the pass counts but is not
 bit-exact: a few answers change.
+
+For the default 3B on the laptop ([3B drafts](experiments/results/speculative_3b_laptop/README.md),
+all 164 HumanEvalFix problems), n-gram lookup is again the best: 456 J per fixed bug against 501 J
+without speculation. A 0.5B draft costs 516 J and 1.5B drafts 668 J, despite accepting 89 to 97 %
+of drafted tokens, because the draft has to read the long repair prompt too, on the same four
+cores. A 1.5B draft fine-tuned on the same data accepts no more tokens than the base 1.5B (0.97 vs
+0.96).
 
 **Serving on a T4** (vLLM and transformers, [results](experiments/results/serving_t4/README.md)):
 16 concurrent requests give 13.6× the throughput of one and use 15× less energy per answer; CUDA
@@ -314,7 +375,7 @@ and the web app's security center lists the security-relevant ones.
 
 ## 7. DevOps, LLMOps and the web app
 
-- **CI** (`.github/workflows/ci.yml`): lint, the sandbox image, 422 tests, and the frontend's type
+- **CI** (`.github/workflows/ci.yml`): lint, the sandbox image, 489 tests, and the frontend's type
   check, lint and build, on every push.
 - **Pull request review** (`locali-review.yml`): runs the static analysis and secret scan on the
   changed files, comments on the pull request and fails it on a new high-severity issue or secret.
@@ -335,7 +396,7 @@ and the web app's security center lists the security-relevant ones.
 
 | Ablation | Result | Where |
 |---|---|---|
-| Base vs fine-tuned SLM | +36 test generation, +24 refactoring, +11 repair, no loss on generation | [finetune_v2](experiments/results/finetune_v2/README.md) |
+| Base vs fine-tuned SLM | 1.5B: +36 test generation, +24 refactoring, +11 repair, no loss on generation. 3B (run D): +21 test generation, +15 repair, −9 HumanEval+ | [finetune_v2](experiments/results/finetune_v2/README.md), [run D](experiments/results/finetune_qwen25_3b_qlora_mixv3b_diag/README.md) |
 | FP16 vs INT8/INT4 | Q8 lossless, Q4 −2 to −4 points, 2.8× faster, 2.8× less RAM | [ladder_laptop](experiments/results/ladder_laptop/README.md) |
 | Standard vs optimized prompting | compressed prompts −14 % input, −2.4 points (n.s.) | [context_ablation_t4](experiments/results/context_ablation_t4/README.md) |
 | Full vs reduced context | full test suite: 2.2× input, no gain; whole file: misses a bug | [context_ablation_t4](experiments/results/context_ablation_t4/README.md), [context_agents](experiments/results/context_agents/README.md) |
@@ -345,7 +406,7 @@ and the web app's security center lists the security-relevant ones.
 
 | Metric in the brief | How it is measured |
 |---|---|
-| Code correctness, pass@k, execution success | pass@1, greedy, every answer executed in the sandbox (other languages: on a Kaggle VM) |
+| Code correctness, pass@k, execution success | pass@1, greedy, every answer executed in the sandbox (other languages: on a Kaggle VM); pass@1/5/20 from 20 samples per problem for the 3B models on HumanEval+ (unbiased estimator) |
 | Unit-test pass rate, test coverage | pytest and pytest-cov in the sandbox (line and branch) |
 | Bug-detection precision / recall / F1 | per task, with accuracy as the headline because the models answer "yes" too often |
 | Code-quality metrics | Ruff, Radon complexity, refactoring "improved and preserved" |
@@ -367,7 +428,16 @@ energy per correct answer is what changes between options.
 - **500 verified clean reviews did not reduce false bug reports.**
 - **Phi-4-mini got worse** from training on targets weaker than it already was.
 - **Vulnerability detection stayed at chance level** (about 50 %) for every model, fine-tuned or not.
-- **Open-ended repair remains far below the 9B model** (36 % vs 66 %).
+- **Open-ended repair:** the 1.5B stays far below the 9B model (36 % vs 66 %); the fine-tuned 3B
+  comes close (62 to 63 %).
+- **Fine-tuning the 3B costs HumanEval+** (81 → 72 % for run D) and no prompt brings it back
+  (section 3). Training on the base model's own answers narrows the gap to 6 points; closing it
+  would need training targets closer to the base's style.
+- **Kaggle and laptop runs do not decode in exactly the same way.** On Kaggle, vLLM applied the
+  Qwen2.5-Coder models' `generation_config` by default (repetition penalty 1.05, and top-k 20 when
+  sampling); llama.cpp on the laptop applies none. A base model and its fine-tunes always ran with
+  the same settings, so those comparisons hold, but absolute numbers from the two setups are not
+  interchangeable.
 - **The fine-tune was trained on Python only.** On HumanEvalFix in other languages it gains in
   JavaScript (+9.8, p = 0.0025) and Go (+8.1, p = 0.041), is level in C++ and Rust, and lower in Java
   (−6.7, p = 0.10) ([results](experiments/results/multilang_t4/README.md)). That experiment is the
@@ -426,8 +496,8 @@ report comes from a run whose answers and logs are committed, not from the assis
 Its output was not taken on trust: claims in drafts were checked against the data and corrected
 when they did not hold, the harness was validated on reference solutions before any model was
 scored, and the bugs found along the way, including the two security gaps the red-team exposed,
-were fixed with a test that reproduces them. The model used inside Locali is unrelated
-to this: it is the fine-tuned Qwen2.5-Coder-1.5B described above.
+were fixed with a test that reproduces them. The models used inside Locali are unrelated
+to this: they are the fine-tuned Qwen2.5-Coder-3B and 1.5B described above.
 
 ## 14. Repository layout
 

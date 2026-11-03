@@ -91,6 +91,16 @@ Design: [docs/research-design.md](docs/research-design.md)
   quick scans for JavaScript/TypeScript, Java and Go, and the report.
 - Open: the 5-minute demo video, recorded last.
 
+## Status 2026-11-04 (week 8)
+
+- Since 18 October: v3 data with realistic bugs and five fine-tuning runs on Qwen2.5-Coder-3B
+  (runs A–E); run D is the default model since 1 November (repair 46 → 62 %); draft-model
+  speculative decoding for the 3B on the laptop; a four-step study of why fine-tuning costs
+  HumanEval+ (`experiments/results/capability_study/`). README updated with all of it.
+- Gaps against the brief: generation of integration and API tests (only unit tests today); MCP
+  servers for documentation and an issue tracker; a code-explanation task in the benchmark.
+- Open: those gaps, then the 5-minute demo video, recorded last.
+
 ## Cut order if behind
 1. Phi fine-tuning
 2. LoRA vs QLoRA comparison (keep QLoRA)

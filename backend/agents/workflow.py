@@ -23,6 +23,7 @@ from langgraph.graph import END, START, StateGraph
 from backend.agents.debug import debug_failing_tests
 from backend.agents.devops import devops_summary
 from backend.agents.docs import generate_docs, undocumented_functions
+from backend.agents.flowtests import generate_api_tests, generate_integration_tests
 from backend.agents.review import review_functions
 from backend.agents.testgen import generate_tests, untested_functions
 from backend.analysis import analyze
@@ -43,6 +44,7 @@ class RunState(TypedDict, total=False):
     findings: list[dict]
     review_dropped: int
     tests_added: list[str]
+    tests_by_kind: dict[str, list[str]]  # unit, integration, api
     suspects: list[dict]
     crashed_tests: dict[str, int]
     fixes: list[dict]
@@ -65,8 +67,14 @@ def change_groups(state: RunState, changed: list[str]) -> list[tuple[list[str], 
     for file, functions in sorted(fixed.items()):
         groups.append(([file], "fix", f"Fix {', '.join(sorted(set(functions)))} in {file}"))
     for test_file in state.get("tests_added", []):
-        function = Path(test_file).stem.removeprefix("test_locali_")
-        groups.append(([test_file], "tests", f"Regression tests for {function} (they record what the code does now)"))
+        name = Path(test_file).stem.removeprefix("test_locali_")
+        if name.startswith("integration_"):
+            title = f"Integration tests for {name.removeprefix('integration_')}"
+        elif name.startswith("api_"):
+            title = f"API tests for {name.removeprefix('api_')}"
+        else:
+            title = f"Regression tests for {name} (they record what the code does now)"
+        groups.append(([test_file], "tests", title))
     documented: dict[str, list[str]] = {}
     for file, name in state.get("docs", {}).get("documented", []):
         documented.setdefault(file, []).append(name)
@@ -100,7 +108,11 @@ def _report(state: RunState) -> str:
     lines = [f"# Run {state['run_id']}", "", "## Findings", ""]
     lines += [f"- {cat}: {n}" for cat, n in sorted(by_category.items())] or ["- none"]
     lines += ["", f"Model review findings whose quoted line did not exist (dropped): {state['review_dropped']}"]
-    lines += ["", "## Tests added", ""] + ([f"- {t}" for t in state["tests_added"]] or ["- none"])
+    lines += ["", "## Tests added", ""]
+    by_kind = state.get("tests_by_kind") or {"unit": state["tests_added"]}
+    for kind, label in (("unit", "Unit"), ("integration", "Integration"), ("api", "API")):
+        files = by_kind.get(kind, [])
+        lines += [f"{label}:"] + [f"- {t}" for t in files] if files else [f"{label}: none"]
     lines += ["", "## Suspected bugs (generated tests that failed; check the test before the code)", ""]
     lines += [f"- {s['file']}::{s['function']}: {s['error'].splitlines()[0]}" for s in state["suspects"]] or ["- none"]
     lines += ["", "## Fixes", ""]
@@ -152,8 +164,13 @@ def build_workflow(model, store: PatchStore, workspaces: dict[str, Workspace], t
         flagged = flagged_functions(ws_of(state), state.get("findings", []))
         targets = [fn for fn in untested_functions(ws_of(state)) if fn not in flagged]
         result = generate_tests(ws_of(state), model, targets, context=context)
-        return {"tests_added": result.files, "suspects": [asdict(s) for s in result.suspects],
-                "crashed_tests": result.crashed}
+        integration = generate_integration_tests(ws_of(state), model, skip=flagged)
+        api = generate_api_tests(ws_of(state), model, skip=flagged)
+        parts = {"unit": result, "integration": integration, "api": api}
+        return {"tests_added": [f for r in parts.values() for f in r.files],
+                "tests_by_kind": {kind: r.files for kind, r in parts.items()},
+                "suspects": [asdict(s) for r in parts.values() for s in r.suspects],
+                "crashed_tests": {k: n for r in parts.values() for k, n in r.crashed.items()}}
 
     def do_debug(state):
         return {"fixes": [asdict(f) for f in debug_failing_tests(ws_of(state), model)]}

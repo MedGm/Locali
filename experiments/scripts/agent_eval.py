@@ -25,8 +25,10 @@ from backend.agents.context import CONTEXTS
 from backend.agents.scoring import score_run
 from backend.agents.single import review_files
 from backend.agents.workflow import run_workflow
-from backend.patches import PatchStore
+from backend.patches import PatchStore, _git_apply
+from backend.workspace import open_workspace
 from evaluation.client import ChatClient
+from mcp_servers.tests_server import run_tests
 
 ROOT = Path(__file__).resolve().parents[2]
 DEMO = ROOT / "demo_repo"
@@ -43,6 +45,19 @@ def enclosing_functions(repo: Path, key: dict) -> dict[tuple[str, int], str]:
             if isinstance(node, ast.FunctionDef) and node.lineno <= flaw["line"] <= node.end_lineno:
                 out[(flaw["file"], flaw["line"])] = node.name
     return out
+
+
+def coverage_with_tests(store: PatchStore, patch_ids: list[str]) -> float | None:
+    """Line coverage of demo_repo with every proposed test patch applied to a fresh copy."""
+    ws = open_workspace(DEMO)
+    try:
+        for patch_id in patch_ids:
+            patch = store.get(patch_id)
+            if patch.kind == "tests" and _git_apply(ws.path, patch.diff).returncode != 0:
+                raise RuntimeError(f"test patch {patch_id} does not apply")
+        return run_tests(ws.path)["coverage_percent"]
+    finally:
+        ws.cleanup()
 
 
 def main() -> None:
@@ -97,6 +112,10 @@ def main() -> None:
     score["model_hits"] = sorted({f"{f['path']}:{f['line']}" for f in state["findings"]
                                   if f["tool"] == "model" and (f["path"], f["line"], f["category"]) in planted})
     score["tests_kept"] = len(state.get("tests_added", []))
+    score["tests_by_kind"] = {k: len(v) for k, v in state.get("tests_by_kind", {}).items()}
+    if args.mode != "single":
+        score["coverage_before"] = state["tests_before"]["coverage_percent"]
+        score["coverage_after"] = coverage_with_tests(PatchStore(args.out / "data"), state["patch_ids"])
     score["crashed_tests"] = sum(state.get("crashed_tests", {}).values())
 
     (args.out / "state.json").write_text(json.dumps(state, indent=1))

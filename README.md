@@ -34,7 +34,7 @@ approval. In red-team tests, no attack got through those controls.
 
 | What | Before → after | Section |
 |---|---|---|
-| Bug repair, HumanEvalFix (3B, default model) | 46 → **62 %** (9B: 66 %) | [3](#3-fine-tuning) |
+| Bug repair, HumanEvalFix (fine-tuned 3B) | 46 → **62 %** (9B: 66 %) | [3](#3-fine-tuning) |
 | Bugs caught by the tests it writes (3B) | 62 → **83 %** | [3](#3-fine-tuning) |
 | Refactors that keep behaviour (1.5B) | 70 → **94 %** | [3](#3-fine-tuning) |
 | HumanEval+, the cost of fine-tuning (3B) | 81 → 72 % | [3](#3-fine-tuning) |
@@ -47,8 +47,8 @@ approval. In red-team tests, no attack got through those controls.
 
 | What | Where |
 |---|---|
-| Default 3B (run D), Q4_K_M GGUF for llama.cpp | [Llama-Locali-Qwen2.5-Coder-3B-GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF) |
-| Fine-tuned 1.5B (QLoRA v2): merged model, GGUF (Q8_0, Q4_K_M), adapter | [merged](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B) · [GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF) · [adapter](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-QLoRA) |
+| Fine-tuned 3B (run D), the default model: Q4_K_M GGUF for llama.cpp | [Llama-Locali-Qwen2.5-Coder-3B-GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF) |
+| Fine-tuned 1.5B (QLoRA v2), the fast option: merged model, GGUF (Q8_0, Q4_K_M), adapter | [merged](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B) · [GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF) · [adapter](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-QLoRA) |
 | The other adapters: 1.5B QLoRA v1, 16-bit LoRA, rsLoRA, Phi-4-mini | [Llama-Locali-adapters](https://huggingface.co/MedGm/Llama-Locali-adapters) |
 | Training data, mixtures v1 to v3b | Kaggle: [v1](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v1) · [v2](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v2) · [v3](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v3) · [v3b](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v3b); v2 also on [Hugging Face](https://huggingface.co/datasets/MedGm/locali-mix-v2) |
 | Everything on Hugging Face | [huggingface.co/MedGm](https://huggingface.co/MedGm) |
@@ -351,7 +351,7 @@ all in the same direction) and is the fast option of the 1.5B. The fine-tuned mo
 also writes about a third fewer tokens than the base, which saves time and energy on its own.
 
 **Speculative decoding**: draft-free n-gram lookup is the best setting on the laptop and on a T4.
-For the default 3B on the laptop it brings a fixed bug from 501 J to 456 J; small draft models cost
+For the fine-tuned 3B (the default model) on the laptop it brings a fixed bug from 501 J to 456 J; small draft models cost
 more than they save, because on four shared CPU cores the draft has to read the long prompt too.
 
 <details>
@@ -369,7 +369,7 @@ than the base model (acceptance on repair 0.63 vs 0.87 at 8 drafted tokens), so 
 makes long drafts a net loss. Greedy speculative decoding keeps the pass counts but is not
 bit-exact: a few answers change.
 
-For the default 3B on the laptop ([3B drafts](experiments/results/speculative_3b_laptop/README.md),
+For the fine-tuned 3B on the laptop ([3B drafts](experiments/results/speculative_3b_laptop/README.md),
 all 164 HumanEvalFix problems), n-gram lookup is again the best: 456 J per fixed bug against 501 J
 without speculation. A 0.5B draft costs 516 J and 1.5B drafts 668 J, despite accepting 89 to 97 %
 of drafted tokens, because the draft has to read the long repair prompt too, on the same four

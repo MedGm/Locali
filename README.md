@@ -43,6 +43,19 @@ approval. In red-team tests, no attack got through those controls.
 | Bugs caught on demo_repo: single agent → multi-agent + tools | 0 → **4 of 5** | [5](#5-the-agents) |
 | Attacks that got through the controls | **0** of 33 | [6](#6-llm-security) |
 
+### Models and data online
+
+| What | Where |
+|---|---|
+| Fine-tuned 1.5B (QLoRA v2): merged model, GGUF (Q8_0, Q4_K_M), adapter | [merged](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B) · [GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF) · [adapter](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-QLoRA) |
+| The other adapters: 1.5B QLoRA v1, 16-bit LoRA, rsLoRA, Phi-4-mini | [Llama-Locali-adapters](https://huggingface.co/MedGm/Llama-Locali-adapters) |
+| Training data, mixtures v1 to v3b | Kaggle: [v1](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v1) · [v2](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v2) · [v3](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v3) · [v3b](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v3b); v2 also on [Hugging Face](https://huggingface.co/datasets/MedGm/locali-mix-v2) |
+| Everything on Hugging Face | [huggingface.co/MedGm](https://huggingface.co/MedGm) |
+
+The 3B adapters (runs A to E) and mixture v3s are not public: the 3B base model is under the Qwen
+research licence, and v3s contains its outputs. `training/kaggle/gguf` rebuilds the 3B model from
+an adapter.
+
 ![The brief's chain and what each stage gave](docs/diagrams/evaluation_chain.svg)
 
 ## Contents

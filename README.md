@@ -47,14 +47,15 @@ approval. In red-team tests, no attack got through those controls.
 
 | What | Where |
 |---|---|
+| Default 3B (run D), Q4_K_M GGUF for llama.cpp | [Llama-Locali-Qwen2.5-Coder-3B-GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF) |
 | Fine-tuned 1.5B (QLoRA v2): merged model, GGUF (Q8_0, Q4_K_M), adapter | [merged](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B) · [GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF) · [adapter](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-QLoRA) |
 | The other adapters: 1.5B QLoRA v1, 16-bit LoRA, rsLoRA, Phi-4-mini | [Llama-Locali-adapters](https://huggingface.co/MedGm/Llama-Locali-adapters) |
 | Training data, mixtures v1 to v3b | Kaggle: [v1](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v1) · [v2](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v2) · [v3](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v3) · [v3b](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v3b); v2 also on [Hugging Face](https://huggingface.co/datasets/MedGm/locali-mix-v2) |
 | Everything on Hugging Face | [huggingface.co/MedGm](https://huggingface.co/MedGm) |
 
-The 3B adapters (runs A to E) and mixture v3s are not public: the 3B base model is under the Qwen
-research licence, and v3s contains its outputs. `training/kaggle/gguf` rebuilds the 3B model from
-an adapter.
+The 3B model is under the Qwen research licence: non-commercial use only. Its adapters (runs A to
+E) and mixture v3s, which contains the 3B's own outputs, are not published; `training/kaggle/gguf`
+rebuilds a 3B model from an adapter.
 
 ![The brief's chain and what each stage gave](docs/diagrams/evaluation_chain.svg)
 
@@ -181,8 +182,8 @@ Bold is the best of the three. Repair and test generation gain significantly in 
 stays below the base (p = 0.013 for D, 0.076 for E; see "Why HumanEval+ drops" below). Run D fixes a
 bug in about 15 s on the laptop with 2.2 GB of RAM ([laptop check](experiments/results/laptop_3b_check/README.md)).
 Run E is better on repair and completion but not deployed: that needs its own GGUF build and a
-laptop energy run. The 3B's base model is under the Qwen research licence, so it is not
-redistributed; `training/kaggle/gguf` rebuilds it from the adapter.
+laptop energy run. Run D is published as a GGUF under the Qwen research licence (non-commercial),
+with the notices it requires.
 
 **The 1.5B, fast option** ([results](experiments/results/finetune_v2/README.md)), Qwen2.5-Coder-1.5B,
 % of each task, p from a paired exact McNemar test:
@@ -571,6 +572,8 @@ uv sync
 uv run python -c "from security.sandbox import ensure_image; ensure_image()"   # test sandbox
 (cd frontend && npm ci)
 cp .env.example .env    # then set the token, the keys and the path to the GGUF model
+# the default model (1.93 GB, Qwen research licence, non-commercial):
+uv run hf download MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF llama-locali-qwen2.5-coder-3b-q4_k_m.gguf --local-dir models
 ```
 
 Then, one per terminal:

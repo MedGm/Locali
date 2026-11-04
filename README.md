@@ -34,14 +34,14 @@ approval. In red-team tests, no attack got through those controls.
 
 | What | Before → after | Section |
 |---|---|---|
-| Bug repair, HumanEvalFix (fine-tuned 3B) | 46 → **62 %** (9B: 66 %) | [3](#3-fine-tuning) |
-| Bugs caught by the tests it writes (3B) | 62 → **83 %** | [3](#3-fine-tuning) |
-| Refactors that keep behaviour (1.5B) | 70 → **94 %** | [3](#3-fine-tuning) |
+| Bug repair, HumanEvalFix (fine-tuned 3B) | 46 → 62 % (9B: 66 %) | [3](#3-fine-tuning) |
+| Bugs caught by the tests it writes (3B) | 62 → 83 % | [3](#3-fine-tuning) |
+| Refactors that keep behaviour (1.5B) | 70 → 94 % | [3](#3-fine-tuning) |
 | HumanEval+, the cost of fine-tuning (3B) | 81 → 72 % | [3](#3-fine-tuning) |
-| One bug fix on the laptop (3B, 4-bit) | **~15 s**, 2.2 GB RAM, 456 J | [4](#4-performance-optimization) |
+| One bug fix on the laptop (3B, 4-bit) | ~15 s, 2.2 GB RAM, 456 J | [4](#4-performance-optimization) |
 | 8-bit vs 16-bit (1.5B) | no measurable loss, 1.8× less RAM | [4](#4-performance-optimization) |
-| Bugs caught on demo_repo: single agent → multi-agent + tools | 0 → **4 of 5** | [5](#5-the-agents) |
-| Attacks that got through the controls | **0** of 33 | [6](#6-llm-security) |
+| Bugs caught on demo_repo: single agent → multi-agent + tools | 0 → 4 of 5 | [5](#5-the-agents) |
+| Attacks that got through the controls | 0 of 33 | [6](#6-llm-security) |
 
 ### Models and data online
 
@@ -137,7 +137,8 @@ with llama.cpp) and scored afterwards on the laptop, with all generated code run
 (the one exception, repair in five other languages, is described in section 10).
 The harness was validated on reference solutions first: all ten tasks score 100 %
 ([harness validation](experiments/results/harness_validation/README.md)). Comparisons on the same
-items use paired exact McNemar tests.
+items use paired exact McNemar tests. In the score tables, **bold** marks a significant gain (p <
+0.05) and *italic* a significant loss; in speed, energy and memory tables it marks the best value.
 
 | % of each task | Qwen2.5-Coder 1.5B | Qwen3.5-2B | Phi-4-mini 3.8B | Qwen3.5-4B | Qwen3.5-9B |
 |---|---|---|---|---|---|
@@ -170,23 +171,25 @@ Two fine-tuned models are in Locali: the 3B (run D), the default since 1 Novembe
 
 | Task | Base | Run D (default) | Run E |
 |---|---|---|---|
-| Repair (HumanEvalFix) | 46.3 | 61.6 | **63.4** |
-| Tests: bugs caught | 62.2 | **82.9** | 82.3 |
-| Refactoring: behaviour kept | 86.5 | **87.7** | **87.7** |
+| Repair (HumanEvalFix) | 46.3 | **61.6** | **63.4** |
+| Tests: bugs caught | 62.2 | **82.9** | **82.3** |
+| Refactoring: behaviour kept | 86.5 | 87.7 | 87.7 |
 | Completion (infilling) | 56.4 | 62.0 | **65.6** |
-| MBPP+ | **64.7** | 64.2 | 64.2 |
-| CRUXEval-O | 42.2 | 43.4 | **43.6** |
-| HumanEval+ | **81.0** | 72.4 | 74.8 |
+| MBPP+ | 64.7 | 64.2 | 64.2 |
+| CRUXEval-O | 42.2 | 43.4 | 43.6 |
+| HumanEval+ | 81.0 | *72.4* | 74.8 |
 
-Bold is the best of the three. Repair and test generation gain significantly in both runs; HumanEval+
-stays below the base (p = 0.013 for D, 0.076 for E; see "Why HumanEval+ drops" below). Run D fixes a
+Bold: significantly better than the base; italic: significantly worse (paired exact McNemar,
+p < 0.05). Repair and test generation gain in both runs, completion in run E; HumanEval+ stays
+below the base (p = 0.013 for D, 0.076 for E; see "Why HumanEval+ drops" below). Run D fixes a
 bug in about 15 s on the laptop with 2.2 GB of RAM ([laptop check](experiments/results/laptop_3b_check/README.md)).
 Run E is better on repair and completion but not deployed: that needs its own GGUF build and a
 laptop energy run. Run D is published as a GGUF under the Qwen research licence (non-commercial),
 with the notices it requires.
 
 **The 1.5B, fast option** ([results](experiments/results/finetune_v2/README.md)), Qwen2.5-Coder-1.5B,
-% of each task, p from a paired exact McNemar test:
+% of each task, p from a paired exact McNemar test (bug detection is not bold: the second seed did
+not replicate it):
 
 | Task | Base | QLoRA v2 | p |
 |---|---|---|---|
@@ -197,7 +200,7 @@ with the notices it requires.
 | Bug detection (not replicated) | 53.0 | 65.5 | 0.0004 |
 | HumanEval+ | 65.0 | 62.0 | 0.51 |
 | CRUXEval-O (not trained) | 30.1 | 28.7 | 0.31 |
-| Held-out repair, trained format | 2.4 | **63.7** | |
+| Held-out repair, trained format | 2.4 | **63.7** | < 1e-30 |
 
 It is published on Hugging Face ([merged](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B),
 [GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF),
@@ -284,7 +287,7 @@ mutations. The untrained Qwen2.5-Coder-3B already repaired more (46.3 %) than th
 |---|---|---|---|---|
 | Benchmark prompt | 46.3 | 43.9 | **64.6** | 4e-5 |
 | Reworded prompt, same tests | 40.2 | 38.4 | **56.7** | 4e-4 |
-| 3 attempts with explained errors | 54.9 | 52.4 | **71.3** | |
+| 3 attempts with explained errors | 54.9 | 52.4 | 71.3 | not tested |
 | Docstring instead of tests | 73.8 | 59.2 | 75.0 | n.s. |
 
 The gain is in repair from failing tests, holds when the prompt is reworded, and is largest on

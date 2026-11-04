@@ -49,7 +49,20 @@ def _is_assertion(error: str) -> bool:
     return first.startswith(("assert ", "AssertionError"))
 
 
+HTTP_METHODS = ("get", "post", "put", "patch", "delete")
+
+
+def route_decorator(node: ast.FunctionDef) -> tuple[str, str] | None:
+    """(method, path) when the function is a web route, e.g. `@router.post("/orders")`."""
+    for dec in node.decorator_list:
+        if (isinstance(dec, ast.Call) and isinstance(dec.func, ast.Attribute) and dec.func.attr in HTTP_METHODS
+                and dec.args and isinstance(dec.args[0], ast.Constant) and isinstance(dec.args[0].value, str)):
+            return dec.func.attr.upper(), dec.args[0].value
+    return None
+
+
 def untested_functions(root: str | Path) -> list[tuple[str, str]]:
+    """Module-level functions no test mentions. Web route handlers are left out: they get API tests."""
     root = Path(root)
     mentioned: set[str] = set()
     for path in python_files(root):
@@ -63,7 +76,8 @@ def untested_functions(root: str | Path) -> list[tuple[str, str]]:
         if is_test_file(rel):
             continue
         for node in ast.parse(path.read_text()).body:
-            if isinstance(node, ast.FunctionDef) and node.name not in mentioned and not node.name.startswith("_"):
+            if (isinstance(node, ast.FunctionDef) and node.name not in mentioned and not node.name.startswith("_")
+                    and route_decorator(node) is None):
                 found.append((rel.as_posix(), node.name))
     return found
 
@@ -108,25 +122,35 @@ def generate_tests(root: str | Path, model: Model, functions: list[tuple[str, st
             continue
         if not names:
             continue
-        out_rel = f"{test_dir}test_locali_{func}.py"
-        out = root / out_rel
-        out.write_text(tests)
-        failed = {t.split("::")[-1] for t in run_tests(root, [out_rel])["failed"]}
-        for name in sorted(failed):
-            _, error = failing_test_details(run_tests(root, [f"{out_rel}::{name}"])["output_tail"])
-            if _is_assertion(error):
-                result.suspects.append(Suspect(rel, func, _segment(tests, name), error))
-            else:
-                key = f"{rel}::{func}"
-                result.crashed[key] = result.crashed.get(key, 0) + 1
-        kept = _drop_functions(tests, failed)
-        if any(s.file == rel and s.function == func for s in result.suspects) or not _test_names(kept):
-            out.unlink()
-            continue
-        out.write_text(kept.rstrip("\n") + "\n")
-        check = run_tests(root, [out_rel])
-        if check["failed"] or check["errors"] or check["timed_out"]:  # flaky or broken: keep nothing
-            out.unlink()
-            continue
-        result.files.append(out_rel)
+        keep_passing_tests(root, f"{test_dir}test_locali_{func}.py", tests, rel, func, result)
     return result
+
+
+def keep_passing_tests(root: Path, out_rel: str, tests: str, rel: str, target: str, result: TestgenResult) -> bool:
+    """Run a generated test file in the sandbox and keep what may be kept, for every kind of test.
+
+    A failed assertion makes `target` (a function of `rel`) a suspect; a crash is only counted; a
+    target with a suspect keeps none of its tests; the rest is re-run and kept only if it passes.
+    Returns True when a file is kept (and added to result.files)."""
+    out = root / out_rel
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(tests)
+    failed = {t.split("::")[-1] for t in run_tests(root, [out_rel])["failed"]}
+    for name in sorted(failed):
+        _, error = failing_test_details(run_tests(root, [f"{out_rel}::{name}"])["output_tail"])
+        if _is_assertion(error):
+            result.suspects.append(Suspect(rel, target, _segment(tests, name), error))
+        else:
+            key = f"{rel}::{target}"
+            result.crashed[key] = result.crashed.get(key, 0) + 1
+    kept = _drop_functions(tests, failed)
+    if any(s.file == rel and s.function == target for s in result.suspects) or not _test_names(kept):
+        out.unlink()
+        return False
+    out.write_text(kept.rstrip("\n") + "\n")
+    check = run_tests(root, [out_rel])
+    if check["failed"] or check["errors"] or check["timed_out"]:  # flaky or broken: keep nothing
+        out.unlink()
+        return False
+    result.files.append(out_rel)
+    return True

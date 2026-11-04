@@ -4,6 +4,9 @@ FROM python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1
 
 # numpy: EvalPlus benchmark tests compare floats with np.allclose.
 RUN pip install --no-cache-dir pytest==9.1.1 pytest-cov==7.1.0 coverage==7.16.1 numpy==2.5.3
+# FastAPI and httpx: API tests of the repository under review use TestClient.
+RUN pip install --no-cache-dir fastapi==0.141.1 starlette==1.6.0 httpx==0.28.1 pydantic==2.13.5 \
+    pydantic-core==2.46.5 anyio==4.15.1
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1

@@ -29,6 +29,13 @@ def test_untested_functions_are_the_repo_functions_no_test_mentions():
     assert not any(path.startswith("tests/") for path, _ in found)
 
 
+def test_route_handlers_are_not_unit_targets():
+    # they get API tests (backend.agents.flowtests); the app factory is an ordinary function
+    found = untested_functions(DEMO)
+    assert ("tinyshop/api.py", "place_order") not in found
+    assert ("tinyshop/api.py", "create_app") in found
+
+
 @needs_docker
 def test_failing_tests_become_suspects_and_their_function_keeps_no_tests():
     # A function with a suspected bug is not a trustworthy baseline: its passing tests would record

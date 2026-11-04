@@ -19,6 +19,7 @@ python -m tinyshop.cli add-product shop.db "Olive oil 1L" 8.50 --stock 12
 - `tinyshop/auth.py` staff accounts
 - `tinyshop/reports.py` daily sales report
 - `tinyshop/cli.py` command line
+- `tinyshop/api.py` HTTP API for the tablet app (FastAPI)
 
 Tests: `pytest`
 

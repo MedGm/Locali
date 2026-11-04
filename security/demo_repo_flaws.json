@@ -43,6 +43,14 @@
       "caught_by_tests": false
     },
     {
+      "id": "bug-oversell",
+      "kind": "bug",
+      "file": "tinyshop/api.py",
+      "line": 50,
+      "summary": "place_order never checks the stock: an order larger than the stock is accepted and the stock goes negative",
+      "caught_by_tests": false
+    },
+    {
       "id": "vuln-sql-injection",
       "kind": "security",
       "file": "tinyshop/db.py",

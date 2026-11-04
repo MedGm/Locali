@@ -21,9 +21,8 @@ def fake_model(messages):
         name, module = re.search(r"for `(\w+)` in `([\w.]+)`", prompt).groups()
         return f"```python\nfrom {module} import {name}\n\n\ndef test_{name}_integration():\n    assert callable({name})\n```"
     if prompt.startswith("Write pytest tests for the HTTP endpoint"):
-        module, factory = re.search(r"app in `([\w.]+)`. Build the app with `from [\w.]+ import (\w+)`", prompt).groups()
-        return (f"```python\nfrom {module} import {factory}\n\n\ndef test_app_builds(tmp_path):\n"
-                f"    assert {factory}(tmp_path / 'test.db') is not None\n```")
+        # the agent adds the `client` fixture from the prompt when the answer does not define it
+        return "```python\ndef test_app_answers(client):\n    assert client.get('/reports/2026-11-04').status_code == 200\n```"
     if prompt.startswith("The following Python function has a bug"):
         return GOOD_FIX
     if prompt.startswith("Write a one-line docstring"):

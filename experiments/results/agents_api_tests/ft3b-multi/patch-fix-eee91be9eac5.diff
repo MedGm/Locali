@@ -1,0 +1,13 @@
+diff --git a/tinyshop/pricing.py b/tinyshop/pricing.py
+index cfc5961..bc546a5 100644
+--- a/tinyshop/pricing.py
++++ b/tinyshop/pricing.py
+@@ -13,7 +13,7 @@ def cart_total(lines):
+ def apply_discount(total, percent):
+     if not 0 <= percent <= 100:
+         raise ValueError("percent must be between 0 and 100")
+-    return round(total * (1 + percent / 100), 2)
++    return round(total * (1 - percent / 100), 2)
+ 
+ 
+ def with_vat(total):

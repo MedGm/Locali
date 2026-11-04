@@ -1,0 +1,12 @@
+diff --git a/tinyshop/api.py b/tinyshop/api.py
+index 15f8892..27a2150 100644
+--- a/tinyshop/api.py
++++ b/tinyshop/api.py
+@@ -20,6 +20,7 @@ class Order(BaseModel):
+ 
+ 
+ def get_conn(request: Request):
++    """This function establishes a database connection using the provided request object and yields it for use in a `with` statement. It ensures that the connection is closed after use, even if an exception """
+     conn = db.connect(request.app.state.db_path)
+     try:
+         yield conn

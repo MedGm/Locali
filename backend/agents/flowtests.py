@@ -132,20 +132,33 @@ def integration_prompt(module: str, func: str, code: str) -> str:
         f"Write pytest integration tests for `{func}` in `{module}` together with the project functions "
         "it calls, shown below. Use the real functions, no mocks. Import from the real modules, for "
         f"example `from {module} import {func}`. If the code needs a database or files, create them "
-        "under pytest's `tmp_path`. Test the behaviour the docstrings and names describe. "
+        "with the project's own functions under pytest's `tmp_path` (take `tmp_path` as the test's "
+        "argument); there are no other fixtures. Test the behaviour the docstrings and names describe. "
         "Return a single Python test file in a markdown code block.\n\n"
         f"```python\n{code}```"
+    )
+
+
+def api_fixture(module: str, factory: str) -> str:
+    """The `client` fixture every API test uses: the app on a fresh temporary database."""
+    return (
+        "import pytest\nfrom fastapi.testclient import TestClient\n\n"
+        f"from {module} import {factory}\n\n\n"
+        "@pytest.fixture\ndef client(tmp_path):\n"
+        f'    return TestClient({factory}(tmp_path / "test.db"))\n'
     )
 
 
 def api_prompt(module: str, factory: str, route: Route, code: str) -> str:
     return (
         f"Write pytest tests for the HTTP endpoint `{route.method} {route.path}` of the FastAPI app in "
-        f"`{module}`. Build the app with `from {module} import {factory}`, "
-        f'`app = {factory}(tmp_path / "test.db")` and call it through '
-        "`fastapi.testclient.TestClient(app)`; no running server. Create the data you need through "
-        "the API. Test the behaviour the endpoint's docstring describes, including its error "
-        "responses. Return a single Python test file in a markdown code block.\n\n"
+        f"`{module}` (code below). Start the test file with this fixture and take `client` as the "
+        "argument of every test, for example `def test_something(client):`; it is the app on an empty "
+        "temporary database, and nothing else may create the app.\n\n"
+        f"```python\n{api_fixture(module, factory)}```\n\n"
+        "Create the data you need through the API. Test the behaviour the endpoint's docstring "
+        "describes, including its error responses. Return a single Python test file in a markdown "
+        "code block.\n\n"
         f"```python\n{code}```"
     )
 
@@ -174,7 +187,9 @@ def generate_integration_tests(root: Path, model: Model, skip: set[tuple[str, st
     result = TestgenResult()
     for rel, func in integration_targets(root, skip):
         parts = [f"# --- {rel}\n{_source(root, rel, func)}"]
-        parts += [f"# --- {f}\n{_source(root, f, n)}" for f, n in sorted(called_project_functions(root, rel, func))]
+        # the whole module of each callee, so the model also sees how to create what it needs
+        parts += [f"# --- {f}\n{(root / f).read_text().rstrip()}"
+                  for f in sorted({f for f, _ in called_project_functions(root, rel, func)} - {rel})]
         tests = _ask(model, integration_prompt(_dotted(rel), func, "\n\n".join(parts) + "\n"))
         if tests:
             keep_passing_tests(root, f"{_test_dir(root)}test_locali_integration_{func}.py", tests, rel, func, result)
@@ -190,6 +205,8 @@ def generate_api_tests(root: Path, model: Model, skip: set[tuple[str, str]]) -> 
             continue
         code = (root / route.file).read_text().rstrip("\n") + "\n"
         tests = _ask(model, api_prompt(_dotted(route.file), factory, route, code))
+        if tests and "def client(" not in tests:
+            tests = api_fixture(_dotted(route.file), factory) + "\n\n" + tests
         if tests:
             out = f"{_test_dir(root)}test_locali_api_{route.function}.py"
             keep_passing_tests(root, out, tests, route.file, route.function, result)

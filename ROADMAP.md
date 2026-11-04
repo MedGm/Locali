@@ -97,8 +97,9 @@ Design: [docs/research-design.md](docs/research-design.md)
   (runs A–E); run D is the default model since 1 November (repair 46 → 62 %); draft-model
   speculative decoding for the 3B on the laptop; a four-step study of why fine-tuning costs
   HumanEval+ (`experiments/results/capability_study/`). README updated with all of it.
-- Gaps against the brief: generation of integration and API tests (only unit tests today); MCP
-  servers for documentation and an issue tracker; a code-explanation task in the benchmark.
+- Gaps against the brief: MCP servers for documentation and an issue tracker; a code-explanation
+  task in the benchmark. Integration and API test generation: done 4 November
+  (`experiments/results/agents_api_tests`).
 - Open: those gaps, then the 5-minute demo video, recorded last.
 
 ## Cut order if behind

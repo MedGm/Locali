@@ -1,0 +1,12 @@
+diff --git a/tinyshop/reports.py b/tinyshop/reports.py
+index 1d198b1..02e4f9f 100644
+--- a/tinyshop/reports.py
++++ b/tinyshop/reports.py
+@@ -12,6 +12,7 @@ def daily_report(conn, day):
+ 
+ 
+ def best_seller(conn, day):
++    """This function calculates the best-selling product on a given day by iterating through the sales records for that day, counting the quantity of each product sold, and returning the product with the hig"""
+     counts = {}
+     for name, qty, _ in sales_for_day(conn, day):
+         counts[name] = counts.get(name, 0) + qty

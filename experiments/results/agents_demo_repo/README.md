@@ -3,6 +3,10 @@
 The full workflow (`backend/agents/workflow.py`) runs on `demo_repo/` and is scored against the
 planted-flaw answer key (`security/demo_repo_flaws.json`) with `experiments/scripts/agent_eval.py`.
 
+These runs used `demo_repo` as it was up to commit `63240ee` (5 planted bugs). Since then it has
+an HTTP API with a sixth planted bug, and the agent also writes integration and API tests; that
+version is measured in `../agents_api_tests`.
+
 ## After the review of the first patch (det-multi-split, 2026-10-16)
 
 Reviewing the first real patch showed that 3 of its 6 generated test files locked in a planted

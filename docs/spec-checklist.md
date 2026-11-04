@@ -24,7 +24,7 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 | C6 | Measure latency, throughput, memory, cost | Shared metrics logger in harness | `evaluation/` | W1–2 | wip (tokens, TTFT, decode tok/s, CPU + GPU energy, training peak memory done; inference memory, cost todo) |
 | C7 | Code quality, maintainability, complexity, vulnerabilities, standards, technical debt | Ruff, Radon, Bandit, Semgrep + LLM summary | `backend/` | W3–5 | wip (tools in `backend/analysis.py`; LLM summary todo) |
 | C8 | Static-analysis tool integration | Same tools exposed via MCP | `mcp_servers/` | W6–7 | done (`analysis_server`: Ruff, Bandit, Radon, Semgrep, secrets) |
-| C9 | Generate unit, integration, API tests | Test-generation agent on `demo_repo/` | `backend/` | W8–10 | todo |
+| C9 | Generate unit, integration, API tests | Test-generation agent on `demo_repo/` | `backend/agents/testgen.py`, `backend/agents/flowtests.py` | W8–10 | done (`experiments/results/agents_api_tests`) |
 | C10 | Test coverage analysis | pytest-cov before/after | `backend/` | W8–10 | todo |
 | C11 | Regression tests | Tests generated for fixed bugs, kept in suite | `backend/` | W8–10 | todo |
 | C12 | Detect failing tests, propose fixes | Debug loop, max 3 attempts, human approval | `backend/` | W8–10 | todo |

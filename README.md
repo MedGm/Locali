@@ -425,7 +425,8 @@ the static analysis (`mcp_servers/`).
 
 On `demo_repo/`, a small shop application with 5 planted bugs, 5 vulnerabilities, a hard-coded key,
 a typosquatted dependency and two prompt injections ([answer key](security/demo_repo_flaws.json),
-[runs](experiments/results/agents_demo_repo/README.md)):
+[runs](experiments/results/agents_demo_repo/README.md); these runs are from before the shop got
+its HTTP API, see below):
 
 | | Single agent (one review per file) | Multi-agent, no tools | Multi-agent + tools |
 |---|---|---|---|
@@ -440,6 +441,19 @@ bug at the first attempt. Security comes from the tools: they found every vulner
 secret with no false positives, the model alone a different 3 of 5 each time. Reviewing the first
 real patch led to three changes: no tests for functions the tools flag as insecure, no kept tests
 for functions with a suspected bug, and one patch per change so each can be accepted alone.
+
+**Unit, integration and API tests** ([results](experiments/results/agents_api_tests/README.md)).
+The test step writes three kinds of tests: unit tests for one function, integration tests for a
+function together with the project functions it calls (a real temporary database, no mocks), and
+API tests for each route of a FastAPI app, through `TestClient` on an empty temporary database.
+They follow the same rules: only passing tests are kept, and a failing one is reported as a
+suspected bug. For this, `demo_repo` got a small HTTP API with a sixth planted bug: an order larger
+than the stock is accepted, although the endpoint's docstring says it is refused. With the
+fine-tuned 3B, the agent's API test for that endpoint expected the refusal, failed, and reported
+the bug (`assert 201 == 409`); the kept tests raised line coverage from 27.7 to 45.0 %. No API test
+was kept, because every API answer also had a wrong expectation somewhere, and 4 of the 8 suspected
+functions were not where a bug was planted. The first attempt failed completely (the model built the
+app outside the temporary database); a ready-made test fixture in the prompt fixed that.
 
 ## 6. LLM security
 

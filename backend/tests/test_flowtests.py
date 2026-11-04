@@ -129,3 +129,12 @@ def test_passing_integration_test_is_kept_under_its_kind_name():
         assert (ws.path / "tests/test_locali_integration_daily_report.py").exists()
     finally:
         ws.cleanup()
+
+
+def test_api_prompt_gives_the_client_fixture_on_a_temporary_database():
+    from backend.agents.flowtests import Route, api_prompt
+
+    prompt = api_prompt("tinyshop.api", "create_app", Route("tinyshop/api.py", "place_order", "POST", "/orders"), "code\n")
+    assert "def client(tmp_path):" in prompt
+    assert 'TestClient(create_app(tmp_path / "test.db"))' in prompt
+    assert "`POST /orders`" in prompt

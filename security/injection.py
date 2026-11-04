@@ -67,9 +67,16 @@ def scan(root: str | Path) -> list[Finding]:
         except (UnicodeDecodeError, OSError):
             continue
         rel = path.relative_to(root).as_posix()
-        for n, line in enumerate(lines, start=1):
-            for rule, (desc, pattern) in _COMPILED.items():
-                if pattern.search(line):
-                    excerpt = line.strip()[:100]
-                    found.append(Finding("injection", rule, rel, n, "security", "medium", f"{desc}: {excerpt}"))
+        for n, rule, message in scan_lines(lines):
+            found.append(Finding("injection", rule, rel, n, "security", "medium", message))
     return found
+
+
+def scan_lines(lines: list[str]) -> list[tuple[int, str, str]]:
+    """(line number, rule, message) for each line that looks like an injection attempt."""
+    hits = []
+    for n, line in enumerate(lines, start=1):
+        for rule, (desc, pattern) in _COMPILED.items():
+            if pattern.search(line):
+                hits.append((n, rule, f"{desc}: {line.strip()[:100]}"))
+    return hits

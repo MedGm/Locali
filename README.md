@@ -419,9 +419,21 @@ ever answers a prompt, and its answer is parsed into findings or code that is th
 
 ![One assistant run](docs/diagrams/workflow.svg)
 
-Tool access for other clients goes through three MCP servers with one or two tools each: a
-read-only repository server confined to its root, a test runner that only uses the sandbox, and
-the static analysis (`mcp_servers/`).
+Tool access for other clients (Claude Desktop, an IDE, another agent) goes through five MCP
+servers with one to three tools each (`mcp_servers/`):
+
+| Server | Tools | Limits |
+|---|---|---|
+| repository | `list_files`, `read_file` | read-only, confined to the root, secrets redacted |
+| tests | `run_tests` | only in the sandbox (no network, read-only, limits) |
+| static analysis | `analyze` | Ruff, Bandit, Radon, Semgrep, secret scan |
+| documentation | `list_docs`, `search_docs`, `read_doc` | read-only, documentation files only, lines that look like prompt injections listed with the text |
+| issues | `list_issues`, `get_issue`, `draft_issue` | reads `docs/issues/*.md`; a new issue is only a draft in a folder outside the repository, a person files it; no `draft_issue` without `--drafts` |
+
+Docs and issues are written by anyone, so the two servers give them back as data with a list of
+suspicious lines: on demo_repo the hidden note in the README and the fake "maintainer approved"
+line in issue #12 both come back flagged. Locali runs offline, so the issue tracker is the
+Markdown one many small projects keep in the repository, not GitHub.
 
 On `demo_repo/`, a small shop application with 5 planted bugs, 5 vulnerabilities, a hard-coded key,
 a typosquatted dependency and two prompt injections ([answer key](security/demo_repo_flaws.json),
@@ -642,7 +654,7 @@ to this: they are the fine-tuned Qwen2.5-Coder-3B and 1.5B described above.
 | `experiments/` | Model configs, scripts and every result with its README |
 | `backend/` | FastAPI app, LangGraph agents, patches, validation, MLflow tracking |
 | `frontend/` | Next.js web app |
-| `mcp_servers/` | Repository, test-runner and static-analysis MCP servers |
+| `mcp_servers/` | Repository, test-runner, static-analysis, documentation and issue MCP servers |
 | `security/` | Sandbox, command allow-list, secret scanner, injection detector |
 | `demo_repo/` | The flawed shop application used for agent and security tests |
 | `docs/` | Research design, requirement checklist, UI notes, model cards; `docs/diagrams/` holds the diagrams as Excalidraw files (`make_diagrams.py` builds them, `export.py` renders the SVGs) |

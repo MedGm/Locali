@@ -6,7 +6,7 @@ evaluation.run.two_step). This job only generates; the answers are scored afterw
 Docker sandbox with evaluation.rescore.
 
 GPU 0: Qwen2.5-Coder-3B with the run D and E adapters. GPU 1: Qwen2.5-Coder-1.5B and the merged
-1.5B fine-tune, half the memory each. Greedy, 768 tokens per call, vLLM's generation_config
+1.5B fine-tune, one after the other. Greedy, 768 tokens per call, vLLM's generation_config
 defaults as in the other Kaggle runs. PILOT=1: 5 problems.
 """
 
@@ -31,8 +31,8 @@ LIMIT = 5 if os.environ.get("PILOT") == "1" else None
 ADAPTERS = ("mixv3b-diag", "mixv3s")
 SERVERS = {  # name: (repo, revision, gpu, port, memory share)
     "3b": ("Qwen/Qwen2.5-Coder-3B-Instruct", "488639f1ff808d1d3d0ba301aef8c11461451ec5", 0, 8000, 0.90),
-    "1.5b-ft": ("MedGm/Llama-Locali-Qwen2.5-Coder-1.5B", "a1b0b1189d2050dd20013371fc327362ea6b2964", 1, 8001, 0.44),
-    "1.5b": ("Qwen/Qwen2.5-Coder-1.5B-Instruct", "2e1fd397ee46e1388853d2af2c993145b0f1098a", 1, 8002, 0.44),
+    "1.5b-ft": ("MedGm/Llama-Locali-Qwen2.5-Coder-1.5B", "a1b0b1189d2050dd20013371fc327362ea6b2964", 1, 8001, 0.90),
+    "1.5b": ("Qwen/Qwen2.5-Coder-1.5B-Instruct", "2e1fd397ee46e1388853d2af2c993145b0f1098a", 1, 8002, 0.90),
 }
 MODELS = {  # model id: (server, served name)
     "qwen2.5-coder-3b": ("3b", "local"),
@@ -126,25 +126,38 @@ def evaluate(model_id: str) -> dict:
     return summary
 
 
+def stop(server: subprocess.Popen) -> None:
+    server.terminate()
+    try:
+        server.wait(timeout=120)
+    except subprocess.TimeoutExpired:
+        server.kill()
+
+
+def run_gpu(gpu: int, adapters: dict[str, Path]) -> None:
+    """The servers of one GPU one after the other: two vLLM engines starting together on one T4
+    both failed to find memory for their cache."""
+    for name, (*_, server_gpu, port, _share) in SERVERS.items():
+        if server_gpu != gpu:
+            continue
+        server = start(name, adapters)
+        try:
+            if not wait_healthy(port, server):
+                raise RuntimeError(f"server {name} failed to start, see logs/vllm-{name}.log")
+            log(f"server {name} ready")
+            models = [m for m, (srv, _) in MODELS.items() if srv == name]
+            with ThreadPoolExecutor(max_workers=len(models)) as pool:
+                list(pool.map(evaluate, models))
+        finally:
+            stop(server)
+
+
 def main() -> None:
     setup()
     adapters = adapter_paths()
-    servers = {name: start(name, adapters) for name in SERVERS}
-    try:
-        for name, server in servers.items():
-            if not wait_healthy(SERVERS[name][3], server):
-                raise RuntimeError(f"server {name} failed to start, see logs/vllm-{name}.log")
-        log("servers ready")
-        with ThreadPoolExecutor(max_workers=len(MODELS)) as pool:
-            list(pool.map(evaluate, MODELS))
-    finally:
-        for server in servers.values():
-            server.terminate()
-        for server in servers.values():
-            try:
-                server.wait(timeout=120)
-            except subprocess.TimeoutExpired:
-                server.kill()
+    gpus = sorted({gpu for _, _, gpu, _, _ in SERVERS.values()})
+    with ThreadPoolExecutor(max_workers=len(gpus)) as pool:
+        list(pool.map(lambda g: run_gpu(g, adapters), gpus))
     (WORK / "done.json").write_text(json.dumps({"models": list(MODELS)}))
     log("all done")
 

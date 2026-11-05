@@ -218,13 +218,19 @@ Training one adapter takes about two hours on Kaggle's free GPU.
 
 ![Base vs fine-tuned 3B](docs/figures/fine_tuning.svg)
 
-| % of problems | 3B base | Run D | Verdict |
-|---|---|---|---|
-| Fix bugs, benchmark (HumanEvalFix, 164) | 46 | 62 | better (p = 0.0004) |
-| Fix bugs, real bugs (ConDefects, 382) | 12 | 15 | not proven (p = 0.24) |
-| Tests that catch the bug (164, 2,048 tokens) | 60 | 83 | better (p = 1e-6) |
-| Write code (HumanEval+, 163) | 81 | 72 | lower, not proven after correction |
-| Explain code (HumanEvalExplain, 164) | 68 | 66 | same |
+| % of problems | Problems | 3B base | Run D | Verdict |
+|---|---|---|---|---|
+| Fix bugs (HumanEvalFix) | 164 | 46.3 | **61.6** | better, p = 0.0004 |
+| Fix real bugs (ConDefects) | 382 | 12.3 | 14.9 | no clear difference, p = 0.24 |
+| Write tests: bugs caught (2,048 tokens) | 164 | 60.4 | **82.9** | better, p = 1e-6 |
+| Write code (HumanEval+) | 163 | 81.0 | 72.4 | no clear difference after correction, p = 0.088 |
+| Write code (MBPP+) | 377 | 64.7 | 64.2 | no clear difference |
+| Predict what code returns (CRUXEval-O) | 800 | 42.2 | 43.4 | no clear difference |
+| Explain code (HumanEvalExplain) | 164 | 68.3 | 57.9 | no clear difference after correction, p = 0.061 |
+
+The first three rows are what the training was for (each tested against its own small family);
+the other four are general skills, held to a stricter bar because there are more of them (Holm's
+correction, section 5).
 
 Three things to read in this table:
 
@@ -238,10 +244,13 @@ Three things to read in this table:
   off before the end in 97 of 164 answers, even with almost three times the room; often it repeats
   itself. Run D writes short, complete files. Where the base does finish, its tests catch the bug a
   little more often (93 vs 86 %) ([tests](experiments/results/testgen2048_t4/README.md)).
-- **Fine-tuning costs some code writing.** Run D writes worse code from a description (81 → 72 %).
-  The knowledge is still there: given 20 tries, it solves as many problems as the base
-  ([why](experiments/results/capability_study/)). The explanation row uses the base to write the
-  code from each model's explanation, so it measures the explanation alone
+- **Fine-tuning may cost some code writing.** Run D scores lower on HumanEval+ (81 → 72 %) and on
+  explaining code (68 → 58 %), but neither drop passes the stricter bar. The knowledge is still
+  there: given 20 tries, run D solves as many HumanEval+ problems as the base
+  ([why](experiments/results/capability_study/)). Explaining code is scored by having the model
+  rewrite the function from its own explanation, so it also needs code writing; when the base
+  writes the code from run D's explanations instead, they score 65.9 against the base's 68.3, so
+  the explanations themselves are about as good
   ([explanation](experiments/results/explain_t4/README.md)).
 
 **The 1.5B, the fast option** ([results](experiments/results/finetune_v2/README.md)):

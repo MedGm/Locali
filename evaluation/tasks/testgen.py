@@ -77,11 +77,13 @@ class TestGenTask:
         full = _run_tests(correct, tests, False, eval_timeout_s)
         collected = full.passed + full.failed + full.errors
         kept = full.passed_tests
-        coverage, caught = None, False
+        coverage, caught, by_timeout = None, False, False
         if kept:
             coverage = _run_tests(correct, tests, "solution", eval_timeout_s, select=kept).coverage_percent
             on_buggy = _run_tests(buggy, tests, False, eval_timeout_s, select=kept)
             caught = on_buggy.timed_out or on_buggy.passed < len(kept) or bool(on_buggy.failed or on_buggy.errors)
+            # A hang counts as a catch: the kept tests all finished on the correct code, with the same limit.
+            by_timeout = on_buggy.timed_out
         if not kept:
             status = "no_valid_tests"
         else:
@@ -90,6 +92,8 @@ class TestGenTask:
             "status": status,
             "strict_valid": bool(kept) and not full.timed_out and full.failed == 0 and full.errors == 0,
             "caught_bug": caught,
+            "caught_by_timeout": by_timeout,
+            "correct_suite_s": full.duration_s,
             "tests_collected": collected,
             "tests_passed_on_correct": len(kept),
             "coverage_percent": coverage,

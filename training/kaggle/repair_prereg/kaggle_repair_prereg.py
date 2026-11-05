@@ -88,7 +88,7 @@ def adapter_paths() -> dict[str, Path]:
 def start(name: str, adapters: dict[str, Path]) -> subprocess.Popen:
     repo, revision, gpu, port, share = SERVERS[name]
     cmd = [str(VLLM_VENV / "bin" / "vllm"), "serve", repo, "--revision", revision, "--served-model-name", "local",
-           "--port", str(port), "--dtype", "half", "--max-model-len", "8192", "--gpu-memory-utilization", str(share),
+           "--port", str(port), "--dtype", "half", "--max-model-len", "16384", "--gpu-memory-utilization", str(share),
            "--enforce-eager", "--seed", "3407"]
     if name == "3b" and adapters:
         cmd += ["--enable-lora", "--max-lora-rank", "16", "--max-loras", "3",

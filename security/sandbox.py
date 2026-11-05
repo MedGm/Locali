@@ -47,9 +47,11 @@ def run_pytest(
     cpus: str = "1",
     coverage: bool | str = True,
     select: list[str] | None = None,
+    data: Path | None = None,
 ) -> SandboxResult:
     """coverage: False, True (whole project, lines), or a module name (that module, lines + branches).
     select: pytest node ids to run instead of the whole project.
+    data: a folder mounted read-only at /data, for test data too large to copy (it is not copied).
     """
     ensure_image()
     name = f"locali-sbx-{uuid.uuid4().hex[:12]}"
@@ -75,6 +77,7 @@ def run_pytest(
             "-e", "COVERAGE_FILE=/tmp/.coverage",
             "-v", f"{work}:/work:ro",
             "-v", f"{out}:/out:rw",
+            *(["-v", f"{data.resolve()}:/data:ro"] if data else []),
             "-w", "/work",
             IMAGE,
             "python", "-m", "pytest", "-q", "-p", "no:cacheprovider", "--junitxml=/out/junit.xml",

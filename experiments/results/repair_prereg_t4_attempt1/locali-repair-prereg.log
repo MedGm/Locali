@@ -1,0 +1,109 @@
+[{"stream_name":"stderr","time":8.074229582,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.074291035,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.074298253,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.074302648,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.680197182,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.680227414,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.68023546,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.680237981,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.813887067,"data":"Writing /kaggle/working/kaggle_repair_prereg.py\n"}
+,{"stream_name":"stdout","time":77.901477533,"data":"[17:14:24] setup done\n"}
+,{"stream_name":"stdout","time":228.495027501,"data":"[17:16:54] server 1.5b-ft ready\n"}
+,{"stream_name":"stdout","time":258.497852323,"data":"[17:17:24] server 3b ready\n"}
+,{"stream_name":"stdout","time":567.848016311,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stdout","time":567.850015124,"data":"  File \"/kaggle/working/kaggle_repair_prereg.py\", line 184, in \u003cmodule\u003e\n"}
+,{"stream_name":"stdout","time":567.85092632,"data":"    main()\n"}
+,{"stream_name":"stdout","time":567.851912947,"data":"    ~~~~^^\n"}
+,{"stream_name":"stdout","time":567.852901215,"data":"  File \"/kaggle/working/kaggle_repair_prereg.py\", line 178, in main\n"}
+,{"stream_name":"stdout","time":567.853896985,"data":"    list(pool.map(lambda g: run_gpu(g, adapters), gpus))\n"}
+,{"stream_name":"stdout","time":567.854975631,"data":"    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.855955333,"data":"  File \"/usr/lib/python3.13/concurrent/futures/_base.py\", line 625, in result_iterator\n"}
+,{"stream_name":"stdout","time":567.856960263,"data":"    yield _result_or_cancel(fs.pop())\n"}
+,{"stream_name":"stdout","time":567.858014407,"data":"          ~~~~~~~~~~~~~~~~~^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.858989374,"data":"  File \"/usr/lib/python3.13/concurrent/futures/_base.py\", line 318, in _result_or_cancel\n"}
+,{"stream_name":"stdout","time":567.859999363,"data":"    return fut.result(timeout)\n"}
+,{"stream_name":"stdout","time":567.860988364,"data":"           ~~~~~~~~~~^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.861963336,"data":"  File \"/usr/lib/python3.13/concurrent/futures/_base.py\", line 460, in result\n"}
+,{"stream_name":"stdout","time":567.862962943,"data":"    return self.__get_result()\n"}
+,{"stream_name":"stdout","time":567.863913889,"data":"           ~~~~~~~~~~~~~~~~~^^\n"}
+,{"stream_name":"stdout","time":567.864957102,"data":"  File \"/usr/lib/python3.13/concurrent/futures/_base.py\", line 402, in __get_result\n"}
+,{"stream_name":"stdout","time":567.86602347,"data":"    raise self._exception\n"}
+,{"stream_name":"stdout","time":567.866967039,"data":"  File \"/usr/lib/python3.13/concurrent/futures/thread.py\", line 59, in run\n"}
+,{"stream_name":"stdout","time":567.867996551,"data":"    result = self.fn(*self.args, **self.kwargs)\n"}
+,{"stream_name":"stdout","time":567.868888349,"data":"  File \"/kaggle/working/kaggle_repair_prereg.py\", line 178, in \u003clambda\u003e\n"}
+,{"stream_name":"stdout","time":567.869587976,"data":"    list(pool.map(lambda g: run_gpu(g, adapters), gpus))\n"}
+,{"stream_name":"stdout","time":567.870472038,"data":"                            ~~~~~~~^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.871313014,"data":"  File \"/kaggle/working/kaggle_repair_prereg.py\", line 168, in run_gpu\n"}
+,{"stream_name":"stdout","time":567.872290505,"data":"    list(pool.map(evaluate, models))\n"}
+,{"stream_name":"stdout","time":567.873259409,"data":"    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.874273707,"data":"  File \"/usr/lib/python3.13/concurrent/futures/_base.py\", line 625, in result_iterator\n"}
+,{"stream_name":"stdout","time":567.875217546,"data":"    yield _result_or_cancel(fs.pop())\n"}
+,{"stream_name":"stdout","time":567.87628093,"data":"          ~~~~~~~~~~~~~~~~~^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.877304323,"data":"  File \"/usr/lib/python3.13/concurrent/futures/_base.py\", line 318, in _result_or_cancel\n"}
+,{"stream_name":"stdout","time":567.878300456,"data":"    return fut.result(timeout)\n"}
+,{"stream_name":"stdout","time":567.879352802,"data":"           ~~~~~~~~~~^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.880323711,"data":"  File \"/usr/lib/python3.13/concurrent/futures/_base.py\", line 460, in result\n"}
+,{"stream_name":"stdout","time":567.881311169,"data":"    return self.__get_result()\n"}
+,{"stream_name":"stdout","time":567.88238331,"data":"           ~~~~~~~~~~~~~~~~~^^\n"}
+,{"stream_name":"stdout","time":567.883298092,"data":"  File \"/usr/lib/python3.13/concurrent/futures/_base.py\", line 402, in __get_result\n"}
+,{"stream_name":"stdout","time":567.884359907,"data":"    raise self._exception\n"}
+,{"stream_name":"stdout","time":567.885289202,"data":"  File \"/usr/lib/python3.13/concurrent/futures/thread.py\", line 59, in run\n"}
+,{"stream_name":"stdout","time":567.886407193,"data":"    result = self.fn(*self.args, **self.kwargs)\n"}
+,{"stream_name":"stdout","time":567.887277658,"data":"  File \"/kaggle/working/kaggle_repair_prereg.py\", line 142, in evaluate\n"}
+,{"stream_name":"stdout","time":567.888402458,"data":"    summary = run_benchmark(config, task, task.load(), lambda item, t=task: two_step(t, item, call),\n"}
+,{"stream_name":"stdout","time":567.88940588,"data":"                            RESULTS / name / model_id)\n"}
+,{"stream_name":"stdout","time":567.890362739,"data":"  File \"/tmp/locali/evaluation/run.py\", line 169, in run_benchmark\n"}
+,{"stream_name":"stdout","time":567.891309669,"data":"    list(pool.map(solve, todo))\n"}
+,{"stream_name":"stdout","time":567.892287249,"data":"    ~~~~^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.893256423,"data":"  File \"/usr/lib/python3.13/concurrent/futures/_base.py\", line 625, in result_iterator\n"}
+,{"stream_name":"stdout","time":567.894238589,"data":"    yield _result_or_cancel(fs.pop())\n"}
+,{"stream_name":"stdout","time":567.895247975,"data":"          ~~~~~~~~~~~~~~~~~^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.896253297,"data":"  File \"/usr/lib/python3.13/concurrent/futures/_base.py\", line 318, in _result_or_cancel\n"}
+,{"stream_name":"stdout","time":567.896995638,"data":"    return fut.result(timeout)\n"}
+,{"stream_name":"stdout","time":567.897744877,"data":"           ~~~~~~~~~~^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.898494695,"data":"  File \"/usr/lib/python3.13/concurrent/futures/_base.py\", line 453, in result\n"}
+,{"stream_name":"stdout","time":567.899320165,"data":"    return self.__get_result()\n"}
+,{"stream_name":"stdout","time":567.900178671,"data":"           ~~~~~~~~~~~~~~~~~^^\n"}
+,{"stream_name":"stdout","time":567.901094754,"data":"  File \"/usr/lib/python3.13/concurrent/futures/_base.py\", line 402, in __get_result\n"}
+,{"stream_name":"stdout","time":567.901935798,"data":"    raise self._exception\n"}
+,{"stream_name":"stdout","time":567.902785177,"data":"  File \"/usr/lib/python3.13/concurrent/futures/thread.py\", line 59, in run\n"}
+,{"stream_name":"stdout","time":567.903616697,"data":"    result = self.fn(*self.args, **self.kwargs)\n"}
+,{"stream_name":"stdout","time":567.904448116,"data":"  File \"/tmp/locali/evaluation/run.py\", line 147, in solve\n"}
+,{"stream_name":"stdout","time":567.905552106,"data":"    completion = generate(item)\n"}
+,{"stream_name":"stdout","time":567.906535452,"data":"  File \"/kaggle/working/kaggle_repair_prereg.py\", line 142, in \u003clambda\u003e\n"}
+,{"stream_name":"stdout","time":567.907237364,"data":"    summary = run_benchmark(config, task, task.load(), lambda item, t=task: two_step(t, item, call),\n"}
+,{"stream_name":"stdout","time":567.908102723,"data":"                                                                            ~~~~~~~~^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.908921819,"data":"  File \"/tmp/locali/evaluation/run.py\", line 225, in two_step\n"}
+,{"stream_name":"stdout","time":567.909673459,"data":"    first = call(task.messages(item))\n"}
+,{"stream_name":"stdout","time":567.91048627,"data":"  File \"/kaggle/working/kaggle_repair_prereg.py\", line 134, in call\n"}
+,{"stream_name":"stdout","time":567.911425631,"data":"    return client.complete(messages, max_tokens=MAX_TOKENS, temperature=0.0, seed=3407)\n"}
+,{"stream_name":"stdout","time":567.912322132,"data":"           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.91318,"data":"  File \"/tmp/locali/evaluation/client.py\", line 70, in complete\n"}
+,{"stream_name":"stdout","time":567.914311369,"data":"    with urllib.request.urlopen(request, timeout=self.timeout_s) as response:\n"}
+,{"stream_name":"stdout","time":567.915124162,"data":"         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.915875707,"data":"  File \"/usr/lib/python3.13/urllib/request.py\", line 189, in urlopen\n"}
+,{"stream_name":"stdout","time":567.91658383,"data":"    return opener.open(url, data, timeout)\n"}
+,{"stream_name":"stdout","time":567.917339504,"data":"           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.918069248,"data":"  File \"/usr/lib/python3.13/urllib/request.py\", line 495, in open\n"}
+,{"stream_name":"stdout","time":567.918727783,"data":"    response = meth(req, response)\n"}
+,{"stream_name":"stdout","time":567.919425996,"data":"  File \"/usr/lib/python3.13/urllib/request.py\", line 604, in http_response\n"}
+,{"stream_name":"stdout","time":567.920133701,"data":"    response = self.parent.error(\n"}
+,{"stream_name":"stdout","time":567.920840611,"data":"        'http', request, response, code, msg, hdrs)\n"}
+,{"stream_name":"stdout","time":567.921526632,"data":"  File \"/usr/lib/python3.13/urllib/request.py\", line 533, in error\n"}
+,{"stream_name":"stdout","time":567.922261658,"data":"    return self._call_chain(*args)\n"}
+,{"stream_name":"stdout","time":567.923003992,"data":"           ~~~~~~~~~~~~~~~~^^^^^^^\n"}
+,{"stream_name":"stdout","time":567.92371937,"data":"  File \"/usr/lib/python3.13/urllib/request.py\", line 466, in _call_chain\n"}
+,{"stream_name":"stdout","time":567.924443185,"data":"    result = func(*args)\n"}
+,{"stream_name":"stdout","time":567.925189603,"data":"  File \"/usr/lib/python3.13/urllib/request.py\", line 613, in http_error_default\n"}
+,{"stream_name":"stdout","time":567.925915247,"data":"    raise HTTPError(req.full_url, code, msg, hdrs, fp)\n"}
+,{"stream_name":"stdout","time":567.926562506,"data":"urllib.error.HTTPError: HTTP Error 400: Bad Request\n"}
+,{"stream_name":"stdout","time":567.927262811,"data":"exit code 1\n"}
+,{"stream_name":"stderr","time":570.860672392,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":570.860702523,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":571.085674007,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":571.085695914,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":571.951585138,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":572.039522421,"data":"[NbConvertApp] Writing 20234 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":574.646167291,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":575.236663753,"data":"[NbConvertApp] Writing 323782 bytes to __results__.html\n"}
+]

@@ -1,0 +1,36 @@
+[{"stream_name":"stderr","time":8.217395663,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.217445518,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.217452554,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.217456954,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.847143505,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.847174717,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.847179614,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.847183327,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":10.059182437,"data":"Writing /kaggle/working/kaggle_repair_prereg.py\n"}
+,{"stream_name":"stdout","time":336.933559658,"data":"[17:29:41] setup done\n"}
+,{"stream_name":"stdout","time":482.716730308,"data":"[17:32:06] server 1.5b-ft ready\n"}
+,{"stream_name":"stdout","time":522.713008182,"data":"[17:32:46] server 3b ready\n"}
+,{"stream_name":"stdout","time":895.134306309,"data":"[17:38:59] qwen2.5-coder-1.5b-ft-qlora-v2 condefects: 382 answers in 412s\n"}
+,{"stream_name":"stdout","time":925.633700886,"data":"[17:39:29] qwen2.5-coder-1.5b-ft-qlora-v2 quixbugs: 40 answers in 31s\n"}
+,{"stream_name":"stdout","time":991.311862303,"data":"[17:40:35] server 1.5b ready\n"}
+,{"stream_name":"stdout","time":1388.489088846,"data":"[17:47:12] qwen2.5-coder-1.5b condefects: 382 answers in 397s\n"}
+,{"stream_name":"stdout","time":1424.149291607,"data":"[17:47:48] qwen2.5-coder-1.5b quixbugs: 40 answers in 36s\n"}
+,{"stream_name":"stdout","time":3124.616625488,"data":"[18:16:08] qwen2.5-coder-3b-ft-qlora-mixv3s condefects: 382 answers in 2602s\n"}
+,{"stream_name":"stdout","time":3124.896609305,"data":"[18:16:09] qwen2.5-coder-3b-ft-qlora-mixv3b condefects: 382 answers in 2602s\n"}
+,{"stream_name":"stdout","time":3127.942989699,"data":"[18:16:12] qwen2.5-coder-3b-ft-qlora-mixv3b-diag condefects: 382 answers in 2605s\n"}
+,{"stream_name":"stdout","time":3291.824890029,"data":"[18:18:56] qwen2.5-coder-3b-ft-qlora-mixv3s quixbugs: 40 answers in 167s\n"}
+,{"stream_name":"stdout","time":3294.895897351,"data":"[18:18:59] qwen2.5-coder-3b-ft-qlora-mixv3b quixbugs: 40 answers in 170s\n"}
+,{"stream_name":"stdout","time":3301.793306393,"data":"[18:19:06] qwen2.5-coder-3b-ft-qlora-mixv3b-diag quixbugs: 40 answers in 174s\n"}
+,{"stream_name":"stdout","time":3590.964041281,"data":"[18:23:55] qwen2.5-coder-3b condefects: 382 answers in 3068s\n"}
+,{"stream_name":"stdout","time":3676.727220817,"data":"[18:25:20] qwen2.5-coder-3b quixbugs: 40 answers in 86s\n"}
+,{"stream_name":"stdout","time":3677.440879151,"data":"[18:25:21] all done\n"}
+,{"stream_name":"stdout","time":3677.466052863,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":3680.533281877,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3680.533335192,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3680.740852895,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3680.740876399,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":3681.665735552,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":3681.744561594,"data":"[NbConvertApp] Writing 15452 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":3684.41594288,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":3684.996313509,"data":"[NbConvertApp] Writing 319583 bytes to __results__.html\n"}
+]

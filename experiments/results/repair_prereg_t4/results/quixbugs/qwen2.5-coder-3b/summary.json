@@ -1,0 +1,79 @@
+{
+  "config": {
+    "benchmark": "quixbugs",
+    "model_id": "qwen2.5-coder-3b",
+    "runtime": "vllm",
+    "max_tokens": 1024,
+    "model_revision": null,
+    "quantization": null,
+    "base_url": "http://127.0.0.1:8000/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "jkoppel/QuixBugs",
+    "dataset_revision": "4257f44b0ff1",
+    "notes": "kaggle T4, vLLM 0.29; pre-registered repair check",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-11-05T18:23:55+00:00",
+    "git_commit": "",
+    "git_dirty": false,
+    "host": "bff6b92ff23c",
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 40,
+    "status_counts": {
+      "failed": 20,
+      "passed": 20
+    },
+    "truncated": 0,
+    "mean_input_tokens": 357.75,
+    "mean_output_tokens": 385.625,
+    "mean_ttft_s": 0.6718,
+    "median_ttft_s": 0.3533,
+    "mean_total_s": 27.3619,
+    "mean_decode_tok_per_s": 14.45,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "pass@1": 0.5
+  },
+  "excluded": {},
+  "this_session": {
+    "generated": 40,
+    "resumed": 0,
+    "wall_s": 85.7
+  },
+  "rescored": {
+    "at": "2026-11-05T19:00:48+00:00",
+    "harness_commit": "93f662e33a68517e68c7d074139d5bc75c1ddbb7",
+    "previous_metrics": {
+      "n": 40,
+      "status_counts": {
+        "unscored": 40
+      },
+      "truncated": 0,
+      "mean_input_tokens": 357.75,
+      "mean_output_tokens": 385.625,
+      "mean_ttft_s": 0.6718,
+      "median_ttft_s": 0.3533,
+      "mean_total_s": 27.3619,
+      "mean_decode_tok_per_s": 14.45,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
+  }
+}

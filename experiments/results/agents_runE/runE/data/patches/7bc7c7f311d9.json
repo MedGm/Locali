@@ -1,0 +1,40 @@
+{
+ "id": "7bc7c7f311d9",
+ "run_id": "runE",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tests/test_locali_api_create_product.py b/tests/test_locali_api_create_product.py\nnew file mode 100644\nindex 0000000..a828934\n--- /dev/null\n+++ b/tests/test_locali_api_create_product.py\n@@ -0,0 +1,26 @@\n+from datetime import date\n+import pytest\n+from fastapi.testclient import TestClient\n+from tinyshop.api import create_app\n+\n+@pytest.fixture\n+def client(tmp_path):\n+    return TestClient(create_app(tmp_path / 'test.db'))\n+\n+def test_create_product__a0(client):\n+    response = client.post('/products', json={'name': 'test', 'price': 10.0, 'stock': 5})\n+    assert response.status_code == 201\n+\n+def test_create_product__a1(client):\n+    response = client.post('/products', json={'name': 'test', 'price': 10.0, 'stock': 5})\n+    assert response.json() == {'id': 1}\n+\n+def test_list_products__a0(client):\n+    client.post('/products', json={'name': 'test', 'price': 10.0, 'stock': 5})\n+    response = client.get('/products')\n+    assert response.status_code == 200\n+\n+def test_list_products__a1(client):\n+    client.post('/products', json={'name': 'test', 'price': 10.0, 'stock': 5})\n+    response = client.get('/products')\n+    assert len(response.json()) == 1\n",
+ "sha256": "7e9d2031a6aa061efe833fe6094b7f95554fedd3bf866829fa49f12d47c65163",
+ "files": [
+  "tests/test_locali_api_create_product.py"
+ ],
+ "baseline": {
+  "tests/test_locali_api_create_product.py": null
+ },
+ "head": "9409755968a41647ed8cb8dabbf1254e93ba4c18",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 9,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 60.8,
+   "output_tail": ".........F                                                               [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1\n  /usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n../usr/local/lib/python3.12/site-packages/starlette/testclient.py:53\n  /usr/local/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.\n    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 9 passed, 2 warnings in 0.96s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "4b483f84cf80687066e09f8438efb0ffbc2b93acfed90b2c0bdb4e52320d1ea2",
+ "title": "API tests for create_product",
+ "kind": "tests",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

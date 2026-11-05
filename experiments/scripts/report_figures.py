@@ -16,6 +16,7 @@ OUT = ROOT / "docs" / "figures"
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 BASE, FT = "#2a78d6", "#eb6834"  # validated categorical pair (colour-blind safe)
+D_COLOUR = "#1baf7a"  # run D: categorical slot 3 (aqua); validated with the pair above, labels on every bar
 INK, MUTED, GRID, SURFACE = "#0b0b0b", "#52514e", "#e4e3df", "#fcfcfb"
 
 mpl.rcParams.update({
@@ -34,62 +35,70 @@ def run(root: str, task: str, model: str) -> Path:
     return next((RES / root / "results" / task).glob(f"{model}__*")) / "samples.jsonl"
 
 
-BASE3, RUN_D = "qwen2.5-coder-3b", "qwen2.5-coder-3b-ft-qlora-mixv3b-diag"
+BASE3 = "qwen2.5-coder-3b"
+RUN_D, RUN_E = "qwen2.5-coder-3b-ft-qlora-mixv3b-diag", "qwen2.5-coder-3b-ft-qlora-mixv3s"
+ROOTS = {BASE3: "kaggle_coder_baselines_20261024", RUN_D: "finetune_qwen25_3b_qlora_mixv3b_diag",
+         RUN_E: "finetune_qwen25_3b_qlora_mixv3s"}
+MODELS = [(BASE3, "Qwen2.5-Coder-3B (base)", BASE), (RUN_D, "Locali run D (earlier default)", D_COLOUR),
+          (RUN_E, "Locali run E (default)", FT)]
 
 
 def benchmark_rows() -> list[dict]:
-    """Base 3B vs run D on each benchmark, with the p-value the README uses for that row."""
+    """Base 3B, run D and run E on each benchmark; p is run E (the default) vs the base, as the README uses it."""
     from multiple_comparisons import CONFIRMATORY, PAIRS, explain_row, holm
     from paired_compare import OUTCOME, compare_tasks, mcnemar_exact
 
-    # exploratory family of run D, Holm-corrected exactly as in experiments/results/multiple_comparisons
-    root_a, model_a, root_b, model_b = PAIRS["3B run D (default)"]
+    # exploratory family of run E, Holm-corrected exactly as in experiments/results/multiple_comparisons
+    root_a, model_a, root_b, model_b = PAIRS["3B run E (default)"]
     family = [r for task in OUTCOME if task not in CONFIRMATORY and (r := compare_tasks(root_a, model_a, task, root_b, model_b, task))]
-    family.append(explain_row(BASE3, "qwen2.5-coder-3b-ft-qlora-mixv3b-diag"))
+    family.append(explain_row(BASE3, RUN_E))
     corrected = dict(zip([r["task"] for r in family], holm([r["p"] for r in family]), strict=True))
 
-    def pair(a: dict, b: dict) -> tuple[float, float, int, float]:
-        only_a, only_b = sum(a[i] and not b[i] for i in a), sum(b[i] and not a[i] for i in a)
-        return 100 * sum(a.values()) / len(a), 100 * sum(b.values()) / len(b), len(a), mcnemar_exact(only_a, only_b)
+    def scores(load) -> tuple[dict, float]:
+        a, d, e = (load(m) for m in (BASE3, RUN_D, RUN_E))
+        only_a, only_e = sum(a[i] and not e[i] for i in a), sum(e[i] and not a[i] for i in a)
+        values = {m: 100 * sum(o.values()) / len(o) for m, o in ((BASE3, a), (RUN_D, d), (RUN_E, e))}
+        return {"values": values, "n": len(a)}, mcnemar_exact(only_a, only_e)
 
-    base_root, d_root = "kaggle_coder_baselines_20261024", "finetune_qwen25_3b_qlora_mixv3b_diag"
-    def std(task: str, key: str = "passed") -> tuple[float, float, int, float]:
-        return pair(outcomes(run(base_root, task, BASE3), key), outcomes(run(d_root, task, RUN_D), key))
+    def std(task: str, key: str = "passed"):
+        return scores(lambda m: outcomes(run(ROOTS[m], task, m), key))
+
     rows = []
     # the two claims and the pre-registered checks: uncorrected within their own (small) family
-    b, d, n, p = std("humanevalfix")
-    _, _, _, p_tests = std("testgen", "caught_bug")  # the other confirmatory outcome (768 tokens), for Holm over the two
-    p = holm([p, p_tests])[0]
-    rows.append({"name": "Fix bugs\nHumanEvalFix", "base": b, "ft": d, "n": n, "p": p, "kind": "claim"})
-    b, d, n, p = pair(*(outcomes(RES / "repair_prereg_t4/results/condefects" / m / "samples.jsonl") for m in (BASE3, RUN_D)))
-    rows.append({"name": "Fix real bugs\nConDefects", "base": b, "ft": d, "n": n, "p": p, "kind": "check"})
-    b, d, n, p = pair(*(outcomes(RES / "testgen2048_t4/results" / m / "samples.jsonl", "caught_bug") for m in (BASE3, RUN_D)))
-    rows.append({"name": "Write tests\n(bugs caught)", "base": b, "ft": d, "n": n, "p": p, "kind": "check"})
+    fix, p = std("humanevalfix")
+    _, p_tests = std("testgen", "caught_bug")  # the other confirmatory outcome (768 tokens), for Holm over the two
+    rows.append({"name": "Fix bugs\nHumanEvalFix", **fix, "p": holm([p, p_tests])[0]})
+    real, p = scores(lambda m: outcomes(RES / "repair_prereg_t4/results/condefects" / m / "samples.jsonl"))
+    rows.append({"name": "Fix real bugs\nConDefects", **real, "p": p})
+    tests, p = scores(lambda m: outcomes(RES / "testgen2048_t4/results" / m / "samples.jsonl", "caught_bug"))
+    rows.append({"name": "Write tests\n(bugs caught)", **tests, "p": p})
     for task, name in (("humaneval_plus", "Write code\nHumanEval+"), ("mbpp_plus", "Write code\nMBPP+"),
                        ("cruxeval_o", "Predict output\nCRUXEval-O")):
-        b, d, n, _ = std(task)
-        rows.append({"name": name, "base": b, "ft": d, "n": n, "p": corrected[task], "kind": "exploratory"})
-    explain = explain_row(BASE3, RUN_D)
-    rows.append({"name": "Explain code\nHumanEvalExplain", "base": 100 * explain["a"], "ft": 100 * explain["b"],
-                 "n": explain["n"], "p": corrected["humanevalexplain"], "kind": "exploratory"})
+        row, _ = std(task)
+        rows.append({"name": name, **row, "p": corrected[task]})
+    explain, _ = scores(lambda m: outcomes(RES / "explain_t4/results" / m / "samples.jsonl"))
+    rows.append({"name": "Explain code\nHumanEvalExplain", **explain, "p": corrected["humanevalexplain"]})
     return rows
 
 
 def verdict(row: dict) -> str:
     if row["p"] >= 0.05:
         return f"no clear difference\np = {row['p']:.2g}"
-    return ("better" if row["ft"] > row["base"] else "worse") + f"\np = {row['p']:.1g}"
+    better = row["values"][RUN_E] > row["values"][BASE3]
+    return ("better" if better else "worse") + f"\np = {row['p']:.1g}"
 
 
 def fine_tuning() -> None:
     rows = benchmark_rows()
-    fig, ax = plt.subplots(figsize=(10.5, 5.2))
-    width = 0.36
+    fig, ax = plt.subplots(figsize=(11, 5.4))
+    width = 0.26
     for x, row in enumerate(rows):
-        for offset, value, colour in ((-width / 2 - 0.02, row["base"], BASE), (width / 2 + 0.02, row["ft"], FT)):
+        for k, (model, _, colour) in enumerate(MODELS):
+            value = row["values"][model]
+            offset = (k - 1) * (width + 0.02)
             ax.bar(x + offset, value, width, color=colour)
-            ax.text(x + offset, value + 1.2, f"{value:.1f}", ha="center", va="bottom", fontsize=9.5, color=INK,
-                    weight="bold" if colour == FT else "normal")
+            ax.text(x + offset, value + 1.2, f"{value:.0f}", ha="center", va="bottom", fontsize=8.5, color=INK,
+                    weight="bold" if model == RUN_E else "normal")
         significant = row["p"] < 0.05
         ax.text(x, 104, verdict(row), ha="center", va="bottom", fontsize=8.5, linespacing=1.3,
                 color=INK if significant else MUTED, weight="bold" if significant else "normal")
@@ -98,6 +107,7 @@ def fine_tuning() -> None:
     ax.axvline(2.5, color=MUTED, linewidth=1.0, linestyle=(0, (3, 3)), zorder=0)
     ax.text(1.0, -24, "what the training was for", ha="center", fontsize=9, color=MUTED, style="italic")
     ax.text(4.5, -24, "general skills (stricter bar: Holm correction)", ha="center", fontsize=9, color=MUTED, style="italic")
+    ax.text(len(rows) - 0.4, 116, "verdict: run E vs base", ha="right", fontsize=8, color=MUTED, style="italic")
     ax.set_xticks(range(len(rows)), [f"{r['name']}\n({r['n']} problems)" for r in rows], fontsize=9.5)
     ax.tick_params(axis="x", length=0)
     ax.set_ylim(0, 118)
@@ -107,14 +117,15 @@ def fine_tuning() -> None:
     ax.spines["left"].set_visible(False)
     ax.tick_params(axis="y", length=0)
     ax.set_axisbelow(True)
-    ax.legend(handles=[mpl.patches.Patch(color=BASE, label="Qwen2.5-Coder-3B (base)"),
-                       mpl.patches.Patch(color=FT, label="Locali fine-tune (run D)")],
-              loc="lower center", bbox_to_anchor=(0.5, 1.07), ncol=2, frameon=False, fontsize=10)
+    ax.legend(handles=[mpl.patches.Patch(color=c, label=label) for _, label, c in MODELS],
+              loc="lower center", bbox_to_anchor=(0.5, 1.07), ncol=3, frameon=False, fontsize=10)
     fig.tight_layout()
     fig.savefig(OUT / "fine_tuning.svg", metadata={"Date": None})
     plt.close(fig)
     for row in rows:
-        print(f"{row['name'].replace(chr(10), ' '):34} n={row['n']:3}  base {row['base']:5.1f}  run D {row['ft']:5.1f}  p {row['p']:.2g}")
+        v = row["values"]
+        print(f"{row['name'].replace(chr(10), ' '):34} n={row['n']:3}  base {v[BASE3]:5.1f}  D {v[RUN_D]:5.1f}  "
+              f"E {v[RUN_E]:5.1f}  p(E vs base) {row['p']:.2g}")
 
 
 def quantization() -> None:

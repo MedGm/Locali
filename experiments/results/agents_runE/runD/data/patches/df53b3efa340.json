@@ -1,0 +1,40 @@
+{
+ "id": "df53b3efa340",
+ "run_id": "runD",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tinyshop/api.py b/tinyshop/api.py\nindex 15f8892..27a2150 100644\n--- a/tinyshop/api.py\n+++ b/tinyshop/api.py\n@@ -20,6 +20,7 @@ class Order(BaseModel):\n \n \n def get_conn(request: Request):\n+    \"\"\"This function establishes a database connection using the provided request object and yields it for use in a `with` statement. It ensures that the connection is closed after use, even if an exception \"\"\"\n     conn = db.connect(request.app.state.db_path)\n     try:\n         yield conn\n",
+ "sha256": "69631300e0e2bbf916487487de0f6ed72a1c3a2c3bce93ce412eeaa6fcb3928f",
+ "files": [
+  "tinyshop/api.py"
+ ],
+ "baseline": {
+  "tinyshop/api.py": "60cf5dec2bbb13c341b36ba2fd887130778fbc4927d58bb0f25fff5a96339552"
+ },
+ "head": "9409755968a41647ed8cb8dabbf1254e93ba4c18",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 5,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 27.7,
+   "output_tail": ".....F                                                                   [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 5 passed in 0.10s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "db83abda87d9161ca3bd03d14e443cf9b88767b0e6f564cca873fe8018274006",
+ "title": "Docstrings for get_conn in tinyshop/api.py",
+ "kind": "docs",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

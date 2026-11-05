@@ -1,0 +1,53 @@
+diff --git a/tests/test_locali_bulk_discount.py b/tests/test_locali_bulk_discount.py
+new file mode 100644
+index 0000000..1d3fe17
+--- /dev/null
++++ b/tests/test_locali_bulk_discount.py
+@@ -0,0 +1,47 @@
++from tinyshop.pricing import *  # noqa: F403
++from tinyshop.pricing import bulk_discount
++
++def test_bulk_discount_5_percent__a0():
++    assert bulk_discount(10) == 5
++
++def test_bulk_discount_5_percent__a1():
++    assert bulk_discount(20) == 5
++
++def test_bulk_discount_5_percent__a2():
++    assert bulk_discount(30) == 5
++
++def test_bulk_discount_5_percent__a3():
++    assert bulk_discount(40) == 5
++
++def test_bulk_discount_5_percent__a4():
++    assert bulk_discount(50) == 5
++
++def test_bulk_discount_10_percent__a0():
++    assert bulk_discount(51) == 10
++
++def test_bulk_discount_10_percent__a1():
++    assert bulk_discount(60) == 10
++
++def test_bulk_discount_10_percent__a2():
++    assert bulk_discount(70) == 10
++
++def test_bulk_discount_10_percent__a3():
++    assert bulk_discount(80) == 10
++
++def test_bulk_discount_10_percent__a4():
++    assert bulk_discount(90) == 10
++
++def test_bulk_discount_no_discount__a0():
++    assert bulk_discount(1) == 0
++
++def test_bulk_discount_no_discount__a1():
++    assert bulk_discount(2) == 0
++
++def test_bulk_discount_no_discount__a2():
++    assert bulk_discount(3) == 0
++
++def test_bulk_discount_no_discount__a3():
++    assert bulk_discount(4) == 0
++
++def test_bulk_discount_no_discount__a4():
++    assert bulk_discount(9) == 0

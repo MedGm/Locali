@@ -1,0 +1,40 @@
+{
+ "id": "d5a4a1ada561",
+ "run_id": "runD",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tinyshop/auth.py b/tinyshop/auth.py\nindex 7b4c504..74d4987 100644\n--- a/tinyshop/auth.py\n+++ b/tinyshop/auth.py\n@@ -7,11 +7,13 @@ def hash_password(password):\n \n \n def create_staff(conn, username, password):\n+    \"\"\"This function inserts a new staff member into the database by executing an SQL INSERT statement with the provided username and hashed password. It commits the changes to the database.\"\"\"\n     conn.execute(\"INSERT INTO staff (username, password_hash) VALUES (?, ?)\", (username, hash_password(password)))\n     conn.commit()\n \n \n def check_login(conn, username, password):\n+    \"\"\"This function checks if a given username and password combination exists in the database. It returns `False` if the username does not exist or the password does not match the stored hash, otherwise it\"\"\"\n     row = conn.execute(\"SELECT password_hash FROM staff WHERE username = ?\", (username,)).fetchone()\n     if row is None:\n         return False\n",
+ "sha256": "427d3eea70d8ed2a86fa4a6f1387d804dfad293d8e4eeb2722b789e6048d543d",
+ "files": [
+  "tinyshop/auth.py"
+ ],
+ "baseline": {
+  "tinyshop/auth.py": "17411c763ae5e2ef5b099d7312e624898e6fd0f482edb54833553203c7e4a374"
+ },
+ "head": "9409755968a41647ed8cb8dabbf1254e93ba4c18",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 5,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 27.7,
+   "output_tail": ".....F                                                                   [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 5 passed in 0.10s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "db83abda87d9161ca3bd03d14e443cf9b88767b0e6f564cca873fe8018274006",
+ "title": "Docstrings for create_staff, check_login in tinyshop/auth.py",
+ "kind": "docs",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

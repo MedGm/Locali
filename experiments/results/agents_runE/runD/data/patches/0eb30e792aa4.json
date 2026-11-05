@@ -1,0 +1,40 @@
+{
+ "id": "0eb30e792aa4",
+ "run_id": "runD",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tinyshop/reports.py b/tinyshop/reports.py\nindex 1d198b1..02e4f9f 100644\n--- a/tinyshop/reports.py\n+++ b/tinyshop/reports.py\n@@ -12,6 +12,7 @@ def daily_report(conn, day):\n \n \n def best_seller(conn, day):\n+    \"\"\"This function calculates the best-selling product on a given day by iterating through the sales records for that day, counting the quantity of each product sold, and returning the product with the hig\"\"\"\n     counts = {}\n     for name, qty, _ in sales_for_day(conn, day):\n         counts[name] = counts.get(name, 0) + qty\n",
+ "sha256": "2e6fa6cae5aab07d2609c845f85a0aedfa5fec4cb4a0fe5df07d81340395456d",
+ "files": [
+  "tinyshop/reports.py"
+ ],
+ "baseline": {
+  "tinyshop/reports.py": "5ff957e699d670654c47813e4f28c4c4df99fa61e4f8aecf909a9a08638755bc"
+ },
+ "head": "9409755968a41647ed8cb8dabbf1254e93ba4c18",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 5,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 27.7,
+   "output_tail": ".....F                                                                   [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 5 passed in 0.10s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "db83abda87d9161ca3bd03d14e443cf9b88767b0e6f564cca873fe8018274006",
+ "title": "Docstrings for best_seller in tinyshop/reports.py",
+ "kind": "docs",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

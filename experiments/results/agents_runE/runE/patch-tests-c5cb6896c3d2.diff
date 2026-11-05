@@ -1,0 +1,27 @@
+diff --git a/tests/test_locali_create_app.py b/tests/test_locali_create_app.py
+new file mode 100644
+index 0000000..d30788a
+--- /dev/null
++++ b/tests/test_locali_create_app.py
+@@ -0,0 +1,21 @@
++from tinyshop.api import *  # noqa: F403
++from tinyshop.api import create_app
++import pytest
++from fastapi.testclient import TestClient
++from fastapi import FastAPI
++from unittest.mock import patch
++
++def test_create_app_with_valid_db_path__a0():
++    db_path = 'test.db'
++    app = create_app(db_path)
++    assert isinstance(app, FastAPI)
++
++def test_create_app_with_valid_db_path__a1():
++    db_path = 'test.db'
++    app = create_app(db_path)
++    assert app.state.db_path == db_path
++
++
++def test_create_app_with_no_db_path():
++    with pytest.raises(TypeError):
++        create_app()

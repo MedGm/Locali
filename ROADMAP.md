@@ -120,4 +120,8 @@ Never cut: base vs fine-tuned, quantization ladder, security controls + attack t
   holds with a larger token budget (the gain is complete test files); repair on real bugs
   (ConDefects) is not confirmed (57 vs 47 of 382, p = 0.24).
 - README rewritten as the plain-language final report with the new results.
+- Default model switched from run D to run E (same repair and test results, explains code as well as
+  the base, smaller code-writing loss; chosen after the benchmarks, said so in the README). Checked
+  on the laptop (95 of 164 bugs fixed vs D's 100, p = 0.36; 478 J per fixed bug) and with the whole
+  assistant on demo_repo, base vs D vs E (`experiments/results/agents_runE`).
 - Open: the paper (still has the old repair headline), repository cleanup, the 5-minute demo video.

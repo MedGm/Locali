@@ -1,21 +1,39 @@
 {
-  "note": "Models the assistant can run on the laptop with llama.cpp. For the 1.5B models, quality, speed, RAM and energy come from the quantization ladder (experiments/results/summary.json); the 3B was measured separately (experiments/results/finetune_qwen25_3b_qlora_mixv3b_diag, laptop_3b_check).",
+  "note": "Models the assistant can run on the laptop with llama.cpp. For the 1.5B models, quality, speed, RAM and energy come from the quantization ladder (experiments/results/summary.json); the 3B was measured separately (experiments/results/finetune_qwen25_3b_qlora_mixv3s, laptop_3b_energy_runE, laptop_3b_check).",
   "models": [
     {
       "id": "ft3b-q4",
-      "name": "Locali Qwen2.5-Coder-3B, fine-tuned (QLoRA, mixture v3b, corrected explanations), Q4_K_M",
+      "name": "Locali Qwen2.5-Coder-3B, fine-tuned (QLoRA run E, mixture v3s, self-distilled replay), Q4_K_M",
+      "base": "Qwen/Qwen2.5-Coder-3B-Instruct",
+      "fine_tuned": true,
+      "quant": "Q4_K_M",
+      "file": "qwen2.5-coder-3b-locali-mixv3s-q4_k_m.gguf (built by training/kaggle/gguf)",
+      "size_gib": 1.8,
+      "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF",
+      "recommended": "default",
+      "ladder": null,
+      "highlights": [
+        "HumanEvalFix 63.4 % (base 46.3 %); tests that catch the bug 82.3 % (base 62.2 %)",
+        "No general skill significantly below the base after correction; explaining code 68.3 % (same as the base)",
+        "Laptop CPU: 95 of 164 bugs fixed, 15.2 s per problem, 2.2 GB RAM, 478 J per fixed bug",
+        "Base model under the Qwen research licence (non-commercial)"
+      ]
+    },
+    {
+      "id": "ft3b-d-q4",
+      "name": "Locali Qwen2.5-Coder-3B, fine-tuned (QLoRA run D, mixture v3b, corrected explanations), Q4_K_M",
       "base": "Qwen/Qwen2.5-Coder-3B-Instruct",
       "fine_tuned": true,
       "quant": "Q4_K_M",
       "file": "qwen2.5-coder-3b-locali-mixv3b-diag-q4_k_m.gguf (built by training/kaggle/gguf)",
       "size_gib": 1.8,
-      "hf_repo": null,
-      "recommended": "default",
+      "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF",
+      "recommended": null,
       "ladder": null,
       "highlights": [
-        "HumanEvalFix 61.6 % (1.5B fine-tuned: 36.0 %), 71 % with 3 attempts and test feedback",
-        "Tests that catch the bug: 82.9 %; refactoring that keeps behaviour: 87.7 %",
-        "Laptop CPU: about 14-15 s per bug fix, 2.2 GB RAM",
+        "The default until 5 November 2026; run E replaces it",
+        "HumanEvalFix 61.6 %; tests that catch the bug 82.9 %",
+        "Laptop CPU: 100 of 164 bugs fixed, 15.2 s per problem, 2.2 GB RAM, 456 J per fixed bug",
         "Base model under the Qwen research licence (non-commercial)"
       ]
     },

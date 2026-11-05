@@ -19,15 +19,15 @@ from paired_compare import OUTCOME, compare_tasks, mcnemar_exact
 R = Path("experiments/results")
 CONFIRMATORY = ("humanevalfix", "testgen")
 PAIRS = {  # name: (base root, base model, fine-tune root, fine-tune model, explain dir names)
-    "3B run D (default)": (R / "kaggle_coder_baselines_20261024/results", "qwen2.5-coder-3b",
-                           R / "finetune_qwen25_3b_qlora_mixv3b_diag/results", "qwen2.5-coder-3b-ft-qlora-mixv3b-diag"),
-    "3B run E": (R / "kaggle_coder_baselines_20261024/results", "qwen2.5-coder-3b",
-                 R / "finetune_qwen25_3b_qlora_mixv3s/results", "qwen2.5-coder-3b-ft-qlora-mixv3s"),
+    "3B run D": (R / "kaggle_coder_baselines_20261024/results", "qwen2.5-coder-3b",
+                 R / "finetune_qwen25_3b_qlora_mixv3b_diag/results", "qwen2.5-coder-3b-ft-qlora-mixv3b-diag"),
+    "3B run E (default)": (R / "kaggle_coder_baselines_20261024/results", "qwen2.5-coder-3b",
+                           R / "finetune_qwen25_3b_qlora_mixv3s/results", "qwen2.5-coder-3b-ft-qlora-mixv3s"),
     "1.5B QLoRA v2 (fast option)": (R / "kaggle_baselines_20261012/results", "qwen2.5-coder-1.5b",
                                     R / "finetune_qwen25_qlora_v2/results", "qwen2.5-coder-1.5b-ft-qlora"),
 }
-EXPLAIN = {"3B run D (default)": ("qwen2.5-coder-3b", "qwen2.5-coder-3b-ft-qlora-mixv3b-diag"),
-           "3B run E": ("qwen2.5-coder-3b", "qwen2.5-coder-3b-ft-qlora-mixv3s"),
+EXPLAIN = {"3B run D": ("qwen2.5-coder-3b", "qwen2.5-coder-3b-ft-qlora-mixv3b-diag"),
+           "3B run E (default)": ("qwen2.5-coder-3b", "qwen2.5-coder-3b-ft-qlora-mixv3s"),
            "1.5B QLoRA v2 (fast option)": ("qwen2.5-coder-1.5b", "qwen2.5-coder-1.5b-ft-qlora-v2")}
 
 

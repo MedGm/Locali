@@ -1,0 +1,34 @@
+diff --git a/tinyshop/db.py b/tinyshop/db.py
+index e303b96..e4bb4ce 100644
+--- a/tinyshop/db.py
++++ b/tinyshop/db.py
+@@ -21,12 +21,14 @@ CREATE TABLE IF NOT EXISTS staff (
+ 
+ 
+ def connect(path):
++    """Connects to a SQLite database at the specified path, executes the schema script, and returns the connection object."""
+     conn = sqlite3.connect(path)
+     conn.executescript(SCHEMA)
+     return conn
+ 
+ 
+ def add_product(conn, name, price, stock=0):
++    """This function adds a new product to the database with the given name, price, and stock (defaulting to 0 if not provided), commits the transaction, and returns the ID of the newly inserted product."""
+     cur = conn.execute("INSERT INTO products (name, price, stock) VALUES (?, ?, ?)", (name, price, stock))
+     conn.commit()
+     return cur.lastrowid
+@@ -38,12 +40,14 @@ def find_products(conn, name):
+ 
+ 
+ def record_sale(conn, product_id, qty, day):
++    """This function records a sale by inserting a new record into the `sales` table and updating the `stock` of the corresponding product in the `products` table. It returns nothing."""
+     conn.execute("INSERT INTO sales (product_id, qty, day) VALUES (?, ?, ?)", (product_id, qty, day))
+     conn.execute("UPDATE products SET stock = stock - ? WHERE id = ?", (qty, product_id))
+     conn.commit()
+ 
+ 
+ def sales_for_day(conn, day):
++    """This function takes a database connection and a day as input, executes a SQL query to retrieve the names of products, their quantities, and prices for sales on the specified day, and returns the resul"""
+     return conn.execute(
+         "SELECT p.name, s.qty, p.price FROM sales s JOIN products p ON p.id = s.product_id WHERE s.day = ?",
+         (day,),

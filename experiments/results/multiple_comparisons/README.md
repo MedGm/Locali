@@ -2,7 +2,7 @@ Base vs fine-tuned with a correction for testing many tasks at once.
 
 Bold: significantly better after Holm within its family (adjusted p < 0.05); italic: significantly worse. Built by `experiments/scripts/multiple_comparisons.py`.
 
-## 3B run D (default)
+## 3B run D
 
 Confirmatory (2 tests, Holm within the family)
 
@@ -25,7 +25,7 @@ Exploratory (9 tests, Holm within the family)
 | securecodegen | 121 | 69.4 | **81.8** | +12.4 | 2 / 17 | 0.00073 | 0.0066 |
 | humanevalexplain | 164 | 68.3 | 57.9 | -10.4 | 27 / 10 | 0.0076 | 0.061 |
 
-## 3B run E
+## 3B run E (default)
 
 Confirmatory (2 tests, Holm within the family)
 

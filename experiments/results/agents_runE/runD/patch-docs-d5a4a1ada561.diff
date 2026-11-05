@@ -1,0 +1,18 @@
+diff --git a/tinyshop/auth.py b/tinyshop/auth.py
+index 7b4c504..74d4987 100644
+--- a/tinyshop/auth.py
++++ b/tinyshop/auth.py
+@@ -7,11 +7,13 @@ def hash_password(password):
+ 
+ 
+ def create_staff(conn, username, password):
++    """This function inserts a new staff member into the database by executing an SQL INSERT statement with the provided username and hashed password. It commits the changes to the database."""
+     conn.execute("INSERT INTO staff (username, password_hash) VALUES (?, ?)", (username, hash_password(password)))
+     conn.commit()
+ 
+ 
+ def check_login(conn, username, password):
++    """This function checks if a given username and password combination exists in the database. It returns `False` if the username does not exist or the password does not match the stored hash, otherwise it"""
+     row = conn.execute("SELECT password_hash FROM staff WHERE username = ?", (username,)).fetchone()
+     if row is None:
+         return False

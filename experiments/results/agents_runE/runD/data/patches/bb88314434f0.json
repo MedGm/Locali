@@ -1,0 +1,40 @@
+{
+ "id": "bb88314434f0",
+ "run_id": "runD",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tests/test_locali_line_total.py b/tests/test_locali_line_total.py\nnew file mode 100644\nindex 0000000..2478213\n--- /dev/null\n+++ b/tests/test_locali_line_total.py\n@@ -0,0 +1,20 @@\n+from tinyshop.pricing import *  # noqa: F403\n+from tinyshop.pricing import line_total\n+\n+def test_line_total_with_positive_numbers():\n+    price = 10.99\n+    qty = 3\n+    expected_result = 32.97\n+    assert line_total(price, qty) == expected_result\n+\n+def test_line_total_with_zero_quantity():\n+    price = 10.99\n+    qty = 0\n+    expected_result = 0.0\n+    assert line_total(price, qty) == expected_result\n+\n+def test_line_total_with_negative_price():\n+    price = -10.99\n+    qty = 3\n+    expected_result = -32.97\n+    assert line_total(price, qty) == expected_result\n",
+ "sha256": "ec581cd229cff89fd9248f85d49a365a2a03596883562a3788f63cab0637c572",
+ "files": [
+  "tests/test_locali_line_total.py"
+ ],
+ "baseline": {
+  "tests/test_locali_line_total.py": null
+ },
+ "head": "9409755968a41647ed8cb8dabbf1254e93ba4c18",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 8,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 33.7,
+   "output_tail": "........F                                                                [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 8 passed in 0.11s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "860a0d41c87c09acffae591ec4dfed400041dc2477a73a083cd7dd6b9ee5e28d",
+ "title": "Regression tests for line_total (they record what the code does now)",
+ "kind": "tests",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

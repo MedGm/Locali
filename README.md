@@ -16,10 +16,10 @@ with a 4-core laptop without a GPU (16 GB of memory) and Kaggle's free GPUs.
 
 **My answer: yes for some jobs, with limits I measured.**
 
-- **Writing tests** works well. After fine-tuning, the tests the model writes catch the bug in 83 %
+- **Writing tests** works well. After fine-tuning, the tests the model writes catch the bug in 82 %
   of the problems (60 % before). The gain is real, and it comes from the model learning to write
   short, complete test files instead of long ones it never finishes.
-- **Fixing bugs** improved a lot on the standard benchmark (46 → 62 %). But on real bugs that
+- **Fixing bugs** improved a lot on the standard benchmark (46 → 63 %). But on real bugs that
   people made, which my training data was not shaped after, the gain is small and not proven
   (12 → 15 %, p = 0.24). I checked this with rules written down before the run.
 - **Running on a laptop** is practical. Stored with 4-bit numbers, the 3B model takes 2.2 GB of
@@ -31,21 +31,22 @@ with a 4-core laptop without a GPU (16 GB of memory) and Kaggle's free GPUs.
 
 | What | Before → after | Verdict | Section |
 |---|---|---|---|
-| Tests it writes catch the bug (3B) | 60 → 83 % | better (p = 1e-6) | [3](#3-teaching-the-model) |
-| Fix bugs, standard benchmark (3B) | 46 → 62 % | better, but on bugs like the training data | [3](#3-teaching-the-model) |
-| Fix real bugs from a programming contest (3B) | 12 → 15 % | **not proven** (p = 0.24) | [3](#3-teaching-the-model) |
+| Tests it writes catch the bug (3B) | 60 → 82 % | better (p = 3e-6) | [3](#3-teaching-the-model) |
+| Fix bugs, standard benchmark (3B) | 46 → 63 % | better, but on bugs like the training data | [3](#3-teaching-the-model) |
+| Fix real bugs from a programming contest (3B) | 12 → 15 % | **not proven** (p = 0.24, run D, as registered) | [3](#3-teaching-the-model) |
 | Refactoring that keeps behaviour (1.5B) | 70 → 94 % | better | [3](#3-teaching-the-model) |
-| Write code from a description (3B) | 81 → 72 % | lower, not proven after correction | [3](#3-teaching-the-model) |
-| One bug fix on the laptop (3B, 4-bit) | ~15 s, 2.2 GB, 456 J | | [4](#4-running-on-a-laptop) |
+| Write code from a description (3B) | 81 → 75 % | lower, not proven after correction | [3](#3-teaching-the-model) |
+| One bug fix on the laptop (3B, 4-bit) | ~15 s, 2.2 GB, 478 J | | [4](#4-running-on-a-laptop) |
 | 8-bit instead of 16-bit numbers (1.5B) | same answers, 1.8× less memory | | [4](#4-running-on-a-laptop) |
 | Bugs found on the demo project: one review → full workflow | 0 → 4 of 5 | one project I built | [2](#2-the-assistant) |
+| Demo project, whole assistant: bugs its review names, base → fine-tuned | 1 → 3 of 6 | one run, one project | [2](#2-the-assistant) |
 | My own attack cases that got through the controls | 0 of 33 | the controls work as built | [2](#2-the-assistant) |
 
 ### Models and data online
 
 | What | Where |
 |---|---|
-| Fine-tuned 3B (run D), the default model, for llama.cpp | [Llama-Locali-Qwen2.5-Coder-3B-GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF) |
+| Fine-tuned 3B (run E, the default; run D, the earlier default), for llama.cpp | [Llama-Locali-Qwen2.5-Coder-3B-GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF) |
 | Fine-tuned 1.5B (QLoRA v2), the fast option | [merged](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B) · [GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF) · [adapter](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-QLoRA) |
 | The other 1.5B and Phi-4-mini adapters | [Llama-Locali-adapters](https://huggingface.co/MedGm/Llama-Locali-adapters) |
 | Training data, versions 1 to 3b | Kaggle: [v1](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v1) · [v2](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v2) · [v3](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v3) · [v3b](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v3b); v2 also on [Hugging Face](https://huggingface.co/datasets/MedGm/locali-mix-v2) |
@@ -155,6 +156,23 @@ the share of code that tests run from 28 to 45 %
 ([results](experiments/results/agents_demo_repo/README.md),
 [API tests](experiments/results/agents_api_tests/README.md)).
 
+**The same check with each model.** Before changing the default model, I ran the whole assistant
+on the demo project (with its web API) three times on the laptop, once with each model, same code
+and settings ([results](experiments/results/agents_runE/README.md)):
+
+| Whole assistant on the demo project | 3B base | Run D | **Run E** |
+|---|---|---|---|
+| Bugs: fixed / found by the review / suspected by a test / missed (of 6) | 1 / 1 / 1 / 3 | 1 / 3 / 2 / 0 | 1 / 3 / 1 / 1 |
+| Review warnings that point at nothing planted | 9 | 18 | 17 |
+| Security holes, key and hidden instructions found (of 8) | 8 | 8 | 8 |
+| Tests kept, and share of code they run (before: 28 %) | 2, 60 % | 2, 45 % | **4, 72 %** |
+| Time for the whole run | 34 min | 20 min | **19 min** |
+
+The fine-tuned models name three times more planted problems in their review, but also raise
+twice as many wrong warnings. The security results come from the tools, so they are the same for
+every model. The base takes longest because it writes long test files (10,516 words against about
+4,100). One run each: this shows how the models behave, it does not prove a difference.
+
 This is one project I built myself, with bugs I placed; it shows how the workflow behaves, not how
 accurate it is in general. The columns also differ in more than the number of agents: most of the
 security findings come from the tools.
@@ -211,22 +229,33 @@ Training one adapter takes about two hours on Kaggle's free GPU.
 2. **So I added realistic bugs**: the teacher wrote 3,271 bugs of seven kinds that people make (a
    forgotten line, an extra branch, an off-by-one), and I moved to a bigger base, the 3B
    ([bugs](experiments/results/v3_bugs/README.md)).
-3. **Runs A to E** tried variations of that data. **Run D** became the default model
-   ([run D](experiments/results/finetune_qwen25_3b_qlora_mixv3b_diag/README.md)).
+3. **Runs A to E** tried variations of that data. **Run D** was the default model first
+   ([run D](experiments/results/finetune_qwen25_3b_qlora_mixv3b_diag/README.md)). **Run E** replaces
+   part of the general data with the base model's own answers, so the model keeps more of its own
+   way of writing code ([run E](experiments/results/finetune_qwen25_3b_qlora_mixv3s/README.md)).
+   Since 5 November, run E is the default.
 
-**What it changed (3B base vs run D):**
+**Why run E.** E scores the same as D on what the training was for, and is better rounded: it
+keeps the base's level at explaining code (68.3 against D's 57.9), loses less at writing code, and
+on its own laptop run and demo-project run it does as well as D (95 vs 100 bugs fixed on the
+laptop, p = 0.36, [laptop](experiments/results/laptop_3b_energy_runE/README.md)). One caveat:
+I chose E after seeing these benchmark results, so its numbers are a little optimistic.
+D was the default only because it was ready first. The real-bug check was registered on D, so that
+result stays a run D result; E's result on the same bugs (56 of 382) is next to it.
+
+**What it changed (3B base vs run D vs run E):**
 
 ![Base vs fine-tuned 3B](docs/figures/fine_tuning.svg)
 
-| % of problems | Problems | 3B base | Run D | Verdict |
-|---|---|---|---|---|
-| Fix bugs (HumanEvalFix) | 164 | 46.3 | **61.6** | better, p = 0.0004 |
-| Fix real bugs (ConDefects) | 382 | 12.3 | 14.9 | no clear difference, p = 0.24 |
-| Write tests: bugs caught (2,048 tokens) | 164 | 60.4 | **82.9** | better, p = 1e-6 |
-| Write code (HumanEval+) | 163 | 81.0 | 72.4 | no clear difference after correction, p = 0.088 |
-| Write code (MBPP+) | 377 | 64.7 | 64.2 | no clear difference |
-| Predict what code returns (CRUXEval-O) | 800 | 42.2 | 43.4 | no clear difference |
-| Explain code (HumanEvalExplain) | 164 | 68.3 | 57.9 | no clear difference after correction, p = 0.061 |
+| % of problems | Problems | 3B base | Run D | **Run E** | Verdict, run E vs base | Verdict, run D vs base |
+|---|---|---|---|---|---|---|
+| Fix bugs (HumanEvalFix) | 164 | 46.3 | 61.6 | **63.4** | better, p = 6e-5 | better, p = 0.0004 |
+| Fix real bugs (ConDefects) | 382 | 12.3 | 14.9 | 14.7 | no clear difference, p = 0.30 | no clear difference, p = 0.24 (registered) |
+| Write tests: bugs caught (2,048 tokens) | 164 | 60.4 | 82.9 | **82.3** | better, p = 3e-6 | better, p = 1e-6 |
+| Write code (HumanEval+) | 163 | 81.0 | 72.4 | 74.8 | no clear difference after correction, p = 0.45 | no clear difference after correction, p = 0.088 |
+| Write code (MBPP+) | 377 | 64.7 | 64.2 | 64.2 | no clear difference | no clear difference |
+| Predict what code returns (CRUXEval-O) | 800 | 42.2 | 43.4 | 43.6 | no clear difference | no clear difference |
+| Explain code (HumanEvalExplain) | 164 | 68.3 | 57.9 | 68.3 | same | no clear difference after correction, p = 0.061 |
 
 The first three rows are what the training was for (each tested against its own small family);
 the other four are general skills, held to a stricter bar because there are more of them (Holm's
@@ -237,15 +266,16 @@ Three things to read in this table:
 - **The benchmark repair gain does not carry over to real bugs.** I chose the seven kinds of
   realistic bugs after reading the benchmark's results by bug type, so the model practised on bugs
   that look like the exam's. On 382 real bugs that people made on AtCoder in 2024, which nobody on
-  my side designed, run D fixes 57 against the base's 47. That is in the right direction but not
-  significant, and the plausible gain is between −1 and +6 points, not 15
+  my side designed, run D fixes 57 against the base's 47 (run E: 56). That is in the right
+  direction but not significant, and the plausible gain is between −1 and +6 points, not 15
   ([real bugs](experiments/results/repair_prereg_t4/README.md)).
 - **The test-writing gain is about finishing.** The base model writes long test files and is cut
   off before the end in 97 of 164 answers, even with almost three times the room; often it repeats
-  itself. Run D writes short, complete files. Where the base does finish, its tests catch the bug a
+  itself. Runs D and E write short, complete files. Where the base does finish, its tests catch the bug a
   little more often (93 vs 86 %) ([tests](experiments/results/testgen2048_t4/README.md)).
 - **Fine-tuning may cost some code writing.** Run D scores lower on HumanEval+ (81 → 72 %) and on
-  explaining code (68 → 58 %), but neither drop passes the stricter bar. The knowledge is still
+  explaining code (68 → 58 %), but neither drop passes the stricter bar. Run E loses less
+  (81 → 75 %) and explains code as well as the base (68 %). The knowledge is still
   there: given 20 tries, run D solves as many HumanEval+ problems as the base
   ([why](experiments/results/capability_study/)). Explaining code is scored by having the model
   rewrite the function from its own explanation, so it also needs code writing; when the base
@@ -281,7 +311,7 @@ detection did not, so I do not claim it
   [B](experiments/results/finetune_qwen25_3b_qlora_mixv3/README.md),
   [C](experiments/results/finetune_qwen25_3b_qlora_mixv3b/README.md),
   [D](experiments/results/finetune_qwen25_3b_qlora_mixv3b_diag/README.md),
-  [E](experiments/results/finetune_qwen25_3b_qlora_mixv3s/README.md). E replaces part of the general
+  [E](experiments/results/finetune_qwen25_3b_qlora_mixv3s/README.md). E (the default) replaces part of the general
   data with the base model's own answers; it loses less on code writing.
 - Every base vs fine-tuned comparison, with the correction for testing many tasks:
   [tables](experiments/results/multiple_comparisons/README.md).
@@ -305,12 +335,14 @@ picture, much less space ([results](experiments/results/ladder_laptop/README.md)
 | Energy per correct answer (J) | 638 | 396 | 234 |
 
 8-bit changes 2 answers out of 163; 4-bit costs 2 to 4 points for almost three times the speed.
-The default 3B runs in 4-bit: 1.9 GB on disk, about 15 seconds and 456 J per fixed bug
-([laptop check](experiments/results/laptop_3b_check/README.md)).
+The default 3B (run E) runs in 4-bit: 1.9 GB on disk, 2.2 GB of memory, about 15 seconds per
+problem and 478 J per fixed bug; run D needed 456 J because it fixed 5 more of the 164 bugs, a gap
+within luck ([laptop check](experiments/results/laptop_3b_check/README.md),
+[run E](experiments/results/laptop_3b_energy_runE/README.md)).
 
 **Guessing ahead.** When fixing a bug, most of the answer copies the original code. The model
 server guesses the next words from text already in the prompt and the model only checks the guess,
-which is faster than writing (456 J per fixed bug instead of 501 J). A second small model doing
+which is faster than writing (run D: 456 J per fixed bug instead of 501 J). A second small model doing
 the guessing was slower here, because both share the same four processor cores
 ([results](experiments/results/speculative_3b_laptop/README.md)).
 
@@ -371,7 +403,7 @@ and this report says so in the words fixed in advance.
 - **Spotting vulnerabilities stayed at chance** (about 50 %) for every model.
 - **Phi-4-mini got worse** from my data; 500 verified "no bug" reviews did not reduce false alarms.
 - **The 9B comparison is weak.** The 1.5B fixes 36 % of the benchmark bugs and the 9B 66 %, but the
-  9B also wrote my training bugs and explanations, so the fine-tuned 3B's 62 % is a student nearing
+  9B also wrote my training bugs and explanations, so the fine-tuned 3B's 63 % is a student nearing
   its teacher on the teacher's kind of bugs.
 - **Kaggle and the laptop do not decode exactly alike** (Kaggle's server applied the model's default
   repetition penalty); comparisons always use the same setup for both models.
@@ -424,7 +456,7 @@ uv run python -c "from security.sandbox import ensure_image; ensure_image()"   #
 (cd frontend && npm ci)
 cp .env.example .env    # then set the token, the keys and the path to the GGUF model
 # the default model (1.93 GB, Qwen research licence, non-commercial):
-uv run hf download MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF llama-locali-qwen2.5-coder-3b-q4_k_m.gguf --local-dir models
+uv run hf download MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF llama-locali-qwen2.5-coder-3b-run-e-q4_k_m.gguf --local-dir models
 ```
 
 Then, one per terminal:

@@ -1,0 +1,20 @@
+diff --git a/tinyshop/api.py b/tinyshop/api.py
+index 15f8892..3ecadcc 100644
+--- a/tinyshop/api.py
++++ b/tinyshop/api.py
+@@ -20,6 +20,7 @@ class Order(BaseModel):
+ 
+ 
+ def get_conn(request: Request):
++    """This function establishes a database connection using the provided `Request` object and returns it. It ensures that the connection is properly closed after use, even if an exception occurs."""
+     conn = db.connect(request.app.state.db_path)
+     try:
+         yield conn
+@@ -58,6 +59,7 @@ def day_report(day: str, conn=Depends(get_conn)):
+ 
+ 
+ def create_app(db_path):
++    """This function creates a FastAPI application with a specified database path, sets it as an app state, includes a router, and returns the application instance."""
+     app = FastAPI(title="tinyshop")
+     app.state.db_path = str(db_path)
+     app.include_router(router)

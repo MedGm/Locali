@@ -97,10 +97,11 @@ Design: [docs/research-design.md](docs/research-design.md)
   (runs A–E); run D is the default model since 1 November (repair 46 → 62 %); draft-model
   speculative decoding for the 3B on the laptop; a four-step study of why fine-tuning costs
   HumanEval+ (`experiments/results/capability_study/`). README updated with all of it.
-- Gaps against the brief: a code-explanation task in the benchmark. Done since: integration and API
-  test generation (4 November, `experiments/results/agents_api_tests`), MCP servers for
-  documentation and issues (5 November).
-- Open: that gap, then the 5-minute demo video, recorded last.
+- Gaps against the brief: none left. Done since: integration and API test generation (4 November,
+  `experiments/results/agents_api_tests`), MCP servers for documentation and issues and the
+  code-explanation task (5 November, `experiments/results/explain_t4`).
+- Open: a pre-registered repair evaluation on benchmarks not used for model selection, then the
+  5-minute demo video, recorded last.
 
 ## Cut order if behind
 1. Phi fine-tuning

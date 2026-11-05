@@ -1,0 +1,31 @@
+[{"stream_name":"stderr","time":8.51415459,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.514202109,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.514213507000001,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.514216782,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.134050691,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.134080282,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.134086049,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.134090706,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":10.325537768,"data":"Writing /kaggle/working/kaggle_explain.py\n"}
+,{"stream_name":"stdout","time":306.468707998,"data":"[13:16:31] setup done\n"}
+,{"stream_name":"stdout","time":310.510240746,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stdout","time":312.850569994,"data":"\n"}
+,{"stream_name":"stdout","time":312.954259845,"data":"Generating test split:   0%|          | 0/164 [00:00\u003c?, ? examples/s]\n"}
+,{"stream_name":"stdout","time":312.95663435,"data":"Generating test split: 100%|██████████| 164/164 [00:00\u003c00:00, 1583.21 examples/s]\n"}
+,{"stream_name":"stdout","time":312.957611477,"data":"Generating test split: 100%|██████████| 164/164 [00:00\u003c00:00, 1542.99 examples/s]\n"}
+,{"stream_name":"stdout","time":530.531217489,"data":"[13:20:15] qwen2.5-coder-3b-ft-qlora-mixv3b-diag: written by the 3B base\n"}
+,{"stream_name":"stdout","time":531.596356841,"data":"[13:20:16] qwen2.5-coder-1.5b-ft-qlora-v2: written by the 3B base\n"}
+,{"stream_name":"stdout","time":532.39485357,"data":"[13:20:17] qwen2.5-coder-3b-ft-qlora-mixv3s: written by the 3B base\n"}
+,{"stream_name":"stdout","time":533.988356109,"data":"[13:20:18] qwen2.5-coder-1.5b: written by the 3B base\n"}
+,{"stream_name":"stdout","time":536.474710847,"data":"[13:20:21] qwen2.5-coder-3b: written by the 3B base\n"}
+,{"stream_name":"stdout","time":537.141333443,"data":"[13:20:21] all done\n"}
+,{"stream_name":"stdout","time":537.46256781,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":540.106356396,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":540.106387824,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":540.301312702,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":540.301341533,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":541.228025019,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":541.307556945,"data":"[NbConvertApp] Writing 16974 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":544.006963258,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":544.5903654050001,"data":"[NbConvertApp] Writing 327687 bytes to __results__.html\n"}
+]

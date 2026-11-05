@@ -129,13 +129,14 @@ Dark theme: [home-dark.png](docs/screenshots/home-dark.png).
 Qwen3.5-2B and Qwen3.5-4B as small models, and Qwen3.5-9B as the "larger general-purpose LLM"
 reference. All open weights, pinned to exact revisions.
 
-**Benchmark** (`evaluation/`): ten tasks covering code generation (HumanEval+, MBPP+), completion
-(infilling), bug repair (HumanEvalFix), bug detection, code reasoning (CRUXEval-O), test
-generation, refactoring, secure code generation and vulnerability detection, plus four held-out
+**Benchmark** (`evaluation/`): eleven tasks covering code generation (HumanEval+, MBPP+), completion
+(infilling), bug repair (HumanEvalFix), bug detection, code explanation (HumanEvalExplain), code
+reasoning (CRUXEval-O), test generation, refactoring, secure code generation and vulnerability
+detection, plus four held-out
 tasks in the formats I trained on. Answers are generated on Kaggle T4s with vLLM (or on the laptop
 with llama.cpp) and scored afterwards on the laptop, with all generated code run in the sandbox
 (the one exception, repair in five other languages, is described in section 10).
-The harness was validated on reference solutions first: all ten tasks score 100 %
+The harness was validated on reference solutions first: all eleven tasks score 100 %
 ([harness validation](experiments/results/harness_validation/README.md)). Comparisons on the same
 items use paired exact McNemar tests. In the score tables, **bold** marks a significant gain (p <
 0.05) and *italic* a significant loss; in speed, energy and memory tables it marks the best value.
@@ -178,10 +179,15 @@ Two fine-tuned models are in Locali: the 3B (run D), the default since 1 Novembe
 | MBPP+ | 64.7 | 64.2 | 64.2 |
 | CRUXEval-O | 42.2 | 43.4 | 43.6 |
 | HumanEval+ | 81.0 | *72.4* | 74.8 |
+| Explanation (HumanEvalExplain) | 68.3 | *57.9* | 68.3 |
 
 Bold: significantly better than the base; italic: significantly worse (paired exact McNemar,
 p < 0.05). Repair and test generation gain in both runs, completion in run E; HumanEval+ stays
-below the base (p = 0.013 for D, 0.076 for E; see "Why HumanEval+ drops" below). Run D fixes a
+below the base (p = 0.013 for D, 0.076 for E; see "Why HumanEval+ drops" below). The explanation
+task has the model explain a function and then rewrite it from its own explanation; when the 3B
+base writes the code from every model's explanation, D's explanations are as good as the base's
+(65.9 vs 68.3 %, p = 0.54), so D's loss there is the same code-writing loss
+([explanation](experiments/results/explain_t4/README.md)). Run D fixes a
 bug in about 15 s on the laptop with 2.2 GB of RAM ([laptop check](experiments/results/laptop_3b_check/README.md)).
 Run E is better on repair and completion but not deployed: that needs its own GGUF build and a
 laptop energy run. Run D is published as a GGUF under the Qwen research licence (non-commercial),

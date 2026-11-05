@@ -16,7 +16,7 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 
 | # | Requirement | Solo minimum | Location | Week | Status |
 |---|---|---|---|---|---|
-| C1 | SLM benchmarking: code generation, completion, bug detection, explanation, refactoring, test generation | 3 models × 6 tasks on benchmark subsets | `evaluation/`, `experiments/` | W1–2 | done: 10 tasks × 4 SLMs + Qwen3.5-9B reference on Kaggle, laptop CPU baselines |
+| C1 | SLM benchmarking: code generation, completion, bug detection, explanation, refactoring, test generation | 3 models × 6 tasks on benchmark subsets | `evaluation/`, `experiments/` | W1–2 | done: 10 tasks × 4 SLMs + Qwen3.5-9B reference on Kaggle, laptop CPU baselines; code explanation (HumanEvalExplain) added 5 November for the 1.5B and 3B models (`experiments/results/explain_t4`) |
 | C2 | Efficient fine-tuning with Unsloth, LoRA/QLoRA, other PEFT | 1 model, QLoRA + LoRA runs on Kaggle T4 | `training/` | W3–5 | done: QLoRA, 16-bit LoRA, rsLoRA (Qwen2.5-Coder) + Phi-4-mini QLoRA, Unsloth |
 | C3 | Quantization 4/8-bit | FP16 / INT8 / INT4 on T4 and laptop CPU | `experiments/` | W6–7 | todo |
 | C4 | KV cache, efficient attention, batching | Prefix caching on/off, batch 1/4/16, SDPA vs eager | `experiments/` | W6–7 | done on a T4: concurrency 1/4/16 (13.6× throughput, 15× less energy per answer), prefix caching on/off (no gain on repair prompts; warm cache halves TTFT), CUDA graphs vs eager (1.6× at 1 request), KV cache on/off (2.1×), SDPA vs eager attention (eager breaks in FP16) ([results](../experiments/results/serving_t4/README.md)) |

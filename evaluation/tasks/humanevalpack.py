@@ -1,4 +1,4 @@
-"""HumanEvalPack (Python) tasks: bug repair and bug detection.
+"""HumanEvalPack (Python) tasks: bug repair, bug detection and code explanation.
 
 Muennighoff et al., 2023, "OctoPack: Instruction Tuning Code Large Language Models".
 Each problem has a human-written buggy solution next to the canonical one.
@@ -7,6 +7,9 @@ Each problem has a human-written buggy solution next to the canonical one.
   (prompt adapted from OctoPack's HumanEvalFixTests variant).
 - bugdetect: buggy or correct function with its specification -> {"has_bug": bool};
   precision / recall / F1 with "has a bug" as the positive class.
+- humanevalexplain: the model explains a function without its docstring, then writes the function
+  again from its own explanation only; the explanation counts as good when that code passes the
+  tests (OctoPack's HumanEvalExplain, describe then synthesize, both by the same model).
 """
 
 import json
@@ -33,6 +36,8 @@ class PackItem:
     imports: str
     test_setup: str
     test: str
+    signature: str = ""
+    docstring: str = ""
 
 
 @dataclass
@@ -55,7 +60,7 @@ def load_humanevalpack(limit: int | None = None) -> list[PackItem]:
             task_id=r["task_id"], prompt=r["prompt"], declaration=r["declaration"],
             canonical_solution=r["canonical_solution"], buggy_solution=r["buggy_solution"],
             bug_type=r["bug_type"], entry_point=r["entry_point"], imports=r["import"],
-            test_setup=r["test_setup"], test=r["test"],
+            test_setup=r["test_setup"], test=r["test"], signature=r["signature"], docstring=r["docstring"],
         )
         for r in rows
     ]
@@ -229,7 +234,89 @@ class BugDetectTask:
         return json.dumps({"has_bug": item.label, "reason": "reference label"})
 
 
+SYNTHESIS_MARK = "\n\n=== code written from the explanation ===\n\n"
+_FENCE = re.compile(r"```.*?(?:```|$)", re.DOTALL)
+
+
+def clean_explanation(text: str, limit: int) -> str:
+    """The explanation as the second step sees it: no thinking, no code blocks, at most `limit` characters.
+
+    Code blocks are removed so an answer that copies the code cannot pass; the limit is OctoPack's
+    (the length of the original docstring), applied here instead of only asked for.
+    """
+    text = _FENCE.sub("", _THINK.sub("", text)).strip()
+    return text[:limit].strip()
+
+
+def copied_lines(explanation: str, solution: str, min_chars: int = 20) -> int:
+    """Lines of the hidden solution (at least `min_chars` long) that appear in the explanation."""
+    flat = " ".join(explanation.split())
+    return sum(" ".join(line.split()) in flat for line in solution.splitlines() if len(line.strip()) >= min_chars)
+
+
+class ExplainTask:
+    name = "humanevalexplain"
+    dataset = HUMANEVALPACK
+
+    @property
+    def excluded(self) -> dict[str, str]:
+        return {}
+
+    def load(self, limit: int | None = None) -> list[PackItem]:
+        return load_humanevalpack(limit)
+
+    def messages(self, item: PackItem) -> list[dict]:
+        content = (
+            f"```python\n{item.declaration}{item.canonical_solution}```\n\n"
+            "Provide a concise natural language description of what this function does, using at most "
+            f"{len(item.docstring)} characters. Do not include code."
+        )
+        return [{"role": "user", "content": content}]
+
+    def followup(self, item: PackItem, first: Completion) -> list[dict]:
+        explanation = clean_explanation(first.text, len(item.docstring))
+        content = (
+            f"Write a Python function `{item.signature}` according to this description:\n\n{explanation}\n\n"
+            "Return the complete function in a markdown code block."
+        )
+        return [{"role": "user", "content": content}]
+
+    def score(self, item: PackItem, completion: Completion, eval_timeout_s: float) -> dict:
+        explained, _, written = completion.text.partition(SYNTHESIS_MARK)
+        explanation = clean_explanation(explained, len(item.docstring))
+        if not explanation:
+            return {"status": "invalid", "passed": False, "explanation": "", "copied_lines": 0, "code": "",
+                    "eval_duration_s": 0.0}
+        code = sanitize(extract_code(written, entry_point=item.entry_point))
+        program = (
+            f"{item.imports}\n{_import_lines(item.declaration)}\n{item.test_setup}\n\n"
+            f"{code}\n\n{item.test}\n"
+        )
+        outcome = run_program(program, eval_timeout_s)
+        return {
+            "status": outcome.status,
+            "passed": outcome.passed,
+            "explanation": explanation,
+            "copied_lines": copied_lines(explanation, item.canonical_solution),
+            "code": code,
+            "eval_duration_s": outcome.duration_s,
+        }
+
+    def metrics(self, records: list[dict]) -> dict:
+        n, passed = len(records), sum(r["passed"] for r in records)
+        return {
+            "pass@1": round(pass_at_k(n, passed, 1), 4) if n else None,
+            "explanations_with_copied_code": sum(r.get("copied_lines", 0) > 0 for r in records),
+            "mean_explanation_chars": round(sum(len(r.get("explanation", "")) for r in records) / n, 1) if n else None,
+        }
+
+    def reference(self, item: PackItem) -> str:
+        """The original docstring as the explanation, then the canonical solution."""
+        return f"{item.docstring}{SYNTHESIS_MARK}```python\n{item.declaration}{item.canonical_solution}```"
+
+
 FIX_TASK = FixTask()
+EXPLAIN_TASK = ExplainTask()
 FIX_REWORDED_TASK = FixRewordedTask()
 FIX_NO_TESTS_TASK = FixNoTestsTask()
 BUG_DETECT_TASK = BugDetectTask()

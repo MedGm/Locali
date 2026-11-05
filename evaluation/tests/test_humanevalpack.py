@@ -132,3 +132,59 @@ def test_reworded_tasks_are_scored_like_humanevalfix():
     from evaluation.run import TASKS
 
     assert {"humanevalfix_reworded", "humanevalfix_notests"} <= set(TASKS)
+
+
+# ---- code explanation (describe, then write the code from the description) ----
+
+def test_explanation_loses_code_blocks_thinking_and_the_excess():
+    from evaluation.tasks.humanevalpack import clean_explanation
+
+    text = "<think>it sorts</think>Returns the list sorted.\n```python\nreturn sorted(x)\n```\nThat is all."
+    assert clean_explanation(text, 1000) == "Returns the list sorted.\n\nThat is all."
+    assert clean_explanation("abcdef", 3) == "abc"
+    assert clean_explanation("Text then ```python\nreturn x  (truncated", 1000) == "Text then"
+
+
+def test_copied_lines_counts_long_solution_lines_only():
+    from evaluation.tasks.humanevalpack import copied_lines
+
+    solution = "    for idx, elem in enumerate(numbers):\n    return False\n"
+    assert copied_lines("It loops: for idx, elem in   enumerate(numbers): and checks.", solution) == 1
+    assert copied_lines("It returns False when nothing is close.", solution) == 0
+
+
+def test_two_step_sends_the_cleaned_explanation_and_keeps_both_answers():
+    from evaluation.run import two_step
+    from evaluation.tasks.humanevalpack import EXPLAIN_TASK, SYNTHESIS_MARK
+
+    item = _item()
+    item.signature, item.docstring = "f(x)", "Return x plus one."
+    sent = []
+
+    def call(messages):
+        sent.append(messages[-1]["content"])
+        return answer("Adds one.\n```python\nreturn x + 1\n```" if len(sent) == 1 else "```python\ndef f(x): ...\n```")
+
+    done = two_step(EXPLAIN_TASK, item, call)
+    assert "`f(x)`" in sent[1] and "Adds one." in sent[1] and "return x + 1" not in sent[1]
+    assert done.text.count(SYNTHESIS_MARK) == 1 and done.input_tokens == 20
+
+
+def test_tasks_without_followup_make_one_call():
+    from evaluation.run import two_step
+
+    calls = []
+    two_step(FIX_TASK, _item(), lambda m: calls.append(m) or answer("x"))
+    assert len(calls) == 1
+
+
+@needs_docker
+@needs_hub
+def test_explain_reference_passes_and_an_empty_explanation_is_invalid():
+    from evaluation.tasks.humanevalpack import EXPLAIN_TASK, SYNTHESIS_MARK
+
+    for item in EXPLAIN_TASK.load(limit=3):
+        good = EXPLAIN_TASK.score(item, answer(EXPLAIN_TASK.reference(item)), eval_timeout_s=60)
+        assert good["passed"] and good["copied_lines"] == 0, (item.task_id, good)
+        empty = EXPLAIN_TASK.score(item, answer("```python\ncode\n```" + SYNTHESIS_MARK + "x"), 60)
+        assert empty["status"] == "invalid"

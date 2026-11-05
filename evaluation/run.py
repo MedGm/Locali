@@ -44,9 +44,11 @@ from evaluation.tasks.cruxeval import CRUX_OUTPUT_TASK
 from evaluation.tasks.format_transfer import REVIEW_FORMAT_DETECT_TASK, T1_FORMAT_FIX_TASK
 from evaluation.tasks.humanevalpack import (
     BUG_DETECT_TASK,
+    EXPLAIN_TASK,
     FIX_NO_TESTS_TASK,
     FIX_REWORDED_TASK,
     FIX_TASK,
+    SYNTHESIS_MARK,
 )
 from evaluation.tasks.internal import (
     INTERNAL_T1_TASK,
@@ -59,7 +61,7 @@ from evaluation.tasks.security import SECURE_CODEGEN_TASK, VULN_DETECT_TASK
 from evaluation.tasks.testgen import TESTGEN_TASK
 
 TASKS: dict[str, Task] = {
-    task.name: task for task in [HUMANEVAL_PLUS_TASK, MBPP_PLUS_TASK, FIX_TASK, BUG_DETECT_TASK, CRUX_OUTPUT_TASK, TESTGEN_TASK, REFACTOR_TASK, COMPLETION_TASK,
+    task.name: task for task in [HUMANEVAL_PLUS_TASK, MBPP_PLUS_TASK, FIX_TASK, BUG_DETECT_TASK, EXPLAIN_TASK, CRUX_OUTPUT_TASK, TESTGEN_TASK, REFACTOR_TASK, COMPLETION_TASK,
                  SECURE_CODEGEN_TASK, VULN_DETECT_TASK, INTERNAL_T1_TASK, INTERNAL_T2_TASK, INTERNAL_T3_TASK, INTERNAL_T4_TASK,
                  T1_FORMAT_FIX_TASK, REVIEW_FORMAT_DETECT_TASK, FIX_REWORDED_TASK, FIX_NO_TESTS_TASK,
                  FULL_CONTEXT_REPAIR_TASK, COMPRESSED_REPAIR_TASK, HUMANEVAL_PLUS_PLAN_TASK, HUMANEVAL_PLUS_KEEPDOC_TASK,
@@ -217,6 +219,27 @@ def _speculative(records: list[dict]) -> dict:
     return {"draft_tokens": drafted, "draft_accepted": accepted, "draft_acceptance": round(accepted / drafted, 4)}
 
 
+def two_step(task: Task, item, call: Callable[[list[dict]], Completion]) -> Completion:
+    """One model call, or two for a task with a `followup` (the second prompt is built from the first
+    answer). Both answers are kept in one record, joined by SYNTHESIS_MARK; tokens and time add up."""
+    first = call(task.messages(item))
+    followup = getattr(task, "followup", None)
+    if followup is None:
+        return first
+    second = call(followup(item, first))
+
+    def add(a, b):
+        return None if a is None or b is None else a + b
+
+    return Completion(
+        text=first.text + SYNTHESIS_MARK + second.text, reasoning=(first.reasoning or "") + (second.reasoning or ""),
+        input_tokens=add(first.input_tokens, second.input_tokens),
+        output_tokens=add(first.output_tokens, second.output_tokens),
+        ttft_s=first.ttft_s, total_s=first.total_s + second.total_s, finish_reason=second.finish_reason
+        if first.finish_reason != "length" else "length",
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--benchmark", choices=TASKS, required=True)
@@ -257,11 +280,12 @@ def main() -> None:
             parser.error("--base-url is required unless --reference is set")
         client = ChatClient(args.base_url, model=args.served_model, extra_body={"chat_template_kwargs": {"enable_thinking": args.thinking}})
 
+        def call(messages: list[dict]) -> Completion:
+            return client.complete(messages, max_tokens=config.max_tokens, temperature=config.temperature,
+                                   seed=config.seed)
+
         def generate(item) -> Completion:
-            return client.complete(
-                task.messages(item), max_tokens=config.max_tokens,
-                temperature=config.temperature, seed=config.seed,
-            )
+            return two_step(task, item, call)
 
     summary = run_benchmark(config, task, items, generate, args.out)
     print(json.dumps({"metrics": summary["metrics"], "this_session": summary["this_session"]}, indent=2))

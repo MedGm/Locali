@@ -37,6 +37,7 @@ Scores in this project are therefore reported on 163 HumanEval+ and 377 MBPP+ pr
 | humanevalfix | Canonical solution as the model's fix | **164 / 164 pass** |
 | humanevalfix | Original buggy solution as the model's fix (inverse check: every item must be a real bug) | **0 / 164 pass** (161 failed, 2 timeout, 1 crashed) |
 | bugdetect | Reference labels as the model's verdict (328 items: buggy + correct per problem) | accuracy, precision, recall, F1 all **1.000**; invalid rate 0 |
+| humanevalexplain (added 2026-11-05) | Original docstring as the explanation, canonical solution as the code written from it | **164 / 164 pass**; 0 explanations with copied solution lines |
 
 No exclusions needed.
 

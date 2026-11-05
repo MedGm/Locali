@@ -111,3 +111,13 @@ Design: [docs/research-design.md](docs/research-design.md)
 5. Energy measurement
 
 Never cut: base vs fine-tuned, quantization ladder, security controls + attack tests, working end-to-end demo.
+
+## Status 2026-11-05 (week 8)
+
+- Brief gaps closed: integration and API tests, MCP servers for documentation and issues, code
+  explanation in the benchmark.
+- Pre-registered checks of the two main claims (`docs/preregistration-repair.md`): test generation
+  holds with a larger token budget (the gain is complete test files); repair on real bugs
+  (ConDefects) is not confirmed (57 vs 47 of 382, p = 0.24).
+- README rewritten as the plain-language final report with the new results.
+- Open: the paper (still has the old repair headline), repository cleanup, the 5-minute demo video.

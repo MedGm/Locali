@@ -34,9 +34,13 @@ export PYTHONPATH=.
     experiments/results/multilang_t4_rescore2 >/dev/null
 LOCALI_MODEL_URL=http://127.0.0.1:9/v1 "$UV" run python experiments/scripts/redteam_model.py >/dev/null
 "$UV" run python experiments/scripts/redteam.py >/dev/null
+"$UV" run python experiments/scripts/report_figures.py >/dev/null
+"$UV" run python experiments/scripts/multiple_comparisons.py > experiments/results/multiple_comparisons/README.md
 
 status=0
 for f in experiments/results/summary.json \
+         docs/figures/fine_tuning.svg docs/figures/quantization.svg \
+         experiments/results/multiple_comparisons/README.md \
          experiments/results/context_agents/table.md \
          experiments/results/serving_t4/tables.md \
          experiments/results/multilang_t4_rescore/table.md \

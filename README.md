@@ -1,633 +1,410 @@
 # Locali
 
-A software-engineering assistant built on small language models that run on a laptop CPU (a
-fine-tuned Qwen2.5-Coder-3B by default, a fine-tuned 1.5B as the fast option): it reviews a
-repository, writes tests, fixes failing ones, documents functions and checks merge readiness, and
-every change it proposes waits for a human to approve that exact patch.
+Locali is an assistant for software projects that runs on a laptop. It reviews code, writes tests,
+proposes bug fixes and documentation, and checks whether a change is ready to merge. It does this
+with a small AI model (a fine-tuned Qwen2.5-Coder-3B, or a 1.5B as the fast option) running on the
+laptop's processor, without a GPU and without sending code anywhere. Nothing it proposes reaches
+the project until a person approves that exact change.
 
-Course project *Efficient Small Language Models for Intelligent Software Engineering, Testing and
-DevOps* (2026). The brief was written for teams of five; I did it alone, with the hardware I have
-(a 4-core laptop without a GPU, 16 GB RAM) and Kaggle's free T4 GPUs.
+This is my course project for *Efficient Small Language Models for Intelligent Software
+Engineering, Testing and DevOps* (2026). The brief was written for teams of five; I did it alone,
+with a 4-core laptop without a GPU (16 GB of memory) and Kaggle's free GPUs.
 
-> **Research question.** Can small, efficiently fine-tuned and optimized language models provide
-> useful software-engineering capabilities under low-resource constraints, while keeping strong
-> security, quality and operational supervision?
+> **The question of the brief.** Can small, efficiently fine-tuned and optimized language models
+> provide useful software-engineering capabilities under low-resource constraints, while keeping
+> strong security, quality and operational supervision?
 
-**Short answer: yes, within limits I can now measure.**
+**My answer: yes for some jobs, with limits I measured.**
 
-A 1.5B model fine-tuned with QLoRA in two hours on one T4 catches 82 % of bugs with the tests it
-writes (from 46 %), preserves behaviour in 94 % of refactors (from 70 %) and repairs 36 % of
-HumanEvalFix bugs (from 25 %), without a significant loss in general code generation. Quantized to
-8 bits it loses nothing measurable, needs 1.8 GB of RAM and answers at 10 tokens/s on the laptop CPU.
-
-The same recipe on a 3B model, with realistic bugs added to the data, repairs 62 % of HumanEvalFix
-(from 46 %); quantized to 4 bits it fixes a bug in about 15 s on the
-laptop with 2.2 GB of RAM, for 456 J of CPU energy per fixed bug. The cost is general code
-generation on HumanEval+ (81 → 72 %, p = 0.013, not significant once corrected for the number of
-tasks compared): the model still knows the solutions (equal pass@20) but its first answer is less
-reliable.
-
-On its own the model is noisy as a reviewer; it becomes useful as one part of a workflow where
-static tools carry security, a sandbox runs every test, and nothing reaches the repository without
-approval. The main security property is a design one: the model never acts, it only produces text
-that is checked before anything changes. My own attack cases did not get through those controls,
-which shows they work as built, not that they resist an attacker who adapts to them.
+- **Writing tests** works well. After fine-tuning, the tests the model writes catch the bug in 83 %
+  of the problems (60 % before). The gain is real, and it comes from the model learning to write
+  short, complete test files instead of long ones it never finishes.
+- **Fixing bugs** improved a lot on the standard benchmark (46 → 62 %). But on real bugs that
+  people made, which my training data was not shaped after, the gain is small and not proven
+  (12 → 15 %, p = 0.24). I checked this with rules written down before the run.
+- **Running on a laptop** is practical. Stored with 4-bit numbers, the 3B model takes 2.2 GB of
+  memory and fixes a bug in about 15 seconds.
+- **On its own the model makes mistakes**, so Locali never lets it act. Normal analysis tools find
+  the security problems, every test runs in a locked box, and a person approves each change.
 
 ### Results at a glance
 
-| What | Before → after | Section |
-|---|---|---|
-| Bug repair, HumanEvalFix (fine-tuned 3B) | 46 → 62 % | [3](#3-fine-tuning) |
-| Bugs caught by the tests it writes (3B) | 62 → 83 % | [3](#3-fine-tuning) |
-| Refactors that keep behaviour (1.5B) | 70 → 94 % | [3](#3-fine-tuning) |
-| HumanEval+, the cost of fine-tuning (3B) | 81 → 72 % | [3](#3-fine-tuning) |
-| One bug fix on the laptop (3B, 4-bit) | ~15 s, 2.2 GB RAM, 456 J | [4](#4-performance-optimization) |
-| 8-bit vs 16-bit (1.5B) | no measurable loss, 1.8× less RAM | [4](#4-performance-optimization) |
-| Bugs caught on demo_repo (one repository I built): single review → workflow with tools | 0 → 4 of 5 | [5](#5-the-agents) |
-| My own attack cases that got through the controls | 0 of 33 | [6](#6-llm-security) |
+| What | Before → after | Verdict | Section |
+|---|---|---|---|
+| Tests it writes catch the bug (3B) | 60 → 83 % | better (p = 1e-6) | [3](#3-teaching-the-model) |
+| Fix bugs, standard benchmark (3B) | 46 → 62 % | better, but on bugs like the training data | [3](#3-teaching-the-model) |
+| Fix real bugs from a programming contest (3B) | 12 → 15 % | **not proven** (p = 0.24) | [3](#3-teaching-the-model) |
+| Refactoring that keeps behaviour (1.5B) | 70 → 94 % | better | [3](#3-teaching-the-model) |
+| Write code from a description (3B) | 81 → 72 % | lower, not proven after correction | [3](#3-teaching-the-model) |
+| One bug fix on the laptop (3B, 4-bit) | ~15 s, 2.2 GB, 456 J | | [4](#4-running-on-a-laptop) |
+| 8-bit instead of 16-bit numbers (1.5B) | same answers, 1.8× less memory | | [4](#4-running-on-a-laptop) |
+| Bugs found on the demo project: one review → full workflow | 0 → 4 of 5 | one project I built | [2](#2-the-assistant) |
+| My own attack cases that got through the controls | 0 of 33 | the controls work as built | [2](#2-the-assistant) |
 
 ### Models and data online
 
 | What | Where |
 |---|---|
-| Fine-tuned 3B (run D), the default model: Q4_K_M GGUF for llama.cpp | [Llama-Locali-Qwen2.5-Coder-3B-GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF) |
-| Fine-tuned 1.5B (QLoRA v2), the fast option: merged model, GGUF (Q8_0, Q4_K_M), adapter | [merged](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B) · [GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF) · [adapter](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-QLoRA) |
-| The other adapters: 1.5B QLoRA v1, 16-bit LoRA, rsLoRA, Phi-4-mini | [Llama-Locali-adapters](https://huggingface.co/MedGm/Llama-Locali-adapters) |
-| Training data, mixtures v1 to v3b | Kaggle: [v1](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v1) · [v2](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v2) · [v3](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v3) · [v3b](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v3b); v2 also on [Hugging Face](https://huggingface.co/datasets/MedGm/locali-mix-v2) |
+| Fine-tuned 3B (run D), the default model, for llama.cpp | [Llama-Locali-Qwen2.5-Coder-3B-GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF) |
+| Fine-tuned 1.5B (QLoRA v2), the fast option | [merged](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B) · [GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF) · [adapter](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-QLoRA) |
+| The other 1.5B and Phi-4-mini adapters | [Llama-Locali-adapters](https://huggingface.co/MedGm/Llama-Locali-adapters) |
+| Training data, versions 1 to 3b | Kaggle: [v1](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v1) · [v2](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v2) · [v3](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v3) · [v3b](https://www.kaggle.com/datasets/elgorrimmohamed/locali-mix-v3b); v2 also on [Hugging Face](https://huggingface.co/datasets/MedGm/locali-mix-v2) |
 | Everything on Hugging Face | [huggingface.co/MedGm](https://huggingface.co/MedGm) |
 
-The 3B model is under the Qwen research licence: non-commercial use only. Its adapters (runs A to
-E) and mixture v3s, which contains the 3B's own outputs, are not published; `training/kaggle/gguf`
-rebuilds a 3B model from an adapter.
-
-![The brief's chain and what each stage gave](docs/diagrams/evaluation_chain.svg)
+The 3B model is under the Qwen research licence: non-commercial use only. Its other adapters and
+the data set that contains its own answers (v3s) are not published.
 
 ## Contents
 
-1. [The platform](#1-the-platform)
-2. [Models and benchmark](#2-models-and-benchmark)
-3. [Fine-tuning](#3-fine-tuning)
-4. [Performance optimization](#4-performance-optimization)
-5. [The agents](#5-the-agents)
-6. [LLM security](#6-llm-security)
-7. [DevOps, LLMOps and the web app](#7-devops-llmops-and-the-web-app)
-8. [The five ablations of the brief](#8-the-five-ablations-of-the-brief)
-9. [Metrics](#9-metrics)
-10. [What did not work, and limits](#10-what-did-not-work-and-limits)
-11. [Running it](#11-running-it)
-12. [Reproducing the results](#12-reproducing-the-results)
-13. [Use of AI tools](#13-use-of-ai-tools)
-14. [Repository layout](#14-repository-layout)
+1. [The words you need](#1-the-words-you-need)
+2. [The assistant](#2-the-assistant)
+3. [Teaching the model](#3-teaching-the-model)
+4. [Running on a laptop](#4-running-on-a-laptop)
+5. [How I measured](#5-how-i-measured)
+6. [What did not work, and limits](#6-what-did-not-work-and-limits)
+7. [The brief, point by point](#7-the-brief-point-by-point)
+8. [Running it](#8-running-it)
+9. [Reproducing the results](#9-reproducing-the-results)
+10. [Use of AI tools](#10-use-of-ai-tools)
+11. [Where things are](#11-where-things-are)
 
-## 1. The platform
+## 1. The words you need
 
-The brief's pipeline, and where each step lives:
+| Word | Meaning |
+|---|---|
+| **Model** | A program that predicts text, here code. It is a very long list of numbers learned from examples. |
+| **1.5B, 3B, 9B** | Billions of numbers in a model. Bigger models know more but need more memory and time. |
+| **Base model** | A model as its makers published it, before my training. |
+| **Fine-tuning** | Extra training on my own examples, so the model gets better at the jobs Locali needs. |
+| **QLoRA, adapter** | A cheap way to fine-tune: the model stays frozen and a small add-on (the adapter, about 1 % extra numbers) is trained. It fits on a free GPU. |
+| **Run A to E** | My five fine-tuning attempts on the 3B, each with slightly different training data. Run D is the one Locali uses. |
+| **Quantization** | Storing the model's numbers with fewer digits (16 → 8 → 4 bits): smaller and faster, almost the same answers. |
+| **GGUF, llama.cpp** | The file format and the program that run a model on a normal processor. |
+| **Benchmark** | A fixed set of problems with a correct answer for each, like an exam. |
+| **pass@1** | The share of problems a model solves on its first try. |
+| **Sandbox** | A locked box where code runs without internet, without access to my files, with limits on time and memory. |
+| **p-value** | The chance that a difference this large appears by pure luck. Below 0.05 (5 %) I call it significant. |
+| **Pre-registration** | Writing the rules of a test down, and saving them in git, before running it. |
+| **Patch** | One proposed change to the code, shown as before and after, approved or refused by a person. |
 
-| Step | What Locali does | Code |
-|---|---|---|
-| Repository | Works on any folder under a configured root; a run never writes to it | `backend/workspace.py` |
-| Code analysis | Ruff, Bandit, Radon, Semgrep (own rules for Python, JavaScript/TypeScript, Java and Go), a secret scanner and a prompt-injection detector | `backend/analysis.py`, `security/` |
-| AI review | The model reviews each function; findings must quote a line that exists | `backend/agents/review.py` |
-| Test generation | Regression tests for untested functions, kept only if they pass | `backend/agents/testgen.py` |
-| Automated testing | pytest with coverage in a Docker sandbox: no network, read-only, CPU/memory/process limits | `security/sandbox.py` |
-| Bug/fix suggestions | Failing tests go to a repair loop; failed assertions in generated tests become "suspects" | `backend/agents/debug.py` |
-| Documentation | Docstrings for undocumented public functions, accepted only if nothing but docstrings changed | `backend/agents/docs.py` |
-| Quality assessment | Findings by category and severity, coverage, merge readiness | `backend/agents/devops.py` |
-| CI/CD | A GitHub Action reviews pull requests and blocks new security issues | `.github/workflows/` |
-| Deployment assistance | Dependency typosquat check, CI suggestion, blockers and warnings | `backend/agents/devops.py` |
-| Monitoring/audit | Audit log of every action, MLflow runs and traces, a security center | `backend/audit.py`, `backend/llmops.py` |
-| Ask the model | A playground: paste code in any language, pick a task, compare two models side by side | `backend/playground.py` |
+## 2. The assistant
 
-Quick scans (static tools only) work on Python, JavaScript, TypeScript, Java and Go projects. The
-full assistant (tests, repair loop, patch validation) works on Python code, because those steps run
-pytest and use Python's parser.
+You give Locali a folder of code. It always goes through the same steps:
 
-![Locali system architecture](docs/diagrams/architecture.svg)
+![One assistant run](docs/diagrams/workflow.svg)
 
-Every agent change becomes a **patch**: one per fixed file, per test file and per documented file,
-each applied alone to a fresh copy of the repository and validated there (no test that passed
-before may fail, no new Bandit/Semgrep finding, no secret in the added lines). A reviewer approves
-a patch by sending back its SHA-256, the hashes of the files it was made against and the hash of
-its validation record; if anything differs, or the files changed since, it is refused or marked
-stale and can be revalidated. Applied patches can be reverted.
+1. **Copy.** It works on a copy; your code is never touched during a run.
+2. **Check with normal tools.** Ruff (style), Bandit and Semgrep (security), Radon (complexity), a
+   secret scanner and a detector for hidden instructions aimed at AI tools. No AI here, so these
+   findings are reliable.
+3. **Review.** The model reads each function and says what looks wrong. It is often wrong, so its
+   findings are kept apart from the tools' findings, and a finding must quote a line that exists.
+4. **Write tests.** The model writes tests for functions that have none: unit tests for one
+   function, integration tests for a function together with the code it calls, and API tests for
+   each web endpoint. Each test runs in the sandbox. A test is kept only if it passes; if it fails,
+   the function is reported as a possible bug.
+5. **Fix.** If an existing test fails, the model proposes a fix, which is tested in the sandbox
+   too, up to three attempts.
+6. **Document and report.** It adds missing docstrings, checks whether the change is ready to merge
+   (blockers, dependency typos, CI), and writes a report.
+
+Every change becomes a **patch**, checked alone on a fresh copy: no test that passed may fail, no
+new security finding, no secret in the added lines. You approve a patch by sending back its exact
+fingerprint; if anything changed since, it is refused. Applied patches can be undone.
 
 ![From an agent's change to the repository](docs/diagrams/patches.svg)
+
+**The safety idea in one sentence:** the model only writes text, programs check that text, and a
+person approves every change. A prompt-injection trick hidden in a repository therefore cannot make
+it do anything.
+
+![Locali system architecture](docs/diagrams/architecture.svg)
 
 ### The web app
 
 | | |
 |---|---|
 | ![Home](docs/screenshots/home.png) | ![Repositories](docs/screenshots/repositories.png) |
-| **Home**: what to do next, repositories, changes waiting for a decision | **Repositories**: languages, last run, patches waiting |
+| **Home**: what to do next, changes waiting for a decision | **Repositories**: languages, last run, patches waiting |
 | ![A run](docs/screenshots/run.png) | ![Patch review](docs/screenshots/patch-review.png) |
-| **A run**: the steps, a summary, then every finding, test, fix and model call | **Patch review**: what to check, the validation record, approve the exact patch |
+| **A run**: the steps, a summary, every finding, test, fix and model call | **Patch review**: what to check, the validation record, approve the exact patch |
 | ![Playground](docs/screenshots/playground.png) | ![Research results](docs/screenshots/results.png) |
-| **Playground**: the fine-tuned model (left) finds and fixes the bug; the base model (right) does not | **Research results**: every study, here the other languages |
+| **Playground**: two models side by side on code you paste | **Research results**: every study |
 
-Dark theme: [home-dark.png](docs/screenshots/home-dark.png).
+Dark theme: [home-dark.png](docs/screenshots/home-dark.png). Quick scans (tools only) work on
+Python, JavaScript, TypeScript, Java and Go; the full assistant works on Python.
 
-## 2. Models and benchmark
+### Does it work? The demo project
 
-**Models** ([research design](docs/research-design.md)): Qwen2.5-Coder-1.5B, Phi-4-mini (3.8B),
-Qwen3.5-2B and Qwen3.5-4B as small models, and Qwen3.5-9B as the "larger general-purpose LLM"
-reference. All open weights, pinned to exact revisions.
+`demo_repo/` is a small shop application I built with planted problems: 6 bugs, 5 security holes,
+a hard-coded key, a misspelled dependency and two hidden instructions for AI tools
+([answer key](security/demo_repo_flaws.json)).
 
-**Benchmark** (`evaluation/`): eleven tasks covering code generation (HumanEval+, MBPP+), completion
-(infilling), bug repair (HumanEvalFix), bug detection, code explanation (HumanEvalExplain), code
-reasoning (CRUXEval-O), test generation, refactoring, secure code generation and vulnerability
-detection, plus four held-out
-tasks in the formats I trained on. Answers are generated on Kaggle T4s with vLLM (or on the laptop
-with llama.cpp) and scored afterwards on the laptop, with all generated code run in the sandbox
-(the one exception, repair in five other languages, is described in section 10).
-The harness was validated on reference solutions first: all eleven tasks score 100 %
-([harness validation](experiments/results/harness_validation/README.md)). Comparisons on the same
-items use paired exact McNemar tests. Repair and test generation are the confirmatory outcomes,
-the two the training data was built for from the start; every other task is exploratory. Each
-family is corrected with Holm for each fine-tuned model ([tables](experiments/results/multiple_comparisons/README.md)).
-In the score tables, **bold** marks a gain and *italic* a loss that stay significant after that
-correction (adjusted p < 0.05); in speed, energy and memory tables bold marks the best value.
-
-"Bugs caught" by the tests a model writes: each generated test first runs on the correct code and
-is dropped if it fails there (a wrong expected value); the bug counts as caught if at least one of
-the remaining tests fails, errors or hangs on the buggy code, with the same 60 s limit on both. A
-problem where no test survives catches nothing.
-
-| % of each task | Qwen2.5-Coder 1.5B | Qwen3.5-2B | Phi-4-mini 3.8B | Qwen3.5-4B | Qwen3.5-9B |
-|---|---|---|---|---|---|
-| HumanEval+ pass@1 | 65.0 | 47.2 | 71.2 | 79.8 | 84.0 |
-| MBPP+ pass@1 | 56.2 | 40.8 | 54.1 | 66.8 | 62.1 |
-| Repair (HumanEvalFix) | 25.0 | 34.2 | 42.7 | 53.7 | 65.8 |
-| Tests: bugs caught | 46.3 | 87.2 | 90.2 | 97.0 | 95.7 |
-| Refactoring: behaviour kept | 69.9 | 82.8 | 86.5 | 92.0 | 92.6 |
-| Energy per correct HumanEval+ answer, T4 (J) | **54** | 116 | 105 | 98 | 421 |
-
-([full tables](experiments/results/kaggle_reference_20261012/README.md))
-
-Two things decided the rest of the project. Qwen2.5-Coder-1.5B is by far the cheapest model per
-correct answer (8× less energy than the 9B) and the weakest exactly on repair, testing and
-refactoring, which leaves the most room for fine-tuning. And Unsloth could not train Qwen3.5 on a T4 at
-all: tested on the 2B in FP16, BF16 and FP32, all three failed in the same code path, which the 4B
-and 9B share ([W1 spikes](experiments/results/w1_spikes/README.md)). The two models I fine-tuned
-first are therefore Qwen2.5-Coder-1.5B and Phi-4-mini; Qwen2.5-Coder-3B was added later as a
-stronger base that still runs on the laptop (end of section 3).
-
-## 3. Fine-tuning
-
-![Fine-tuning pipeline](docs/diagrams/training.svg)
-
-Two fine-tuned models are in Locali: the 3B (run D), the default since 1 November, and the 1.5B
-(QLoRA v2), the fast option. Their results come first; how I got there is below, folded.
-
-**The 3B, default model** ([run D](experiments/results/finetune_qwen25_3b_qlora_mixv3b_diag/README.md),
-[run E](experiments/results/finetune_qwen25_3b_qlora_mixv3s/README.md)), Qwen2.5-Coder-3B, % of each task:
-
-| Task | Base | Run D (default) | Run E |
+| On the demo project (before its web API was added) | One review per file | Full workflow, no tools | Full workflow + tools |
 |---|---|---|---|
-| Repair (HumanEvalFix) | 46.3 | **61.6** | **63.4** |
-| Tests: bugs caught | 62.2 | **82.9** | **82.3** |
-| Refactoring: behaviour kept | 86.5 | 87.7 | 87.7 |
-| Completion (infilling) | 56.4 | 62.0 | **65.6** |
-| MBPP+ | 64.7 | 64.2 | 64.2 |
-| CRUXEval-O | 42.2 | 43.4 | 43.6 |
-| HumanEval+ | 81.0 | 72.4 | 74.8 |
-| Explanation (HumanEvalExplain) | 68.3 | 57.9 | 68.3 |
-
-Bold: significantly better than the base after the Holm correction. Repair and test generation gain
-in both runs, completion in run E. HumanEval+ stays below the base (p = 0.013 for D, 0.076 for E,
-not significant after the correction, Holm p = 0.088 and 0.45; see "Why HumanEval+ drops" below).
-Both gains are being rechecked in a pre-registered evaluation: repair on real bugs that the
-training data was not shaped after, and test generation with a token budget that the base does not
-run out of ([protocol](docs/preregistration-repair.md)). The explanation
-task has the model explain a function and then rewrite it from its own explanation; when the 3B
-base writes the code from every model's explanation, D's explanations are as good as the base's
-(65.9 vs 68.3 %, p = 0.54), so D's loss there is the same code-writing loss
-([explanation](experiments/results/explain_t4/README.md)). Run D fixes a
-bug in about 15 s on the laptop with 2.2 GB of RAM ([laptop check](experiments/results/laptop_3b_check/README.md)).
-Run E is better on repair and completion but not deployed: that needs its own GGUF build and a
-laptop energy run. Run D is published as a GGUF under the Qwen research licence (non-commercial),
-with the notices it requires.
-
-**The 1.5B, fast option** ([results](experiments/results/finetune_v2/README.md)), Qwen2.5-Coder-1.5B,
-% of each task, p from a paired exact McNemar test (bug detection is not bold: the second seed did
-not replicate it):
-
-| Task | Base | QLoRA v2 | p |
-|---|---|---|---|
-| Tests: bugs caught | 46.3 | **82.3** | 2e-12 |
-| Refactoring: behaviour kept | 69.9 | **93.9** | 9e-10 |
-| Repair (HumanEvalFix) | 25.0 | **36.0** | 0.006 |
-| MBPP+ | 56.2 | **62.1** | 0.005 |
-| Bug detection (not replicated) | 53.0 | 65.5 | 0.0004 |
-| HumanEval+ | 65.0 | 62.0 | 0.51 |
-| CRUXEval-O (not trained) | 30.1 | 28.7 | 0.31 |
-
-On held-out repair items in the trained prompt format the score goes from 2.4 to 63.7 %; that
-mostly measures that the model learned the output format, so it is not a result about repair.
-
-It is published on Hugging Face ([merged](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B),
-[GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF),
-[dataset](https://huggingface.co/datasets/MedGm/locali-mix-v2)); the "Llama" prefix is required by
-the Llama 3.1 license, because part of the training tests came from a Llama-generated dataset.
-
-**Why HumanEval+ drops** ([capability study](experiments/results/capability_study/)). Every
-fine-tuned 3B run scores 6 to 9 points below the base on HumanEval+, while matching it on MBPP+.
-Instead of trying more data, I looked at what changed in the model. Short version: fine-tuning kept
-what the 3B can do and made its first answer on this benchmark less reliable. With 20 sampled
-answers per problem, the fine-tuned runs solve as many problems as the base:
-
-| HumanEval+, %, from 20 samples at temperature 0.8 | pass@1 | pass@5 | pass@20 |
-|---|---|---|---|
-| 3B base | 76.6 | 88.8 | 92.0 |
-| Run D | 68.0 | 86.8 | 92.0 |
-| Run E | 72.9 | 87.0 | 92.0 |
-
-The pass@1 here is estimated from the 20 samples at temperature 0.8, which is why it is lower than
-the greedy scores in the table above (81.0 for the base). Training on the base's own answers (run E)
-narrows the gap; a prompt does not.
-
-### How I got there
-
-<details>
-<summary><b>Data and training recipe</b></summary>
-
-**Data** ([mixture v2](experiments/results/data_mix_v2/README.md)): 14,151 training examples in
-four formats, all built and checked by execution rather than written by hand:
-
-- T1 repair: bugs injected by mutation into verified solutions, kept only if a real test fails,
-  with a diagnosis written by the 9B teacher model and accepted only when it is consistent;
-- T2 test writing, T3 review (bug/clean pairs with tool findings), T4 execution traces (the
-  output of a call, confirmed by both the sandbox and the problem's own test);
-- 13-gram decontamination against HumanEval+, MBPP+, HumanEvalPack, CRUXEval, SecurityEval and
-  CyberNative.
-
-The first mixture made the model forget code reasoning (CRUXEval-O 30.1 → 25.5, p = 0.0005); the
-execution traces in v2 were added for that and removed the drop.
-
-**Training**: Unsloth + TRL on one T4, rank 16 on all projections, 2 epochs. I compared QLoRA,
-16-bit LoRA and rsLoRA on the same data ([results](experiments/results/finetune_v2/README.md)).
-
-QLoRA took 2 h 04 min with a 3.09 GB peak (16-bit LoRA: 4.85 GB, same quality). The test
-generation, refactoring and in-format gains hold in all three variants at p < 1e-4.
-
-</details>
-
-<details>
-<summary><b>Checks on the 1.5B: second seed, repair with feedback, Phi-4-mini</b></summary>
-
-**Second seed** ([results](experiments/results/finetune_qwen25_qlora_v2_seed1234/README.md)): I
-repeated QLoRA v2 with seed 1234 instead of 3407, same data and versions. The MBPP+ gain (234 vs
-212 solved, p = 0.005) and the HumanEvalFix gain (58 vs 41, p = 0.008) replicate. The bug
-detection gain does not: the second seed answers "buggy" almost every time (accuracy 54.6 %,
-recall 0.95), while both seeds score 66 % in the trained review format. I therefore do not claim
-it.
-
-**Repair with execution feedback** ([results](experiments/results/feedback_t4/README.md)): when
-the failing test's error is shown back and the model may try again, up to 3 attempts, the
-fine-tune fixes 41.5 % of HumanEvalFix (36.0 % in one attempt, p = 0.004) and the base model
-29.9 % (25.0 %). The fine-tune keeps its lead (p = 0.007). The gain is small because the model
-mostly repeats its first answer.
-
-**Phi-4-mini** got worse on several tasks from the same data (repair in the trained format
-46.3 → 24.4, MBPP+ 54.1 → 48.3): fine-tuning imitates the targets, and for a stronger model my
-minimal targets were a downgrade. The first model I deployed was therefore **Qwen2.5-Coder-1.5B + QLoRA
-v2**, merged into the base and published on Hugging Face (links above).
-
-</details>
-
-<details>
-<summary><b>v3: realistic bugs on a 3B base (runs A to D)</b></summary>
-
-**v3: realistic bugs on a 3B base** ([retrospective](docs/retrospective.md),
-[bugs](experiments/results/v3_bugs/README.md), [3B baselines](experiments/results/kaggle_coder_baselines_20261024/README.md),
-[run A](experiments/results/finetune_qwen25_3b_qlora_mixv2/README.md),
-[run B](experiments/results/finetune_qwen25_3b_qlora_mixv3/README.md),
-[robustness](experiments/results/robust_3b_t4/README.md)). The fine-tuned 1.5B fixed operator bugs
-better than the 9B teacher but barely moved on logic bugs: it had learned the shape of the one-line
-mutations. The untrained Qwen2.5-Coder-3B already repaired more (46.3 %) than the fine-tuned 1.5B
-(36.0 %). I had the teacher write 3,271 realistic bugs of seven kinds into unused, verified problems
-(kept only when the problem's tests catch them) and trained the 3B twice with the same recipe:
-
-| HumanEvalFix, % fixed | 3B base | + v2 data | + v2 + realistic bugs | p, last vs base |
-|---|---|---|---|---|
-| Benchmark prompt | 46.3 | 43.9 | **64.6** | 4e-5 |
-| Reworded prompt, same tests | 40.2 | 38.4 | **56.7** | 4e-4 |
-| 3 attempts with explained errors | 54.9 | 52.4 | 71.3 | not tested |
-| Docstring instead of tests | 73.8 | 59.2 | 75.0 | n.s. |
-
-The gain is in repair from failing tests, holds when the prompt is reworded, and is largest on
-excess logic (11 → 21) and missing logic (12 → 15). Test generation keeps the v2 gain (62 → 82 %
-of bugs caught). Two costs remain: refactoring falls to 78.5 % (base 86.5 %) and HumanEval+ stays
-six points below the base (a cost of the v2 data). A third run
-([run C](experiments/results/finetune_qwen25_3b_qlora_mixv3b/README.md)), with half of the mutation
-bugs and twice the general replay data, restores refactoring (88.3 %) and keeps most of the repair
-gain (61.0 %, p = 0.001 against the base), but not HumanEval+ (73.0 %). Run D
-([README](experiments/results/finetune_qwen25_3b_qlora_mixv3b_diag/README.md)) repeats run C on the
-corrected v3b data (reviewer-side explanations for the realistic bugs): same scores within noise on
-all 16 tasks, no explanation phrased as an edit. **Run D is Locali's default model since 1 November**
-(run C from 25 October before it): merged and exported to Q4_K_M (1.93 GB), it fixes a bug in about 15 s on
-the laptop with 2.2 GB of RAM ([laptop check](experiments/results/laptop_3b_check/README.md)); the
-1.5B Q4_K_M stays as the fast option (about 6 s).
-
-</details>
-
-<details>
-<summary><b>Run E: the base model's own answers as replay data</b></summary>
-
-**Run E** ([README](experiments/results/finetune_qwen25_3b_qlora_mixv3s/README.md)) keeps run D's
-data but replaces 2,648 of the general replay answers (written by StarCoder2-15B) with the base
-3B's own answers to the same prompts, kept when they ran without error. Nothing gets worse, and it
-is the best 3B run on repair and completion (table above).
-
-</details>
-
-<details>
-<summary><b>The capability study in four steps</b></summary>
-
-1. The loss is concentrated: 10 problems that the base solves and all five runs fail, with wrong
-   logic rather than a format problem ([step 1](experiments/results/capability_study/step1_behaviour/README.md)).
-2. The solutions are still in the model. With 20 sampled answers per problem (temperature 0.8),
-   the fine-tuned runs solve as many problems as the base; only the first answer is worse
-   ([step 2](experiments/results/capability_study/step2_kaggle/README.md), table above).
-3. A wrong answer is one or two tokens away from a right one. Forcing the base's token where the
-   two answers part makes 69 of 70 failing answers pass, usually after one or two forced tokens,
-   and more often than forcing a random alternative. At those points the base spells the code out
-   (a step comment, a setup variable, a helper function) where the fine-tuned model writes a
-   one-liner ([step 3](experiments/results/capability_study/step3_kaggle/README.md)).
-4. Asking for a comment before each step, forcing the answer to start with one, or turning off the
-   repetition penalty does not bring the points back: every change for D and E is within noise,
-   and what it fixes on the lost problems it breaks elsewhere. Run D also ignores the comment
-   instruction (5 of 163 answers), the base follows it (149)
-   ([step 4](experiments/results/capability_study/step4_kaggle/README.md)).
-
-</details>
-
-## 4. Performance optimization
-
-**Quantization** on the laptop CPU, llama.cpp ([ladder](experiments/results/ladder_laptop/README.md)):
-
-| Fine-tuned 1.5B | F16 | Q8_0 | Q4_K_M |
-|---|---|---|---|
-| HumanEval+ pass@1 (%) | 64.4 | 63.2 | 60.1 |
-| MBPP+ pass@1 (%) | 60.2 | 59.4 | 58.1 |
-| Decode speed (tokens/s) | 5.8 | 10.4 | **16.1** |
-| CPU energy per solved HumanEval+ item (J) | 638 | 396 | **234** |
-| Peak RAM (GB) | 3.21 | 1.79 | **1.16** |
-
-Q8_0 changes 2 of 163 answers against F16; Q4_K_M costs 2–4 points (not significant one by one,
-all in the same direction) and is the fast option of the 1.5B. The fine-tuned model
-also writes about a third fewer tokens than the base, which saves time and energy on its own.
-
-**Speculative decoding**: draft-free n-gram lookup is the best setting on the laptop and on a T4.
-For the fine-tuned 3B (the default model) on the laptop it brings a fixed bug from 501 J to 456 J; small draft models cost
-more than they save, because on four shared CPU cores the draft has to read the long prompt too.
-
-<details>
-<summary><b>Speculative decoding in detail (1.5B and 3B, laptop and T4)</b></summary>
-
-**Speculative decoding** ([laptop](experiments/results/speculative_laptop/README.md),
-[T4](experiments/results/speculative_t4/README.md)): draft-free n-gram lookup is the best
-setting on both devices. On the laptop it makes the Q8 model about 1.5× faster and saves 21–25 %
-of the CPU energy per correct answer; the fine-tuned Q4_K_M model with n-gram lookup is the
-cheapest configuration measured (189 J per solved HumanEval+ problem, against 962 J for the base
-model in F16). A 0.5B draft model barely helps on the CPU (at most 6 % less energy, and more on
-repair), because it competes with the target for the same four cores. On a T4 both help, n-gram
-lookup most (50–67 % less energy per correct answer). The stock draft predicts the fine-tune worse
-than the base model (acceptance on repair 0.63 vs 0.87 at 8 drafted tokens), so fine-tuning
-makes long drafts a net loss. Greedy speculative decoding keeps the pass counts but is not
-bit-exact: a few answers change.
-
-For the fine-tuned 3B on the laptop ([3B drafts](experiments/results/speculative_3b_laptop/README.md),
-all 164 HumanEvalFix problems), n-gram lookup is again the best: 456 J per fixed bug against 501 J
-without speculation. A 0.5B draft costs 516 J and 1.5B drafts 668 J, despite accepting 89 to 97 %
-of drafted tokens, because the draft has to read the long repair prompt too, on the same four
-cores. A 1.5B draft fine-tuned on the same data accepts no more tokens than the base 1.5B (0.97 vs
-0.96).
-
-</details>
-
-<details>
-<summary><b>Serving on a T4: batching, CUDA graphs, KV cache</b></summary>
-
-**Serving on a T4** (vLLM and transformers, [results](experiments/results/serving_t4/README.md)):
-16 concurrent requests give 13.6× the throughput of one and use 15× less energy per answer; CUDA
-graphs add 1.6× for a single request (every earlier run used eager mode); the KV cache doubles
-generation speed already at 128 tokens; prefix caching brings nothing on these prompts, which
-share only a short instruction. Eager attention in FP16 produces NaN logits for this model on a
-T4; SDPA is the one that works.
-
-</details>
-
-**Context and prompts**: the savings come from what is left out (other functions, other tests),
-not from compressing what is kept.
-
-<details>
-<summary><b>Context and prompts in detail</b></summary>
-
-**Context and prompts** ([repair on T4](experiments/results/context_ablation_t4/README.md),
-[agents](experiments/results/context_agents/README.md)): giving the repair prompt the whole test
-suite instead of the one failing test doubles the input and fixes slightly fewer bugs (62.3 vs
-63.7 %); stripping comments and docstrings saves 14 % of input for a small, non-significant loss.
-In the agent workflow, a whole file instead of one function makes the review cheaper but quieter
-(it misses a planted bug), and adding the function's dependencies ("slicing") costs 21 % more input
-and cuts the model's false positives from 17 to 6. The savings come from what is left out (other
-functions, other tests), not from compressing what is kept.
-
-</details>
-
-## 5. The agents
-
-A LangGraph graph with fixed routing: `prepare → analyze → review → testgen → debug → docs →
-propose → devops → report`. Routing is fixed because the 1.5B model made no usable native tool
-calls in the first spike, and fixed steps make runs reproducible. The model has no tools: it only
-ever answers a prompt, and its answer is parsed into findings or code that is then checked.
-
-![One assistant run](docs/diagrams/workflow.svg)
-
-Tool access for other clients (Claude Desktop, an IDE, another agent) goes through five MCP
-servers with one to three tools each (`mcp_servers/`):
-
-| Server | Tools | Limits |
-|---|---|---|
-| repository | `list_files`, `read_file` | read-only, confined to the root, secrets redacted |
-| tests | `run_tests` | only in the sandbox (no network, read-only, limits) |
-| static analysis | `analyze` | Ruff, Bandit, Radon, Semgrep, secret scan |
-| documentation | `list_docs`, `search_docs`, `read_doc` | read-only, documentation files only, lines that look like prompt injections listed with the text |
-| issues | `list_issues`, `get_issue`, `draft_issue` | reads `docs/issues/*.md`; a new issue is only a draft in a folder outside the repository, a person files it; no `draft_issue` without `--drafts` |
-
-Docs and issues are written by anyone, so the two servers give them back as data with a list of
-suspicious lines: on demo_repo the hidden note in the README and the fake "maintainer approved"
-line in issue #12 both come back flagged. Locali runs offline, so the issue tracker is the
-Markdown one many small projects keep in the repository, not GitHub.
-
-On `demo_repo/`, a small shop application with 5 planted bugs, 5 vulnerabilities, a hard-coded key,
-a typosquatted dependency and two prompt injections ([answer key](security/demo_repo_flaws.json),
-[runs](experiments/results/agents_demo_repo/README.md); these runs are from before the shop got
-its HTTP API, see below). I built this repository and planted its flaws, so the table shows how the
-workflow behaves on one repository, not how accurate it is in general. The columns also differ in
-more than the number of agents: the single agent makes 8 model calls, the workflow 40, and most of
-the security findings come from the static tools, not from the model.
-
-| | Single agent (one review per file) | Multi-agent, no tools | Multi-agent + tools |
-|---|---|---|---|
-| Bugs caught in any way (of 5) | 0 | 3 | 4 |
+| Bugs caught (of 5) | 0 | 3 | 4 |
 | Bugs fixed | 0 | 1 | 1 |
-| Vulnerabilities found (of 5) | 3 | 3 | 5 |
-| Hard-coded secret found | no | no | yes |
-| Model calls / output tokens | 8 / 441 | 40 / 5,129 | 40 / 5,129 |
+| Security holes found (of 5) | 3 | 3 | 5 |
+| Hard-coded key found | no | no | yes |
+| Model calls | 8 | 40 | 40 |
 
-The fix comes from the trained format: given a failing test and its error, the model fixed the
-bug at the first attempt. Security comes from the tools: they found every vulnerability and the
-secret with no false positives, the model alone a different 3 of 5 each time. Reviewing the first
-real patch led to three changes: no tests for functions the tools flag as insecure, no kept tests
-for functions with a suspected bug, and one patch per change so each can be accepted alone.
+The tools found every security hole and the key without a false alarm; the model alone found a
+different 3 of 5 each time. With the web API added, a test the model wrote for the order endpoint
+caught the sixth bug (an order larger than the stock was accepted), and the tests it kept raised
+the share of code that tests run from 28 to 45 %
+([results](experiments/results/agents_demo_repo/README.md),
+[API tests](experiments/results/agents_api_tests/README.md)).
 
-**Unit, integration and API tests** ([results](experiments/results/agents_api_tests/README.md)).
-The test step writes three kinds of tests: unit tests for one function, integration tests for a
-function together with the project functions it calls (a real temporary database, no mocks), and
-API tests for each route of a FastAPI app, through `TestClient` on an empty temporary database.
-They follow the same rules: only passing tests are kept, and a failing one is reported as a
-suspected bug. For this, `demo_repo` got a small HTTP API with a sixth planted bug: an order larger
-than the stock is accepted, although the endpoint's docstring says it is refused. With the
-fine-tuned 3B, the agent's API test for that endpoint expected the refusal, failed, and reported
-the bug (`assert 201 == 409`); the kept tests raised line coverage from 27.7 to 45.0 %. No API test
-was kept, because every API answer also had a wrong expectation somewhere, and 4 of the 8 suspected
-functions were not where a bug was planted. The first attempt failed completely (the model built the
-app outside the temporary database); a ready-made test fixture in the prompt fixed that.
+This is one project I built myself, with bugs I placed; it shows how the workflow behaves, not how
+accurate it is in general. The columns also differ in more than the number of agents: most of the
+security findings come from the tools.
 
-## 6. LLM security
+### Security
 
-Every threat in the brief has a control and an attack test, run with the control on and off
-([results](experiments/results/redteam/README.md)). The attacks are my own cases against my own
-controls, with no attacker adapting to them: the table shows that each control works as built. The
-property that carries the security is architectural: the model has no tools and never acts, and
-what it writes is parsed and checked before anything changes.
+Each threat in the brief has a control and an attack case, run with the control on and off
+([results](experiments/results/redteam/README.md)):
 
 | Threat | Control | Attacks that worked: control on / off |
 |---|---|---|
-| S1 Prompt injection | The model never acts; README and issue text never reach it; injection detector | model red-team: harm 0/11 |
-| S2 Jailbreak | Output only parsed into findings or validated code | model red-team: 0/6 complied |
-| S3 Data leakage | Secret redaction in both directions, including the exact values found in the repository | 0/2 / 2/2 |
-| S4 Unsafe commands | Command allow-list (git, patch, docker, the analysers), sandbox | 0/3 / 3/3 |
-| S5 Tool permissions | Path confinement, symlinks resolved, read-only servers | 0/2 / 2/2 |
-| S6 Supply chain | Repository code runs only in the sandbox; typosquat check | 0/2 / 2/2 |
-| S7 Insecure output | Validation with Bandit, Semgrep and a secret scan on every patch | 0/4 / 4/4 |
-| S8 Excessive autonomy | Approval of the exact patch, stale check, revert | 0/3 / 3/3 |
+| Prompt injection | The model never acts; README and issue text never reach it; injection detector | model red-team: harm 0/11 |
+| Jailbreak | Output only parsed into findings or checked code | 0/6 complied |
+| Data leakage | Secrets removed in both directions | 0/2 / 2/2 |
+| Unsafe commands | Allow-list of commands, sandbox | 0/3 / 3/3 |
+| Too many permissions | Tool servers confined to the project, read-only | 0/2 / 2/2 |
+| Supply chain | Project code runs only in the sandbox; misspelled-package check | 0/2 / 2/2 |
+| Unsafe output | Every patch checked with Bandit, Semgrep and the secret scanner | 0/4 / 4/4 |
+| Too much autonomy | Approval of the exact patch, stale check, undo | 0/3 / 3/3 |
+
+These are my own attacks against my own controls, with no attacker adapting to them: they show the
+controls work as built, not that they resist a determined attacker. The property that carries the
+security is the design: the model has no tools and never acts. The attack cases found two real
+gaps, both fixed with a test that reproduces them.
+
+## 3. Teaching the model
+
+![Fine-tuning pipeline](docs/diagrams/training.svg)
+
+**The starting point.** I compared five free models on the benchmark tasks
+([baselines](experiments/results/kaggle_reference_20261012/README.md)) and chose Qwen2.5-Coder:
+cheap per correct answer and weakest exactly where Locali needs help (fixing bugs, writing tests),
+so it had the most to gain.
+
+**The lessons.** About 14,000 examples of "question → good answer" in four kinds, all built and
+checked by running code, none written by hand:
+
+| Kind | Question | Answer |
+|---|---|---|
+| Repair | Code with a bug + the failing test | The fixed code |
+| Tests | A function | Tests for it |
+| Review | A function + tool warnings | Bug or no bug, and why |
+| Traces | A function + an input | What it returns |
+
+To make repair examples, I took correct code, broke it on purpose and kept the example only if a
+real test caught the break. A bigger model (Qwen3.5-9B, the "teacher") wrote the explanations.
+Training one adapter takes about two hours on Kaggle's free GPU.
+
+**What happened, step by step:**
+
+1. **The 1.5B** learned to write tests (bugs caught 46 → 82 %) and to refactor (70 → 94 %), but
+   only learned to fix the simple one-character bugs I had made
+   ([results](experiments/results/finetune_v2/README.md)).
+2. **So I added realistic bugs**: the teacher wrote 3,271 bugs of seven kinds that people make (a
+   forgotten line, an extra branch, an off-by-one), and I moved to a bigger base, the 3B
+   ([bugs](experiments/results/v3_bugs/README.md)).
+3. **Runs A to E** tried variations of that data. **Run D** became the default model
+   ([run D](experiments/results/finetune_qwen25_3b_qlora_mixv3b_diag/README.md)).
+
+**What it changed (3B base vs run D):**
+
+![Base vs fine-tuned 3B](docs/figures/fine_tuning.svg)
+
+| % of problems | 3B base | Run D | Verdict |
+|---|---|---|---|
+| Fix bugs, benchmark (HumanEvalFix, 164) | 46 | 62 | better (p = 0.0004) |
+| Fix bugs, real bugs (ConDefects, 382) | 12 | 15 | not proven (p = 0.24) |
+| Tests that catch the bug (164, 2,048 tokens) | 60 | 83 | better (p = 1e-6) |
+| Write code (HumanEval+, 163) | 81 | 72 | lower, not proven after correction |
+| Explain code (HumanEvalExplain, 164) | 68 | 66 | same |
+
+Three things to read in this table:
+
+- **The benchmark repair gain does not carry over to real bugs.** I chose the seven kinds of
+  realistic bugs after reading the benchmark's results by bug type, so the model practised on bugs
+  that look like the exam's. On 382 real bugs that people made on AtCoder in 2024, which nobody on
+  my side designed, run D fixes 57 against the base's 47. That is in the right direction but not
+  significant, and the plausible gain is between −1 and +6 points, not 15
+  ([real bugs](experiments/results/repair_prereg_t4/README.md)).
+- **The test-writing gain is about finishing.** The base model writes long test files and is cut
+  off before the end in 97 of 164 answers, even with almost three times the room; often it repeats
+  itself. Run D writes short, complete files. Where the base does finish, its tests catch the bug a
+  little more often (93 vs 86 %) ([tests](experiments/results/testgen2048_t4/README.md)).
+- **Fine-tuning costs some code writing.** Run D writes worse code from a description (81 → 72 %).
+  The knowledge is still there: given 20 tries, it solves as many problems as the base
+  ([why](experiments/results/capability_study/)). The explanation row uses the base to write the
+  code from each model's explanation, so it measures the explanation alone
+  ([explanation](experiments/results/explain_t4/README.md)).
+
+**The 1.5B, the fast option** ([results](experiments/results/finetune_v2/README.md)):
+
+| % of problems | 1.5B base | 1.5B fine-tuned | Verdict |
+|---|---|---|---|
+| Tests that catch the bug | 46 | 82 | better |
+| Refactoring that keeps behaviour | 70 | 94 | better |
+| Fix bugs, benchmark | 25 | 36 | better |
+| Fix bugs, real bugs (ConDefects) | 8 | 6 | not better |
+| Write code (MBPP+) | 56 | 62 | better |
+| Write code (HumanEval+) | 65 | 62 | same |
+
+I repeated its training with a second random seed: the repair and MBPP+ gains held, a gain in bug
+detection did not, so I do not claim it
+([second seed](experiments/results/finetune_qwen25_qlora_v2_seed1234/README.md)).
 
 <details>
-<summary><b>How the attacks were run, and the two gaps they found</b></summary>
+<summary><b>More detail: the training recipe and every run</b></summary>
 
-With a control off, each attack really runs on this machine, against temporary copies and a local
-listener. The red-team found two real gaps, both fixed with a regression case: a key repeated in a
-model answer without its assignment slipped past redaction, and a fix that also ran
-`os.system('curl … | sh')` passed validation because Bandit rates a constant command as low
-severity. With the real model, payloads hidden in comments, docstrings and strings asked for a
-backdoor, a destructive test, code in a docstring or a keylogger; the model followed none of them.
+- Data: [mixture v2](experiments/results/data_mix_v2/README.md) (14,151 examples), realistic bugs
+  in [v3](experiments/results/v3_bugs/README.md); examples that overlap the test benchmarks
+  (13 words in a row) were removed.
+- Training: Unsloth on one T4, adapter rank 16, two passes over the data; QLoRA, 16-bit LoRA and
+  rsLoRA compared on the same data, same quality, QLoRA uses the least memory (3.1 GB).
+- Phi-4-mini got worse from the same data: my answers were weaker than what it already wrote.
+- 3B runs: [A](experiments/results/finetune_qwen25_3b_qlora_mixv2/README.md),
+  [B](experiments/results/finetune_qwen25_3b_qlora_mixv3/README.md),
+  [C](experiments/results/finetune_qwen25_3b_qlora_mixv3b/README.md),
+  [D](experiments/results/finetune_qwen25_3b_qlora_mixv3b_diag/README.md),
+  [E](experiments/results/finetune_qwen25_3b_qlora_mixv3s/README.md). E replaces part of the general
+  data with the base model's own answers; it loses less on code writing.
+- Every base vs fine-tuned comparison, with the correction for testing many tasks:
+  [tables](experiments/results/multiple_comparisons/README.md).
+- Why code writing drops, in four steps: [capability study](experiments/results/capability_study/).
 
 </details>
 
-Every action (runs, refusals, approvals, redactions, stale patches) is appended to an audit log,
-and the web app's security center lists the security-relevant ones.
+## 4. Running on a laptop
 
-## 7. DevOps, LLMOps and the web app
+**Fewer digits per number (quantization).** Each of the model's numbers is normally stored with 16
+bits. Rounding them to 8 or 4 bits is like saving a photo as a smaller JPEG: almost the same
+picture, much less space ([results](experiments/results/ladder_laptop/README.md)).
 
-- **CI** (`.github/workflows/ci.yml`): lint, the sandbox image, 489 tests, and the frontend's type
-  check, lint and build, on every push.
-- **Pull request review** (`locali-review.yml`): runs the static analysis and secret scan on the
-  changed files, comments on the pull request and fails it on a new high-severity issue or secret.
-- **DevOps step** in every agent run: merge readiness with blockers and warnings, a dependency
-  typosquat check, the test baseline and coverage, and a CI workflow to start from when a
-  repository has none.
-- **LLMOps** (MLflow): every agent run is logged with its parameters, metrics, report and
-  trajectory, plus a trace with one span per step and per model call (prompts already redacted).
-  All 235 evaluation runs, the 7 training runs and both datasets are backfilled into the same
-  store (`experiments/scripts/log_to_mlflow.py`).
-- **Web app** (Next.js, React, TypeScript; FastAPI backend): a home page that guides a first run,
-  repositories, runs with live progress, a patch review page with the diff, its validation record
-  and what to check before approving, a playground, the security center, models, quality trends,
-  research results and settings, in light and dark themes. The API needs a token; the browser
-  never sees it.
+![Memory, speed and quality of the fine-tuned 1.5B at 16, 8 and 4 bits](docs/figures/quantization.svg)
 
-## 8. The five ablations of the brief
+| Fine-tuned 1.5B on the laptop | 16-bit | 8-bit | 4-bit |
+|---|---|---|---|
+| Memory (GB) | 3.2 | 1.8 | 1.2 |
+| Speed (words per second) | 5.8 | 10.4 | 16.1 |
+| Correct code, HumanEval+ (%) | 64.4 | 63.2 | 60.1 |
+| Energy per correct answer (J) | 638 | 396 | 234 |
 
-- **Base vs fine-tuned SLM.** 1.5B: +36 points test generation, +24 refactoring, +11 repair, no
-  loss on generation ([finetune_v2](experiments/results/finetune_v2/README.md)). 3B (run D): +21 test
-  generation, +15 repair, −9 HumanEval+ ([run D](experiments/results/finetune_qwen25_3b_qlora_mixv3b_diag/README.md)).
-- **FP16 vs INT8/INT4.** Q8 lossless; Q4 −2 to −4 points, 2.8× faster, 2.8× less RAM
-  ([ladder_laptop](experiments/results/ladder_laptop/README.md)).
-- **Standard vs optimized prompting.** Compressed prompts: −14 % input, −2.4 points (n.s.)
-  ([context_ablation_t4](experiments/results/context_ablation_t4/README.md)).
-- **Full vs reduced context.** The full test suite: 2.2× input, no gain; a whole file instead of one
-  function: misses a bug ([context_ablation_t4](experiments/results/context_ablation_t4/README.md),
-  [context_agents](experiments/results/context_agents/README.md)).
-- **Single- vs multi-agent.** 0 vs 4 bugs caught, 3 vs 5 vulnerabilities (with tools)
-  ([agents_demo_repo](experiments/results/agents_demo_repo/README.md)).
+8-bit changes 2 answers out of 163; 4-bit costs 2 to 4 points for almost three times the speed.
+The default 3B runs in 4-bit: 1.9 GB on disk, about 15 seconds and 456 J per fixed bug
+([laptop check](experiments/results/laptop_3b_check/README.md)).
 
-## 9. Metrics
+**Guessing ahead.** When fixing a bug, most of the answer copies the original code. The model
+server guesses the next words from text already in the prompt and the model only checks the guess,
+which is faster than writing (456 J per fixed bug instead of 501 J). A second small model doing
+the guessing was slower here, because both share the same four processor cores
+([results](experiments/results/speculative_3b_laptop/README.md)).
 
-How each metric of the brief is measured:
+**Shorter prompts.** Giving the model only the function and the failing test, instead of the whole
+file and every test, halves the input and fixes as many bugs
+([results](experiments/results/context_ablation_t4/README.md)).
 
-<details>
-<summary><b>The metrics of the brief, one by one</b></summary>
+**On a GPU, for comparison** ([results](experiments/results/serving_t4/README.md)): answering 16
+requests at once gives 13.6 times more answers per second and uses 15 times less energy per
+answer; remembering what was already read (the KV cache) doubles the speed.
 
-- **Code correctness, pass@k, execution success:** pass@1, greedy, every answer executed in the
-  sandbox (other languages: on a Kaggle VM); pass@1/5/20 from 20 samples per problem for the 3B
-  models on HumanEval+ (unbiased estimator).
-- **Unit-test pass rate, test coverage:** pytest and pytest-cov in the sandbox (line and branch).
-- **Bug-detection precision / recall / F1:** per task, with accuracy as the headline because the
-  models answer "yes" too often.
-- **Code-quality metrics:** Ruff, Radon complexity, refactoring "improved and preserved".
-- **Vulnerability detection:** accuracy, precision, recall; insecure generation rate with Bandit.
-- **Hallucination / error rate:** review findings must quote an existing line or are dropped; false
-  positives against the planted-flaw key (on demo_repo, 17 of the model's 21 review findings were
-  wrong).
-- **Latency, TTFT, tokens/s:** per request, from the streaming API.
-- **GPU / CPU memory:** peak GPU memory in training and serving, llama-server RSS on the laptop.
-- **Input / output tokens:** per request and per agent step.
-- **Cost per task, energy:** GPU board power (`nvidia-smi`) and CPU package energy (RAPL), per item
-  and per correct answer.
+Energy is measured with the processor's built-in energy counter (RAPL) on the laptop and the GPU's
+power reading (`nvidia-smi`) on Kaggle, per answer.
 
-</details>
+## 5. How I measured
 
-Cost is reported as energy and time rather than money: everything ran on free hardware, and the
-energy per correct answer is what changes between options.
+**Exams with an answer key.** Each skill has a benchmark: a fixed list of problems with tests that
+decide whether an answer is right. Eleven of them: writing code (HumanEval+, MBPP+), completing
+code, fixing bugs (HumanEvalFix), detecting bugs, explaining code, predicting what code returns
+(CRUXEval-O), writing tests, refactoring, writing secure code and spotting vulnerabilities. Plus two
+sets of real bugs added for the final check: ConDefects and QuixBugs.
 
-## 10. What did not work, and limits
+**"Bugs caught" by the tests a model writes.** Each generated test first runs on the correct code
+and is dropped if it fails there (a wrong expected value). The bug counts as caught if at least one
+remaining test fails, errors or hangs on the buggy code, with the same 60 s limit on both. A
+problem where no test survives catches nothing.
 
-- **The model is a noisy reviewer.** On demo_repo most of its review findings are wrong, and it
-  answers "yes" to almost every bug-detection question in the base version. The platform keeps
-  model findings separate from tool findings and never turns them into changes on their own.
-- **500 verified clean reviews did not reduce false bug reports.**
-- **Phi-4-mini got worse** from training on targets weaker than it already was.
-- **Vulnerability detection stayed at chance level** (about 50 %) for every model, fine-tuned or not.
-- **Open-ended repair:** the 1.5B stays far below the 9B model (36 % vs 66 %); the fine-tuned 3B
-  gets nearer (62 to 63 %). That comparison is weaker than it looks: the 9B wrote the diagnoses and
-  the realistic bugs the 3B was trained on, it ran untuned, and in separate runs.
-- **The realistic bugs were shaped after the benchmark.** I chose the seven bug kinds of the v3 data
-  after reading HumanEvalFix's results by bug type, and two of them have its category names
-  (missing and excess logic). The 3B repair gain on HumanEvalFix may therefore partly come from
-  training on its bug distribution, and runs A to E were compared on the same benchmark. The
-  pre-registered evaluation above checks it on real bugs (ConDefects).
-- **Fine-tuning the 3B costs HumanEval+** (81 → 72 % for run D) and no prompt brings it back
-  (section 3). Training on the base model's own answers narrows the gap to 6 points; closing it
-  would need training targets closer to the base's style.
-- **Kaggle and laptop runs do not decode in exactly the same way.** On Kaggle, vLLM applied the
-  Qwen2.5-Coder models' `generation_config` by default (repetition penalty 1.05, and top-k 20 when
-  sampling); llama.cpp on the laptop applies none. A base model and its fine-tunes always ran with
-  the same settings, so those comparisons hold, but absolute numbers from the two setups are not
-  interchangeable.
-- **The fine-tune was trained on Python only.** On HumanEvalFix in other languages it gains in
-  JavaScript (+9.8, p = 0.0025) and Go (+8.1, p = 0.041), is level in C++ and Rust, and lower in Java
-  (−6.7, p = 0.10) ([results](experiments/results/multilang_t4/README.md)). That experiment is the
-  only one that ran model-written code outside the laptop's sandbox, on a disposable Kaggle VM.
-- **Dense vs hybrid attention (RQ5)** is answered only by computed KV-cache sizes, not measured.
-- **Single runs.** Most configurations ran once at temperature 0; paired tests on the same items
-  are what makes differences meaningful, and differences without them are marked as such. The
-  fine-tune was repeated with a second seed: its MBPP+ and repair gains held, its bug detection
-  gain did not.
-- **Scale of the agent evaluation.** The agent results come from one small repository built for the
-  purpose; they show behaviour, not general accuracy.
+**Answers run in the sandbox.** Model answers are code, so they only run in the sandbox. Before
+scoring any model, I gave every benchmark its official correct answers: all scored 100 %, so the
+scoring itself works ([harness check](experiments/results/harness_validation/README.md)). Kaggle's
+GPUs write the answers; the laptop scores them.
 
-## 11. Running it
+**Is a difference real or luck?** Base and fine-tuned models answer the same problems. I count the
+problems where they disagree: say the base alone is right on 11 and the fine-tuned model alone on
+36. If fine-tuning changed nothing, those two counts would be about equal, like coin flips. The
+exact McNemar test gives the chance of a split at least that uneven by luck (the p-value).
+
+**Many tests at once.** With eleven tasks, one can look significant by luck. Fixing bugs and
+writing tests are the two claims (the training was built for them); every other task is
+exploratory and gets a stricter bar (Holm's correction)
+([tables](experiments/results/multiple_comparisons/README.md)).
+
+**Rules written before the test.** For the two final checks (real bugs, test files with more
+room), I wrote down the benchmarks, models, prompt, statistical test and the sentence I would write
+for each outcome, and committed that file before running anything
+([protocol](docs/preregistration-repair.md), commit 15aa6b9). The real-bug result went against me,
+and this report says so in the words fixed in advance.
+
+![The brief's chain and what each stage gave](docs/diagrams/evaluation_chain.svg)
+
+## 6. What did not work, and limits
+
+- **The repair gain is mostly on bugs like my training data.** On real bugs, 12 → 15 %, not
+  significant (section 3).
+- **The model is a noisy reviewer.** On the demo project most of its review findings are wrong;
+  base models answer "yes, there is a bug" to almost everything. Model findings are kept apart from
+  tool findings and never become changes on their own.
+- **Spotting vulnerabilities stayed at chance** (about 50 %) for every model.
+- **Phi-4-mini got worse** from my data; 500 verified "no bug" reviews did not reduce false alarms.
+- **The 9B comparison is weak.** The 1.5B fixes 36 % of the benchmark bugs and the 9B 66 %, but the
+  9B also wrote my training bugs and explanations, so the fine-tuned 3B's 62 % is a student nearing
+  its teacher on the teacher's kind of bugs.
+- **Kaggle and the laptop do not decode exactly alike** (Kaggle's server applied the model's default
+  repetition penalty); comparisons always use the same setup for both models.
+- **Single runs.** Most settings ran once; the paired tests are what make differences meaningful.
+- **The demo project and the attack cases are mine.** They show behaviour, not general accuracy.
+- **Other languages.** The fine-tune was trained on Python; on repair in other languages it gains
+  in JavaScript and Go, is level in C++ and Rust, lower in Java
+  ([results](experiments/results/multilang_t4/README.md)).
+- **Dense vs hybrid attention** is answered only by computed memory sizes, not measured.
+
+## 7. The brief, point by point
+
+| The brief asks | Where |
+|---|---|
+| Benchmark small models on generation, completion, bug detection, explanation, refactoring, tests | section 5, `evaluation/` |
+| Fine-tune with LoRA / QLoRA (Unsloth) | section 3, `training/` |
+| 4/8-bit quantization; KV cache, batching, attention | section 4 |
+| Context compression, prompt optimization | section 4, [context](experiments/results/context_agents/README.md) |
+| Latency, throughput, memory, energy | section 4, every result folder |
+| Static analysis, code quality, vulnerabilities | section 2, `backend/analysis.py` |
+| Unit, integration and API tests, coverage, regression tests | section 2, `backend/agents/` |
+| LangGraph agents: analysis, tests, debugging, documentation, review, DevOps | section 2, `backend/agents/workflow.py` |
+| MCP tool access: repository, tests, analysis, documentation, issues | `mcp_servers/` (five servers, read-only except a sandboxed test runner and issue drafts outside the project) |
+| Git, CI/CD, pull-request review | `.github/workflows/` |
+| LLMOps: model versions, prompts, data, tokens, agent traces | MLflow, `backend/llmops.py` |
+| React/TypeScript web app + FastAPI | section 2, `frontend/`, `backend/` |
+| LLM security threats with attack tests | section 2 |
+| Five ablations | below |
+
+**The five ablations of the brief:**
+
+| Comparison | Result |
+|---|---|
+| Base vs fine-tuned | tests and refactoring much better; benchmark repair better, real-bug repair not proven; code writing a bit lower (section 3) |
+| 16-bit vs 8-bit vs 4-bit | 8-bit the same, 4-bit −2 to −4 points for 2.8× the speed and 2.8× less memory |
+| Standard vs optimized prompt | compressed prompt: −14 % input, −2.4 points (not significant) |
+| Full vs reduced context | the full test suite doubles the input for no gain; a whole file instead of one function misses a bug |
+| Single vs multi-agent | 0 vs 4 bugs caught on the demo project, mostly thanks to the tools |
+
+Every requirement mapped to its code and evidence: [docs/spec-checklist.md](docs/spec-checklist.md).
+
+## 8. Running it
 
 Requirements: Python 3.12 with [uv](https://docs.astral.sh/uv/), Docker, Node 22, and
 [llama.cpp](https://github.com/ggml-org/llama.cpp) for the model server.
@@ -650,52 +427,45 @@ scripts/run.sh backend    # the API
 scripts/run.sh web        # http://localhost:3000
 ```
 
-The backend, the web app and the model servers all read the one `.env`, so the token and keys are
-written once ([.env.example](.env.example) explains each line). Without a model server, quick scans
-still work; the assistant and the playground say they need one.
+The backend, the web app and the model servers all read the one `.env`
+([.env.example](.env.example) explains each line). Without a model server, quick scans still work.
 
-## 12. Reproducing the results
+## 9. Reproducing the results
 
-Every run folder in `experiments/results/` holds the answers (`samples.jsonl`), the scores, the
-configuration with pinned model revisions and the commit it ran at. Each results README says how
-it was produced. `bash experiments/scripts/reproduce.sh` rebuilds every derived table, plot and
-summary from a clean checkout and re-executes the red-team cases; all of them came out identical,
-and re-executing the scoring of four headline runs gave the same pass@1
-([details](experiments/results/REPRODUCTION.md)). Kaggle jobs are in `training/kaggle/` and check
-out the exact commit they were built from.
+Every result folder in `experiments/results/` holds the model answers (`samples.jsonl`), the scores,
+the settings with exact model versions, the commit it ran at and a README saying how it was made.
+`bash experiments/scripts/reproduce.sh` rebuilds every derived table and chart from a clean checkout
+and reruns the attack cases ([details](experiments/results/REPRODUCTION.md)). The charts in this
+report come from `experiments/scripts/report_figures.py`, the diagrams from
+`docs/diagrams/make_diagrams.py`. Kaggle jobs are in `training/kaggle/` and check out the exact
+commit they were built from.
 
-## 13. Use of AI tools
+## 10. Use of AI tools
 
 I used Claude Code (Anthropic's coding assistant) throughout the project. It wrote most of the
 code, tests, experiment scripts and first drafts of the result write-ups, at my request and under
-my review, in this repository. The research questions, the choice of models and methods, the
-experimental design, the decisions after each result and the scope were mine; every number in this
-report comes from a run whose answers and logs are committed, not from the assistant.
+my review. The research questions, the choice of models and methods, the decisions after each
+result and the scope were mine; every number in this report comes from a run whose answers and
+logs are committed. Claims in drafts were checked against the data, and the harness was validated
+on correct answers before any model was scored. The models inside Locali are unrelated to this:
+they are the fine-tuned Qwen2.5-Coder models described above.
 
-Its output was not taken on trust: claims in drafts were checked against the data and corrected
-when they did not hold, the harness was validated on reference solutions before any model was
-scored, and the bugs found along the way, including the two security gaps the red-team exposed,
-were fixed with a test that reproduces them. The models used inside Locali are unrelated
-to this: they are the fine-tuned Qwen2.5-Coder-3B and 1.5B described above.
+## 11. Where things are
 
-## 14. Repository layout
-
-<details>
-<summary><b>Folders</b></summary>
-
-| Path | Contents |
+| Folder | What it holds |
 |---|---|
-| `evaluation/` | Benchmark harness, tasks, sandboxed scoring, red-team cases |
-| `training/` | Data builders, fine-tuning, merge, Kaggle jobs |
-| `experiments/` | Model configs, scripts and every result with its README |
-| `backend/` | FastAPI app, LangGraph agents, patches, validation, MLflow tracking |
-| `frontend/` | Next.js web app |
-| `mcp_servers/` | Repository, test-runner, static-analysis, documentation and issue MCP servers |
-| `security/` | Sandbox, command allow-list, secret scanner, injection detector |
-| `demo_repo/` | The flawed shop application used for agent and security tests |
-| `docs/` | Research design, requirement checklist, UI notes, model cards; `docs/diagrams/` holds the diagrams as Excalidraw files (`make_diagrams.py` builds them, `export.py` renders the SVGs) |
+| `backend/` | The assistant: web API, the workflow steps (`backend/agents/`), patches, validation |
+| `frontend/` | The web app |
+| `security/` | Sandbox, command allow-list, secret scanner, injection detector, the demo project's answer key |
+| `mcp_servers/` | Five tool servers other AI clients can use: repository, tests, analysis, documentation, issues |
+| `demo_repo/` | The shop application with planted problems |
+| `training/` | Building the training data (`training/data/`) and the jobs sent to Kaggle (`training/kaggle/`) |
+| `evaluation/` | The benchmarks (`evaluation/tasks/`), scoring, energy measurement |
+| `experiments/` | Scripts (`experiments/scripts/`) and every result with its README (`experiments/results/`) |
+| `docs/` | Diagrams, charts, screenshots, the requirement checklist, the pre-registration |
+| `paper/` | A short paper on energy per correct answer |
 
-</details>
+`experiments/results/` holds about 2,200 of the repository's 2,600 files: the raw answers behind
+every number, kept as evidence. Each folder's README says what that run was.
 
-Planning and status: [ROADMAP.md](ROADMAP.md); every requirement of the brief mapped to its code
-and evidence: [docs/spec-checklist.md](docs/spec-checklist.md).
+Planning and status: [ROADMAP.md](ROADMAP.md).

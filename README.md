@@ -21,27 +21,30 @@ HumanEvalFix bugs (from 25 %), without a significant loss in general code genera
 8 bits it loses nothing measurable, needs 1.8 GB of RAM and answers at 10 tokens/s on the laptop CPU.
 
 The same recipe on a 3B model, with realistic bugs added to the data, repairs 62 % of HumanEvalFix
-(from 46 %), close to the 9B model's 66 %; quantized to 4 bits it fixes a bug in about 15 s on the
+(from 46 %); quantized to 4 bits it fixes a bug in about 15 s on the
 laptop with 2.2 GB of RAM, for 456 J of CPU energy per fixed bug. The cost is general code
-generation on HumanEval+ (81 → 72 %): the model still knows the solutions (equal pass@20) but its
-first answer is less reliable.
+generation on HumanEval+ (81 → 72 %, p = 0.013, not significant once corrected for the number of
+tasks compared): the model still knows the solutions (equal pass@20) but its first answer is less
+reliable.
 
 On its own the model is noisy as a reviewer; it becomes useful as one part of a workflow where
 static tools carry security, a sandbox runs every test, and nothing reaches the repository without
-approval. In red-team tests, no attack got through those controls.
+approval. The main security property is a design one: the model never acts, it only produces text
+that is checked before anything changes. My own attack cases did not get through those controls,
+which shows they work as built, not that they resist an attacker who adapts to them.
 
 ### Results at a glance
 
 | What | Before → after | Section |
 |---|---|---|
-| Bug repair, HumanEvalFix (fine-tuned 3B) | 46 → 62 % (9B: 66 %) | [3](#3-fine-tuning) |
+| Bug repair, HumanEvalFix (fine-tuned 3B) | 46 → 62 % | [3](#3-fine-tuning) |
 | Bugs caught by the tests it writes (3B) | 62 → 83 % | [3](#3-fine-tuning) |
 | Refactors that keep behaviour (1.5B) | 70 → 94 % | [3](#3-fine-tuning) |
 | HumanEval+, the cost of fine-tuning (3B) | 81 → 72 % | [3](#3-fine-tuning) |
 | One bug fix on the laptop (3B, 4-bit) | ~15 s, 2.2 GB RAM, 456 J | [4](#4-performance-optimization) |
 | 8-bit vs 16-bit (1.5B) | no measurable loss, 1.8× less RAM | [4](#4-performance-optimization) |
-| Bugs caught on demo_repo: single agent → multi-agent + tools | 0 → 4 of 5 | [5](#5-the-agents) |
-| Attacks that got through the controls | 0 of 33 | [6](#6-llm-security) |
+| Bugs caught on demo_repo (one repository I built): single review → workflow with tools | 0 → 4 of 5 | [5](#5-the-agents) |
+| My own attack cases that got through the controls | 0 of 33 | [6](#6-llm-security) |
 
 ### Models and data online
 
@@ -138,8 +141,16 @@ with llama.cpp) and scored afterwards on the laptop, with all generated code run
 (the one exception, repair in five other languages, is described in section 10).
 The harness was validated on reference solutions first: all eleven tasks score 100 %
 ([harness validation](experiments/results/harness_validation/README.md)). Comparisons on the same
-items use paired exact McNemar tests. In the score tables, **bold** marks a significant gain (p <
-0.05) and *italic* a significant loss; in speed, energy and memory tables it marks the best value.
+items use paired exact McNemar tests. Repair and test generation are the confirmatory outcomes,
+the two the training data was built for from the start; every other task is exploratory. Each
+family is corrected with Holm for each fine-tuned model ([tables](experiments/results/multiple_comparisons/README.md)).
+In the score tables, **bold** marks a gain and *italic* a loss that stay significant after that
+correction (adjusted p < 0.05); in speed, energy and memory tables bold marks the best value.
+
+"Bugs caught" by the tests a model writes: each generated test first runs on the correct code and
+is dropped if it fails there (a wrong expected value); the bug counts as caught if at least one of
+the remaining tests fails, errors or hangs on the buggy code, with the same 60 s limit on both. A
+problem where no test survives catches nothing.
 
 | % of each task | Qwen2.5-Coder 1.5B | Qwen3.5-2B | Phi-4-mini 3.8B | Qwen3.5-4B | Qwen3.5-9B |
 |---|---|---|---|---|---|
@@ -178,12 +189,15 @@ Two fine-tuned models are in Locali: the 3B (run D), the default since 1 Novembe
 | Completion (infilling) | 56.4 | 62.0 | **65.6** |
 | MBPP+ | 64.7 | 64.2 | 64.2 |
 | CRUXEval-O | 42.2 | 43.4 | 43.6 |
-| HumanEval+ | 81.0 | *72.4* | 74.8 |
-| Explanation (HumanEvalExplain) | 68.3 | *57.9* | 68.3 |
+| HumanEval+ | 81.0 | 72.4 | 74.8 |
+| Explanation (HumanEvalExplain) | 68.3 | 57.9 | 68.3 |
 
-Bold: significantly better than the base; italic: significantly worse (paired exact McNemar,
-p < 0.05). Repair and test generation gain in both runs, completion in run E; HumanEval+ stays
-below the base (p = 0.013 for D, 0.076 for E; see "Why HumanEval+ drops" below). The explanation
+Bold: significantly better than the base after the Holm correction. Repair and test generation gain
+in both runs, completion in run E. HumanEval+ stays below the base (p = 0.013 for D, 0.076 for E,
+not significant after the correction, Holm p = 0.088 and 0.45; see "Why HumanEval+ drops" below).
+Both gains are being rechecked in a pre-registered evaluation: repair on real bugs that the
+training data was not shaped after, and test generation with a token budget that the base does not
+run out of ([protocol](docs/preregistration-repair.md)). The explanation
 task has the model explain a function and then rewrite it from its own explanation; when the 3B
 base writes the code from every model's explanation, D's explanations are as good as the base's
 (65.9 vs 68.3 %, p = 0.54), so D's loss there is the same code-writing loss
@@ -206,7 +220,9 @@ not replicate it):
 | Bug detection (not replicated) | 53.0 | 65.5 | 0.0004 |
 | HumanEval+ | 65.0 | 62.0 | 0.51 |
 | CRUXEval-O (not trained) | 30.1 | 28.7 | 0.31 |
-| Held-out repair, trained format | 2.4 | **63.7** | < 1e-30 |
+
+On held-out repair items in the trained prompt format the score goes from 2.4 to 63.7 %; that
+mostly measures that the model learned the output format, so it is not a result about repair.
 
 It is published on Hugging Face ([merged](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B),
 [GGUF](https://huggingface.co/MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF),
@@ -219,13 +235,15 @@ Instead of trying more data, I looked at what changed in the model. Short versio
 what the 3B can do and made its first answer on this benchmark less reliable. With 20 sampled
 answers per problem, the fine-tuned runs solve as many problems as the base:
 
-| HumanEval+, % | pass@1 | pass@5 | pass@20 |
+| HumanEval+, %, from 20 samples at temperature 0.8 | pass@1 | pass@5 | pass@20 |
 |---|---|---|---|
 | 3B base | 76.6 | 88.8 | 92.0 |
 | Run D | 68.0 | 86.8 | 92.0 |
 | Run E | 72.9 | 87.0 | 92.0 |
 
-Training on the base's own answers (run E) narrows the gap; a prompt does not.
+The pass@1 here is estimated from the 20 samples at temperature 0.8, which is why it is lower than
+the greedy scores in the table above (81.0 for the base). Training on the base's own answers (run E)
+narrows the gap; a prompt does not.
 
 ### How I got there
 
@@ -444,7 +462,10 @@ Markdown one many small projects keep in the repository, not GitHub.
 On `demo_repo/`, a small shop application with 5 planted bugs, 5 vulnerabilities, a hard-coded key,
 a typosquatted dependency and two prompt injections ([answer key](security/demo_repo_flaws.json),
 [runs](experiments/results/agents_demo_repo/README.md); these runs are from before the shop got
-its HTTP API, see below):
+its HTTP API, see below). I built this repository and planted its flaws, so the table shows how the
+workflow behaves on one repository, not how accurate it is in general. The columns also differ in
+more than the number of agents: the single agent makes 8 model calls, the workflow 40, and most of
+the security findings come from the static tools, not from the model.
 
 | | Single agent (one review per file) | Multi-agent, no tools | Multi-agent + tools |
 |---|---|---|---|
@@ -476,7 +497,10 @@ app outside the temporary database); a ready-made test fixture in the prompt fix
 ## 6. LLM security
 
 Every threat in the brief has a control and an attack test, run with the control on and off
-([results](experiments/results/redteam/README.md)):
+([results](experiments/results/redteam/README.md)). The attacks are my own cases against my own
+controls, with no attacker adapting to them: the table shows that each control works as built. The
+property that carries the security is architectural: the model has no tools and never acts, and
+what it writes is parsed and checked before anything changes.
 
 | Threat | Control | Attacks that worked: control on / off |
 |---|---|---|
@@ -576,7 +600,13 @@ energy per correct answer is what changes between options.
 - **Phi-4-mini got worse** from training on targets weaker than it already was.
 - **Vulnerability detection stayed at chance level** (about 50 %) for every model, fine-tuned or not.
 - **Open-ended repair:** the 1.5B stays far below the 9B model (36 % vs 66 %); the fine-tuned 3B
-  comes close (62 to 63 %).
+  gets nearer (62 to 63 %). That comparison is weaker than it looks: the 9B wrote the diagnoses and
+  the realistic bugs the 3B was trained on, it ran untuned, and in separate runs.
+- **The realistic bugs were shaped after the benchmark.** I chose the seven bug kinds of the v3 data
+  after reading HumanEvalFix's results by bug type, and two of them have its category names
+  (missing and excess logic). The 3B repair gain on HumanEvalFix may therefore partly come from
+  training on its bug distribution, and runs A to E were compared on the same benchmark. The
+  pre-registered evaluation above checks it on real bugs (ConDefects).
 - **Fine-tuning the 3B costs HumanEval+** (81 → 72 % for run D) and no prompt brings it back
   (section 3). Training on the base model's own answers narrows the gap to 6 points; closing it
   would need training targets closer to the base's style.

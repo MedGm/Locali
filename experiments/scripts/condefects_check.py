@@ -2,6 +2,7 @@
 
     uv run python experiments/scripts/condefects_check.py extract <Test.zip> <code root> <out dir>
     CONDEFECTS_TESTS=<out dir>/Test uv run python experiments/scripts/condefects_check.py check <code root>
+    CONDEFECTS_TESTS=<out dir>/Test uv run python experiments/scripts/condefects_check.py format <code root>
 
 extract: only the contests with Python bugs from 2024-02-01 on (the evaluation) and abc221 (the three
 format-check programs from before 2023, docs/preregistration-repair.md).
@@ -9,11 +10,14 @@ check: a program is kept when its accepted version passes every test and its fau
 least one (evaluation/tasks/condefects.py::harness_check). Writes experiments/results/condefects/
 items.jsonl (kept programs, with the failing test the prompt shows) and harness.json (counts and
 the reason for every dropped program), before any model sees them.
+format: the three format-check programs (the first three abc221 Python programs that pass the same
+check), written to experiments/results/condefects/format_check.jsonl; never scored.
 """
 
 import json
 import re
 import sys
+import time
 import zipfile
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
@@ -47,8 +51,17 @@ def check(code_root: Path) -> None:
     root = tests_root()
     items = candidates(code_root, root)
     print(f"{len(items)} candidate programs")
+    done = []
+
+    def one(item):
+        verdict = harness_check(item, root)
+        done.append(verdict[0])
+        if len(done) % 25 == 0:
+            print(f"{time.strftime('%H:%M')} {len(done)}/{len(items)} checked, {sum(done)} kept", flush=True)
+        return verdict
+
     with ThreadPoolExecutor(max_workers=3) as pool:
-        verdicts = list(pool.map(lambda item: harness_check(item, root), items))
+        verdicts = list(pool.map(one, items))
     kept = [item for item, (ok, _) in zip(items, verdicts, strict=True) if ok]
     dropped = {item.task_id: reason for item, (ok, reason) in zip(items, verdicts, strict=True) if not ok}
     OUT.mkdir(parents=True, exist_ok=True)
@@ -61,9 +74,24 @@ def check(code_root: Path) -> None:
     print(json.dumps({k: v for k, v in summary.items() if k != "dropped"}, indent=2))
 
 
+def format_check(code_root: Path) -> None:
+    root = tests_root()
+    pool = [i for i in candidates(code_root, root, since="2021-01-01") if i.task_id.startswith(FORMAT_CHECK_CONTEST + "_")]
+    chosen = []
+    for item in pool:
+        if harness_check(item, root)[0]:
+            chosen.append(item)
+        if len(chosen) == 3:
+            break
+    (OUT / "format_check.jsonl").write_text("".join(item_row(item) + "\n" for item in chosen))
+    print([item.task_id for item in chosen])
+
+
 if __name__ == "__main__":
     command, *args = sys.argv[1:]
     if command == "extract":
         extract(Path(args[0]), Path(args[1]), Path(args[2]))
+    elif command == "format":
+        format_check(Path(args[0]))
     else:
         check(Path(args[0]))

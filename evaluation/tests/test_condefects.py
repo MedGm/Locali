@@ -31,11 +31,12 @@ def test_tests_dir_maps_task_to_upper_letter(tests):
 
 
 @needs_docker
-def test_run_cases_reports_failed_cases_and_output(tests):
+def test_run_cases_stops_at_the_smallest_failing_input(tests):
     assert run_cases(CORRECT, tests).passed == 3
     run = run_cases(FAULTY, tests)
-    assert run.failed_cases == ["01.txt", "02_big.txt"]
-    assert run.results["02_big.txt"] == "7\n"
+    # smallest input first, stop at the first failure
+    assert run.failed_cases == ["01.txt"]
+    assert run.results["01.txt"] == "0\n"
 
 
 @needs_docker

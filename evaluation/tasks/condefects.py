@@ -132,10 +132,15 @@ class TestRun:
 
 def run_cases(program: str, tests: Path, cases: list[str] | None = None) -> TestRun:
     """Run `program` on the test cases of `tests` (all, or the named ones) in the sandbox."""
-    names = cases or sorted(p.name for p in (tests / "in").iterdir())
+    # Smallest input first, and pytest stops at the first failure (pytest.ini below): a program is
+    # fixed only when every test passes, so the outcome is the same, and the first failure is the
+    # smallest failing input, the one the prompt shows.
+    names = cases or sorted((p.name for p in (tests / "in").iterdir()),
+                            key=lambda n: ((tests / "in" / n).stat().st_size, n))
     with tempfile.TemporaryDirectory(prefix="locali-condefects-") as tmp:
         work = Path(tmp)
         (work / "cases.txt").write_text("\n".join(names))
+        (work / "pytest.ini").write_text("[pytest]\naddopts = -x\n")
         (work / "program.py").write_text(program)
         (work / "test_cases.py").write_text(DRIVER.format(timeout=TEST_TIMEOUT_S, chars=SHOWN_CHARS))
         result = run_pytest(work, timeout_s=TEST_TIMEOUT_S * len(names) + 60, memory=MEMORY, coverage=False,

@@ -48,3 +48,11 @@ tokens), which brings a fix down to 14-15 s. N-gram lookup helps little on these
 much of the 14 s is reading the prompt (prefill on four CPU cores), which speculation does not
 speed up. The 1.5B fine-tune takes 6-7 s per fix; the 3B fixes far more bugs (61 vs 36 % on the
 full benchmark).
+
+
+## Correction, 2026-11-06
+
+Rescored with the fixed code extraction (a `markdown`-labelled block that is valid Python counts
+as code; see `../kaggle_coder_baselines_20261024/README.md`): the 3B base passes 16 of 20
+HumanEvalFix problems with n-gram lookup (was 13) and 14 without (was 11). Three of its answers had
+the fix in a `markdown` block.

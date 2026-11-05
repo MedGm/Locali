@@ -37,9 +37,9 @@
   "metrics": {
     "n": 163,
     "status_counts": {
-      "preserved_improved": 55,
-      "preserved_not_improved": 86,
-      "behaviour_changed": 22
+      "preserved_improved": 56,
+      "preserved_not_improved": 89,
+      "behaviour_changed": 18
     },
     "truncated": 1,
     "mean_input_tokens": 257.3313,
@@ -50,10 +50,10 @@
     "mean_decode_tok_per_s": 21.65,
     "total_energy_j": null,
     "mean_energy_j_per_task": null,
-    "behaviour_preserved_rate": 0.865,
-    "improved_rate": 0.3374,
-    "mean_delta_cyclomatic_complexity": 0.21,
-    "mean_delta_maintainability_index": 0.14,
+    "behaviour_preserved_rate": 0.8896,
+    "improved_rate": 0.3436,
+    "mean_delta_cyclomatic_complexity": 0.23,
+    "mean_delta_maintainability_index": 0.02,
     "mean_delta_ruff_violations": -0.11
   },
   "excluded": {
@@ -75,8 +75,8 @@
     "method": "trapezoidal integral of nvidia-smi power.draw at 1 s, whole board"
   },
   "rescored": {
-    "at": "2026-10-24T11:40:37+00:00",
-    "harness_commit": "3cb448cb3f0ec9c6eb3692b5f24b544a2900a7ac",
+    "at": "2026-11-05T23:12:01+00:00",
+    "harness_commit": "ca168530ab70b3755835e911ee320b2da1ab38f2",
     "previous_metrics": {
       "n": 163,
       "status_counts": {

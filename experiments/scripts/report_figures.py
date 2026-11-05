@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 RES = ROOT / "experiments" / "results"
 OUT = ROOT / "docs" / "figures"
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(ROOT))
 
 BASE, FT = "#2a78d6", "#eb6834"  # validated categorical pair (colour-blind safe)
 D_COLOUR = "#1baf7a"  # run D: categorical slot 3 (aqua); validated with the pair above, labels on every bar
@@ -155,8 +156,56 @@ def quantization() -> None:
     plt.close(fig)
 
 
+GOOD, BAD = "#0ca30c", "#d03b3b"  # status colours: always with a mark and a word
+
+
+def example(task_id: str = "Python/133") -> None:
+    """One HumanEvalFix bug and the fix each 3B model returned (Kaggle answers, as scored)."""
+    from evaluation.run import TASKS
+
+    item = next(i for i in TASKS["humanevalfix"].load() if i.task_id == task_id)
+    def answer(model: str) -> dict:
+        rows = (json.loads(line) for line in run(ROOTS[model], "humanevalfix", model).read_text().splitlines() if line.strip())
+        return next(r for r in rows if r["task_id"] == task_id)
+
+    answers = [(name, colour, answer(m)) for m, name, colour in MODELS]
+    buggy = (item.declaration.strip().splitlines()[-1] + "\n" + item.buggy_solution).rstrip().splitlines()
+    test = "sum_squares([1,2,3]) == 14"
+    panels = [("The bug", MUTED, buggy, None)] + [
+        (name, colour, r["code"].strip().splitlines(), r["passed"]) for name, colour, r in answers]
+
+    fig, axes = plt.subplots(1, 4, figsize=(14.5, 3.6), gridspec_kw={"wspace": 0.06})
+    for ax, (title, colour, lines, passed) in zip(axes, panels, strict=True):
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_facecolor("#ffffff")
+        for side in ("top", "right", "left", "bottom"):
+            ax.spines[side].set_visible(True)
+            ax.spines[side].set_color(GRID)
+        ax.add_patch(mpl.patches.Rectangle((0, 0.985), 1, 0.015, color=colour, transform=ax.transAxes, clip_on=False))
+        ax.text(0.04, 0.9, title, fontsize=10, weight="bold", color=INK, va="top")
+        for k, line in enumerate(lines):
+            y = 0.74 - k * 0.085
+            if "ceil(i)" in line:
+                fixed = "**2" in line.replace(" ", "")
+                ax.add_patch(mpl.patches.Rectangle((0.02, y - 0.045), 0.96, 0.085, color=GOOD if fixed else BAD, alpha=0.12, lw=0))
+            shown = line.replace(" ", "\u00a0")  # SVG viewers collapse plain leading spaces
+            ax.text(0.04, y, shown, fontsize=8.2, family="monospace", color=INK, va="center")
+        if passed is None:
+            ax.text(0.04, 0.17, f"failing test: {test}", fontsize=8.2, color=MUTED, va="center")
+            ax.text(0.04, 0.07, "*2 doubles each number; it should square", fontsize=8.2, color=MUTED, va="center")
+        else:
+            mark, word = ("\u2713", "fixed: all tests pass") if passed else ("\u2717", "not fixed: same bug")
+            ax.text(0.04, 0.08, f"{mark} {word}", fontsize=9.5, weight="bold", color=GOOD if passed else BAD, va="center")
+    fig.savefig(OUT / "example_fix.svg", metadata={"Date": None}, bbox_inches="tight")
+    plt.close(fig)
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     fine_tuning()
     quantization()
+    example()
     print("written:", sorted(p.name for p in OUT.glob("*.svg")))

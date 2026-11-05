@@ -33,7 +33,7 @@ significantly better. Without bold, the difference may be chance.
 
 | Task | Qwen2.5-Coder-3B-Instruct | Run D | Run E | p (E vs base) |
 |---|---|---|---|---|
-| Repair from a failing test (HumanEvalFix) | 46.3 | 61.6 | **63.4** | 0.00006 |
+| Repair from a failing test (HumanEvalFix) | 50.0 | 61.6 | **63.4** | 0.0009 |
 | Tests: bugs caught by the tests it writes | 62.2 | 82.9 | **82.3** | 0.00002 |
 | Real bugs from AtCoder 2024 (ConDefects, 382) | 12.3 | 14.9 | 14.7 | 0.30 |
 | *General skills* | | | | |
@@ -41,7 +41,7 @@ significantly better. Without bold, the difference may be chance.
 | MBPP+ | 64.7 | 64.2 | 64.2 | 1 |
 | CRUXEval-O | 42.2 | 43.4 | 43.6 | 1 |
 | Completion (infilling) | 56.4 | 62.0 | **65.6** | 0.006 |
-| Refactoring: behaviour kept | 86.5 | 87.7 | 87.7 | 1 |
+| Refactoring: behaviour kept | 89.0 | 87.7 | 87.7 | 1 |
 | Explaining code (HumanEvalExplain) | 68.3 | 57.9 | 68.3 | 1 |
 
 Repair and test generation gain significantly on the benchmarks. On real bugs outside the training

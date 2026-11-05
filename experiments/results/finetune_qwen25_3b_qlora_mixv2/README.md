@@ -29,3 +29,15 @@ but it does not help repair and costs HumanEval+ a trend of six points. Missing-
 from 12 to 8: training on single-line mutations pulls the stronger model towards one-line patches.
 Run B (mixture v3, `../finetune_qwen25_3b_qlora_mixv3`) adds realistic multi-line bugs to test
 whether that is what the 3B needs.
+
+
+## Correction, 2026-11-06
+
+The 3B base model sometimes labels its whole answer `markdown` instead of `python` (the prompt asks
+for "a markdown code block"), and the scorer skipped such blocks. `evaluation/extract.py` now
+counts a `markdown` block that is valid Python as code, and the affected base runs were rescored
+(`samples.original.jsonl` keeps the answers, `summary.json` the previous metrics). 3B base:
+HumanEvalFix 46.3 → **50.0 %** (6 of 7 such answers were correct fixes), refactoring behaviour
+preserved 86.5 → **89.0 %**. The fine-tuned 3B runs never answer this way; their scores do not
+change. Up-to-date paired tests: `../multiple_comparisons/README.md`. Numbers above this note are
+as first written.

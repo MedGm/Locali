@@ -42,3 +42,15 @@ sandbox. Adapter (not in git): `~/models/adapters/qwen25-3b-qlora-mixv3s`.
 - Since the replay is 21 % of the data and the cause is not there, what is left are the task rows
   themselves (repair, tests, review, traces), whose code targets are short programs written by
   CodeRM, Qwen3.5-9B or mutation; that is where the terse style would come from.
+
+
+## Correction, 2026-11-06
+
+The 3B base model sometimes labels its whole answer `markdown` instead of `python` (the prompt asks
+for "a markdown code block"), and the scorer skipped such blocks. `evaluation/extract.py` now
+counts a `markdown` block that is valid Python as code, and the affected base runs were rescored
+(`samples.original.jsonl` keeps the answers, `summary.json` the previous metrics). 3B base:
+HumanEvalFix 46.3 → **50.0 %** (6 of 7 such answers were correct fixes), refactoring behaviour
+preserved 86.5 → **89.0 %**. The fine-tuned 3B runs never answer this way; their scores do not
+change. Up-to-date paired tests: `../multiple_comparisons/README.md`. Numbers above this note are
+as first written.

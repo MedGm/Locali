@@ -48,3 +48,15 @@ correct fix, yet both explanations blame another line (C: `distance < threshold`
 The fix is a cleanup, not a gain: same scores, explanations that never describe an edit. D
 replaces C as the deployed model since its training data is the corrected one published on
 Kaggle (locali-mix-v3b), so the deployed model and the public data match.
+
+
+## Correction, 2026-11-06
+
+The 3B base model sometimes labels its whole answer `markdown` instead of `python` (the prompt asks
+for "a markdown code block"), and the scorer skipped such blocks. `evaluation/extract.py` now
+counts a `markdown` block that is valid Python as code, and the affected base runs were rescored
+(`samples.original.jsonl` keeps the answers, `summary.json` the previous metrics). 3B base:
+HumanEvalFix 46.3 → **50.0 %** (6 of 7 such answers were correct fixes), refactoring behaviour
+preserved 86.5 → **89.0 %**. The fine-tuned 3B runs never answer this way; their scores do not
+change. Up-to-date paired tests: `../multiple_comparisons/README.md`. Numbers above this note are
+as first written.

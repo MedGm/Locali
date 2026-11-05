@@ -6,6 +6,7 @@ import re
 _THINK = re.compile(r"<think>.*?</think>", re.DOTALL)
 _FENCE_LINE = re.compile(r"^\s*```+\s*([\w+#.-]*)\s*$")
 _PYTHON_LANGS = {"python", "py", "python3"}
+_MARKDOWN = {"markdown", "md"}
 
 
 def _fenced_blocks(text: str) -> list[tuple[str, str]]:
@@ -43,12 +44,25 @@ def _parses(code: str) -> bool:
     return True
 
 
+def _is_code(body: str) -> bool:
+    """Parses as Python and has at least one statement (a block of # headings is not code)."""
+    try:
+        return bool(ast.parse(body).body)
+    except SyntaxError:
+        return False
+
+
 def python_blocks(text: str) -> list[str]:
-    """Python blocks in order: labelled python/py, or unlabelled ones that look like code."""
+    """Python blocks in order: labelled python/py, or unlabelled or markdown-labelled ones that are code.
+
+    The 3B base model sometimes puts its whole answer in a ```markdown block; when that block is
+    valid Python with at least one statement, it is the answer.
+    """
     blocks = [(lang, body) for lang, body in _fenced_blocks(text) if body.strip()]
     if len(blocks) == 1 and blocks[0][0] in _PYTHON_LANGS | {""}:
         return [blocks[0][1]]  # a single block is taken even if cut off mid-statement
-    return [body for lang, body in blocks if lang in _PYTHON_LANGS or (lang == "" and _parses(body))]
+    return [body for lang, body in blocks
+            if lang in _PYTHON_LANGS or (lang == "" and _parses(body)) or (lang in _MARKDOWN and _is_code(body))]
 
 
 def extract_code(text: str, entry_point: str | None = None) -> str:

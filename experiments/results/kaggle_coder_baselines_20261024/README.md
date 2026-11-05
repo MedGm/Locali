@@ -61,3 +61,15 @@ HumanEvalFix by bug type (problems fixed):
 
 Proposal for v3: train the 3B (QLoRA fits a T4 easily) with the v2 test and refactoring data plus
 the new realistic-bug data, and compare it with the 3B base and with v2 on the same tasks.
+
+
+## Correction, 2026-11-06
+
+The 3B base model sometimes labels its whole answer `markdown` instead of `python` (the prompt asks
+for "a markdown code block"), and the scorer skipped such blocks. `evaluation/extract.py` now
+counts a `markdown` block that is valid Python as code, and the affected base runs were rescored
+(`samples.original.jsonl` keeps the answers, `summary.json` the previous metrics). 3B base:
+HumanEvalFix 46.3 → **50.0 %** (6 of 7 such answers were correct fixes), refactoring behaviour
+preserved 86.5 → **89.0 %**. The fine-tuned 3B runs never answer this way; their scores do not
+change. Up-to-date paired tests: `../multiple_comparisons/README.md`. Numbers above this note are
+as first written.

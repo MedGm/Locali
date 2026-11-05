@@ -19,7 +19,7 @@ with a 4-core laptop without a GPU (16 GB of memory) and Kaggle's free GPUs.
 - **Writing tests** works well. After fine-tuning, the tests the model writes catch the bug in 82 %
   of the problems (60 % before). The gain is real, and it comes from the model learning to write
   short, complete test files instead of long ones it never finishes.
-- **Fixing bugs** improved a lot on the standard benchmark (46 → 63 %). But on real bugs that
+- **Fixing bugs** improved on the standard benchmark (50 → 63 %). But on real bugs that
   people made, which my training data was not shaped after, the gain is small and not proven
   (12 → 15 %, p = 0.24). I checked this with rules written down before the run.
 - **Running on a laptop** is practical. Stored with 4-bit numbers, the 3B model takes 2.2 GB of
@@ -32,7 +32,7 @@ with a 4-core laptop without a GPU (16 GB of memory) and Kaggle's free GPUs.
 | What | Before → after | Verdict | Section |
 |---|---|---|---|
 | Tests it writes catch the bug (3B) | 60 → 82 % | better (p = 3e-6) | [3](#3-teaching-the-model) |
-| Fix bugs, standard benchmark (3B) | 46 → 63 % | better, but on bugs like the training data | [3](#3-teaching-the-model) |
+| Fix bugs, standard benchmark (3B) | 50 → 63 % | better, but on bugs like the training data | [3](#3-teaching-the-model) |
 | Fix real bugs from a programming contest (3B) | 12 → 15 % | **not proven** (p = 0.24, run D, as registered) | [3](#3-teaching-the-model) |
 | Refactoring that keeps behaviour (1.5B) | 70 → 94 % | better | [3](#3-teaching-the-model) |
 | Write code from a description (3B) | 81 → 75 % | lower, not proven after correction | [3](#3-teaching-the-model) |
@@ -235,21 +235,13 @@ Training one adapter takes about two hours on Kaggle's free GPU.
    way of writing code ([run E](experiments/results/finetune_qwen25_3b_qlora_mixv3s/README.md)).
    Since 5 November, run E is the default.
 
-**Why run E.** E scores the same as D on what the training was for, and is better rounded: it
-keeps the base's level at explaining code (68.3 against D's 57.9), loses less at writing code, and
-on its own laptop run and demo-project run it does as well as D (95 vs 100 bugs fixed on the
-laptop, p = 0.36, [laptop](experiments/results/laptop_3b_energy_runE/README.md)). One caveat:
-I chose E after seeing these benchmark results, so its numbers are a little optimistic.
-D was the default only because it was ready first. The real-bug check was registered on D, so that
-result stays a run D result; E's result on the same bugs (56 of 382) is next to it.
-
 **What it changed (3B base vs run D vs run E):**
 
 ![Base vs fine-tuned 3B](docs/figures/fine_tuning.svg)
 
 | % of problems | Problems | 3B base | Run D | **Run E** | Verdict, run E vs base | Verdict, run D vs base |
 |---|---|---|---|---|---|---|
-| Fix bugs (HumanEvalFix) | 164 | 46.3 | 61.6 | **63.4** | better, p = 6e-5 | better, p = 0.0004 |
+| Fix bugs (HumanEvalFix) | 164 | 50.0 | 61.6 | **63.4** | better, p = 0.0009 | better, p = 0.004 |
 | Fix real bugs (ConDefects) | 382 | 12.3 | 14.9 | 14.7 | no clear difference, p = 0.30 | no clear difference, p = 0.24 (registered) |
 | Write tests: bugs caught (2,048 tokens) | 164 | 60.4 | 82.9 | **82.3** | better, p = 3e-6 | better, p = 1e-6 |
 | Write code (HumanEval+) | 163 | 81.0 | 72.4 | 74.8 | no clear difference after correction, p = 0.45 | no clear difference after correction, p = 0.088 |
@@ -267,7 +259,7 @@ Three things to read in this table:
   realistic bugs after reading the benchmark's results by bug type, so the model practised on bugs
   that look like the exam's. On 382 real bugs that people made on AtCoder in 2024, which nobody on
   my side designed, run D fixes 57 against the base's 47 (run E: 56). That is in the right
-  direction but not significant, and the plausible gain is between −1 and +6 points, not 15
+  direction but not significant, and the plausible gain is between −1 and +6 points, not 12
   ([real bugs](experiments/results/repair_prereg_t4/README.md)).
 - **The test-writing gain is about finishing.** The base model writes long test files and is cut
   off before the end in 97 of 164 answers, even with almost three times the room; often it repeats
@@ -282,6 +274,49 @@ Three things to read in this table:
   writes the code from run D's explanations instead, they score 65.9 against the base's 68.3, so
   the explanations themselves are about as good
   ([explanation](experiments/results/explain_t4/README.md)).
+- **A scoring mistake I found late, in the base's favour once fixed.** The benchmark prompt asks
+  for the answer "in a markdown code block", and the base model sometimes took that literally: it
+  labelled its code `markdown` instead of `python`, and my scorer skipped such blocks. Seven of
+  its bug fixes were scored as failures for that reason, six of them correct. With the scorer
+  fixed (code in a `markdown` block counts when it is valid Python), the base fixes 50.0 % instead
+  of 46.3 %, and the gain shrinks from 15 to 12-13 points; it is still clearly significant. The
+  fine-tuned models never answer this way, so their scores do not move. The same fix changes the
+  base's refactoring score (86.5 → 89.0 %) and one QuixBugs answer. The base also has 31
+  real-bug answers written this way; at most 9 of them can be right (the other 22 already fail the
+  one failing example shown in the prompt), so the base stays below run D and the real-bug
+  conclusion holds; the exact count is still to be re-scored.
+
+### Run D or run E? The final check
+
+D was the default only because it was ready first. Before switching to E, I compared the two
+everywhere, including on the laptop with the 4-bit files people actually run:
+
+| Test | Run D | Run E | Real difference? |
+|---|---|---|---|
+| Fix bugs, Kaggle GPU (16-bit) | 61.6 % | 63.4 % | no (p = 0.61) |
+| Fix bugs, laptop (4-bit, all 164) | 100 | 95 | no (D alone 12, E alone 7, p = 0.36) |
+| Explain code | 57.9 % | 68.3 % | **yes, E** (p = 0.019) |
+| Spot vulnerabilities | 52.7 % | 54.5 % | **yes, E** (p = 0.024) |
+| Write code (HumanEval+) | 72.4 % | 74.8 % | no |
+| Fix real bugs (ConDefects) | 57 | 56 | no |
+| Demo project: bugs found / caught by a test | 3 / 2 | 3 / 1 | one run |
+| Demo project: tests kept, share of code they run | 2, 45 % | 4, 72 % | one run |
+
+**What I read in it.** On fixing bugs they are tied: E is ahead on the GPU, D on the laptop, and
+neither gap is bigger than luck. The only clear differences are on E's side: it explains code as
+well as the base did, where D had lost ten points. So E is the default since 5 November.
+
+Two caveats. I chose E after seeing these results, so its numbers are a little optimistic. And
+4-bit rounding cost E a bit more than D (63.4 → 57.9 % against 61.6 → 61.0 %); with one run I
+cannot tell whether that is luck. The real-bug check was registered on D, so that result stays a
+run D result ([laptop](experiments/results/laptop_3b_energy_runE/README.md),
+[demo project](experiments/results/agents_runE/README.md)).
+
+**One bug, three answers.** A typical case where fine-tuning helps (HumanEvalFix `Python/133`,
+the answers exactly as the models wrote them on Kaggle). The base hands the bug back unchanged;
+both fine-tuned runs make the one-character fix:
+
+![One HumanEvalFix bug and the fix of each 3B model](docs/figures/example_fix.svg)
 
 **The 1.5B, the fast option** ([results](experiments/results/finetune_v2/README.md)):
 

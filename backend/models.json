@@ -13,7 +13,7 @@
       "recommended": "default",
       "ladder": null,
       "highlights": [
-        "HumanEvalFix 63.4 % (base 46.3 %); tests that catch the bug 82.3 % (base 62.2 %)",
+        "HumanEvalFix 63.4 % (base 50.0 %); tests that catch the bug 82.3 % (base 62.2 %)",
         "No general skill significantly below the base after correction; explaining code 68.3 % (same as the base)",
         "Laptop CPU: 95 of 164 bugs fixed, 15.2 s per problem, 2.2 GB RAM, 478 J per fixed bug",
         "Base model under the Qwen research licence (non-commercial)"

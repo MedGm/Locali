@@ -8,7 +8,7 @@ Confirmatory (2 tests, Holm within the family)
 
 | Task | n | Base % | Fine-tune % | Δ points | only base / only fine-tune | p | Holm p |
 |---|---|---|---|---|---|---|---|
-| humanevalfix | 164 | 46.3 | **61.6** | +15.2 | 11 / 36 | 0.00035 | 0.00035 |
+| humanevalfix | 164 | 50.0 | **61.6** | +11.6 | 11 / 30 | 0.0043 | 0.0043 |
 | testgen | 164 | 62.2 | **82.9** | +20.7 | 11 / 45 | 5.4e-06 | 1.1e-05 |
 
 Exploratory (9 tests, Holm within the family)
@@ -19,7 +19,7 @@ Exploratory (9 tests, Holm within the family)
 | mbpp_plus | 377 | 64.7 | 64.2 | -0.5 | 27 / 25 | 0.89 | 1 |
 | completion | 163 | 56.4 | 62.0 | +5.5 | 7 / 16 | 0.093 | 0.37 |
 | cruxeval_o | 800 | 42.2 | 43.4 | +1.1 | 37 / 46 | 0.38 | 1 |
-| refactor | 163 | 86.5 | 87.7 | +1.2 | 11 / 13 | 0.84 | 1 |
+| refactor | 163 | 89.0 | 87.7 | -1.2 | 11 / 9 | 0.82 | 1 |
 | bugdetect | 328 | 61.6 | 67.4 | +5.8 | 26 / 45 | 0.032 | 0.16 |
 | vulndetect | 712 | 54.9 | 52.7 | -2.2 | 31 / 15 | 0.026 | 0.16 |
 | securecodegen | 121 | 69.4 | **81.8** | +12.4 | 2 / 17 | 0.00073 | 0.0066 |
@@ -31,7 +31,7 @@ Confirmatory (2 tests, Holm within the family)
 
 | Task | n | Base % | Fine-tune % | Δ points | only base / only fine-tune | p | Holm p |
 |---|---|---|---|---|---|---|---|
-| humanevalfix | 164 | 46.3 | **63.4** | +17.1 | 10 / 38 | 6.2e-05 | 6.2e-05 |
+| humanevalfix | 164 | 50.0 | **63.4** | +13.4 | 10 / 32 | 0.00094 | 0.00094 |
 | testgen | 164 | 62.2 | **82.3** | +20.1 | 11 / 44 | 8.7e-06 | 1.7e-05 |
 
 Exploratory (9 tests, Holm within the family)
@@ -42,7 +42,7 @@ Exploratory (9 tests, Holm within the family)
 | mbpp_plus | 377 | 64.7 | 64.2 | -0.5 | 18 / 16 | 0.86 | 1 |
 | completion | 163 | 56.4 | **65.6** | +9.2 | 2 / 17 | 0.00073 | 0.0058 |
 | cruxeval_o | 800 | 42.2 | 43.6 | +1.4 | 30 / 41 | 0.24 | 1 |
-| refactor | 163 | 86.5 | 87.7 | +1.2 | 12 / 14 | 0.85 | 1 |
+| refactor | 163 | 89.0 | 87.7 | -1.2 | 12 / 10 | 0.83 | 1 |
 | bugdetect | 328 | 61.6 | 66.5 | +4.9 | 20 / 36 | 0.044 | 0.31 |
 | vulndetect | 712 | 54.9 | 54.5 | -0.4 | 14 / 11 | 0.69 | 1 |
 | securecodegen | 121 | 69.4 | **82.6** | +13.2 | 1 / 17 | 0.00014 | 0.0013 |

@@ -34,3 +34,15 @@ function misuse 4 / 6 / 5.
   the code.
 - **Run C is the better model to deploy**: the same repair class as B without the refactoring
   regression, at the cost of HumanEval+ (73.0 vs 81.0 % for the base).
+
+
+## Correction, 2026-11-06
+
+The 3B base model sometimes labels its whole answer `markdown` instead of `python` (the prompt asks
+for "a markdown code block"), and the scorer skipped such blocks. `evaluation/extract.py` now
+counts a `markdown` block that is valid Python as code, and the affected base runs were rescored
+(`samples.original.jsonl` keeps the answers, `summary.json` the previous metrics). 3B base:
+HumanEvalFix 46.3 → **50.0 %** (6 of 7 such answers were correct fixes), refactoring behaviour
+preserved 86.5 → **89.0 %**. The fine-tuned 3B runs never answer this way; their scores do not
+change. Up-to-date paired tests: `../multiple_comparisons/README.md`. Numbers above this note are
+as first written.

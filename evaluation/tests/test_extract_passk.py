@@ -113,3 +113,19 @@ def test_markdown_tutorial_yields_only_its_python_blocks():
         "```python\ndef test_b():\n    assert f(['a']) == ['a']\n```\n```"
     )
     assert extract_all_code(text) == "def test_a():\n    assert f([]) == []\n\ndef test_b():\n    assert f(['a']) == ['a']"
+
+
+def test_code_labelled_markdown_counts_as_code():
+    # the 3B base sometimes labels its whole fix ```markdown (HumanEvalFix Python/16)
+    text = "```markdown\ndef f(s):\n    return len(set(s.lower()))\n```\n\nThis lowercases first."
+    assert extract_code(text, "f") == "def f(s):\n    return len(set(s.lower()))"
+
+
+def test_markdown_block_with_prose_is_still_skipped():
+    text = "```markdown\n# Fix\n\nThe loop was off by one.\n```\n\n```python\ndef f():\n    return 1\n```"
+    assert extract_code(text, "f") == "def f():\n    return 1"
+
+
+def test_markdown_block_of_comments_only_is_not_code():
+    text = "```markdown\n# Tests\n```\n```python\ndef test_a():\n    assert 1\n```"
+    assert extract_all_code(text) == "def test_a():\n    assert 1"

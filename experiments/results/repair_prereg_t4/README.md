@@ -71,6 +71,21 @@ distribution.
 - Output comparison strips trailing whitespace, as registered; ConDefects' own tool compares lines
   exactly. The same rule applies to every model and to the harness check.
 
+## Found after scoring (2026-11-06), not yet applied to the tables above
+
+The 3B base sometimes puts its whole answer in a block labelled `markdown` (the registered prompt
+asks for "a markdown code block"), and the code extraction skipped such blocks. It is fixed in
+`evaluation/extract.py` (a `markdown` block that is valid Python counts as code); the fine-tuned
+models never answer this way, so only the base can change.
+
+- QuixBugs, 3B base: rescored, 20 → 21 of 40 (one such answer was a correct fix).
+- ConDefects, 3B base: 31 answers are written this way, all scored as failures. The test files
+  are on an external drive that is not connected, so they are not rescored yet. Run on the one
+  failing input shown in the prompt, 22 of the 31 still fail it, so at most 9 can be fixes: the
+  base reaches at most 56 of 382, below run D's 57, and the registered outcome ("D better,
+  p ≥ 0.05", gain not confirmed) cannot change. The numbers in the registered sentence will be
+  updated, with the original ones kept, once the 31 are rescored.
+
 ## Files
 
 - `results/<benchmark>/<model>/`: `samples.jsonl` (answers and scores; `samples.original.jsonl`

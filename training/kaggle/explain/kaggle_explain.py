@@ -8,6 +8,10 @@ Docker sandbox with evaluation.rescore.
 GPU 0: Qwen2.5-Coder-3B with the run D and E adapters. GPU 1: Qwen2.5-Coder-1.5B and the merged
 1.5B fine-tune, one after the other. Greedy, 768 tokens per call, vLLM's generation_config
 defaults as in the other Kaggle runs. PILOT=1: 5 problems.
+
+WRITER=1: the control. Only the 3B base is served, and it writes the code from the explanations every
+model gave in the first run (read from experiments/results/explain_t4 in the repository), so the
+writer is the same for all and only the explanation changes.
 """
 
 import json
@@ -28,6 +32,8 @@ VLLM_VERSION = "0.29.0"
 RESULTS = WORK / "results"
 LOGS = WORK / "logs"
 LIMIT = 5 if os.environ.get("PILOT") == "1" else None
+WRITER = os.environ.get("WRITER") == "1"
+FIRST_RUN = CODE / "experiments/results/explain_t4/results"
 ADAPTERS = ("mixv3b-diag", "mixv3s")
 SERVERS = {  # name: (repo, revision, gpu, port, memory share)
     "3b": ("Qwen/Qwen2.5-Coder-3B-Instruct", "488639f1ff808d1d3d0ba301aef8c11461451ec5", 0, 8000, 0.90),
@@ -84,7 +90,7 @@ def start(name: str, adapters: dict[str, Path]) -> subprocess.Popen:
     cmd = [str(VLLM_VENV / "bin" / "vllm"), "serve", repo, "--revision", revision, "--served-model-name", "local",
            "--port", str(port), "--dtype", "half", "--max-model-len", "4096", "--gpu-memory-utilization", str(share),
            "--enforce-eager", "--seed", "3407"]
-    if name == "3b":
+    if name == "3b" and adapters:
         cmd += ["--enable-lora", "--max-lora-rank", "16", "--max-loras", "2",
                 "--lora-modules", *(f"{n}={p}" for n, p in adapters.items())]
     fh = open(LOGS / f"vllm-{name}.log", "w")  # noqa: SIM115 - stays open while the server runs
@@ -152,8 +158,51 @@ def run_gpu(gpu: int, adapters: dict[str, Path]) -> None:
             stop(server)
 
 
+def write_from_explanations() -> None:
+    """The 3B base writes the code from each model's recorded explanation."""
+    from evaluation.client import ChatClient, Completion
+    from evaluation.run import TASKS, RunConfig, run_benchmark
+    from evaluation.tasks.humanevalpack import SYNTHESIS_MARK
+
+    task = TASKS["humanevalexplain"]
+    items = task.load(LIMIT)
+    client = ChatClient(f"http://127.0.0.1:{SERVERS['3b'][3]}/v1", model="local")
+
+    def one(explainer: str) -> None:
+        recorded = {}
+        for line in (FIRST_RUN / explainer / "samples.jsonl").read_text().splitlines():
+            row = json.loads(line)
+            recorded[row["task_id"]] = row["completion"].partition(SYNTHESIS_MARK)[0]
+        config = RunConfig(benchmark=task.name, model_id=f"{explainer}+written-by-qwen2.5-coder-3b", runtime="vllm",
+                           max_tokens=768, base_url=f"http://127.0.0.1:{SERVERS['3b'][3]}/v1", workers=16, limit=LIMIT, dataset=task.dataset[0],
+                           dataset_revision=task.dataset[1], generate_only=True,
+                           notes=f"kaggle T4, vLLM 0.29; explanations by {explainer}, code by the 3B base")
+
+        def generate(item) -> Completion:
+            first = Completion(recorded[item.task_id], "", None, None, 0.0, 0.0, "stop")
+            second = client.complete(task.followup(item, first), max_tokens=768, temperature=0.0, seed=config.seed)
+            return Completion(first.text + SYNTHESIS_MARK + second.text, "", second.input_tokens, second.output_tokens,
+                              second.ttft_s, second.total_s, second.finish_reason)
+
+        run_benchmark(config, task, items, generate, RESULTS / "writer-3b" / explainer)
+        log(f"{explainer}: written by the 3B base")
+
+    server = start("3b", {})
+    try:
+        if not wait_healthy(SERVERS["3b"][3], server):
+            raise RuntimeError("server 3b failed to start, see logs/vllm-3b.log")
+        with ThreadPoolExecutor(max_workers=len(MODELS)) as pool:
+            list(pool.map(one, MODELS))
+    finally:
+        stop(server)
+
+
 def main() -> None:
     setup()
+    if WRITER:
+        write_from_explanations()
+        log("all done")
+        return
     adapters = adapter_paths()
     gpus = sorted({gpu for _, _, gpu, _, _ in SERVERS.values()})
     with ThreadPoolExecutor(max_workers=len(gpus)) as pool:

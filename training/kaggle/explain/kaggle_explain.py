@@ -58,7 +58,7 @@ def setup() -> None:
     if not CODE.exists():
         assert sh(["git", "clone", REPO, str(CODE)], setup_log) == 0, "clone failed"
     assert sh(["git", "-C", str(CODE), "checkout", COMMIT], setup_log) == 0, "checkout failed"
-    assert sh([sys.executable, "-m", "pip", "install", "-q", "datasets"], setup_log) == 0
+    assert sh([sys.executable, "-m", "pip", "install", "-q", "datasets", "radon", "bandit"], setup_log) == 0
     if not (VLLM_VENV / "bin" / "python").exists():
         for step in (
             [sys.executable, "-m", "pip", "install", "-q", "uv"],

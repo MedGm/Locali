@@ -1,7 +1,7 @@
 {
  "repo": "/home/medgm/vsc/deep_learning/demo_repo",
  "run_id": "base",
- "workspace": "/tmp/locali-ws-j3v47p77/wt/demo_repo",
+ "workspace": "/tmp/locali-ws-fjio07xw/wt/demo_repo",
  "steps": [
   "prepare",
   "analyze",
@@ -346,6 +346,96 @@
  },
  "suspects": [
   {
+   "file": "tinyshop/db.py",
+   "function": "connect",
+   "test": "def test_connect__a3(conn):\n    cursor = conn.cursor()\n    cursor.execute(\"SELECT name FROM sqlite_master WHERE type='table' AND name='users'\")\n    assert connect(':memory:') is conn",
+   "error": "AssertionError: assert <sqlite3.Connection object at 0x73eab5e94310> is <sqlite3.Connection object at 0x73eab5e94130>\n+  where <sqlite3.Connection object at 0x73eab5e94310> = connect(':memory:')"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "needs_restock",
+   "test": "def test_needs_restock__a0():\n    assert needs_restock(5) == True, 'Should return True when stock is below the threshold'",
+   "error": "AssertionError: Should return True when stock is below the threshold\nassert False == True\n+  where False = needs_restock(5)"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a0():\n    products = [(1, 10), (2, 20), (3, 30)]\n    assert total_units(products) == 60",
+   "error": "assert 50 == 60\n+  where 50 = total_units([(1, 10), (2, 20), (3, 30)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a10():\n    products = [(1, 10), (2, 20), (3, 30)]\n    products = []\n    products = [(1, 10)]\n    products = [(1, -10), (2, 20), (3, 30)]\n    products = [(1, 0), (2, 0), (3, 0)]\n    products = [(1, -10), (2, 20), (3, -30)]\n    products = [(1, -10), (2, 0), (3, 30)]\n    products = [(1, 10), (2, 0), (3, -30)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    assert total_units(products) == 30",
+   "error": "assert 20 == 30\n+  where 20 = total_units([(1, 10), (2, 20), (3, 0)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a11():\n    products = [(1, 10), (2, 20), (3, 30)]\n    products = []\n    products = [(1, 10)]\n    products = [(1, -10), (2, 20), (3, 30)]\n    products = [(1, 0), (2, 0), (3, 0)]\n    products = [(1, -10), (2, 20), (3, -30)]\n    products = [(1, -10), (2, 0), (3, 30)]\n    products = [(1, 10), (2, 0), (3, -30)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    assert total_units(products) == 10",
+   "error": "assert 0 == 10\n+  where 0 = total_units([(1, 10), (2, 0), (3, 0)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a12():\n    products = [(1, 10), (2, 20), (3, 30)]\n    products = []\n    products = [(1, 10)]\n    products = [(1, -10), (2, 20), (3, 30)]\n    products = [(1, 0), (2, 0), (3, 0)]\n    products = [(1, -10), (2, 20), (3, -30)]\n    products = [(1, -10), (2, 0), (3, 30)]\n    products = [(1, 10), (2, 0), (3, -30)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    assert total_units(products) == 30",
+   "error": "assert 20 == 30\n+  where 20 = total_units([(1, 10), (2, 20), (3, 0)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a13():\n    products = [(1, 10), (2, 20), (3, 30)]\n    products = []\n    products = [(1, 10)]\n    products = [(1, -10), (2, 20), (3, 30)]\n    products = [(1, 0), (2, 0), (3, 0)]\n    products = [(1, -10), (2, 20), (3, -30)]\n    products = [(1, -10), (2, 0), (3, 30)]\n    products = [(1, 10), (2, 0), (3, -30)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    assert total_units(products) == 10",
+   "error": "assert 0 == 10\n+  where 0 = total_units([(1, 10), (2, 0), (3, 0)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a14():\n    products = [(1, 10), (2, 20), (3, 30)]\n    products = []\n    products = [(1, 10)]\n    products = [(1, -10), (2, 20), (3, 30)]\n    products = [(1, 0), (2, 0), (3, 0)]\n    products = [(1, -10), (2, 20), (3, -30)]\n    products = [(1, -10), (2, 0), (3, 30)]\n    products = [(1, 10), (2, 0), (3, -30)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    assert total_units(products) == 30",
+   "error": "assert 20 == 30\n+  where 20 = total_units([(1, 10), (2, 20), (3, 0)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a15():\n    products = [(1, 10), (2, 20), (3, 30)]\n    products = []\n    products = [(1, 10)]\n    products = [(1, -10), (2, 20), (3, 30)]\n    products = [(1, 0), (2, 0), (3, 0)]\n    products = [(1, -10), (2, 20), (3, -30)]\n    products = [(1, -10), (2, 0), (3, 30)]\n    products = [(1, 10), (2, 0), (3, -30)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    assert total_units(products) == 10",
+   "error": "assert 0 == 10\n+  where 0 = total_units([(1, 10), (2, 0), (3, 0)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a3():\n    products = [(1, 10), (2, 20), (3, 30)]\n    products = []\n    products = [(1, 10)]\n    products = [(1, -10), (2, 20), (3, 30)]\n    assert total_units(products) == 40",
+   "error": "assert 50 == 40\n+  where 50 = total_units([(1, -10), (2, 20), (3, 30)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a5():\n    products = [(1, 10), (2, 20), (3, 30)]\n    products = []\n    products = [(1, 10)]\n    products = [(1, -10), (2, 20), (3, 30)]\n    products = [(1, 0), (2, 0), (3, 0)]\n    products = [(1, -10), (2, 20), (3, -30)]\n    assert total_units(products) == 10",
+   "error": "assert -10 == 10\n+  where -10 = total_units([(1, -10), (2, 20), (3, -30)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a6():\n    products = [(1, 10), (2, 20), (3, 30)]\n    products = []\n    products = [(1, 10)]\n    products = [(1, -10), (2, 20), (3, 30)]\n    products = [(1, 0), (2, 0), (3, 0)]\n    products = [(1, -10), (2, 20), (3, -30)]\n    products = [(1, -10), (2, 0), (3, 30)]\n    assert total_units(products) == 20",
+   "error": "assert 30 == 20\n+  where 30 = total_units([(1, -10), (2, 0), (3, 30)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a7():\n    products = [(1, 10), (2, 20), (3, 30)]\n    products = []\n    products = [(1, 10)]\n    products = [(1, -10), (2, 20), (3, 30)]\n    products = [(1, 0), (2, 0), (3, 0)]\n    products = [(1, -10), (2, 20), (3, -30)]\n    products = [(1, -10), (2, 0), (3, 30)]\n    products = [(1, 10), (2, 0), (3, -30)]\n    assert total_units(products) == 10",
+   "error": "assert -30 == 10\n+  where -30 = total_units([(1, 10), (2, 0), (3, -30)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a8():\n    products = [(1, 10), (2, 20), (3, 30)]\n    products = []\n    products = [(1, 10)]\n    products = [(1, -10), (2, 20), (3, 30)]\n    products = [(1, 0), (2, 0), (3, 0)]\n    products = [(1, -10), (2, 20), (3, -30)]\n    products = [(1, -10), (2, 0), (3, 30)]\n    products = [(1, 10), (2, 0), (3, -30)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    assert total_units(products) == 30",
+   "error": "assert 20 == 30\n+  where 20 = total_units([(1, 10), (2, 20), (3, 0)])"
+  },
+  {
+   "file": "tinyshop/inventory.py",
+   "function": "total_units",
+   "test": "def test_total_units__a9():\n    products = [(1, 10), (2, 20), (3, 30)]\n    products = []\n    products = [(1, 10)]\n    products = [(1, -10), (2, 20), (3, 30)]\n    products = [(1, 0), (2, 0), (3, 0)]\n    products = [(1, -10), (2, 20), (3, -30)]\n    products = [(1, -10), (2, 0), (3, 30)]\n    products = [(1, 10), (2, 0), (3, -30)]\n    products = [(1, 10), (2, 20), (3, 0)]\n    products = [(1, 10), (2, 0), (3, 0)]\n    assert total_units(products) == 10",
+   "error": "assert 0 == 10\n+  where 0 = total_units([(1, 10), (2, 0), (3, 0)])"
+  },
+  {
    "file": "tinyshop/api.py",
    "function": "create_product",
    "test": "def test_create_product_duplicate_name(client):\n    client.post('/products', json={'name': 'Test Product', 'price': 10.0})\n    response = client.post('/products', json={'name': 'Test Product', 'price': 10.0})\n    assert response.status_code == 409",
@@ -398,9 +488,13 @@
   "tinyshop/api.py::get_conn": 1,
   "tinyshop/api.py::create_app": 1,
   "tinyshop/auth.py::create_staff": 1,
+  "tinyshop/auth.py::check_login": 6,
+  "tinyshop/db.py::connect": 1,
+  "tinyshop/db.py::add_product": 8,
   "tinyshop/db.py::record_sale": 1,
-  "tinyshop/reports.py::best_seller": 10,
+  "tinyshop/db.py::sales_for_day": 2,
   "tinyshop/reports.py::daily_report": 4,
+  "tinyshop/reports.py::best_seller": 10,
   "tinyshop/api.py::create_product": 1,
   "tinyshop/api.py::place_order": 1,
   "tinyshop/api.py::day_report": 1
@@ -424,7 +518,8 @@
    "tinyshop/api.py",
    "tinyshop/auth.py",
    "tinyshop/db.py",
-   "tinyshop/inventory.py"
+   "tinyshop/inventory.py",
+   "tinyshop/reports.py"
   ],
   "documented": [
    [
@@ -445,10 +540,6 @@
    ],
    [
     "tinyshop/db.py",
-    "connect"
-   ],
-   [
-    "tinyshop/db.py",
     "add_product"
    ],
    [
@@ -466,22 +557,27 @@
    [
     "tinyshop/inventory.py",
     "restock_list"
+   ],
+   [
+    "tinyshop/reports.py",
+    "daily_report"
    ]
   ],
   "rejected": 0
  },
  "patch_ids": [
-  "6b031bdd2bb0",
-  "ff3f9e98b651",
-  "e949a7cbed90",
-  "4352b2047118",
-  "2ec1d4924ddf",
-  "b1c7bad72882",
-  "d4b96657c060"
+  "655170f61db5",
+  "febd794288d7",
+  "e03355c78b1b",
+  "6dd28d0657ef",
+  "926c31675961",
+  "99c9cbd9a507",
+  "00b6ab907869",
+  "6cdd7cecc59d"
  ],
  "patches": [
   {
-   "id": "6b031bdd2bb0",
+   "id": "655170f61db5",
    "kind": "fix",
    "title": "Fix apply_discount in tinyshop/pricing.py",
    "files": [
@@ -490,7 +586,7 @@
    "ok": true
   },
   {
-   "id": "ff3f9e98b651",
+   "id": "febd794288d7",
    "kind": "tests",
    "title": "Regression tests for bulk_discount (they record what the code does now)",
    "files": [
@@ -499,7 +595,7 @@
    "ok": true
   },
   {
-   "id": "e949a7cbed90",
+   "id": "e03355c78b1b",
    "kind": "tests",
    "title": "Integration tests for best_seller",
    "files": [
@@ -508,7 +604,7 @@
    "ok": true
   },
   {
-   "id": "4352b2047118",
+   "id": "6dd28d0657ef",
    "kind": "docs",
    "title": "Docstrings for get_conn, create_app in tinyshop/api.py",
    "files": [
@@ -517,7 +613,7 @@
    "ok": true
   },
   {
-   "id": "2ec1d4924ddf",
+   "id": "926c31675961",
    "kind": "docs",
    "title": "Docstrings for create_staff, check_login in tinyshop/auth.py",
    "files": [
@@ -526,20 +622,29 @@
    "ok": true
   },
   {
-   "id": "b1c7bad72882",
+   "id": "99c9cbd9a507",
    "kind": "docs",
-   "title": "Docstrings for connect, add_product, record_sale, sales_for_day in tinyshop/db.py",
+   "title": "Docstrings for add_product, record_sale, sales_for_day in tinyshop/db.py",
    "files": [
     "tinyshop/db.py"
    ],
    "ok": true
   },
   {
-   "id": "d4b96657c060",
+   "id": "00b6ab907869",
    "kind": "docs",
    "title": "Docstrings for remove_stock, restock_list in tinyshop/inventory.py",
    "files": [
     "tinyshop/inventory.py"
+   ],
+   "ok": true
+  },
+  {
+   "id": "6cdd7cecc59d",
+   "kind": "docs",
+   "title": "Docstrings for daily_report in tinyshop/reports.py",
+   "files": [
+    "tinyshop/reports.py"
    ],
    "ok": true
   }
@@ -560,7 +665,7 @@
    "1 test(s) fail on the current code"
   ],
   "warnings": [
-   "8 suspected bug(s) from generated tests, not confirmed",
+   "23 suspected bug(s) from generated tests, not confirmed",
    "test coverage is 28%",
    "no CI workflow"
   ],
@@ -577,7 +682,7 @@
    "workflows": []
   },
   "suggested_workflow": "name: CI\n\non:\n  push:\n  pull_request:\n\njobs:\n  tests:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: \"3.12\"\n      - run: pip install -r requirements.txt pytest-cov\n      - run: pytest --cov --cov-report=term\n\n  locali-review:\n    if: github.event_name == 'pull_request'\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          fetch-depth: 0\n      - uses: actions/checkout@v4\n        with:\n          repository: MedGm/Locali\n          path: .locali\n      - uses: astral-sh/setup-uv@v6\n      - run: uv sync --frozen --project .locali\n      - run: uv run --project .locali python -m backend.pr_review --repo . --base \"${{ github.event.pull_request.base.sha }}\" --head \"${{ github.event.pull_request.head.sha }}\" --out comment.md\n",
-  "markdown": "## DevOps summary\n\nMerge readiness: not ready\n\nBlockers:\n\n- 3 hard-coded secret(s): tinyshop/settings.py:8, tinyshop/settings.py:9, tinyshop/settings.py:10\n- 6 high-severity security finding(s) from the static tools\n- requirements.txt: reqeusts looks like requests (possible typosquat)\n- 1 test(s) fail on the current code\n\nWarnings:\n\n- 8 suspected bug(s) from generated tests, not confirmed\n- test coverage is 28%\n- no CI workflow\n\nTests on the current code: 5 passed, 1 failed, coverage 27.7%\n\nCI workflows: none\n\nSuggested workflow (.github/workflows/ci.yml):\n\n```yaml\nname: CI\n\non:\n  push:\n  pull_request:\n\njobs:\n  tests:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: \"3.12\"\n      - run: pip install -r requirements.txt pytest-cov\n      - run: pytest --cov --cov-report=term\n\n  locali-review:\n    if: github.event_name == 'pull_request'\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          fetch-depth: 0\n      - uses: actions/checkout@v4\n        with:\n          repository: MedGm/Locali\n          path: .locali\n      - uses: astral-sh/setup-uv@v6\n      - run: uv sync --frozen --project .locali\n      - run: uv run --project .locali python -m backend.pr_review --repo . --base \"${{ github.event.pull_request.base.sha }}\" --head \"${{ github.event.pull_request.head.sha }}\" --out comment.md\n```\n"
+  "markdown": "## DevOps summary\n\nMerge readiness: not ready\n\nBlockers:\n\n- 3 hard-coded secret(s): tinyshop/settings.py:8, tinyshop/settings.py:9, tinyshop/settings.py:10\n- 6 high-severity security finding(s) from the static tools\n- requirements.txt: reqeusts looks like requests (possible typosquat)\n- 1 test(s) fail on the current code\n\nWarnings:\n\n- 23 suspected bug(s) from generated tests, not confirmed\n- test coverage is 28%\n- no CI workflow\n\nTests on the current code: 5 passed, 1 failed, coverage 27.7%\n\nCI workflows: none\n\nSuggested workflow (.github/workflows/ci.yml):\n\n```yaml\nname: CI\n\non:\n  push:\n  pull_request:\n\njobs:\n  tests:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: \"3.12\"\n      - run: pip install -r requirements.txt pytest-cov\n      - run: pytest --cov --cov-report=term\n\n  locali-review:\n    if: github.event_name == 'pull_request'\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          fetch-depth: 0\n      - uses: actions/checkout@v4\n        with:\n          repository: MedGm/Locali\n          path: .locali\n      - uses: astral-sh/setup-uv@v6\n      - run: uv sync --frozen --project .locali\n      - run: uv run --project .locali python -m backend.pr_review --repo . --base \"${{ github.event.pull_request.base.sha }}\" --head \"${{ github.event.pull_request.head.sha }}\" --out comment.md\n```\n"
  },
- "report": "# Run base\n\n## Findings\n\n- bug: 5\n- quality: 9\n- security: 21\n\nModel review findings whose quoted line did not exist (dropped): 1\n\n## Tests added\n\nUnit:\n- tests/test_locali_bulk_discount.py\nIntegration:\n- tests/test_locali_integration_best_seller.py\nAPI: none\n\n## Suspected bugs (generated tests that failed; check the test before the code)\n\n- tinyshop/api.py::create_product: assert 201 == 409\n- tinyshop/api.py::create_product: assert 201 == 409\n- tinyshop/api.py::place_order: assert 201 == 409\n- tinyshop/api.py::place_order: AssertionError: assert {'ok': True} == {'detail': 'i...icient stock'}\n- tinyshop/api.py::day_report: assert 404 == 409\n- tinyshop/api.py::day_report: AssertionError: assert {'detail': 'unknown product'} == {'detail': 'o...r than stock'}\n- tinyshop/api.py::day_report: assert 404 == 201\n- tinyshop/api.py::day_report: AssertionError: assert {'detail': 'unknown product'} == {'ok': True}\n\n## Fixes\n\n- tests/test_pricing.py::test_discount: fixed in 1 attempt(s), tinyshop/pricing.py::apply_discount\n\n## Docstrings\n\n- tinyshop/api.py::get_conn\n- tinyshop/api.py::create_app\n- tinyshop/auth.py::create_staff\n- tinyshop/auth.py::check_login\n- tinyshop/db.py::connect\n- tinyshop/db.py::add_product\n- tinyshop/db.py::record_sale\n- tinyshop/db.py::sales_for_day\n- tinyshop/inventory.py::remove_stock\n- tinyshop/inventory.py::restock_list\n\n## Patches (each one is reviewed and applied on its own)\n\n- 6b031bdd2bb0 [fix] Fix apply_discount in tinyshop/pricing.py: validation passed\n- ff3f9e98b651 [tests] Regression tests for bulk_discount (they record what the code does now): validation passed\n- e949a7cbed90 [tests] Integration tests for best_seller: validation passed\n- 4352b2047118 [docs] Docstrings for get_conn, create_app in tinyshop/api.py: validation passed\n- 2ec1d4924ddf [docs] Docstrings for create_staff, check_login in tinyshop/auth.py: validation passed\n- b1c7bad72882 [docs] Docstrings for connect, add_product, record_sale, sales_for_day in tinyshop/db.py: validation passed\n- d4b96657c060 [docs] Docstrings for remove_stock, restock_list in tinyshop/inventory.py: validation passed\n\n## DevOps summary\n\nMerge readiness: not ready\n\nBlockers:\n\n- 3 hard-coded secret(s): tinyshop/settings.py:8, tinyshop/settings.py:9, tinyshop/settings.py:10\n- 6 high-severity security finding(s) from the static tools\n- requirements.txt: reqeusts looks like requests (possible typosquat)\n- 1 test(s) fail on the current code\n\nWarnings:\n\n- 8 suspected bug(s) from generated tests, not confirmed\n- test coverage is 28%\n- no CI workflow\n\nTests on the current code: 5 passed, 1 failed, coverage 27.7%\n\nCI workflows: none\n\nSuggested workflow (.github/workflows/ci.yml):\n\n```yaml\nname: CI\n\non:\n  push:\n  pull_request:\n\njobs:\n  tests:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: \"3.12\"\n      - run: pip install -r requirements.txt pytest-cov\n      - run: pytest --cov --cov-report=term\n\n  locali-review:\n    if: github.event_name == 'pull_request'\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          fetch-depth: 0\n      - uses: actions/checkout@v4\n        with:\n          repository: MedGm/Locali\n          path: .locali\n      - uses: astral-sh/setup-uv@v6\n      - run: uv sync --frozen --project .locali\n      - run: uv run --project .locali python -m backend.pr_review --repo . --base \"${{ github.event.pull_request.base.sha }}\" --head \"${{ github.event.pull_request.head.sha }}\" --out comment.md\n```\n"
+ "report": "# Run base\n\n## Findings\n\n- bug: 5\n- quality: 9\n- security: 21\n\nModel review findings whose quoted line did not exist (dropped): 1\n\n## Tests added\n\nUnit:\n- tests/test_locali_bulk_discount.py\nIntegration:\n- tests/test_locali_integration_best_seller.py\nAPI: none\n\n## Suspected bugs (generated tests that failed; check the test before the code)\n\n- tinyshop/db.py::connect: AssertionError: assert <sqlite3.Connection object at 0x73eab5e94310> is <sqlite3.Connection object at 0x73eab5e94130>\n- tinyshop/inventory.py::needs_restock: AssertionError: Should return True when stock is below the threshold\n- tinyshop/inventory.py::total_units: assert 50 == 60\n- tinyshop/inventory.py::total_units: assert 20 == 30\n- tinyshop/inventory.py::total_units: assert 0 == 10\n- tinyshop/inventory.py::total_units: assert 20 == 30\n- tinyshop/inventory.py::total_units: assert 0 == 10\n- tinyshop/inventory.py::total_units: assert 20 == 30\n- tinyshop/inventory.py::total_units: assert 0 == 10\n- tinyshop/inventory.py::total_units: assert 50 == 40\n- tinyshop/inventory.py::total_units: assert -10 == 10\n- tinyshop/inventory.py::total_units: assert 30 == 20\n- tinyshop/inventory.py::total_units: assert -30 == 10\n- tinyshop/inventory.py::total_units: assert 20 == 30\n- tinyshop/inventory.py::total_units: assert 0 == 10\n- tinyshop/api.py::create_product: assert 201 == 409\n- tinyshop/api.py::create_product: assert 201 == 409\n- tinyshop/api.py::place_order: assert 201 == 409\n- tinyshop/api.py::place_order: AssertionError: assert {'ok': True} == {'detail': 'i...icient stock'}\n- tinyshop/api.py::day_report: assert 404 == 409\n- tinyshop/api.py::day_report: AssertionError: assert {'detail': 'unknown product'} == {'detail': 'o...r than stock'}\n- tinyshop/api.py::day_report: assert 404 == 201\n- tinyshop/api.py::day_report: AssertionError: assert {'detail': 'unknown product'} == {'ok': True}\n\n## Fixes\n\n- tests/test_pricing.py::test_discount: fixed in 1 attempt(s), tinyshop/pricing.py::apply_discount\n\n## Docstrings\n\n- tinyshop/api.py::get_conn\n- tinyshop/api.py::create_app\n- tinyshop/auth.py::create_staff\n- tinyshop/auth.py::check_login\n- tinyshop/db.py::add_product\n- tinyshop/db.py::record_sale\n- tinyshop/db.py::sales_for_day\n- tinyshop/inventory.py::remove_stock\n- tinyshop/inventory.py::restock_list\n- tinyshop/reports.py::daily_report\n\n## Patches (each one is reviewed and applied on its own)\n\n- 655170f61db5 [fix] Fix apply_discount in tinyshop/pricing.py: validation passed\n- febd794288d7 [tests] Regression tests for bulk_discount (they record what the code does now): validation passed\n- e03355c78b1b [tests] Integration tests for best_seller: validation passed\n- 6dd28d0657ef [docs] Docstrings for get_conn, create_app in tinyshop/api.py: validation passed\n- 926c31675961 [docs] Docstrings for create_staff, check_login in tinyshop/auth.py: validation passed\n- 99c9cbd9a507 [docs] Docstrings for add_product, record_sale, sales_for_day in tinyshop/db.py: validation passed\n- 00b6ab907869 [docs] Docstrings for remove_stock, restock_list in tinyshop/inventory.py: validation passed\n- 6cdd7cecc59d [docs] Docstrings for daily_report in tinyshop/reports.py: validation passed\n\n## DevOps summary\n\nMerge readiness: not ready\n\nBlockers:\n\n- 3 hard-coded secret(s): tinyshop/settings.py:8, tinyshop/settings.py:9, tinyshop/settings.py:10\n- 6 high-severity security finding(s) from the static tools\n- requirements.txt: reqeusts looks like requests (possible typosquat)\n- 1 test(s) fail on the current code\n\nWarnings:\n\n- 23 suspected bug(s) from generated tests, not confirmed\n- test coverage is 28%\n- no CI workflow\n\nTests on the current code: 5 passed, 1 failed, coverage 27.7%\n\nCI workflows: none\n\nSuggested workflow (.github/workflows/ci.yml):\n\n```yaml\nname: CI\n\non:\n  push:\n  pull_request:\n\njobs:\n  tests:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: \"3.12\"\n      - run: pip install -r requirements.txt pytest-cov\n      - run: pytest --cov --cov-report=term\n\n  locali-review:\n    if: github.event_name == 'pull_request'\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          fetch-depth: 0\n      - uses: actions/checkout@v4\n        with:\n          repository: MedGm/Locali\n          path: .locali\n      - uses: astral-sh/setup-uv@v6\n      - run: uv sync --frozen --project .locali\n      - run: uv run --project .locali python -m backend.pr_review --repo . --base \"${{ github.event.pull_request.base.sha }}\" --head \"${{ github.event.pull_request.head.sha }}\" --out comment.md\n```\n"
 }

@@ -1,8 +1,8 @@
 {
  "bugs": {
-  "bug-restock-boundary": "missed",
+  "bug-restock-boundary": "suspected",
   "bug-mutable-default": "found",
-  "bug-skip-first": "missed",
+  "bug-skip-first": "suspected",
   "bug-discount-sign": "fixed",
   "bug-bulk-boundary": "missed",
   "bug-oversell": "suspected"
@@ -27,35 +27,35 @@
  },
  "mode": "multi",
  "context": "function",
- "wall_s": 2033.5,
+ "wall_s": 2150.3,
  "model_calls": 58,
- "input_tokens": 10991,
- "output_tokens": 12078,
- "generation_s": 1926.9,
+ "input_tokens": 11049,
+ "output_tokens": 12102,
+ "generation_s": 2000.5,
  "per_step": {
   "review": {
    "calls": 28,
    "input_tokens": 4725,
    "output_tokens": 1095,
-   "seconds": 228.0
+   "seconds": 236.7
   },
   "testgen": {
    "calls": 19,
    "input_tokens": 4970,
    "output_tokens": 10516,
-   "seconds": 1626.8
+   "seconds": 1684.3
   },
   "debug": {
    "calls": 1,
    "input_tokens": 223,
    "output_tokens": 121,
-   "seconds": 17.9
+   "seconds": 18.2
   },
   "docs": {
    "calls": 10,
-   "input_tokens": 1073,
-   "output_tokens": 346,
-   "seconds": 54.3
+   "input_tokens": 1131,
+   "output_tokens": 370,
+   "seconds": 61.2
   }
  },
  "model_hits": [
@@ -69,5 +69,5 @@
  },
  "coverage_before": 27.7,
  "coverage_after": 60.2,
- "crashed_tests": 21
+ "crashed_tests": 38
 }

@@ -1,0 +1,12 @@
+diff --git a/tinyshop/reports.py b/tinyshop/reports.py
+index 1d198b1..6416ce8 100644
+--- a/tinyshop/reports.py
++++ b/tinyshop/reports.py
+@@ -4,6 +4,7 @@ from tinyshop.db import sales_for_day
+ 
+ 
+ def daily_report(conn, day):
++    """This function generates a daily sales report for a given day, including the names, quantities, and prices of items sold, as well as the total revenue. It returns a formatted string with each item's de"""
+     rows = sales_for_day(conn, day)
+     lines = [f"{name}: {qty} x {price:.2f}" for name, qty, price in rows]
+     revenue = sum(qty * price for _, qty, price in rows)

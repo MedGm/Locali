@@ -1,0 +1,60 @@
+diff --git a/tests/test_locali_bulk_discount.py b/tests/test_locali_bulk_discount.py
+new file mode 100644
+index 0000000..ec9c312
+--- /dev/null
++++ b/tests/test_locali_bulk_discount.py
+@@ -0,0 +1,54 @@
++from tinyshop.pricing import *  # noqa: F403
++import pytest
++from tinyshop.pricing import bulk_discount
++
++def test_bulk_discount__a0():
++    assert bulk_discount(60) == 10, 'Test case 1 failed'
++
++def test_bulk_discount__a1():
++    assert bulk_discount(45) == 5, 'Test case 2 failed'
++
++def test_bulk_discount__a2():
++    assert bulk_discount(5) == 0, 'Test case 3 failed'
++
++def test_bulk_discount__a3():
++    assert bulk_discount(0) == 0, 'Test case 4 failed'
++
++def test_bulk_discount__a4():
++    assert bulk_discount(-10) == 0, 'Test case 5 failed'
++
++def test_bulk_discount__a5():
++    assert bulk_discount(49.99) == 5, 'Test case 6 failed'
++
++def test_bulk_discount__a6():
++    assert bulk_discount(1000) == 10, 'Test case 7 failed'
++
++def test_bulk_discount__a7():
++    assert bulk_discount(10000) == 10, 'Test case 8 failed'
++
++def test_bulk_discount__a8():
++    assert bulk_discount(10000.99) == 10, 'Test case 9 failed'
++
++def test_bulk_discount__a9():
++    assert bulk_discount(-10000.99) == 0, 'Test case 10 failed'
++
++def test_bulk_discount__a10():
++    assert bulk_discount(-10000.99) == 0, 'Test case 11 failed'
++
++def test_bulk_discount__a11():
++    assert bulk_discount(-10000.99) == 0, 'Test case 12 failed'
++
++def test_bulk_discount__a12():
++    assert bulk_discount(-10000.99) == 0, 'Test case 13 failed'
++
++def test_bulk_discount__a13():
++    assert bulk_discount(-10000.99) == 0, 'Test case 14 failed'
++
++def test_bulk_discount__a14():
++    assert bulk_discount(-10000.99) == 0, 'Test case 15 failed'
++
++def test_bulk_discount__a15():
++    assert bulk_discount(-10000.99) == 0, 'Test case 16 failed'
++
++def test_bulk_discount__a16():
++    assert bulk_discount(-10000.99) == 0, 'Test case 17 failed'

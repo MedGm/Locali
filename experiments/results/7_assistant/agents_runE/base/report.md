@@ -18,6 +18,21 @@ API: none
 
 ## Suspected bugs (generated tests that failed; check the test before the code)
 
+- tinyshop/db.py::connect: AssertionError: assert <sqlite3.Connection object at 0x73eab5e94310> is <sqlite3.Connection object at 0x73eab5e94130>
+- tinyshop/inventory.py::needs_restock: AssertionError: Should return True when stock is below the threshold
+- tinyshop/inventory.py::total_units: assert 50 == 60
+- tinyshop/inventory.py::total_units: assert 20 == 30
+- tinyshop/inventory.py::total_units: assert 0 == 10
+- tinyshop/inventory.py::total_units: assert 20 == 30
+- tinyshop/inventory.py::total_units: assert 0 == 10
+- tinyshop/inventory.py::total_units: assert 20 == 30
+- tinyshop/inventory.py::total_units: assert 0 == 10
+- tinyshop/inventory.py::total_units: assert 50 == 40
+- tinyshop/inventory.py::total_units: assert -10 == 10
+- tinyshop/inventory.py::total_units: assert 30 == 20
+- tinyshop/inventory.py::total_units: assert -30 == 10
+- tinyshop/inventory.py::total_units: assert 20 == 30
+- tinyshop/inventory.py::total_units: assert 0 == 10
 - tinyshop/api.py::create_product: assert 201 == 409
 - tinyshop/api.py::create_product: assert 201 == 409
 - tinyshop/api.py::place_order: assert 201 == 409
@@ -37,22 +52,23 @@ API: none
 - tinyshop/api.py::create_app
 - tinyshop/auth.py::create_staff
 - tinyshop/auth.py::check_login
-- tinyshop/db.py::connect
 - tinyshop/db.py::add_product
 - tinyshop/db.py::record_sale
 - tinyshop/db.py::sales_for_day
 - tinyshop/inventory.py::remove_stock
 - tinyshop/inventory.py::restock_list
+- tinyshop/reports.py::daily_report
 
 ## Patches (each one is reviewed and applied on its own)
 
-- 6b031bdd2bb0 [fix] Fix apply_discount in tinyshop/pricing.py: validation passed
-- ff3f9e98b651 [tests] Regression tests for bulk_discount (they record what the code does now): validation passed
-- e949a7cbed90 [tests] Integration tests for best_seller: validation passed
-- 4352b2047118 [docs] Docstrings for get_conn, create_app in tinyshop/api.py: validation passed
-- 2ec1d4924ddf [docs] Docstrings for create_staff, check_login in tinyshop/auth.py: validation passed
-- b1c7bad72882 [docs] Docstrings for connect, add_product, record_sale, sales_for_day in tinyshop/db.py: validation passed
-- d4b96657c060 [docs] Docstrings for remove_stock, restock_list in tinyshop/inventory.py: validation passed
+- 655170f61db5 [fix] Fix apply_discount in tinyshop/pricing.py: validation passed
+- febd794288d7 [tests] Regression tests for bulk_discount (they record what the code does now): validation passed
+- e03355c78b1b [tests] Integration tests for best_seller: validation passed
+- 6dd28d0657ef [docs] Docstrings for get_conn, create_app in tinyshop/api.py: validation passed
+- 926c31675961 [docs] Docstrings for create_staff, check_login in tinyshop/auth.py: validation passed
+- 99c9cbd9a507 [docs] Docstrings for add_product, record_sale, sales_for_day in tinyshop/db.py: validation passed
+- 00b6ab907869 [docs] Docstrings for remove_stock, restock_list in tinyshop/inventory.py: validation passed
+- 6cdd7cecc59d [docs] Docstrings for daily_report in tinyshop/reports.py: validation passed
 
 ## DevOps summary
 
@@ -67,7 +83,7 @@ Blockers:
 
 Warnings:
 
-- 8 suspected bug(s) from generated tests, not confirmed
+- 23 suspected bug(s) from generated tests, not confirmed
 - test coverage is 28%
 - no CI workflow
 

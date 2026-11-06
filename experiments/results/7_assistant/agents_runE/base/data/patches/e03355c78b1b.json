@@ -1,0 +1,40 @@
+{
+ "id": "e03355c78b1b",
+ "run_id": "base",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tests/test_locali_integration_best_seller.py b/tests/test_locali_integration_best_seller.py\nnew file mode 100644\nindex 0000000..d0929b9\n--- /dev/null\n+++ b/tests/test_locali_integration_best_seller.py\n@@ -0,0 +1,36 @@\n+import pytest\n+from tinyshop.reports import best_seller\n+from tinyshop.db import connect, add_product, find_products, record_sale, sales_for_day\n+\n+@pytest.fixture\n+def db(tmp_path):\n+    conn = connect(tmp_path / 'test.db')\n+    yield conn\n+    conn.close()\n+\n+@pytest.fixture\n+def products(db):\n+    add_product(db, 'Product A', 10.0)\n+    add_product(db, 'Product B', 20.0)\n+    add_product(db, 'Product C', 30.0)\n+    return find_products(db, 'Product')\n+\n+@pytest.fixture\n+def sales(db, products):\n+    product_id = products[0][0]\n+    record_sale(db, product_id, 10, '2023-01-01')\n+    record_sale(db, product_id, 20, '2023-01-02')\n+    record_sale(db, product_id, 30, '2023-01-03')\n+    return sales_for_day(db, '2023-01-01')\n+\n+def test_best_seller__a0(db, products, sales):\n+    assert best_seller(db, '2023-01-01') == 'Product A'\n+\n+def test_best_seller__a1(db, products, sales):\n+    assert best_seller(db, '2023-01-02') == 'Product A'\n+\n+def test_best_seller__a2(db, products, sales):\n+    assert best_seller(db, '2023-01-03') == 'Product A'\n+\n+def test_best_seller__a3(db, products, sales):\n+    assert best_seller(db, '2023-01-04') is None\n",
+ "sha256": "91911deb3133afd0de07e47c3d2bce49e3e9e25a63fb0bf0be97ab2e6afc4385",
+ "files": [
+  "tests/test_locali_integration_best_seller.py"
+ ],
+ "baseline": {
+  "tests/test_locali_integration_best_seller.py": null
+ },
+ "head": "30a2f78ebfc14036707f8c0f3c9d655ce8f1322a",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 9,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 51.2,
+   "output_tail": ".........F                                                               [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 9 passed in 0.13s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "2294af58bc5a2f79885a1444a62cd5a26318864e2e8d0907a6481c31852855a7",
+ "title": "Integration tests for best_seller",
+ "kind": "tests",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

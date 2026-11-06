@@ -1,0 +1,42 @@
+diff --git a/tests/test_locali_integration_best_seller.py b/tests/test_locali_integration_best_seller.py
+new file mode 100644
+index 0000000..d0929b9
+--- /dev/null
++++ b/tests/test_locali_integration_best_seller.py
+@@ -0,0 +1,36 @@
++import pytest
++from tinyshop.reports import best_seller
++from tinyshop.db import connect, add_product, find_products, record_sale, sales_for_day
++
++@pytest.fixture
++def db(tmp_path):
++    conn = connect(tmp_path / 'test.db')
++    yield conn
++    conn.close()
++
++@pytest.fixture
++def products(db):
++    add_product(db, 'Product A', 10.0)
++    add_product(db, 'Product B', 20.0)
++    add_product(db, 'Product C', 30.0)
++    return find_products(db, 'Product')
++
++@pytest.fixture
++def sales(db, products):
++    product_id = products[0][0]
++    record_sale(db, product_id, 10, '2023-01-01')
++    record_sale(db, product_id, 20, '2023-01-02')
++    record_sale(db, product_id, 30, '2023-01-03')
++    return sales_for_day(db, '2023-01-01')
++
++def test_best_seller__a0(db, products, sales):
++    assert best_seller(db, '2023-01-01') == 'Product A'
++
++def test_best_seller__a1(db, products, sales):
++    assert best_seller(db, '2023-01-02') == 'Product A'
++
++def test_best_seller__a2(db, products, sales):
++    assert best_seller(db, '2023-01-03') == 'Product A'
++
++def test_best_seller__a3(db, products, sales):
++    assert best_seller(db, '2023-01-04') is None

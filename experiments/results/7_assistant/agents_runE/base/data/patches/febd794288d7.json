@@ -1,0 +1,40 @@
+{
+ "id": "febd794288d7",
+ "run_id": "base",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tests/test_locali_bulk_discount.py b/tests/test_locali_bulk_discount.py\nnew file mode 100644\nindex 0000000..ec9c312\n--- /dev/null\n+++ b/tests/test_locali_bulk_discount.py\n@@ -0,0 +1,54 @@\n+from tinyshop.pricing import *  # noqa: F403\n+import pytest\n+from tinyshop.pricing import bulk_discount\n+\n+def test_bulk_discount__a0():\n+    assert bulk_discount(60) == 10, 'Test case 1 failed'\n+\n+def test_bulk_discount__a1():\n+    assert bulk_discount(45) == 5, 'Test case 2 failed'\n+\n+def test_bulk_discount__a2():\n+    assert bulk_discount(5) == 0, 'Test case 3 failed'\n+\n+def test_bulk_discount__a3():\n+    assert bulk_discount(0) == 0, 'Test case 4 failed'\n+\n+def test_bulk_discount__a4():\n+    assert bulk_discount(-10) == 0, 'Test case 5 failed'\n+\n+def test_bulk_discount__a5():\n+    assert bulk_discount(49.99) == 5, 'Test case 6 failed'\n+\n+def test_bulk_discount__a6():\n+    assert bulk_discount(1000) == 10, 'Test case 7 failed'\n+\n+def test_bulk_discount__a7():\n+    assert bulk_discount(10000) == 10, 'Test case 8 failed'\n+\n+def test_bulk_discount__a8():\n+    assert bulk_discount(10000.99) == 10, 'Test case 9 failed'\n+\n+def test_bulk_discount__a9():\n+    assert bulk_discount(-10000.99) == 0, 'Test case 10 failed'\n+\n+def test_bulk_discount__a10():\n+    assert bulk_discount(-10000.99) == 0, 'Test case 11 failed'\n+\n+def test_bulk_discount__a11():\n+    assert bulk_discount(-10000.99) == 0, 'Test case 12 failed'\n+\n+def test_bulk_discount__a12():\n+    assert bulk_discount(-10000.99) == 0, 'Test case 13 failed'\n+\n+def test_bulk_discount__a13():\n+    assert bulk_discount(-10000.99) == 0, 'Test case 14 failed'\n+\n+def test_bulk_discount__a14():\n+    assert bulk_discount(-10000.99) == 0, 'Test case 15 failed'\n+\n+def test_bulk_discount__a15():\n+    assert bulk_discount(-10000.99) == 0, 'Test case 16 failed'\n+\n+def test_bulk_discount__a16():\n+    assert bulk_discount(-10000.99) == 0, 'Test case 17 failed'\n",
+ "sha256": "4f5211bf44982debf3b33db26d8c28922847936a31c039dc31b3396604c32e2e",
+ "files": [
+  "tests/test_locali_bulk_discount.py"
+ ],
+ "baseline": {
+  "tests/test_locali_bulk_discount.py": null
+ },
+ "head": "30a2f78ebfc14036707f8c0f3c9d655ce8f1322a",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 22,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 41.8,
+   "output_tail": "......................F                                                  [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 22 passed in 0.16s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "9b2b59d51048004e8793092e14dbc12097a1165f6f49514ebe6012e4346634a4",
+ "title": "Regression tests for bulk_discount (they record what the code does now)",
+ "kind": "tests",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

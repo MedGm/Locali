@@ -139,7 +139,7 @@ def architecture() -> None:
     d.box("patches", "Patch store\nvalidated, one patch\nper change", 1060, 530, 270, 100, "guard")
 
     d.box("gh", "GitHub Action\non pull requests", 1510, 240, 280, 100, "ui")
-    d.box("mcp", "3 MCP servers\nrepository · tests · analysis\nfor other clients", 1510, 380, 280, 100, "tool", dashed=True)
+    d.box("mcp", "5 MCP servers, other clients\nrepository · tests · analysis\ndocumentation · issues", 1510, 380, 280, 100, "tool", dashed=True)
     d.box("repo", "Repository\nnever written\nby a run", 1550, 520, 210, 120, "store", shape="ellipse")
 
     d.arrow("dev", "web")
@@ -233,7 +233,7 @@ def training() -> None:
     d.box("eval", "Evaluation harness\n16 tasks, code run\nin the sandbox,\npaired McNemar tests", xs[3], bottom, w, h, "tool")
     d.box("merge", "Merge the adapter\ninto the base,\nchecked against\nbase + adapter", xs[2], bottom, w, h, "core")
     d.box("gguf", "GGUF export\nQ8_0 / Q4_K_M\nllama.cpp", xs[1], bottom, w, h, "core")
-    d.box("laptop", "Laptop CPU\n3B Q4_K_M + n-gram:\na fix in ~15 s,\n2.2 GB, 456 J", xs[0], bottom, w, h, "ui")
+    d.box("laptop", "Laptop CPU\n3B Q4_K_M + n-gram:\na fix in ~15 s,\n2.2 GB, 478 J", xs[0], bottom, w, h, "ui")
     order = ["src", "tasks", "teacher", "check", "decon", "train", "eval", "merge", "gguf", "laptop"]
     for a, b in pairwise(order):
         d.arrow(a, b)
@@ -247,7 +247,7 @@ def evaluation_chain() -> None:
     d.label("The brief's chain, and what each stage gave", 40, 10, 28)
     stages = [
         ("slm", "Small model\n\n5 models, 10 tasks;\nthe 1.5B costs 8× less\nenergy per correct\nanswer than the 9B", "store"),
-        ("ft", "Fine-tuning\n\nQLoRA, one T4;\n3B repair 46 → 62 %,\nbugs caught by its\ntests 62 → 83 %", "model"),
+        ("ft", "Fine-tuning\n\nQLoRA, one T4;\n3B repair 50 → 63 %,\nbugs caught by its\ntests 62 → 82 %", "model"),
         ("quant", "Quantization\n\nQ8: no loss;\nQ4: −2 to −4 points,\n2.8× faster,\n2.8× less RAM", "core"),
         ("tokens", "Token optimization\n\nshorter prompts −14 %\ninput, no significant\nloss; full test suite\n2.2× input, no gain", "tool"),
         ("agents", "Agentic workflow\n\nmulti-agent + tools:\n4 of 5 bugs, 5 of 5\nvulnerabilities\n(single agent: 0 and 3)", "ui"),

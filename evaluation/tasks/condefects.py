@@ -189,7 +189,7 @@ class ConDefectsTask:
     name = "condefects"
     dataset = ("appmlk/ConDefects", "43f0834a82c5")
 
-    def __init__(self, items_file: Path = Path("experiments/results/condefects/items.jsonl")):
+    def __init__(self, items_file: Path = Path("experiments/results/4_final_checks/condefects/items.jsonl")):
         self.items_file = items_file
 
     @property

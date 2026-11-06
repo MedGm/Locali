@@ -4,7 +4,7 @@ Generation measurements (tokens, timing, energy) are kept as recorded. The first
 rescored its original samples are saved as samples.original.jsonl and the previous metrics are
 stored in summary["rescored"], so every change of score stays auditable.
 
-    uv run python -m evaluation.rescore experiments/results/baselines/mbpp_plus/<run>
+    uv run python -m evaluation.rescore experiments/results/1_baselines/baselines/mbpp_plus/<run>
 """
 
 import argparse

@@ -5,7 +5,7 @@
 
 Each replay answer (self-oss-instruct, written by StarCoder2-15B) is replaced by the base
 Qwen2.5-Coder-3B's answer to the same prompt when that answer passed the Kaggle check
-(training/kaggle/selfdistill: finished, parses, runs without error) and shares no 13-gram with an
+(training/kaggle/make_data/selfdistill: finished, parses, runs without error) and shares no 13-gram with an
 evaluation set. All other rows, and replay rows without such an answer, are copied unchanged.
 """
 

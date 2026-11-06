@@ -129,7 +129,7 @@ class QuixBugsTask:
     name = "quixbugs"
     dataset = QUIXBUGS
 
-    def __init__(self, items_file: Path = Path("experiments/results/quixbugs/items.jsonl"),
+    def __init__(self, items_file: Path = Path("experiments/results/4_final_checks/quixbugs/items.jsonl"),
                  root: Path = Path("data/quixbugs")):
         self.items_file, self.root = items_file, root
 

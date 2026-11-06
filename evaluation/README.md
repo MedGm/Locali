@@ -22,12 +22,12 @@ Benchmarks a model served behind an OpenAI-compatible endpoint (llama.cpp server
 uv run python -m evaluation.run --benchmark humaneval_plus \
     --model-id qwen2.5-coder-1.5b --quantization Q4_K_M --runtime "llama.cpp CPU t=4" \
     --base-url http://127.0.0.1:8080/v1 \
-    --out experiments/results/baselines/humaneval_plus/<model>__<quant>__<hardware>
+    --out experiments/results/1_baselines/baselines/humaneval_plus/<model>__<quant>__<hardware>
 ```
 
 Thinking models: thinking is **off** unless `--thinking` is passed. The flag is recorded in the summary.
 
-Harness check with official solutions instead of a model: add `--reference`. Expected pass@1 is 1.000 ([validation](../experiments/results/harness_validation/README.md)).
+Harness check with official solutions instead of a model: add `--reference`. Expected pass@1 is 1.000 ([validation](../experiments/results/1_baselines/harness_validation/README.md)).
 
 ## Energy on the laptop
 

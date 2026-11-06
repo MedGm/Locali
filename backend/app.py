@@ -326,7 +326,7 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
     def results():
         summary = load_summary()
         if summary is None:
-            raise HTTPException(404, "no results summary; run experiments/scripts/export_results.py")
+            raise HTTPException(404, "no results summary; run experiments/scripts/report/export_results.py")
         return summary
 
     @app.get("/models")

@@ -16,7 +16,7 @@ set +a
 port() { local p=${1##*:}; echo "${p%%/*}"; }
 serve() {  # model file, url, key
     # n-gram lookup (speculative decoding without a draft model) cut CPU energy per correct answer by
-    # 13-25 % in experiments/results/speculative_laptop; LOCALI_SPEC=none turns it off
+    # 13-25 % in experiments/results/5_laptop/speculative_laptop; LOCALI_SPEC=none turns it off
     local spec=()
     [[ "${LOCALI_SPEC:-ngram-simple}" != none ]] && spec=(--spec-type "${LOCALI_SPEC:-ngram-simple}")
     exec "${LOCALI_LLAMA_SERVER:-$HOME/tools/llama.cpp/build/bin/llama-server}" -m "$1" --jinja --parallel 1 \

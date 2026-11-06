@@ -16,18 +16,18 @@ build. Green on both commits.
 
 ## 2. Every derived result, rebuilt
 
-`bash experiments/scripts/reproduce.sh` rebuilds these in a fresh worktree and compares them with
+`bash experiments/scripts/report/reproduce.sh` rebuilds these in a fresh worktree and compares them with
 the committed files (lines naming the commit or the generation time are ignored):
 
 | File | Built by | Result |
 |---|---|---|
 | `summary.json` (what the web app's Results page shows, every study) | `export_results.py` | identical |
-| `context_agents/table.md` | `context_table.py`, rescored from the saved runs | identical |
-| `serving_t4/tables.md` | `serving_table.py` | identical |
-| `multilang_t4_rescore/table.md` | `multilang_table.py`, from the saved answers of both rescoring runs | identical |
-| `serving_t4/throughput.png`, `latency.png` | `serving_table.py` | identical, byte for byte |
-| `redteam/model.md`, `model.jsonl` | `redteam_model.py`, rescored from the saved answers | identical |
-| `redteam/controls.md` | `redteam.py`: the 16 attack cases executed again, Docker included | identical |
+| `7_assistant/context_agents/table.md` | `context_table.py`, rescored from the saved runs | identical |
+| `6_gpu_serving/serving_t4/tables.md` | `serving_table.py` | identical |
+| `2_finetune_1.5b/multilang_t4_rescore/table.md` | `multilang_table.py`, from the saved answers of both rescoring runs | identical |
+| `6_gpu_serving/serving_t4/throughput.png`, `latency.png` | `serving_table.py` | identical, byte for byte |
+| `7_assistant/redteam/model.md`, `model.jsonl` | `redteam_model.py`, rescored from the saved answers | identical |
+| `7_assistant/redteam/controls.md` | `redteam.py`: the 16 attack cases executed again, Docker included | identical |
 
 ## 3. Scoring, executed again
 
@@ -45,7 +45,7 @@ since, I re-executed every answer of four headline runs in today's sandbox (on c
 ## Not repeated
 
 - Generations by the models (Kaggle and laptop). Greedy decoding on a GPU is not bit-exact across
-  batch shapes anyway ([serving_t4](serving_t4/README.md) measured 2 to 6 changed answers in 64
+  batch shapes anyway ([serving_t4](6_gpu_serving/serving_t4/README.md) measured 2 to 6 changed answers in 64
   between server settings, with pass@1 within one item).
 - The fine-tuning runs; their logs, settings and loss curves are committed and in MLflow.
 - The agent runs with the real model, which are one run per setting by design (temperature 0).

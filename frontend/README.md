@@ -13,4 +13,4 @@ LOCALI_API_TOKEN=<same token> npm run dev
 ```
 
 `LOCALI_API_URL` changes the backend address (default `http://127.0.0.1:8000`). Page plan:
-`docs/ui-design.md`.
+`docs/notes/ui-design.md`.

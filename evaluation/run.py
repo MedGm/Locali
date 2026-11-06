@@ -6,7 +6,7 @@ and <out>/summary.json (config, environment, aggregate metrics).
     # model under test (llama.cpp server or vLLM)
     uv run python -m evaluation.run --benchmark humaneval_plus --model-id qwen2.5-coder-1.5b \
         --quantization Q4_K_M --runtime llama.cpp --base-url http://127.0.0.1:8080/v1 \
-        --out experiments/results/baselines/humaneval_plus/qwen2.5-coder-1.5b-q4km-cpu
+        --out experiments/results/1_baselines/baselines/humaneval_plus/qwen2.5-coder-1.5b-q4km-cpu
 
     # harness validation: official reference solutions instead of a model
     uv run python -m evaluation.run --benchmark mbpp_plus --reference --out /tmp/ref-mbpp

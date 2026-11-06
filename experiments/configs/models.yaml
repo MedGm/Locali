@@ -1,5 +1,5 @@
 # Pinned model versions. Change a revision only on purpose, and note why in the commit.
-# Snapshot taken 2026-09-15. W1 T4 spike results: experiments/results/w1_spikes/README.md
+# Snapshot taken 2026-09-15. W1 T4 spike results: experiments/results/archive/w1_spikes/README.md
 #
 # Loading rule for Unsloth: always pass use_exact_model_name=True and assert the resolved name,
 # otherwise Unsloth swaps in its own mirror and silently drops `revision`.
@@ -21,7 +21,7 @@ main:
     q8_0: qwen2.5-coder-1.5b-instruct-q8_0.gguf
 
 second_finetune:
-  # Decision D1 (docs/research-design.md). First item on the cut list if behind schedule.
+  # Decision D1 (docs/notes/research-design.md). First item on the cut list if behind schedule.
   # Pinned to the Unsloth copy: safetensors SHA-256 identical to
   # microsoft/Phi-4-mini-instruct@cfbefacb99257ffa30c83adab238a50856ac3083; only the tokenizer and
   # config differ (pad id 200029, eos <|end|> id 200020). The official tokenizer (pad == eos)

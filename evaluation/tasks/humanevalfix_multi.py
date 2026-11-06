@@ -22,7 +22,7 @@ a C++ main, JS test functions and C++ helpers the test defines) is removed befor
 whether it echoed the tests.
 
 This runs model-written code outside the Docker sandbox, which no other experiment does. It is meant
-for a disposable Kaggle VM (training/kaggle/multilang), with a timeout per program.
+for a disposable Kaggle VM (training/kaggle/evaluate/multilang), with a timeout per program.
 """
 
 import re

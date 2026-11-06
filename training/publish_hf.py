@@ -2,7 +2,7 @@
 
     uv run python -m training.publish_hf [--only adapter merged gguf adapters dataset]
 
-Model cards live in docs/hf/. Files come from ~/models and data/mix_v2. The "Llama" name prefix
+Model cards live in docs/publish/hf/. Files come from ~/models and data/mix_v2. The "Llama" name prefix
 follows the Llama 3.1 licence (the training data contains Llama-3.1-70B-generated unit tests).
 """
 

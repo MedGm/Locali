@@ -21,7 +21,7 @@ HUMANEVAL_PLUS = ("evalplus/humanevalplus", "d32357cf319e50e9c8d8dab5ea876c72b0f
 MBPP_PLUS = ("evalplus/mbppplus", "b2d74c91837c3f2a20c1299ae98133cbe7cfa077")
 
 # Problems whose official reference solution cannot pass under this harness. Excluded for every
-# model so scores stay comparable. Evidence: experiments/results/harness_validation/README.md
+# model so scores stay comparable. Evidence: experiments/results/1_baselines/harness_validation/README.md
 EXCLUDED = {
     "HumanEval/32": "HF test calls _poly(*candidate(*inp), inp), unpacking a float: TypeError for any solution",
     "Mbpp/255": "one input yields 1.66M tuples of length 77; reference comparison needs >2 GiB, above the sandbox limit",
@@ -310,7 +310,7 @@ class FormatSwapCodegenTask(CodegenTask):
     """The same problems, tests and instruction; only the problem text changes shape.
 
     The fine-tuned models write in a different style when the prompt holds code (HumanEval+) than
-    when it holds English (MBPP+); experiments/results/capability_study/step1_behaviour. These
+    when it holds English (MBPP+); experiments/results/3_finetune_3b/capability_study/step1_behaviour. These
     variants swap the two shapes to test whether the shape causes it.
     """
 

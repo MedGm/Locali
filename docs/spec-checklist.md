@@ -16,15 +16,15 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 
 | # | Requirement | Solo minimum | Location | Week | Status |
 |---|---|---|---|---|---|
-| C1 | SLM benchmarking: code generation, completion, bug detection, explanation, refactoring, test generation | 3 models × 6 tasks on benchmark subsets | `evaluation/`, `experiments/` | W1–2 | done: 10 tasks × 4 SLMs + Qwen3.5-9B reference on Kaggle, laptop CPU baselines; code explanation (HumanEvalExplain) added 5 November for the 1.5B and 3B models (`experiments/results/explain_t4`) |
+| C1 | SLM benchmarking: code generation, completion, bug detection, explanation, refactoring, test generation | 3 models × 6 tasks on benchmark subsets | `evaluation/`, `experiments/` | W1–2 | done: 10 tasks × 4 SLMs + Qwen3.5-9B reference on Kaggle, laptop CPU baselines; code explanation (HumanEvalExplain) added 5 November for the 1.5B and 3B models (`experiments/results/3_finetune_3b/explain_t4`) |
 | C2 | Efficient fine-tuning with Unsloth, LoRA/QLoRA, other PEFT | 1 model, QLoRA + LoRA runs on Kaggle T4 | `training/` | W3–5 | done: QLoRA, 16-bit LoRA, rsLoRA (Qwen2.5-Coder) + Phi-4-mini QLoRA, Unsloth |
 | C3 | Quantization 4/8-bit | FP16 / INT8 / INT4 on T4 and laptop CPU | `experiments/` | W6–7 | todo |
-| C4 | KV cache, efficient attention, batching | Prefix caching on/off, batch 1/4/16, SDPA vs eager | `experiments/` | W6–7 | done on a T4: concurrency 1/4/16 (13.6× throughput, 15× less energy per answer), prefix caching on/off (no gain on repair prompts; warm cache halves TTFT), CUDA graphs vs eager (1.6× at 1 request), KV cache on/off (2.1×), SDPA vs eager attention (eager breaks in FP16) ([results](../experiments/results/serving_t4/README.md)) |
-| C5 | Context compression, prompt optimization, token reduction | AST slicing + compact prompts, tokens before/after | `evaluation/`, `backend/` | W6–7 | done: repair context ablation on T4 (full suite / compressed vs standard) and agent context settings on demo_repo (file / function / slice / compact; slice cuts model false positives 17→6 for +21 % input) ([results](../experiments/results/context_agents/README.md)) |
+| C4 | KV cache, efficient attention, batching | Prefix caching on/off, batch 1/4/16, SDPA vs eager | `experiments/` | W6–7 | done on a T4: concurrency 1/4/16 (13.6× throughput, 15× less energy per answer), prefix caching on/off (no gain on repair prompts; warm cache halves TTFT), CUDA graphs vs eager (1.6× at 1 request), KV cache on/off (2.1×), SDPA vs eager attention (eager breaks in FP16) ([results](../experiments/results/6_gpu_serving/serving_t4/README.md)) |
+| C5 | Context compression, prompt optimization, token reduction | AST slicing + compact prompts, tokens before/after | `evaluation/`, `backend/` | W6–7 | done: repair context ablation on T4 (full suite / compressed vs standard) and agent context settings on demo_repo (file / function / slice / compact; slice cuts model false positives 17→6 for +21 % input) ([results](../experiments/results/7_assistant/context_agents/README.md)) |
 | C6 | Measure latency, throughput, memory, cost | Shared metrics logger in harness | `evaluation/` | W1–2 | wip (tokens, TTFT, decode tok/s, CPU + GPU energy, training peak memory done; inference memory, cost todo) |
 | C7 | Code quality, maintainability, complexity, vulnerabilities, standards, technical debt | Ruff, Radon, Bandit, Semgrep + LLM summary | `backend/` | W3–5 | wip (tools in `backend/analysis.py`; LLM summary todo) |
 | C8 | Static-analysis tool integration | Same tools exposed via MCP | `mcp_servers/` | W6–7 | done (`analysis_server`: Ruff, Bandit, Radon, Semgrep, secrets) |
-| C9 | Generate unit, integration, API tests | Test-generation agent on `demo_repo/` | `backend/agents/testgen.py`, `backend/agents/flowtests.py` | W8–10 | done (`experiments/results/agents_api_tests`) |
+| C9 | Generate unit, integration, API tests | Test-generation agent on `demo_repo/` | `backend/agents/testgen.py`, `backend/agents/flowtests.py` | W8–10 | done (`experiments/results/7_assistant/agents_api_tests`) |
 | C10 | Test coverage analysis | pytest-cov before/after | `backend/` | W8–10 | todo |
 | C11 | Regression tests | Tests generated for fixed bugs, kept in suite | `backend/` | W8–10 | todo |
 | C12 | Detect failing tests, propose fixes | Debug loop, max 3 attempts, human approval | `backend/` | W8–10 | todo |
@@ -38,8 +38,8 @@ Week numbers refer to [ROADMAP.md](../ROADMAP.md).
 
 | # | Threat | Control | Attack test | Week | Status |
 |---|---|---|---|---|---|
-| S1 | Prompt injection, indirect injection (code, repos, issues, docs) | Untrusted content never grants permissions; delimiting; detector as extra layer | Malicious README, comments, issue text | W8–13 | done: payloads in code comments, docstrings and strings, real model: complied with 3/11 (all the review missing an SQL injection it misses without a payload too), harm through the controls 0/11; README/issue text never reaches the model and is flagged by `security/injection.py` ([results](../experiments/results/redteam/README.md)) |
-| S2 | Jailbreaking | System-prompt hardening + output policy check | Jailbreak prompt set | W8–13 | done: jailbreak payloads in code, real model: complied 0/6, harm 0/6 ([results](../experiments/results/redteam/model.md)); the model has no chat surface, output is only parsed into findings or code that is validated |
+| S1 | Prompt injection, indirect injection (code, repos, issues, docs) | Untrusted content never grants permissions; delimiting; detector as extra layer | Malicious README, comments, issue text | W8–13 | done: payloads in code comments, docstrings and strings, real model: complied with 3/11 (all the review missing an SQL injection it misses without a payload too), harm through the controls 0/11; README/issue text never reaches the model and is flagged by `security/injection.py` ([results](../experiments/results/7_assistant/redteam/README.md)) |
+| S2 | Jailbreaking | System-prompt hardening + output policy check | Jailbreak prompt set | W8–13 | done: jailbreak payloads in code, real model: complied 0/6, harm 0/6 ([results](../experiments/results/7_assistant/redteam/model.md)); the model has no chat surface, output is only parsed into findings or code that is validated |
 | S3 | Data leakage (code, credentials, API keys) | Secret scanning + redaction before model and in outputs | Fake keys in `demo_repo/` | W3–13 | done: 0/2 attacks with redaction, 2/2 without; red-team found that a key repeated without its assignment slipped through, fixed by redacting the exact values found in the repository |
 | S4 | Malicious code, unsafe commands | Command allow-list, output validation | Generated `rm -rf`, `curl \| bash` | W8–13 | done: `rm -rf`, `curl \| sh` and a destructive generated test: 0/3 with the allow-list and sandbox, 3/3 without |
 | S5 | MCP/tool security, excessive permissions | Least-privilege servers, per-tool allow-list | Call to non-allowed tool | W6–13 | done: `../` and symlink escapes: 0/2 with path confinement, 2/2 without |
@@ -71,11 +71,11 @@ Pipeline: SLM → Fine-tuning → Quantization → Token optimization → Agenti
 
 | Ablation | Status |
 |---|---|
-| Base vs fine-tuned SLM | done ([v1](../experiments/results/finetune_qwen25_qlora_v1/README.md), [v2](../experiments/results/finetune_v2/README.md); also QLoRA vs LoRA vs rsLoRA, Qwen vs Phi) |
+| Base vs fine-tuned SLM | done ([v1](../experiments/results/2_finetune_1.5b/finetune_qwen25_qlora_v1/README.md), [v2](../experiments/results/2_finetune_1.5b/finetune_v2/README.md); also QLoRA vs LoRA vs rsLoRA, Qwen vs Phi) |
 | FP16 vs INT8/INT4 | todo |
 | Standard vs optimized prompting | todo |
-| Full vs reduced context | done ([context ablation](../experiments/results/context_ablation_t4/README.md)) |
-| Single-agent vs multi-agent | done ([agents on demo_repo](../experiments/results/agents_demo_repo/README.md)) |
+| Full vs reduced context | done ([context ablation](../experiments/results/2_finetune_1.5b/context_ablation_t4/README.md)) |
+| Single-agent vs multi-agent | done ([agents on demo_repo](../experiments/results/7_assistant/agents_demo_repo/README.md)) |
 
 ## 5. Deliverables
 

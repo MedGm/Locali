@@ -84,7 +84,7 @@ export default function ResultsPage() {
   if (summary.isError)
     return (
       <EmptyState icon={BarChart3} title="No results summary yet">
-        Run experiments/scripts/export_results.py to build it from the experiment folders.
+        Run experiments/scripts/report/export_results.py to build it from the experiment folders.
       </EmptyState>
     );
   if (!summary.data) return <Skeleton className="h-96 rounded-xl" />;

@@ -2,7 +2,7 @@
 
 The replay rows (self-oss-instruct, answers written by StarCoder2-15B) are there against
 forgetting, but they also teach StarCoder2's answer style. Every fine-tuned 3B run loses 6 to 9
-points on HumanEval+ (experiments/results/keepdoc_t4); this replaces each replay answer with the
+points on HumanEval+ (experiments/results/3_finetune_3b/keepdoc_t4); this replaces each replay answer with the
 base Qwen2.5-Coder-3B's own answer when that answer finished, contains Python that parses, and runs
 without error (checked in the Kaggle job, evaluation/isolated.py). Otherwise the original stays.
 The dataset has no tests, so "runs without error" is the only check of correctness.

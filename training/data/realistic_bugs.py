@@ -2,7 +2,7 @@
 
 The v2 bugs are single-token mutations, and the fine-tune learned exactly those: on HumanEvalFix it
 fixes operator bugs better than the 9B teacher but barely moves on missing or excess logic
-(docs/retrospective.md). Here the teacher is asked for one bug of a given kind, the kind of mistake
+(docs/notes/retrospective.md). Here the teacher is asked for one bug of a given kind, the kind of mistake
 a developer makes, and a candidate is kept only if
 
 - it parses, keeps every function signature, and is not just the original with other comments,

@@ -3,8 +3,8 @@
 Kaggle runs notebooks reliably, but a notebook has no __file__ for subprocess re-entry.
 The notebook therefore writes the script to /kaggle/working and runs it as a real file.
 
-    python training/kaggle/build_notebook.py training/kaggle/w1-spikes/w1_spikes.py
-    python training/kaggle/build_notebook.py training/kaggle/baselines/kaggle_baselines.py LIMIT=3
+    python training/kaggle/build_notebook.py training/kaggle/archive/w1-spikes/w1_spikes.py
+    python training/kaggle/build_notebook.py training/kaggle/evaluate/baselines/kaggle_baselines.py LIMIT=3
 
 KEY=VALUE arguments become environment variables of the script run (Kaggle notebooks cannot
 receive environment variables from the CLI). The placeholder __LOCALI_COMMIT__ in the script is

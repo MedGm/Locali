@@ -6,10 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useApiQuery } from "@/lib/use-hydrated";
 import { api, type Settings } from "@/lib/api";
+import { useModelLabel } from "@/lib/models";
 
 export default function SettingsPage() {
   const settings = useApiQuery({ queryKey: ["settings"], queryFn: () => api<Settings>("/settings") });
   const s = settings.data;
+  const label = useModelLabel();
   if (!s) return settings.isError ? <p className="text-sm text-muted-foreground">Could not load settings.</p> : <Skeleton className="h-96 rounded-xl" />;
 
   return (
@@ -23,6 +25,7 @@ export default function SettingsPage() {
         <Section title="Model" description={s.model.configured ? "Agent runs are enabled" : "No model: only static analysis runs"}>
           <Row label="Server" value={s.model.url} />
           <Row label="Model name" value={s.model.name} />
+          <Row label="Model" value={s.model.id ? label(s.model.id) : null} />
           <Row label="Registry id" value={s.model.id} />
           <Row label="API key" value={s.model.key_set ? "set" : "not set"} />
           <Row label="Max answer tokens" value={String(s.model.max_tokens)} />

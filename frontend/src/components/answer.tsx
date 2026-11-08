@@ -105,6 +105,9 @@ function Markdown({ text }: { text: string }) {
   );
 }
 
+const ITEM = /^\s*([-*•]|\d+[.)])\s+/;
+const INDENTED = /^\s{2,}\S/;
+
 function Blocks({ text }: { text: string }) {
   const lines = text.split("\n");
   const out: React.ReactNode[] = [];
@@ -125,17 +128,37 @@ function Blocks({ text }: { text: string }) {
       i++;
       continue;
     }
-    const list = line.match(/^\s*([-*•]|\d+[.)])\s+/);
+    const list = line.match(ITEM);
     if (list) {
+      // one list even when the model leaves blank lines between items or indents a second line under one;
+      // an ordered list starts at the model's own first number
       const ordered = /\d/.test(list[1]);
+      const sameKind = (l: string | undefined) => {
+        const m = l?.match(ITEM);
+        return !!m && /\d/.test(m[1]) === ordered;
+      };
       const items: string[] = [];
-      while (i < lines.length && /^\s*([-*•]|\d+[.)])\s+/.test(lines[i])) {
-        items.push(lines[i].replace(/^\s*([-*•]|\d+[.)])\s+/, ""));
-        i++;
+      while (i < lines.length) {
+        if (sameKind(lines[i])) {
+          items.push(lines[i].replace(ITEM, ""));
+          i++;
+        } else if (!lines[i].trim()) {
+          let j = i;
+          while (j < lines.length && !lines[j].trim()) j++;
+          if (j < lines.length && (sameKind(lines[j]) || INDENTED.test(lines[j]))) i = j;
+          else break;
+        } else if (INDENTED.test(lines[i])) {
+          items[items.length - 1] += " " + lines[i].trim();
+          i++;
+        } else break;
       }
       const Tag = ordered ? "ol" : "ul";
       out.push(
-        <Tag key={i} className={ordered ? "list-decimal space-y-1 pl-5" : "list-disc space-y-1 pl-5"}>
+        <Tag
+          key={i}
+          start={ordered ? parseInt(list[1], 10) : undefined}
+          className={ordered ? "list-decimal space-y-1 pl-5" : "list-disc space-y-1 pl-5"}
+        >
           {items.map((it, k) => (
             <li key={k}>
               <Inline text={it} />
@@ -221,7 +244,7 @@ function CodeBlock({ lang, code }: { lang: string; code: string }) {
         <span className="font-mono text-[11px] text-muted-foreground">{lang || "code"}</span>
         <CopyButton text={code} copied={copied} onCopied={setCopied} />
       </div>
-      <pre className="overflow-x-auto p-3 font-mono text-xs leading-relaxed">{highlight(code, lang.toLowerCase())}</pre>
+      <pre className="overflow-x-auto whitespace-pre-wrap break-words p-3 font-mono text-xs leading-relaxed">{highlight(code, lang.toLowerCase())}</pre>
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { BackendBanner } from "@/components/backend-banner";
 import { Wordmark } from "@/components/brand";
 import { CommandMenu, useCommandMenu } from "@/components/command-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useModelLabel } from "@/lib/models";
 import { Button } from "@/components/ui/button";
 import { api, type PatchSummary, type RunSummary, type Settings } from "@/lib/api";
 import { NAV_GROUPS, navFor } from "@/lib/nav";
@@ -140,6 +141,7 @@ function ModelCard() {
   const settings = useQuery({ queryKey: ["settings"], queryFn: () => api<Settings>("/settings") });
   const s = settings.data;
   const ready = s?.model.configured;
+  const label = useModelLabel();
   return (
     <Link
       href="/settings"
@@ -155,8 +157,8 @@ function ModelCard() {
         <span className="block font-medium text-foreground">
           {!s ? "Checking…" : ready ? "Model connected" : "No model connected"}
         </span>
-        <span className="block truncate text-muted-foreground">
-          {!s ? " " : ready ? (s.model.id ?? s.model.name ?? "local model") : "static analysis only"}
+        <span className="block leading-snug break-words text-muted-foreground">
+          {!s ? " " : ready ? label(s.model.id) || s.model.name || "local model" : "static analysis only"}
         </span>
       </span>
     </Link>

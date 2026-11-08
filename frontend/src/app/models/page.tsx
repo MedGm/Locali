@@ -12,6 +12,7 @@ import { api } from "@/lib/api";
 type Measured = { score: number; tokens_per_s: number; j_per_solved: number | null };
 type Model = {
   id: string;
+  label?: string;
   name: string;
   base: string;
   fine_tuned: boolean;
@@ -53,12 +54,13 @@ export default function ModelsPage() {
           <Card key={m.id} className={m.active ? "border-emerald-400" : undefined}>
             <CardHeader>
               <CardTitle className="flex flex-wrap items-center gap-2 text-base">
-                {m.name}
+                {m.label ?? m.name}
                 {m.active && <Badge className="bg-emerald-100 text-emerald-800">active</Badge>}
                 {m.recommended === "default" && <Badge variant="secondary">recommended</Badge>}
                 {m.recommended === "fast" && <Badge variant="secondary">fastest</Badge>}
               </CardTitle>
               <CardDescription className="space-y-1">
+                {m.label && <span className="block">{m.name}</span>}
                 <span className="block">
                   {m.fine_tuned ? "Fine-tuned for repair, tests, review and tracing" : "Base model, no fine-tuning"} ·{" "}
                   {m.quant} · {m.size_gib} GiB

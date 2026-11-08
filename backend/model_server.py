@@ -5,6 +5,9 @@ one stops the comparison server that is running (if any) and starts llama.cpp's 
 file on the comparison port. Only one comparison model runs at a time: two 3B models already take
 about 4.5 GB of the laptop's 15 GB.
 
+In models.json, "gguf" is the file name (or names: the build name, then the Hugging Face name) and
+"label" the short name the app shows.
+
 The server is started with --alias <model id>, so the backend can check that the server answering on
 the port is the one it started and not something else left running there.
 """

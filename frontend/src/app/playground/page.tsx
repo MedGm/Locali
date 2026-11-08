@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { useApiQuery } from "@/lib/use-hydrated";
 import { api, post, streamPlayground, type PlaygroundDone } from "@/lib/api";
+import { useModelLabel } from "@/lib/models";
 import { cn } from "@/lib/utils";
 
 type Task = "review" | "tests" | "fix" | "explain" | "free";
@@ -61,7 +62,10 @@ const EXAMPLES: Record<Task, { code: string; test?: string; error?: string; prom
     error: "AssertionError: assert 220.0 == 180.0",
   },
   explain: {
-    code: `def chunks(items, size):
+    code: `import itertools
+
+
+def chunks(items, size):
     it = iter(items)
     while batch := list(itertools.islice(it, size)):
         yield batch`,
@@ -90,6 +94,7 @@ export default function PlaygroundPage() {
     queryFn: () => api<CompareState>("/playground/compare"),
   });
   const queryClient = useQueryClient();
+  const label = useModelLabel();
   const [loading, setLoading] = useState<string | null>(null);
   const [task, setTask] = useState<Task>("review");
   const [language, setLanguage] = useState("python");
@@ -111,7 +116,7 @@ export default function PlaygroundPage() {
     setPanes((all) => Object.fromEntries(Object.entries(all).filter(([k]) => k !== "compare")));
     try {
       await post<CompareState>("/playground/compare", { id: picked });
-      if (picked) toast.success(`${picked} is ready`);
+      if (picked) toast.success(`${label(picked)} is ready`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : String(e));
     } finally {
@@ -268,7 +273,7 @@ export default function PlaygroundPage() {
               <div className="ml-auto flex items-center gap-2">
                 {loading && loading !== NONE && (
                   <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <span className="size-2 animate-pulse rounded-full bg-amber-500" /> Loading {loading}…
+                    <span className="size-2 animate-pulse rounded-full bg-amber-500" /> Loading {label(loading)}…
                   </span>
                 )}
                 <span className="text-xs text-muted-foreground">Compare with</span>
@@ -277,12 +282,12 @@ export default function PlaygroundPage() {
                   value={loading ?? compare.data.current ?? NONE}
                   onChange={pickCompare}
                   disabled={!!loading || running}
-                  className="min-w-56 bg-card"
+                  className="min-w-72 bg-card"
                   options={[
                     { value: NONE, label: "No comparison" },
                     ...compare.data.choices.map((c) => ({
                       value: c.id,
-                      label: `${c.id} · ${c.fine_tuned ? "fine-tuned" : "base"}${c.size_gib ? ` · ${c.size_gib} GB` : ""}`,
+                      label: `${label(c.id)}${c.size_gib ? ` · ${c.size_gib} GB` : ""}`,
                     })),
                   ]}
                 />
@@ -291,7 +296,7 @@ export default function PlaygroundPage() {
           </div>
           <div className={cn("grid gap-3", available.length > 1 && "md:grid-cols-2")}>
             {available.map((m) => (
-              <AnswerPane key={m.key} model={m} pane={panes[m.key]} />
+              <AnswerPane key={m.key} model={m} name={label(m.id)} pane={panes[m.key]} />
             ))}
           </div>
           {available.length === 1 && !loading && (
@@ -345,7 +350,7 @@ function CodeArea(props: {
   );
 }
 
-function AnswerPane({ model, pane }: { model: { key: string; id: string }; pane?: Pane }) {
+function AnswerPane({ model, name, pane }: { model: { key: string; id: string }; name: string; pane?: Pane }) {
   const d = pane?.done;
   const [copied, setCopied] = useState(false);
   const body = useRef<HTMLDivElement>(null);
@@ -359,8 +364,10 @@ function AnswerPane({ model, pane }: { model: { key: string; id: string }; pane?
     <div className="flex h-[calc(100vh-13rem)] min-h-[440px] flex-col overflow-hidden rounded-xl border bg-card">
       <div className="flex items-center gap-2 border-b px-4 py-2.5">
         <span className={cn("size-2 rounded-full", model.key === "main" ? "bg-primary" : "bg-amber-500")} />
-        <span className="text-sm font-medium">{model.id}</span>
-        <span className="text-xs text-muted-foreground">{model.key === "main" ? "assistant model" : "comparison"}</span>
+        <span className="min-w-0 text-sm leading-snug font-medium" title={model.id}>
+          {name}
+        </span>
+        <span className="shrink-0 text-xs text-muted-foreground">{model.key === "main" ? "assistant" : "comparison"}</span>
         <span className="ml-auto">
           {pane?.text && !pane.running && <CopyButton text={pane.text} copied={copied} onCopied={setCopied} />}
         </span>

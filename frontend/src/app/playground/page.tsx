@@ -1,15 +1,18 @@
 "use client";
 
-import { BookOpen, Bug, FlaskConical, MessageSquare, ScanSearch, Sparkles, Square, Wand2 } from "lucide-react";
+import { BookOpen, Bug, FlaskConical, GitCompareArrows, Loader2, MessageSquare, ScanSearch, ShieldCheck, Sparkles, Square, Wand2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Choice } from "@/components/choice";
 import { Answer, CopyButton } from "@/components/answer";
+import { CodeEditor } from "@/components/code-editor";
+import { ModelPicker, NO_MODEL, splitLabel, type ModelChoice } from "@/components/model-picker";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useApiQuery } from "@/lib/use-hydrated";
 import { api, post, streamPlayground, type PlaygroundDone } from "@/lib/api";
 import { useModelLabel } from "@/lib/models";
@@ -75,14 +78,7 @@ def chunks(items, size):
 
 type Pane = { text: string; done?: PlaygroundDone; error?: string; running: boolean };
 
-type CompareState = {
-  available: boolean;
-  current: string | null;
-  starting: string | null;
-  choices: { id: string; name: string; size_gib: number | null; fine_tuned: boolean }[];
-};
-
-const NONE = "none";
+type CompareState = { available: boolean; current: string | null; starting: string | null; choices: ModelChoice[] };
 
 export default function PlaygroundPage() {
   const models = useApiQuery({
@@ -110,9 +106,9 @@ export default function PlaygroundPage() {
 
   // the backend stops the running comparison model and starts the picked one (a few seconds to load)
   async function pickCompare(id: string) {
-    const picked = id === NONE ? null : id;
+    const picked = id === NO_MODEL ? null : id;
     if (picked === (compare.data?.current ?? null)) return;
-    setLoading(picked ?? NONE);
+    setLoading(picked ?? NO_MODEL);
     setPanes((all) => Object.fromEntries(Object.entries(all).filter(([k]) => k !== "compare")));
     try {
       await post<CompareState>("/playground/compare", { id: picked });
@@ -177,6 +173,9 @@ export default function PlaygroundPage() {
       </div>
     );
 
+  const compareOn = available.length > 1;
+  const canGenerate = !!models.data && (task === "free" ? !!prompt.trim() : !!code.trim());
+
   return (
     <div>
       <PageHeader
@@ -184,126 +183,139 @@ export default function PlaygroundPage() {
         description="Ask the model directly: paste code, pick a task, get an answer. Nothing here touches a repository."
       />
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(320px,380px)_minmax(0,1fr)]">
-        <section className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-          <p className="text-sm font-semibold">What should the model do?</p>
-          <div className="flex flex-wrap gap-1.5">
-            {TASKS.map((t) => (
-              <button
-                key={t.value}
-                type="button"
-                onClick={() => setTask(t.value)}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors",
-                  task === t.value
-                    ? "border-primary bg-accent font-medium text-accent-foreground"
-                    : "text-muted-foreground hover:border-primary/40 hover:text-foreground",
-                )}
-              >
-                <t.icon className="size-3.5" />
-                {t.label}
-              </button>
-            ))}
+      <div className="grid gap-6 lg:grid-cols-[minmax(340px,420px)_minmax(0,1fr)]">
+        <section className="space-y-5 rounded-xl border bg-card p-5 lg:sticky lg:top-20 lg:self-start">
+          <div className="space-y-2.5">
+            <p className="text-sm font-semibold">Task</p>
+            <div className="grid grid-cols-5 gap-1.5">
+              {TASKS.map((t) => (
+                <button
+                  key={t.value}
+                  type="button"
+                  onClick={() => setTask(t.value)}
+                  className={cn(
+                    "flex flex-col items-center gap-1 rounded-lg border px-1 py-2.5 text-[11px] leading-tight transition-colors",
+                    task === t.value
+                      ? "border-primary bg-primary/10 font-medium text-foreground"
+                      : "text-muted-foreground hover:border-primary/40 hover:bg-muted/40 hover:text-foreground",
+                  )}
+                >
+                  <t.icon className={cn("size-4", task === t.value && "text-primary")} />
+                  {t.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              {current.hint}.{" "}
+              {current.trained && language === "python"
+                ? "Python uses the exact format the model was fine-tuned on."
+                : current.trained
+                  ? "The fine-tune was trained on Python; other languages get the base model's skills."
+                  : ""}
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground">
-            {current.hint}.{" "}
-            {current.trained && language === "python"
-              ? "Python uses the exact format the model was fine-tuned on."
-              : current.trained
-                ? "The fine-tune was trained on Python; other languages get the base model's skills."
-                : ""}
-          </p>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2">
             <Choice
               label="Language"
               value={language}
               onChange={setLanguage}
+              className="h-9 min-w-36 flex-1 bg-background"
               options={LANGUAGES.map(([value, label]) => ({ value, label }))}
             />
-            <Button variant="outline" size="sm" onClick={example}>
-              <Wand2 /> Try an example
+            <Button variant="outline" className="h-9" onClick={example}>
+              <Wand2 /> Example
             </Button>
           </div>
 
           {task !== "free" || code ? (
             <Field label={task === "free" ? "Code (optional)" : "Code"}>
-              <CodeArea value={code} onChange={setCode} rows={10} placeholder="Paste a function or a file…" onSubmit={generate} />
+              <CodeEditor
+                value={code}
+                onChange={setCode}
+                language={language}
+                minHeight="200px"
+                placeholder="Paste a function or a file…"
+                onSubmit={generate}
+              />
             </Field>
           ) : null}
           {task === "fix" && (
-            <div className="grid gap-3">
-              <Field label="Failing test (optional)">
-                <CodeArea value={test} onChange={setTest} rows={4} placeholder="def test_…" onSubmit={generate} />
+            <>
+              <Field label="Failing test" optional>
+                <CodeEditor value={test} onChange={setTest} language={language} minHeight="72px" placeholder="def test_…" onSubmit={generate} />
               </Field>
-              <Field label="Error (optional)">
-                <CodeArea value={error} onChange={setError} rows={3} placeholder="AssertionError: …" onSubmit={generate} />
+              <Field label="Error" optional>
+                <CodeEditor value={error} onChange={setError} language="text" minHeight="48px" placeholder="AssertionError: …" onSubmit={generate} />
               </Field>
-            </div>
+            </>
           )}
-          <Field label={task === "free" ? "Prompt" : "Anything to add? (optional)"}>
+          <Field label={task === "free" ? "Prompt" : "Instructions"} optional={task !== "free"}>
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={(e) => (e.ctrlKey || e.metaKey) && e.key === "Enter" && generate()}
               rows={task === "free" ? 5 : 2}
               placeholder={task === "free" ? "Ask anything…" : "e.g. focus on error handling"}
-              className="w-full resize-y rounded-lg border bg-card px-3 py-2 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
+              className="w-full resize-y rounded-lg border bg-background px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30"
             />
           </Field>
 
-          <div className="flex items-center gap-3">
+          <div className="space-y-2">
             {running ? (
-              <Button variant="outline" onClick={() => abort.current?.abort()}>
+              <Button variant="outline" className="h-10 w-full" onClick={() => abort.current?.abort()}>
                 <Square /> Stop
               </Button>
             ) : (
-              <Button onClick={generate} disabled={!models.data}>
+              <Button className="h-10 w-full" onClick={generate} disabled={!canGenerate}>
                 <Sparkles /> Generate
+                <kbd className="ml-auto rounded border border-primary-foreground/30 px-1.5 font-mono text-[10px] opacity-80">
+                  Ctrl ↵
+                </kbd>
               </Button>
             )}
-            <span className="text-xs text-muted-foreground">Ctrl + Enter. Secrets are removed before the model sees the text.</span>
+            <p className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
+              <ShieldCheck className="size-3.5" /> Secrets are removed before the model sees the text.
+            </p>
           </div>
         </section>
 
         <section className="min-w-0 space-y-3">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex min-h-9 flex-wrap items-center gap-3">
             <p className="text-sm font-semibold">Answers</p>
             {compare.data?.available && (
               <div className="ml-auto flex items-center gap-2">
-                {loading && loading !== NONE && (
-                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <span className="size-2 animate-pulse rounded-full bg-amber-500" /> Loading {label(loading)}…
-                  </span>
-                )}
                 <span className="text-xs text-muted-foreground">Compare with</span>
-                <Choice
-                  label="Compare with"
-                  value={loading ?? compare.data.current ?? NONE}
-                  onChange={pickCompare}
+                <ModelPicker
+                  value={loading ?? compare.data.current ?? NO_MODEL}
+                  choices={compare.data.choices}
+                  label={label}
+                  loading={!!loading && loading !== NO_MODEL}
                   disabled={!!loading || running}
-                  className="min-w-72 bg-card"
-                  options={[
-                    { value: NONE, label: "No comparison" },
-                    ...compare.data.choices.map((c) => ({
-                      value: c.id,
-                      label: `${label(c.id)}${c.size_gib ? ` · ${c.size_gib} GB` : ""}`,
-                    })),
-                  ]}
+                  onChange={pickCompare}
                 />
               </div>
             )}
           </div>
-          <div className={cn("grid gap-3", available.length > 1 && "md:grid-cols-2")}>
+          <div className={cn("grid gap-3", (compareOn || (loading && loading !== NO_MODEL)) && "md:grid-cols-2")}>
             {available.map((m) => (
-              <AnswerPane key={m.key} model={m} name={label(m.id)} pane={panes[m.key]} />
+              <AnswerPane key={m.key} model={m} name={label(m.id)} pane={panes[m.key]} expanded={Object.keys(panes).length > 0} />
             ))}
+            {loading && loading !== NO_MODEL && !available.some((m) => m.key === "compare") && (
+              <div className="flex min-h-[320px] flex-col items-center justify-center gap-3 rounded-xl border border-dashed bg-card/50 text-center">
+                <Loader2 className="size-5 animate-spin text-amber-500" />
+                <div>
+                  <p className="text-sm font-medium">Starting {label(loading)}</p>
+                  <p className="text-xs text-muted-foreground">Loading the model into memory, a few seconds</p>
+                </div>
+              </div>
+            )}
           </div>
-          {available.length === 1 && !loading && (
-            <p className="rounded-lg border border-dashed px-3 py-2 text-xs text-muted-foreground">
-              {compare.data?.available
-                ? "Pick a model in “Compare with” to see its answer beside the assistant’s, for example the base model it was fine-tuned from. The backend starts it; one comparison model runs at a time."
-                : "To compare with a second model side by side, set LOCALI_MODELS_DIR for the backend to the folder of GGUF files (default ~/models/gguf)."}
+          {compare.data?.available && !compareOn && !loading && (
+            <p className="flex items-center gap-2 rounded-lg border border-dashed px-3 py-2.5 text-xs text-muted-foreground">
+              <GitCompareArrows className="size-4 shrink-0" />
+              Pick a model in “Compare with” to see its answer beside the assistant’s, for example the base model it was
+              fine-tuned from.
             </p>
           )}
         </section>
@@ -312,65 +324,68 @@ export default function PlaygroundPage() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, optional, children }: { label: string; optional?: boolean; children: React.ReactNode }) {
   return (
-    <label className="block space-y-1.5">
-      <span className="text-xs font-medium text-muted-foreground">{label}</span>
+    <div className="space-y-1.5">
+      <p className="text-xs font-medium">
+        {label}
+        {optional && <span className="ml-1 font-normal text-muted-foreground">optional</span>}
+      </p>
       {children}
-    </label>
+    </div>
   );
 }
 
-function CodeArea(props: {
-  value: string;
-  onChange: (v: string) => void;
-  rows: number;
-  placeholder: string;
-  onSubmit: () => void;
+function AnswerPane({
+  model,
+  name,
+  pane,
+  expanded,
+}: {
+  model: { key: string; id: string };
+  name: string;
+  pane?: Pane;
+  expanded: boolean;
 }) {
-  return (
-    <textarea
-      value={props.value}
-      onChange={(e) => props.onChange(e.target.value)}
-      onKeyDown={(e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") props.onSubmit();
-        if (e.key === "Tab") {
-          e.preventDefault();
-          const t = e.currentTarget;
-          const { selectionStart: s, selectionEnd: end } = t;
-          props.onChange(t.value.slice(0, s) + "    " + t.value.slice(end));
-          requestAnimationFrame(() => t.setSelectionRange(s + 4, s + 4));
-        }
-      }}
-      rows={props.rows}
-      spellCheck={false}
-      placeholder={props.placeholder}
-      className="w-full resize-y rounded-lg border bg-card px-3 py-2 font-mono text-xs leading-relaxed outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
-    />
-  );
-}
-
-function AnswerPane({ model, name, pane }: { model: { key: string; id: string }; name: string; pane?: Pane }) {
   const d = pane?.done;
   const [copied, setCopied] = useState(false);
   const body = useRef<HTMLDivElement>(null);
   const follow = useRef(true);
+  const [title, quant] = splitLabel(name);
+  // "Qwen2.5-Coder-3B fine-tuned (run E)" -> "Qwen2.5-Coder-3B" over "fine-tuned (run E)"
+  const cut = title.indexOf(" ");
+  const family = cut > 0 ? title.slice(0, cut) : title;
+  const variant = cut > 0 ? title.slice(cut + 1) : "";
+  const main = model.key === "main";
   // keep the newest text in view while it streams, unless the reader has scrolled up
   useEffect(() => {
     const el = body.current;
     if (el && pane?.running && follow.current) el.scrollTop = el.scrollHeight;
   }, [pane?.text, pane?.running]);
+  const waiting = pane?.running && !pane.text && !main;
   return (
-    <div className="flex h-[calc(100vh-13rem)] min-h-[440px] flex-col overflow-hidden rounded-xl border bg-card">
-      <div className="flex items-center gap-2 border-b px-4 py-2.5">
-        <span className={cn("size-2 rounded-full", model.key === "main" ? "bg-primary" : "bg-amber-500")} />
-        <span className="min-w-0 text-sm leading-snug font-medium" title={model.id}>
-          {name}
+    <div
+      className={cn(
+        "flex flex-col overflow-hidden rounded-xl border bg-card transition-[height]",
+        expanded ? "h-[calc(100vh-12rem)] min-h-[440px]" : "min-h-[320px]",
+      )}
+    >
+      <div className="flex items-center gap-2.5 border-b px-4 py-2.5">
+        <span className={cn("size-2 shrink-0 rounded-full", main ? "bg-primary" : "bg-amber-500")} />
+        <div className="min-w-0 flex-1 leading-tight" title={`${name} (${model.id})`}>
+          <p className="truncate text-sm font-medium">{family}</p>
+          {variant && <p className="truncate text-xs text-muted-foreground">{variant}</p>}
+        </div>
+        {quant && <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">{quant}</span>}
+        <span
+          className={cn(
+            "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium",
+            main ? "bg-primary/10 text-primary" : "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+          )}
+        >
+          {main ? "Assistant" : "Comparison"}
         </span>
-        <span className="shrink-0 text-xs text-muted-foreground">{model.key === "main" ? "assistant" : "comparison"}</span>
-        <span className="ml-auto">
-          {pane?.text && !pane.running && <CopyButton text={pane.text} copied={copied} onCopied={setCopied} />}
-        </span>
+        {pane?.text && !pane.running && <CopyButton text={pane.text} copied={copied} onCopied={setCopied} />}
       </div>
       <div
         ref={body}
@@ -381,37 +396,60 @@ function AnswerPane({ model, name, pane }: { model: { key: string; id: string };
         className="min-h-0 flex-1 overflow-y-auto p-4"
       >
         {!pane ? (
-          <div className="flex h-full flex-col items-center justify-center gap-2 text-center text-sm text-muted-foreground">
-            <Sparkles className="size-5 opacity-60" />
-            The answer will appear here.
+          <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
+            <div className="rounded-full bg-muted p-2.5">
+              <Sparkles className="size-4 text-muted-foreground" />
+            </div>
+            <p className="text-sm text-muted-foreground">Answers stream here as the model writes them.</p>
           </div>
         ) : pane.error && !pane.text ? (
-          <p className="text-sm text-red-700 dark:text-red-400">{pane.error}</p>
-        ) : !pane.text && pane.running ? (
-          <p className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="size-2 animate-pulse rounded-full bg-primary" /> Reading the prompt…
+          <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-300">
+            {pane.error}
           </p>
+        ) : waiting ? (
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="size-3.5 animate-spin" /> Waiting for the assistant model to finish: on a laptop CPU, one
+            model at a time is faster.
+          </p>
+        ) : !pane.text && pane.running ? (
+          <div className="space-y-2.5">
+            <p className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="size-2 animate-pulse rounded-full bg-primary" /> Reading the prompt…
+            </p>
+            <Skeleton className="h-3 w-4/5" />
+            <Skeleton className="h-3 w-3/5" />
+            <Skeleton className="h-3 w-2/3" />
+          </div>
         ) : (
           <Answer text={pane.text} streaming={pane.running} />
         )}
       </div>
-      <div className="flex min-h-9 flex-wrap items-center gap-x-4 gap-y-1 border-t px-4 py-2 text-[11px] text-muted-foreground tabular-nums">
-        {d ? (
-          <>
-            <span>{d.input_tokens ?? "?"} tokens in</span>
-            <span>{d.output_tokens ?? "?"} tokens out</span>
-            <span>first token {d.ttft_s.toFixed(2)} s</span>
-            <span>total {d.total_s.toFixed(1)} s</span>
-            {d.output_tokens && d.total_s > d.ttft_s && (
-              <span>{(d.output_tokens / (d.total_s - d.ttft_s)).toFixed(1)} tokens/s</span>
-            )}
-          </>
-        ) : pane?.running ? (
-          <span>Generating…</span>
-        ) : (
-          <span>Tokens and speed appear here.</span>
-        )}
-      </div>
+      {(d || pane?.running) && (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t bg-muted/20 px-4 py-2 text-[11px] text-muted-foreground tabular-nums">
+          {d ? (
+            <>
+              <Stat label="tokens" value={`${d.input_tokens ?? "?"} → ${d.output_tokens ?? "?"}`} />
+              <Stat label="first token" value={`${d.ttft_s.toFixed(2)} s`} />
+              <Stat label="total" value={`${d.total_s.toFixed(1)} s`} />
+              {d.output_tokens && d.total_s > d.ttft_s ? (
+                <Stat label="speed" value={`${(d.output_tokens / (d.total_s - d.ttft_s)).toFixed(1)} tok/s`} />
+              ) : null}
+            </>
+          ) : (
+            <span className="flex items-center gap-1.5">
+              <Loader2 className="size-3 animate-spin" /> Generating…
+            </span>
+          )}
+        </div>
+      )}
     </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <span>
+      {label} <span className="font-medium text-foreground">{value}</span>
+    </span>
   );
 }

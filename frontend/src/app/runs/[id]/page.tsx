@@ -172,7 +172,7 @@ export default function RunPage() {
       )}
 
       <Tabs defaultValue="findings">
-        <TabsList className="max-w-full justify-start overflow-x-auto">
+        <TabsList variant="line" className="h-auto! w-full flex-wrap justify-start gap-5 rounded-none border-b p-0 *:flex-none *:px-0.5 *:pb-2.5 *:after:bottom-[-1px]! *:after:bg-primary!">
           <TabsTrigger value="findings">Findings ({r.findings?.length ?? 0})</TabsTrigger>
           {agents && (
             <>

@@ -157,3 +157,42 @@
   --viz-ink: #f0efec;
   --viz-ink-2: #c3c2b7;
 }
+
+/* Code: the playground editor and the patch diff, in both themes */
+html:root {
+  --code-keyword: oklch(0.5 0.2 276);
+  --code-string: oklch(0.52 0.13 160);
+  --code-number: oklch(0.56 0.14 60);
+  --code-function: oklch(0.5 0.14 245);
+  --code-type: oklch(0.52 0.15 320);
+  --diff-text-color: var(--foreground);
+  --diff-font-family: var(--font-mono);
+  --diff-code-insert-background-color: oklch(0.96 0.04 155);
+  --diff-gutter-insert-background-color: oklch(0.92 0.06 155);
+  --diff-code-delete-background-color: oklch(0.96 0.03 25);
+  --diff-gutter-delete-background-color: oklch(0.92 0.05 25);
+  --diff-code-insert-edit-background-color: oklch(0.88 0.09 155);
+  --diff-code-delete-edit-background-color: oklch(0.88 0.08 25);
+}
+html.dark {
+  --code-keyword: oklch(0.75 0.14 285);
+  --code-string: oklch(0.78 0.13 160);
+  --code-number: oklch(0.8 0.12 70);
+  --code-function: oklch(0.78 0.11 235);
+  --code-type: oklch(0.78 0.12 330);
+  --diff-background-color: transparent;
+  --diff-text-color: var(--foreground);
+  --diff-code-insert-background-color: oklch(0.7 0.15 155 / 0.12);
+  --diff-code-insert-text-color: var(--foreground);
+  --diff-gutter-insert-background-color: oklch(0.7 0.15 155 / 0.2);
+  --diff-gutter-insert-text-color: oklch(0.8 0.12 155);
+  --diff-code-delete-background-color: oklch(0.65 0.18 25 / 0.12);
+  --diff-code-delete-text-color: var(--foreground);
+  --diff-gutter-delete-background-color: oklch(0.65 0.18 25 / 0.2);
+  --diff-gutter-delete-text-color: oklch(0.8 0.12 25);
+  --diff-code-insert-edit-background-color: oklch(0.7 0.15 155 / 0.3);
+  --diff-code-delete-edit-background-color: oklch(0.65 0.18 25 / 0.3);
+  --diff-gutter-selected-background-color: oklch(0.6 0.15 276 / 0.25);
+  --diff-code-selected-background-color: oklch(0.6 0.15 276 / 0.18);
+  --diff-omit-gutter-line-color: var(--border);
+}

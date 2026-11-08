@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Check, FileDiff, Lightbulb } from "lucide-react";
+import { ArrowLeft, Check, CircleCheck, CircleX, FileDiff, Lightbulb } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -157,16 +157,38 @@ export default function PatchPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
-            <p className={v.ok ? "font-medium text-emerald-700" : "font-medium text-red-700"}>
-              {v.ok ? "All checks passed." : "Validation failed: this patch cannot be approved."}
-            </p>
-            {v.tests && (
-              <p>
-                Tests: {v.tests.passed} passed, {v.tests.failed.length} failed
-                {v.tests.coverage_percent != null && ` · coverage ${v.tests.coverage_percent}%`}
-                {v.tests.timed_out && " · timed out"}
-              </p>
-            )}
+            <div
+              className={cn(
+                "flex items-center gap-2.5 rounded-lg border px-3 py-2.5 font-medium",
+                v.ok
+                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                  : "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-300",
+              )}
+            >
+              {v.ok ? <CircleCheck className="size-4" /> : <CircleX className="size-4" />}
+              {v.ok ? "All checks passed" : "Validation failed: this patch cannot be approved"}
+            </div>
+            <ul className="divide-y rounded-lg border">
+              {v.tests && (
+                <CheckRow
+                  ok={!v.newly_failing?.length && !v.tests.timed_out}
+                  label="Tests"
+                  value={`${v.tests.passed} passed${v.tests.failed.length ? `, ${v.tests.failed.length} failed` : ""}${
+                    v.tests.coverage_percent != null ? ` · coverage ${v.tests.coverage_percent}%` : ""
+                  }${v.tests.timed_out ? " · timed out" : ""}`}
+                />
+              )}
+              <CheckRow
+                ok={!v.new_security_findings.length}
+                label="New security findings in the changed files"
+                value={String(v.new_security_findings.length)}
+              />
+              <CheckRow
+                ok={!v.secrets_added.length}
+                label="Secrets in added lines"
+                value={v.secrets_added.length ? v.secrets_added.join(", ") : "none"}
+              />
+            </ul>
             <TestList
               title="Now passing (failed before this patch)"
               tests={v.now_passing ?? []}
@@ -179,10 +201,9 @@ export default function PatchPage() {
             />
             {v.tests?.failed.length && !v.newly_failing?.length ? (
               <p className="text-xs text-muted-foreground">
-                Still failing, as before this patch: {v.tests.failed.join(", ")}
+                Already failing before this patch, so not caused by it: {v.tests.failed.join(", ")}
               </p>
             ) : null}
-            <p>New security findings in the changed files: {v.new_security_findings.length}</p>
             {v.new_security_findings.map((f, i) => (
               <p key={i} className="flex items-center gap-2 text-xs">
                 <SeverityBadge severity={f.severity} />
@@ -192,17 +213,16 @@ export default function PatchPage() {
                 {f.message}
               </p>
             ))}
-            <p>Secrets in added lines: {v.secrets_added.length ? v.secrets_added.join(", ") : "none"}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <CardTitle>Decision</CardTitle>
-            <CardDescription>Approval is bound to the hashes below.</CardDescription>
+            <CardDescription>Your approval covers exactly this patch and this validation.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <dl className="space-y-1 text-xs">
+          <CardContent className="space-y-4">
+            <dl className="divide-y rounded-lg border text-xs">
               <Hash label="Patch" value={p.sha256} />
               <Hash label="Validation" value={p.validation_sha256} />
               {p.head && <Hash label="Git HEAD" value={p.head} />}
@@ -213,14 +233,15 @@ export default function PatchPage() {
                   Reviewer
                   <Input value={reviewer} onChange={(e) => setReviewer(e.target.value)} placeholder="your name" />
                 </label>
-                <div className="flex gap-2">
-                  <Button disabled={busy || !v.ok || !reviewer.trim()} onClick={() => approve.mutate(p)}>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button className="h-9" disabled={busy || !v.ok || !reviewer.trim()} onClick={() => approve.mutate(p)}>
                     Approve
                   </Button>
-                  <Button variant="outline" disabled={busy || !reviewer.trim()} onClick={() => reject.mutate(p)}>
+                  <Button className="h-9" variant="outline" disabled={busy || !reviewer.trim()} onClick={() => reject.mutate(p)}>
                     Reject
                   </Button>
                 </div>
+                {!reviewer.trim() && <p className="text-xs text-muted-foreground">Enter your name to approve or reject.</p>}
               </>
             )}
             {p.status === "approved" && (
@@ -310,10 +331,26 @@ function TestList({ title, tests, className }: { title: string; tests: string[];
 
 function Hash({ label, value }: { label: string; value: string }) {
   return (
-    <div>
+    <div className="flex items-center justify-between gap-3 px-3 py-2">
       <dt className="text-muted-foreground">{label}</dt>
-      <dd className="font-mono break-all">{value}</dd>
+      <dd className="font-mono" title={value}>
+        {value.slice(0, 12)}…
+      </dd>
     </div>
+  );
+}
+
+function CheckRow({ ok, label, value }: { ok: boolean; label: string; value: string }) {
+  return (
+    <li className="flex items-center gap-2.5 px-3 py-2.5">
+      {ok ? (
+        <CircleCheck className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+      ) : (
+        <CircleX className="size-4 shrink-0 text-red-600 dark:text-red-400" />
+      )}
+      <span className="flex-1">{label}</span>
+      <span className="text-right text-muted-foreground tabular-nums">{value}</span>
+    </li>
   );
 }
 

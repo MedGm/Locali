@@ -157,10 +157,18 @@ function ModelCard() {
         <span className="block font-medium text-foreground">
           {!s ? "Checking…" : ready ? "Model connected" : "No model connected"}
         </span>
-        <span className="block leading-snug break-words text-muted-foreground">
-          {!s ? " " : ready ? label(s.model.id) || s.model.name || "local model" : "static analysis only"}
+        <span className="block truncate text-muted-foreground">
+          {!s ? " " : ready ? shortModel(label(s.model.id) || s.model.name || "local model") : "static analysis only"}
         </span>
       </span>
     </Link>
   );
+}
+
+// "Qwen2.5-Coder-3B fine-tuned (run E) · Q4_K_M" -> "Qwen2.5-Coder-3B · run E", short enough for one line
+function shortModel(label: string) {
+  const size = label.match(/^Qwen2\.5-Coder-[\d.]+B/)?.[0];
+  if (!size) return label;
+  const run = label.match(/\(run (\w+)\)/)?.[1];
+  return `${size} · ${run ? `run ${run}` : label.includes(" base") ? "base" : "fine-tuned"}`;
 }

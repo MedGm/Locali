@@ -41,6 +41,7 @@ from backend.analysis import analyze
 from backend.audit import AuditLog
 from backend.languages import count_languages
 from backend.llmops import Tracker
+from backend.model_server import ModelServer, ModelServerError
 from backend.patches import ApprovalMismatch, PatchConflict, PatchStore, StalePatch, propose
 from backend.playground import build_messages
 from backend.validation import validate_workspace
@@ -59,6 +60,10 @@ SECURITY_ACTIONS = {"auth.refused", "run.refused", "command.refused", "model.red
 
 # A model the playground can stream from: (messages, on_token) -> completion with text and counts
 PlaygroundModel = Callable[[list[dict], Callable[[str], None]], Any]
+
+
+class ComparePick(BaseModel):
+    id: str | None  # a models.json id, or None to stop the comparison model
 
 
 class PlaygroundRequest(BaseModel):
@@ -166,11 +171,13 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
                api_token: str | None = None, heartbeat_s: float = 15.0,
                results_file: str | Path | None = None, mlflow_uri: str | None = None,
                mlflow_artifacts: str | None = None,
-               playground: dict[str, tuple[str, PlaygroundModel]] | None = None) -> FastAPI:
+               playground: dict[str, tuple[str, PlaygroundModel]] | None = None,
+               compare_server: ModelServer | None = None) -> FastAPI:
     """validate replaces the full workspace validation (tests use a stub); model answers chat messages
     for agent runs; tools=False drops the static-analysis step of agent runs (ablation); api_token,
     when set, is required as a Bearer token on every endpoint except /health; playground maps "main"
-    (and optionally "compare") to (model id, streaming model) for the playground page."""
+    (and optionally "compare") to (model id, streaming model) for the playground page; compare_server,
+    when set, starts the comparison model the page picks (backend.model_server) and replaces "compare"."""
     playground = playground or {}
     repos_root = Path(repos_root).resolve()
     runs_dir = Path(data_dir) / "runs"
@@ -252,20 +259,58 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
             raise HTTPException(404, "repo not found")
         return path
 
+    def playground_entries() -> dict[str, tuple[str, PlaygroundModel]]:
+        entries = dict(playground)
+        if compare_server is not None:
+            entries.pop("compare", None)
+            if (stream := compare_server.model()) is not None:
+                entries["compare"] = (compare_server.current, stream)
+        return entries
+
+    if compare_server is not None:
+        app.router.on_shutdown.append(compare_server.stop)
+
     @app.get("/playground/models")
     def playground_models():
-        return [{"key": key, "id": model_id} for key, (model_id, _) in playground.items()]
+        return [{"key": key, "id": model_id} for key, (model_id, _) in playground_entries().items()]
+
+    @app.get("/playground/compare")
+    def playground_compare():
+        if compare_server is None:
+            return {"available": False, "current": None, "starting": None, "choices": []}
+        return {"available": True, "current": compare_server.current, "starting": compare_server.starting,
+                "choices": compare_server.choices()}
+
+    @app.post("/playground/compare")
+    async def playground_compare_pick(req: ComparePick):
+        if compare_server is None:
+            raise HTTPException(404, "no models folder configured (LOCALI_MODELS_DIR)")
+        loop = asyncio.get_running_loop()
+        if req.id is None:
+            await loop.run_in_executor(None, compare_server.stop)
+            audit.write("playground.compare_stopped")
+            return playground_compare()
+        try:
+            await loop.run_in_executor(None, compare_server.start, req.id)
+        except KeyError:
+            raise HTTPException(404, f"no local GGUF file for {req.id!r}") from None
+        except ModelServerError as e:
+            audit.write("playground.compare_failed", model=req.id, error=str(e))
+            raise HTTPException(409, str(e)) from None
+        audit.write("playground.compare_started", model=req.id)
+        return playground_compare()
 
     @app.post("/playground")
     async def playground_call(req: PlaygroundRequest):
-        if req.model not in playground:
+        entries = playground_entries()
+        if req.model not in entries:
             raise HTTPException(404, f"no {req.model!r} model configured")
         try:
             messages = build_messages(req.task, req.language, code=redact(req.code), prompt=redact(req.prompt),
                                       test=redact(req.test), error=redact(req.error))
         except ValueError as e:
             raise HTTPException(422, str(e)) from None
-        model_id, stream = playground[req.model]
+        model_id, stream = entries[req.model]
         loop = asyncio.get_running_loop()
         queue: asyncio.Queue = asyncio.Queue()
 
@@ -444,9 +489,10 @@ def create_app(repos_root: str | Path, data_dir: str | Path,
             ("LOCALI_MODEL_ID", "Which registry model is running (Models page)", env("LOCALI_MODEL_ID")),
             ("LOCALI_MODEL_KEY", "API key of the model server", "set" if env("LOCALI_MODEL_KEY") else None),
             ("LOCALI_API_TOKEN", "Token every API call must carry", "set" if api_token else None),
-            ("LOCALI_COMPARE_URL", "Optional second model, shown beside the first in the playground",
-             _without_credentials(env("LOCALI_COMPARE_URL"))),
-            ("LOCALI_COMPARE_ID", "Which registry model the second server runs", env("LOCALI_COMPARE_ID")),
+            ("LOCALI_MODELS_DIR", "Folder of GGUF files the playground can compare with",
+             str(compare_server.models_dir) if compare_server else None),
+            ("LOCALI_COMPARE_PORT", "Port of the comparison model server",
+             str(compare_server.port) if compare_server else None),
             ("LOCALI_MLFLOW_URI", "MLflow tracking store for agent runs", tracker.uri),
             ("LOCALI_MLFLOW_UI", "Link to the MLflow interface", env("LOCALI_MLFLOW_UI")),
         ]
@@ -568,13 +614,20 @@ def default_app() -> FastAPI:
             return client.complete(messages, max_tokens=768)  # the run's guard reads text and token counts
 
         playground["main"] = (os.environ.get("LOCALI_MODEL_ID", "local"), _playground_model(client))
-    if url := os.environ.get("LOCALI_COMPARE_URL"):  # optional second model, shown beside the first
-        compare = ChatClient(url, model=os.environ.get("LOCALI_COMPARE_NAME", "local"),
-                             api_key=os.environ.get("LOCALI_COMPARE_KEY", "local"))
-        playground["compare"] = (os.environ.get("LOCALI_COMPARE_ID", "compare"), _playground_model(compare))
+    compare_server = None
+    models_dir = Path(os.environ.get("LOCALI_MODELS_DIR", "~/models/gguf")).expanduser()
+    if models_dir.is_dir():  # the playground's comparison model, started when the page picks one
+        compare_server = ModelServer(
+            json.loads(MODELS_FILE.read_text())["models"], models_dir,
+            port=int(os.environ.get("LOCALI_COMPARE_PORT", "8094")),
+            binary=os.environ.get("LOCALI_LLAMA_SERVER", Path.home() / "tools/llama.cpp/build/bin/llama-server"),
+            client=lambda url, key: _playground_model(ChatClient(url, model="local", api_key=key)),
+            exclude=os.environ.get("LOCALI_MODEL_ID"),
+            log_file=Path(os.environ.get("LOCALI_DATA_DIR", "data/backend")) / "compare-server.log")
     token = os.environ.get("LOCALI_API_TOKEN")
     if not token:
         raise RuntimeError("set LOCALI_API_TOKEN; the API does not run without a token")
     return create_app(os.environ.get("LOCALI_REPOS_ROOT", "."), os.environ.get("LOCALI_DATA_DIR", "data/backend"),
                       model=model, api_token=token, mlflow_uri=os.environ.get("LOCALI_MLFLOW_URI"),
-                      mlflow_artifacts=os.environ.get("LOCALI_MLFLOW_ARTIFACTS"), playground=playground)
+                      mlflow_artifacts=os.environ.get("LOCALI_MLFLOW_ARTIFACTS"), playground=playground,
+                      compare_server=compare_server)

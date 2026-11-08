@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Start one part of Locali with the settings in the repository's .env (one part per terminal).
+# The playground's comparison model is started by the backend when the page picks one.
 #
 #     scripts/run.sh model      # the assistant's model server (llama.cpp)
-#     scripts/run.sh compare    # optional second model, for the playground
 #     scripts/run.sh backend    # the API
 #     scripts/run.sh web        # the web app, http://localhost:3000
 set -euo pipefail
@@ -25,8 +25,7 @@ serve() {  # model file, url, key
 
 case "${1:-}" in
     model) serve "$LOCALI_MODEL_FILE" "$LOCALI_MODEL_URL" "$LOCALI_MODEL_KEY" ;;
-    compare) serve "$LOCALI_COMPARE_FILE" "$LOCALI_COMPARE_URL" "$LOCALI_COMPARE_KEY" ;;
     backend) exec uv run uvicorn backend.app:default_app --factory --host 127.0.0.1 --port "$(port "${LOCALI_API_URL:-:8000}")" ;;
     web) cd frontend && exec npm run dev ;;
-    *) echo "usage: scripts/run.sh model|compare|backend|web" >&2; exit 2 ;;
+    *) echo "usage: scripts/run.sh model|backend|web" >&2; exit 2 ;;
 esac

@@ -9,16 +9,19 @@ export function Choice({
   options,
   label,
   className,
+  disabled,
 }: {
   value: string;
   onChange: (value: string) => void;
   options: { value: string; label: string }[];
   label: string;
   className?: string;
+  disabled?: boolean;
 }) {
   return (
     <Select
       value={value}
+      disabled={disabled}
       onValueChange={(v) => v !== null && onChange(v as string)}
       items={Object.fromEntries(options.map((o) => [o.value, o.label]))}
     >

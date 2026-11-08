@@ -1,5 +1,5 @@
 {
-  "note": "Models the assistant can run on the laptop with llama.cpp. For the 1.5B models, quality, speed, RAM and energy come from the quantization ladder (experiments/results/summary.json); the 3B was measured separately (experiments/results/3_finetune_3b/finetune_qwen25_3b_qlora_mixv3s, laptop_3b_energy_runE, laptop_3b_check).",
+  "note": "Models the assistant can run on the laptop with llama.cpp. For the 1.5B models, quality, speed, RAM and energy come from the quantization ladder (experiments/results/summary.json); the 3B was measured separately (experiments/results/3_finetune_3b/finetune_qwen25_3b_qlora_mixv3s, laptop_3b_energy_runE, laptop_3b_check). \"gguf\" is the file name (or names: the build name, then the Hugging Face name) the playground looks for in LOCALI_MODELS_DIR (default ~/models/gguf) to start a comparison model.",
   "models": [
     {
       "id": "ft3b-q4",
@@ -8,6 +8,10 @@
       "fine_tuned": true,
       "quant": "Q4_K_M",
       "file": "qwen2.5-coder-3b-locali-mixv3s-q4_k_m.gguf (built by training/kaggle/deploy/gguf)",
+      "gguf": [
+        "qwen2.5-coder-3b-locali-mixv3s-q4_k_m.gguf",
+        "llama-locali-qwen2.5-coder-3b-run-e-q4_k_m.gguf"
+      ],
       "size_gib": 1.8,
       "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF",
       "recommended": "default",
@@ -26,6 +30,10 @@
       "fine_tuned": true,
       "quant": "Q4_K_M",
       "file": "qwen2.5-coder-3b-locali-mixv3b-diag-q4_k_m.gguf (built by training/kaggle/deploy/gguf)",
+      "gguf": [
+        "qwen2.5-coder-3b-locali-mixv3b-diag-q4_k_m.gguf",
+        "llama-locali-qwen2.5-coder-3b-q4_k_m.gguf"
+      ],
       "size_gib": 1.8,
       "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF",
       "recommended": null,
@@ -38,12 +46,33 @@
       ]
     },
     {
+      "id": "base3b-q4",
+      "name": "Qwen2.5-Coder-3B-Instruct (not fine-tuned), Q4_K_M",
+      "base": "Qwen/Qwen2.5-Coder-3B-Instruct",
+      "fine_tuned": false,
+      "quant": "Q4_K_M",
+      "file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+      "gguf": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+      "size_gib": 2.0,
+      "hf_repo": "Qwen/Qwen2.5-Coder-3B-Instruct-GGUF",
+      "recommended": null,
+      "ladder": null,
+      "highlights": [
+        "The model run E starts from; the playground can show it beside run E",
+        "HumanEvalFix 50.0 %; tests that catch the bug 62.2 %"
+      ]
+    },
+    {
       "id": "ft-q8",
       "name": "Locali Qwen2.5-Coder-1.5B, fine-tuned (QLoRA v2), Q8_0",
       "base": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
       "fine_tuned": true,
       "quant": "Q8_0",
       "file": "llama-locali-qwen2.5-coder-1.5b-q8_0.gguf",
+      "gguf": [
+        "qwen2.5-coder-1.5b-qlora-v2-q8_0.gguf",
+        "llama-locali-qwen2.5-coder-1.5b-q8_0.gguf"
+      ],
       "size_gib": 1.5,
       "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF",
       "recommended": null
@@ -55,6 +84,10 @@
       "fine_tuned": true,
       "quant": "Q4_K_M",
       "file": "llama-locali-qwen2.5-coder-1.5b-q4_k_m.gguf",
+      "gguf": [
+        "qwen2.5-coder-1.5b-qlora-v2-q4_k_m.gguf",
+        "llama-locali-qwen2.5-coder-1.5b-q4_k_m.gguf"
+      ],
       "size_gib": 0.9,
       "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-1.5B-GGUF",
       "recommended": "fast"
@@ -66,6 +99,7 @@
       "fine_tuned": true,
       "quant": "F16",
       "file": "built from MedGm/Llama-Locali-Qwen2.5-Coder-1.5B with convert_hf_to_gguf.py",
+      "gguf": "qwen2.5-coder-1.5b-qlora-v2-f16.gguf",
       "size_gib": 2.9,
       "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-1.5B",
       "recommended": null
@@ -77,6 +111,7 @@
       "fine_tuned": false,
       "quant": "Q4_K_M",
       "file": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+      "gguf": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
       "size_gib": 1.0,
       "hf_repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF",
       "recommended": null
@@ -88,6 +123,7 @@
       "fine_tuned": false,
       "quant": "F16",
       "file": "converted from Qwen/Qwen2.5-Coder-1.5B-Instruct@2e1fd39",
+      "gguf": "qwen2.5-coder-1.5b-instruct-f16.gguf",
       "size_gib": 2.9,
       "hf_repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
       "recommended": null

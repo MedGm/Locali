@@ -498,13 +498,15 @@ Then, one per terminal:
 
 ```bash
 scripts/run.sh model      # the fine-tuned 3B (Q4_K_M) with llama.cpp and n-gram lookup
-scripts/run.sh compare    # optional: a second model for the playground
 scripts/run.sh backend    # the API
 scripts/run.sh web        # http://localhost:3000
 ```
 
 The backend, the web app and the model servers all read the one `.env`
 ([.env.example](.env.example) explains each line). Without a model server, quick scans still work.
+The playground's "Compare with" list shows every model of [backend/models.json](backend/models.json)
+whose GGUF file is in `LOCALI_MODELS_DIR` (default `~/models/gguf`); the backend starts the one you
+pick on port 8094 and stops it when you pick another, so one comparison model runs at a time.
 
 ## 9. Reproducing the results
 

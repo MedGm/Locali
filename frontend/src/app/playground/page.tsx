@@ -1,6 +1,7 @@
 "use client";
 
 import { BookOpen, Bug, FlaskConical, MessageSquare, ScanSearch, Sparkles, Square, Wand2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -10,7 +11,7 @@ import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { useApiQuery } from "@/lib/use-hydrated";
-import { api, streamPlayground, type PlaygroundDone } from "@/lib/api";
+import { api, post, streamPlayground, type PlaygroundDone } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 type Task = "review" | "tests" | "fix" | "explain" | "free";
@@ -70,11 +71,26 @@ const EXAMPLES: Record<Task, { code: string; test?: string; error?: string; prom
 
 type Pane = { text: string; done?: PlaygroundDone; error?: string; running: boolean };
 
+type CompareState = {
+  available: boolean;
+  current: string | null;
+  starting: string | null;
+  choices: { id: string; name: string; size_gib: number | null; fine_tuned: boolean }[];
+};
+
+const NONE = "none";
+
 export default function PlaygroundPage() {
   const models = useApiQuery({
     queryKey: ["playground-models"],
     queryFn: () => api<{ key: string; id: string }[]>("/playground/models"),
   });
+  const compare = useApiQuery({
+    queryKey: ["playground-compare"],
+    queryFn: () => api<CompareState>("/playground/compare"),
+  });
+  const queryClient = useQueryClient();
+  const [loading, setLoading] = useState<string | null>(null);
   const [task, setTask] = useState<Task>("review");
   const [language, setLanguage] = useState("python");
   const [code, setCode] = useState("");
@@ -86,6 +102,26 @@ export default function PlaygroundPage() {
   const running = Object.values(panes).some((p) => p.running);
   const available = models.data ?? [];
   const current = TASKS.find((t) => t.value === task)!;
+
+  // the backend stops the running comparison model and starts the picked one (a few seconds to load)
+  async function pickCompare(id: string) {
+    const picked = id === NONE ? null : id;
+    if (picked === (compare.data?.current ?? null)) return;
+    setLoading(picked ?? NONE);
+    setPanes((all) => Object.fromEntries(Object.entries(all).filter(([k]) => k !== "compare")));
+    try {
+      await post<CompareState>("/playground/compare", { id: picked });
+      if (picked) toast.success(`${picked} is ready`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoading(null);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["playground-compare"] }),
+        queryClient.invalidateQueries({ queryKey: ["playground-models"] }),
+      ]);
+    }
+  }
 
   function example() {
     const e = EXAMPLES[task];
@@ -226,16 +262,43 @@ export default function PlaygroundPage() {
         </section>
 
         <section className="min-w-0 space-y-3">
-          <p className="text-sm font-semibold">Answers</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-sm font-semibold">Answers</p>
+            {compare.data?.available && (
+              <div className="ml-auto flex items-center gap-2">
+                {loading && loading !== NONE && (
+                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <span className="size-2 animate-pulse rounded-full bg-amber-500" /> Loading {loading}…
+                  </span>
+                )}
+                <span className="text-xs text-muted-foreground">Compare with</span>
+                <Choice
+                  label="Compare with"
+                  value={loading ?? compare.data.current ?? NONE}
+                  onChange={pickCompare}
+                  disabled={!!loading || running}
+                  className="min-w-56 bg-card"
+                  options={[
+                    { value: NONE, label: "No comparison" },
+                    ...compare.data.choices.map((c) => ({
+                      value: c.id,
+                      label: `${c.id} · ${c.fine_tuned ? "fine-tuned" : "base"}${c.size_gib ? ` · ${c.size_gib} GB` : ""}`,
+                    })),
+                  ]}
+                />
+              </div>
+            )}
+          </div>
           <div className={cn("grid gap-3", available.length > 1 && "md:grid-cols-2")}>
             {available.map((m) => (
               <AnswerPane key={m.key} model={m} pane={panes[m.key]} />
             ))}
           </div>
-          {available.length === 1 && (
+          {available.length === 1 && !loading && (
             <p className="rounded-lg border border-dashed px-3 py-2 text-xs text-muted-foreground">
-              To compare with a second model (for example the base model, or the Q4 version) side by side, start another
-              model server and set LOCALI_COMPARE_URL and LOCALI_COMPARE_ID for the backend.
+              {compare.data?.available
+                ? "Pick a model in “Compare with” to see its answer beside the assistant’s, for example the base model it was fine-tuned from. The backend starts it; one comparison model runs at a time."
+                : "To compare with a second model side by side, set LOCALI_MODELS_DIR for the backend to the folder of GGUF files (default ~/models/gguf)."}
             </p>
           )}
         </section>

@@ -26,6 +26,21 @@ def test_t1_format_prompt_shows_buggy_code_test_and_recorded_error():
     assert '"bug_location"' in content
 
 
+def test_code_first_prompt_differs_only_in_the_instruction_and_reads_either_order():
+    from evaluation.tasks.format_transfer import CodeFirstFixTask
+    from training.data.format import (
+        REPAIR_INSTRUCTION,
+        REPAIR_INSTRUCTION_CODE_FIRST,
+        parse_repair_answer,
+    )
+
+    old = T1FormatFixTask(errors=ERRORS).messages(ITEM)[-1]["content"]
+    new = CodeFirstFixTask(errors=ERRORS).messages(ITEM)
+    assert len(new) == 1 and new[0]["content"] == old.replace(REPAIR_INSTRUCTION, REPAIR_INSTRUCTION_CODE_FIRST)
+    diagnosis, code = parse_repair_answer('```python\ndef add(a, b):\n    return a + b\n```\n{"bug_location": "x"}')
+    assert diagnosis == {"bug_location": "x"} and code.strip() == "def add(a, b):\n    return a + b"
+
+
 @needs_docker
 def test_t1_format_scores_the_fixed_code_from_a_t1_answer():
     task = T1FormatFixTask(errors=ERRORS)

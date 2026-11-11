@@ -10,6 +10,8 @@ harder than injected ones". Task ids equal those of humanevalfix / bugdetect for
   Errors come from running the buggy solution in the sandbox under pytest, as for the training
   data; they are precomputed (`python -m evaluation.tasks.format_transfer`) and committed, because
   Kaggle has no Docker.
+- humanevalfix_t1fmt_codefirst: the same prompt, asking for the fixed function first and the
+  diagnosis after it (the order run F is trained on).
 - bugdetect_t3fmt: T3 review prompt on the same buggy / correct functions as bugdetect; "has a
   bug" means at least one finding with category "bug".
 """
@@ -30,7 +32,7 @@ from evaluation.tasks.humanevalpack import (
     binary_detection_metrics,
     load_humanevalpack,
 )
-from training.data.format import parse_repair_answer, repair_prompt
+from training.data.format import code_first, parse_repair_answer, repair_prompt
 from training.data.t3_review import parse_review_answer, review_prompt
 
 ERRORS_FILE = Path(__file__).with_name("humanevalfix_errors.json")
@@ -186,7 +188,17 @@ class ReviewFormatDetectTask:
         return json.dumps({"findings": findings})
 
 
+class CodeFirstFixTask(T1FormatFixTask):
+    """The same prompt asking for the fix first and the diagnosis after it (run F's repair format)."""
+
+    name = "humanevalfix_t1fmt_codefirst"
+
+    def messages(self, item: PackItem) -> list[dict]:
+        return code_first([*super().messages(item), {"role": "assistant", "content": "{}\n```python\n```"}])[:-1]
+
+
 T1_FORMAT_FIX_TASK = T1FormatFixTask()
+CODE_FIRST_FIX_TASK = CodeFirstFixTask()
 REVIEW_FORMAT_DETECT_TASK = ReviewFormatDetectTask()
 
 

@@ -39,7 +39,7 @@ MODELS = {
 }
 TASKS = ["humaneval_plus", "mbpp_plus", "humanevalfix", "bugdetect", "cruxeval_o",
          "testgen", "refactor", "completion", "securecodegen", "vulndetect",
-         "humanevalfix_t1fmt", "bugdetect_t3fmt", "internal_t1", "internal_t2", "internal_t3", "internal_t4"]
+         "humanevalfix_t1fmt", "humanevalfix_t1fmt_codefirst", "bugdetect_t3fmt", "internal_t1", "internal_t2", "internal_t3", "internal_t4"]
 SEQ_LEN = 2048
 SEED = int(os.environ.get("SEED", "3407"))
 RUN_SUFFIX = ("" if SEED == 3407 else f"-seed{SEED}") + (f"-{os.environ['RUN_TAG']}" if os.environ.get("RUN_TAG") else "")

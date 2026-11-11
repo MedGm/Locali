@@ -106,13 +106,14 @@ def case_folder(test_root: Path, task: str) -> Path | None:
     return None
 
 
-def candidates(code_root: Path, test_root: Path, since: str = SINCE) -> list[DefectItem]:
+def candidates(code_root: Path, test_root: Path, since: str = SINCE, before: str | None = None) -> list[DefectItem]:
+    """Python programs of the tasks dated `since` or later (and earlier than `before`, when given)."""
     dates = dict(line.split() for line in (code_root.parent / "date.txt").read_text().splitlines() if line.strip())
     items = []
     for task, date in sorted(dates.items()):
         folder = code_root / task / "Python"
         tests = case_folder(test_root, task)
-        if date < since or not folder.is_dir() or tests is None:
+        if date < since or (before is not None and date >= before) or not folder.is_dir() or tests is None:
             continue
         for sub in sorted(folder.iterdir(), key=lambda p: int(p.name)):
             items.append(DefectItem(f"{task}/{sub.name}", date, (sub / "faultyVersion.py").read_text(errors="replace"),
@@ -170,17 +171,24 @@ def harness_check(item: DefectItem, root: Path) -> tuple[bool, str]:
     correct = run_cases(item.correct, tests)
     if correct.timed_out or correct.passed != correct.total:
         return False, f"accepted version fails {correct.total - correct.passed} of {correct.total} tests"
+    case, reason = failing_test(item, tests)
+    return case is not None, reason
+
+
+def failing_test(item: DefectItem, tests: Path) -> tuple[str | None, str]:
+    """(name of the failing test the prompt shows, "kept"), filling in the item's shown fields; or
+    (None, reason) when the faulty version has no failing test."""
     faulty = run_cases(item.faulty, tests)
     if not faulty.failed_cases and not faulty.timed_out:
-        return False, "faulty version passes every test"
+        return None, "faulty version passes every test"
     if not faulty.failed_cases:
-        return False, "faulty version timed out as a whole"
+        return None, "faulty version timed out as a whole"
     shown = min(faulty.failed_cases, key=lambda n: ((tests / "in" / n).stat().st_size, n))
     item.shown_input = _cut((tests / "in" / shown).read_text(errors="replace").rstrip("\n"))
     item.shown_expected = _cut((tests / "out" / shown).read_text(errors="replace").rstrip("\n"))
     actual = run_cases(item.faulty, tests, [shown]).results.get(shown, faulty.results.get(shown, ""))
     item.shown_actual = _cut(actual.rstrip("\n")) if actual.strip() else "(no output)"
-    return True, "kept"
+    return shown, "kept"
 
 
 class ConDefectsTask:

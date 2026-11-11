@@ -89,7 +89,13 @@ def build_files() -> dict[str, Path]:
          "--outfile", str(files["f16"])])
     shutil.rmtree(merged)
     build_log = LOGS / "llama_build.log"
-    run(["cmake", "-S", str(llama), "-B", str(llama / "build"), "-DGGML_CUDA=ON", "-DLLAMA_CURL=OFF"], build_log)
+    # Kaggle's image has the driver library only as libcuda.so.1, which CMake does not find by itself
+    driver = next((str(f) for d in ("/usr/lib64-nvidia", "/usr/lib/x86_64-linux-gnu", "/usr/local/nvidia/lib64",
+                                    "/usr/local/cuda/lib64", "/usr/local/cuda/lib64/stubs")
+                   for f in sorted(Path(d).glob("libcuda.so*"))), None)
+    log(f"cuda driver library: {driver}")
+    run(["cmake", "-S", str(llama), "-B", str(llama / "build"), "-DGGML_CUDA=ON", "-DLLAMA_CURL=OFF",
+         *([f"-DCUDA_cuda_driver_LIBRARY={driver}"] if driver else [])], build_log)
     run(["cmake", "--build", str(llama / "build"), "--target", "llama-quantize", "llama-imatrix", "llama-server",
          "-j", "4"], build_log)
     tools = llama / "build" / "bin"

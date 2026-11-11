@@ -11,7 +11,11 @@ The variants are built here from the adapters in the Kaggle dataset `locali-adap
 is the control: it must reproduce run E's scores. Greedy, same prompts as every other run.
 
 Model-written code runs in evaluation/isolated.py. Environment: PILOT=1 runs 8 problems; TASKS
-(space-separated) and SCALES (e.g. "0.5 0.75") change what is run.
+(space-separated) and SCALES (e.g. "0.5 0.75") change what is run; AVERAGE=0 leaves the D/E average out.
+
+The second step registered in docs/preregistration-runs-fg.md (the chosen variant on test generation
+and ConDefects, next to the same control) is this job with TASKS="testgen condefects": those answers
+are only generated here and scored on the laptop, like every other run of the two.
 """
 
 import os
@@ -34,6 +38,10 @@ RUN_D, RUN_E = "mixv3b-diag", "mixv3s"
 SCALES = tuple(float(x) for x in os.environ.get("SCALES", "0.5 0.75").split())
 VARIANTS = WORK / "adapters"
 TASKS = tuple(os.environ.get("TASKS", "humaneval_plus humanevalfix mbpp_plus").split())
+AVERAGE = os.environ.get("AVERAGE", "1") == "1"
+SCORED_HERE = {"humaneval_plus", "humanevalfix", "mbpp_plus"}
+MAX_TOKENS = {"testgen": 768}  # as in the fine-tuning job; 1,024 everywhere else
+CONDEFECTS_ITEMS = "experiments/results/4_final_checks/condefects/items.jsonl"
 PORT = 8000
 LIMIT = 8 if os.environ.get("PILOT") == "1" else None
 
@@ -67,7 +75,8 @@ def setup() -> None:
     import evaluation.rescore  # noqa: F401 - fail here, not after the server has started
     from evaluation.run import TASKS as REGISTERED
 
-    assert set(TASKS) <= set(REGISTERED), f"unknown tasks: {set(TASKS) - set(REGISTERED)}"
+    unknown = set(TASKS) - set(REGISTERED) - {"condefects"}
+    assert not unknown, f"unknown tasks: {unknown}"
     log("setup done")
 
 
@@ -100,7 +109,8 @@ def build_variants() -> dict[str, Path]:
     built = {"e-x1.0": (state[RUN_E], config)}
     for factor in SCALES:
         built[f"e-x{factor}"] = (scale(state[RUN_E], factor), config)
-    built["avg-d-e"] = (average(state[RUN_D], state[RUN_E]), averaged_config(config))
+    if AVERAGE:
+        built["avg-d-e"] = (average(state[RUN_D], state[RUN_E]), averaged_config(config))
     paths = {}
     for name, (tensors, cfg) in built.items():
         out = VARIANTS / name
@@ -127,20 +137,47 @@ def wait_healthy(server: subprocess.Popen, timeout_s: float = 1800) -> bool:
     return False
 
 
+def condefects(model_id: str, served: str) -> None:
+    """The 382 real bugs, asked as in the pre-registered check (training/kaggle/evaluate/repair_prereg)."""
+    from evaluation.client import ChatClient
+    from evaluation.run import RunConfig, run_benchmark, two_step
+    from evaluation.tasks.condefects import ConDefectsTask
+
+    task = ConDefectsTask(CODE / CONDEFECTS_ITEMS)
+    client = ChatClient(f"http://127.0.0.1:{PORT}/v1", model=served)
+
+    def call(messages):
+        return client.complete(messages, max_tokens=1024, temperature=0.0, seed=3407)
+
+    config = RunConfig(benchmark="condefects", model_id=model_id, runtime="vllm", max_tokens=1024,
+                       base_url=f"http://127.0.0.1:{PORT}/v1", workers=16, dataset=task.dataset[0],
+                       dataset_revision=task.dataset[1], generate_only=True, limit=LIMIT,
+                       notes="kaggle T4, vLLM 0.29; adapter scaling, second step")
+    summary = run_benchmark(config, task, task.load(LIMIT), lambda item: two_step(task, item, call),
+                            RESULTS / "condefects" / model_id)
+    log(f"condefects/{model_id}: {summary['metrics']['n']} answers")
+
+
 def evaluate(model_id: str, served: str) -> None:
     from evaluation.rescore import rescore_run
     from evaluation.run import TASKS as REGISTERED
 
     for task_name in TASKS:
+        if task_name == "condefects":
+            condefects(model_id, served)
+            continue
         out = RESULTS / task_name / f"{model_id}__fp16__kaggle-t4"
         cmd = [sys.executable, "-m", "evaluation.run", "--benchmark", task_name, "--generate-only", "--workers", "16",
-               "--model-id", model_id, "--model-revision", BASE[1], "--quantization", "fp16", "--max-tokens", "1024",
+               "--model-id", model_id, "--model-revision", BASE[1], "--quantization", "fp16", "--max-tokens", str(MAX_TOKENS.get(task_name, 1024)),
                "--runtime", f"vLLM {VLLM_VERSION} T4 + LoRA",
                "--base-url", f"http://127.0.0.1:{PORT}/v1", "--served-model", served, "--out", str(out),
                "--notes", "adapter scaling and D/E average", *(["--limit", str(LIMIT)] if LIMIT else [])]
         rc = sh(cmd, LOGS / f"run_{task_name}_{model_id}.log", cwd=CODE)
         if rc != 0:
             log(f"{task_name}/{model_id}: FAILED rc={rc}")
+            continue
+        if task_name not in SCORED_HERE:
+            log(f"{task_name}/{model_id}: answers written, scored on the laptop")
             continue
         task = REGISTERED[task_name]
         summary = rescore_run(out, task, task.load(LIMIT), workers=8)
@@ -153,7 +190,7 @@ def main() -> None:
     variants = build_variants()
     log(f"variants {sorted(variants)}; network isolation {isolation}")
     cmd = [str(VLLM_VENV / "bin" / "vllm"), "serve", BASE[0], "--revision", BASE[1], "--served-model-name", "local",
-           "--port", str(PORT), "--dtype", "half", "--max-model-len", "4096", "--gpu-memory-utilization", "0.90",
+           "--port", str(PORT), "--dtype", "half", "--max-model-len", "16384" if "condefects" in TASKS else "4096", "--gpu-memory-utilization", "0.90",
            "--enforce-eager", "--seed", "3407", "--enable-lora", "--max-lora-rank", "32", "--max-loras", "1",
            "--lora-modules", *(f"{name}={path}" for name, path in variants.items())]
     with open(LOGS / "vllm.log", "w") as fh:

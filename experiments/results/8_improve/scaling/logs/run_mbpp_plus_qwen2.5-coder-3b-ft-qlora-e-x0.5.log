@@ -1,0 +1,23 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{
+  "metrics": {
+    "n": 377,
+    "status_counts": {
+      "unscored": 377
+    },
+    "truncated": 0,
+    "mean_input_tokens": 102.3979,
+    "mean_output_tokens": 124.5544,
+    "mean_ttft_s": 0.3867,
+    "median_ttft_s": 0.36,
+    "mean_total_s": 13.5965,
+    "mean_decode_tok_per_s": 9.45,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "this_session": {
+    "generated": 377,
+    "resumed": 0,
+    "wall_s": 332.2
+  }
+}

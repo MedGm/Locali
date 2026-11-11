@@ -4,7 +4,7 @@ from pathlib import Path
 
 from backend.agents.workflow import _report, change_groups, run_workflow
 from backend.patches import PatchStore
-from backend.tests.test_debug_agent import GOOD_FIX
+from backend.tests.test_debug_agent import DIAGNOSIS, GOOD_FIX
 from evaluation.tests.test_codegen import needs_docker
 
 DEMO = Path(__file__).resolve().parents[2] / "demo_repo"
@@ -23,8 +23,10 @@ def fake_model(messages):
     if prompt.startswith("Write pytest tests for the HTTP endpoint"):
         # the agent adds the `client` fixture from the prompt when the answer does not define it
         return "```python\ndef test_app_answers(client):\n    assert client.get('/reports/2026-11-04').status_code == 200\n```"
-    if prompt.startswith("The following Python function has a bug"):
+    if prompt.startswith("Fix bugs in"):
         return GOOD_FIX
+    if prompt.startswith("This Python function had a bug"):
+        return DIAGNOSIS
     if prompt.startswith("Write a one-line docstring"):
         return "Does what the name says."
     raise AssertionError(f"unexpected prompt: {prompt[:80]}")

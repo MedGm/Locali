@@ -18,6 +18,8 @@ from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from pathlib import Path
 
+from backend.agents.model import takes_temperature
+
 EXPERIMENT = "agent-runs"
 
 
@@ -71,10 +73,13 @@ class Tracker:
         import mlflow
         from mlflow.entities import SpanType
 
-        def call(messages: list[dict]):
+        sampled = takes_temperature(model)
+
+        def call(messages: list[dict], temperature: float | None = None):
+            options = {"temperature": temperature} if sampled and temperature is not None else {}
             with mlflow.start_span(name="model_call", span_type=SpanType.CHAT_MODEL) as span:
-                span.set_inputs({"prompt": messages[-1]["content"]})
-                reply = model(messages)
+                span.set_inputs({"prompt": messages[-1]["content"], **options})
+                reply = model(messages, **options)
                 span.set_outputs({"answer": reply if isinstance(reply, str) else reply.text})
                 for key in ("input_tokens", "output_tokens"):
                     if getattr(reply, key, None) is not None:

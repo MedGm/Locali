@@ -74,8 +74,8 @@ def main() -> None:
     calls = []
     current = {"step": None}
 
-    def model(messages):
-        c = client.complete(messages, max_tokens=768)
+    def model(messages, temperature: float = 0.0):
+        c = client.complete(messages, max_tokens=768, temperature=temperature)
         calls.append({"step": current["step"], "input_tokens": c.input_tokens, "output_tokens": c.output_tokens,
                       "total_s": c.total_s})
         return c.text

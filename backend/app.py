@@ -610,8 +610,9 @@ def default_app() -> FastAPI:
         client = ChatClient(url, model=os.environ.get("LOCALI_MODEL_NAME", "local"),
                             api_key=os.environ.get("LOCALI_MODEL_KEY", "local"))
 
-        def model(messages):
-            return client.complete(messages, max_tokens=768)  # the run's guard reads text and token counts
+        def model(messages, temperature: float = 0.0):
+            # the run's guard reads text and token counts
+            return client.complete(messages, max_tokens=768, temperature=temperature)
 
         playground["main"] = (os.environ.get("LOCALI_MODEL_ID", "local"), _playground_model(client))
     compare_server = None

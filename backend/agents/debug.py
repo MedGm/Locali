@@ -1,20 +1,27 @@
 """Debug agent: make failing tests pass by repairing the function they exercise.
 
 For each failing test, the function under test is the repo function the test calls. The model gets
-that function, the test and its real error in the T1 repair format it was fine-tuned on, and its
-answer replaces only that function. The test is re-run in the sandbox; on failure the new error
-goes back to the model, up to `max_attempts` times. If no attempt passes, the file is restored.
-All of this happens inside an agent workspace; nothing here touches the user's folder.
+that function and the test in the benchmark-style repair prompt ("Fix bugs in f", answer: the code)
+and its answer replaces only that function. The test is re-run in the sandbox; on failure the model
+is asked again with its last version and the new error, sampled at a small temperature so it does
+not repeat itself, up to `max_attempts` times. If no attempt passes, the file is restored. Once a
+fix passes, a second short call asks what the bug was. All of this happens inside an agent
+workspace; nothing here touches the user's folder.
 """
 
 import ast
+import difflib
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
+from backend.agents.model import takes_temperature
+from evaluation.extract import extract_code
 from mcp_servers.tests_server import run_tests
-from training.data.format import parse_repair_answer, repair_prompt
+from training.data.format import explain_fix_prompt, fix_prompt, parse_explanation
 from training.data.t1_bugs import failing_test_details
+
+RETRY_TEMPERATURE = 0.6  # the value measured in the feedback study (run B: 64 % -> 71 % in 3 attempts)
 
 Model = Callable[[list[dict]], str]
 
@@ -101,8 +108,24 @@ def _error(root: Path, test_id: str) -> str | None:
     return error or "the test failed"
 
 
-def debug_failing_tests(root: str | Path, model: Model, max_attempts: int = 3) -> list[Fix]:
+def _first_changed_line(buggy: str, fixed: str) -> str:
+    """The first line of the buggy function that the fix changes (or the line after an insertion)."""
+    a, b = buggy.splitlines(), fixed.splitlines()
+    for tag, i1, _i2, _j1, _j2 in difflib.SequenceMatcher(a=a, b=b, autojunk=False).get_opcodes():
+        if tag != "equal":
+            return a[i1] if i1 < len(a) else a[-1]
+    return ""
+
+
+def _diagnose(model: Model, buggy: str, fixed: str) -> dict | None:
+    found = parse_explanation(model([{"role": "user", "content": explain_fix_prompt(buggy, fixed)}]))
+    return found and {"bug_location": _first_changed_line(buggy, fixed), **found}
+
+
+def debug_failing_tests(root: str | Path, model: Model, max_attempts: int = 3,
+                        retry_temperature: float = RETRY_TEMPERATURE) -> list[Fix]:
     root = Path(root)
+    sampled = takes_temperature(model)
     fixes = []
     for test_id in run_tests(root)["failed"]:
         target = target_of_test(root, test_id)
@@ -111,19 +134,24 @@ def debug_failing_tests(root: str | Path, model: Model, max_attempts: int = 3) -
         rel, func = target
         path = root / rel
         original = path.read_text()
-        error, diagnosis, attempts = _error(root, test_id), None, 0
+        buggy = function_source(path, func)
+        shown, attempts = None, 0  # the first attempt sees the tests only, as in training
+        error = _error(root, test_id)
         while error is not None and attempts < max_attempts:
             attempts += 1
-            prompt = repair_prompt(function_source(path, func), test_id.split("::")[-1],
-                                   _test_source(root, test_id), error)
-            diagnosis, code = parse_repair_answer(model([{"role": "user", "content": prompt}]))
+            messages = [{"role": "user", "content": fix_prompt(func, function_source(path, func),
+                                                               _test_source(root, test_id), shown)}]
+            answer = model(messages, temperature=retry_temperature) if sampled and attempts > 1 else model(messages)
             try:
-                replace_function(path, func, code)
+                replace_function(path, func, extract_code(answer, entry_point=func))
             except ValueError:
-                error = f"Your answer did not contain a valid `{func}` function."
+                shown = f"Your answer did not contain a valid `{func}` function."
                 continue
-            error = _error(root, test_id)
-        if error is not None:
+            error = shown = _error(root, test_id)
+        diagnosis = None
+        if error is None and attempts:
+            diagnosis = _diagnose(model, buggy, function_source(path, func))
+        else:
             path.write_text(original)
         fixes.append(Fix(test_id, rel, func, error is None, attempts, diagnosis))
     return fixes

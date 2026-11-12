@@ -1,0 +1,186 @@
+Python/0: fixed at attempt 1
+Python/1: not fixed
+Python/2: fixed at attempt 1
+Python/3: fixed at attempt 1
+Python/4: fixed at attempt 1
+Python/5: fixed at attempt 1
+Python/6: fixed at attempt 1
+Python/7: fixed at attempt 1
+Python/8: fixed at attempt 1
+Python/9: fixed at attempt 1
+Python/10: not fixed
+Python/11: fixed at attempt 1
+Python/12: fixed at attempt 1
+Python/13: fixed at attempt 1
+Python/14: fixed at attempt 1
+Python/15: fixed at attempt 3
+Python/16: fixed at attempt 1
+Python/17: fixed at attempt 2
+Python/18: fixed at attempt 1
+Python/19: not fixed
+Python/20: fixed at attempt 1
+Python/21: fixed at attempt 1
+Python/22: fixed at attempt 1
+Python/23: fixed at attempt 1
+Python/24: fixed at attempt 1
+Python/25: fixed at attempt 1
+Python/26: fixed at attempt 1
+Python/27: fixed at attempt 1
+Python/28: fixed at attempt 1
+Python/29: fixed at attempt 1
+Python/30: fixed at attempt 1
+Python/31: fixed at attempt 1
+Python/32: not fixed
+Python/33: not fixed
+Python/34: fixed at attempt 1
+Python/35: fixed at attempt 1
+Python/36: fixed at attempt 1
+Python/37: not fixed
+Python/38: not fixed
+Python/39: not fixed
+Python/40: fixed at attempt 1
+Python/41: fixed at attempt 1
+Python/42: fixed at attempt 1
+Python/43: fixed at attempt 1
+Python/44: fixed at attempt 1
+Python/45: fixed at attempt 1
+Python/46: fixed at attempt 1
+Python/47: not fixed
+Python/48: fixed at attempt 1
+Python/49: fixed at attempt 1
+Python/50: fixed at attempt 1
+Python/51: fixed at attempt 2
+Python/52: not fixed
+Python/53: fixed at attempt 1
+Python/54: fixed at attempt 1
+Python/55: fixed at attempt 1
+Python/56: fixed at attempt 1
+Python/57: fixed at attempt 2
+Python/58: fixed at attempt 1
+Python/59: fixed at attempt 1
+Python/60: fixed at attempt 1
+Python/61: not fixed
+Python/62: not fixed
+Python/63: fixed at attempt 2
+Python/64: not fixed
+Python/65: fixed at attempt 1
+Python/66: fixed at attempt 1
+Python/67: fixed at attempt 2
+Python/68: not fixed
+Python/69: fixed at attempt 1
+Python/70: fixed at attempt 3
+Python/71: fixed at attempt 1
+Python/72: not fixed
+Python/73: fixed at attempt 1
+Python/74: fixed at attempt 1
+Python/75: fixed at attempt 1
+Python/76: fixed at attempt 1
+Python/77: fixed at attempt 1
+Python/78: fixed at attempt 1
+Python/79: fixed at attempt 1
+Python/80: not fixed
+Python/81: fixed at attempt 1
+Python/82: fixed at attempt 1
+Python/83: not fixed
+Python/84: not fixed
+Python/85: fixed at attempt 1
+Python/86: fixed at attempt 1
+Python/87: not fixed
+Python/88: not fixed
+Python/89: not fixed
+Python/90: fixed at attempt 3
+Python/91: not fixed
+Python/92: fixed at attempt 1
+Python/93: not fixed
+Python/94: fixed at attempt 1
+Python/95: fixed at attempt 1
+Python/96: not fixed
+Python/97: not fixed
+Python/98: fixed at attempt 1
+Python/99: not fixed
+Python/100: fixed at attempt 1
+Python/101: not fixed
+Python/102: not fixed
+Python/103: fixed at attempt 1
+Python/104: fixed at attempt 1
+Python/105: not fixed
+Python/106: fixed at attempt 1
+Python/107: not fixed
+Python/108: not fixed
+Python/109: not fixed
+Python/110: fixed at attempt 1
+Python/111: fixed at attempt 1
+Python/112: fixed at attempt 2
+Python/113: not fixed
+Python/114: not fixed
+Python/115: not fixed
+Python/116: not fixed
+Python/117: fixed at attempt 1
+Python/118: not fixed
+Python/119: fixed at attempt 1
+Python/120: not fixed
+Python/121: fixed at attempt 1
+Python/122: not fixed
+Python/123: not fixed
+Python/124: not fixed
+Python/125: fixed at attempt 1
+Python/126: not fixed
+Python/127: fixed at attempt 1
+Python/128: not fixed
+Python/129: fixed at attempt 1
+Python/130: not fixed
+Python/131: fixed at attempt 1
+Python/132: not fixed
+Python/133: fixed at attempt 1
+Python/134: not fixed
+Python/135: fixed at attempt 1
+Python/136: fixed at attempt 1
+Python/137: not fixed
+Python/138: fixed at attempt 1
+Python/139: fixed at attempt 1
+Python/140: not fixed
+Python/141: fixed at attempt 1
+Python/142: not fixed
+Python/143: not fixed
+Python/144: not fixed
+Python/145: not fixed
+Python/146: fixed at attempt 1
+Python/147: not fixed
+Python/148: fixed at attempt 1
+Python/149: not fixed
+Python/150: not fixed
+Python/151: fixed at attempt 1
+Python/152: fixed at attempt 1
+Python/153: fixed at attempt 1
+Python/154: fixed at attempt 1
+Python/155: fixed at attempt 1
+Python/156: fixed at attempt 3
+Python/157: not fixed
+Python/158: not fixed
+Python/159: fixed at attempt 2
+Python/160: fixed at attempt 1
+Python/161: not fixed
+Python/162: fixed at attempt 1
+Python/163: fixed at attempt 1
+{
+ "model_id": "qwen2.5-coder-3b-ft-qlora-mixv3s-q4",
+ "n": 164,
+ "attempts": 3,
+ "explain": true,
+ "retry_temperature": 0.6,
+ "fixed_within": {
+  "1": 95,
+  "2": 102,
+  "3": 106
+ },
+ "rate_within": {
+  "1": 57.9,
+  "2": 62.2,
+  "3": 64.6
+ },
+ "model_calls": 295,
+ "tokens_this_session": {
+  "input": 104704,
+  "output": 21324
+ }
+}

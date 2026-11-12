@@ -1,0 +1,32 @@
+diff --git a/tests/test_locali_api_create_product.py b/tests/test_locali_api_create_product.py
+new file mode 100644
+index 0000000..a828934
+--- /dev/null
++++ b/tests/test_locali_api_create_product.py
+@@ -0,0 +1,26 @@
++from datetime import date
++import pytest
++from fastapi.testclient import TestClient
++from tinyshop.api import create_app
++
++@pytest.fixture
++def client(tmp_path):
++    return TestClient(create_app(tmp_path / 'test.db'))
++
++def test_create_product__a0(client):
++    response = client.post('/products', json={'name': 'test', 'price': 10.0, 'stock': 5})
++    assert response.status_code == 201
++
++def test_create_product__a1(client):
++    response = client.post('/products', json={'name': 'test', 'price': 10.0, 'stock': 5})
++    assert response.json() == {'id': 1}
++
++def test_list_products__a0(client):
++    client.post('/products', json={'name': 'test', 'price': 10.0, 'stock': 5})
++    response = client.get('/products')
++    assert response.status_code == 200
++
++def test_list_products__a1(client):
++    client.post('/products', json={'name': 'test', 'price': 10.0, 'stock': 5})
++    response = client.get('/products')
++    assert len(response.json()) == 1

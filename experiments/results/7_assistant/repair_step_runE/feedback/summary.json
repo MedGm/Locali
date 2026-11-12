@@ -1,0 +1,22 @@
+{
+ "model_id": "qwen2.5-coder-3b-ft-qlora-mixv3s-q4",
+ "n": 164,
+ "attempts": 3,
+ "explain": true,
+ "retry_temperature": 0.6,
+ "fixed_within": {
+  "1": 95,
+  "2": 102,
+  "3": 106
+ },
+ "rate_within": {
+  "1": 57.9,
+  "2": 62.2,
+  "3": 64.6
+ },
+ "model_calls": 295,
+ "tokens_this_session": {
+  "input": 104704,
+  "output": 21324
+ }
+}

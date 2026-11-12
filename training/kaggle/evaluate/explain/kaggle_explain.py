@@ -12,6 +12,9 @@ defaults as in the other Kaggle runs. PILOT=1: 5 problems.
 WRITER=1: the control. Only the 3B base is served, and it writes the code from the explanations every
 model gave in the first run (read from experiments/results/3_finetune_3b/explain_t4 in the repository), so the
 writer is the same for all and only the explanation changes.
+
+ADAPTERS=mixv3r ONLY=qwen2.5-coder-3b-ft-qlora-mixv3r: another adapter from the attached datasets,
+and only the listed models (run G).
 """
 
 import json
@@ -34,7 +37,7 @@ LOGS = WORK / "logs"
 LIMIT = 5 if os.environ.get("PILOT") == "1" else None
 WRITER = os.environ.get("WRITER") == "1"
 FIRST_RUN = CODE / "experiments/results/3_finetune_3b/explain_t4/results"
-ADAPTERS = ("mixv3b-diag", "mixv3s")
+ADAPTERS = tuple(os.environ.get("ADAPTERS", "mixv3b-diag,mixv3s").split(","))
 SERVERS = {  # name: (repo, revision, gpu, port, memory share)
     "3b": ("Qwen/Qwen2.5-Coder-3B-Instruct", "488639f1ff808d1d3d0ba301aef8c11461451ec5", 0, 8000, 0.90),
     "1.5b-ft": ("MedGm/Llama-Locali-Qwen2.5-Coder-1.5B", "a1b0b1189d2050dd20013371fc327362ea6b2964", 1, 8001, 0.90),
@@ -42,11 +45,12 @@ SERVERS = {  # name: (repo, revision, gpu, port, memory share)
 }
 MODELS = {  # model id: (server, served name)
     "qwen2.5-coder-3b": ("3b", "local"),
-    "qwen2.5-coder-3b-ft-qlora-mixv3b-diag": ("3b", "mixv3b-diag"),
-    "qwen2.5-coder-3b-ft-qlora-mixv3s": ("3b", "mixv3s"),
+    **{f"qwen2.5-coder-3b-ft-qlora-{name}": ("3b", name) for name in ADAPTERS},
     "qwen2.5-coder-1.5b-ft-qlora-v2": ("1.5b-ft", "local"),
     "qwen2.5-coder-1.5b": ("1.5b", "local"),
 }
+if os.environ.get("ONLY"):
+    MODELS = {m: MODELS[m] for m in os.environ["ONLY"].split(",")}
 
 
 def log(msg: str) -> None:
@@ -79,7 +83,12 @@ def setup() -> None:
 
 
 def adapter_paths() -> dict[str, Path]:
-    found = {p.parent.name: p.parent for p in Path("/kaggle/input").rglob("adapter_config.json")}
+    folders = [p.parent for p in Path("/kaggle/input").rglob("adapter_config.json")]
+    found = {p.name: p for p in folders}
+    for name in ADAPTERS:  # a dataset that holds one adapter at its root: the name is in the dataset's name
+        own = [p for p in folders if any(part.endswith(f"-{name}") for part in p.parts)]
+        if name not in found and own:
+            found[name] = own[0]
     missing = set(ADAPTERS) - set(found)
     assert not missing, f"adapters not found: {missing}; have {sorted(found)}"
     return {name: found[name] for name in ADAPTERS}
@@ -91,7 +100,7 @@ def start(name: str, adapters: dict[str, Path]) -> subprocess.Popen:
            "--port", str(port), "--dtype", "half", "--max-model-len", "4096", "--gpu-memory-utilization", str(share),
            "--enforce-eager", "--seed", "3407"]
     if name == "3b" and adapters:
-        cmd += ["--enable-lora", "--max-lora-rank", "16", "--max-loras", "2",
+        cmd += ["--enable-lora", "--max-lora-rank", "16", "--max-loras", str(len(adapters)),
                 "--lora-modules", *(f"{n}={p}" for n, p in adapters.items())]
     fh = open(LOGS / f"vllm-{name}.log", "w")  # noqa: SIM115 - stays open while the server runs
     return subprocess.Popen(cmd, stdout=fh, stderr=subprocess.STDOUT, env={**os.environ, "CUDA_VISIBLE_DEVICES": str(gpu)})
@@ -144,14 +153,14 @@ def run_gpu(gpu: int, adapters: dict[str, Path]) -> None:
     """The servers of one GPU one after the other: two vLLM engines starting together on one T4
     both failed to find memory for their cache."""
     for name, (*_, server_gpu, port, _share) in SERVERS.items():
-        if server_gpu != gpu:
+        models = [m for m, (srv, _) in MODELS.items() if srv == name]
+        if server_gpu != gpu or not models:
             continue
         server = start(name, adapters)
         try:
             if not wait_healthy(port, server):
                 raise RuntimeError(f"server {name} failed to start, see logs/vllm-{name}.log")
             log(f"server {name} ready")
-            models = [m for m, (srv, _) in MODELS.items() if srv == name]
             with ThreadPoolExecutor(max_workers=len(models)) as pool:
                 list(pool.map(evaluate, models))
         finally:

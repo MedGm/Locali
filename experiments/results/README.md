@@ -80,9 +80,19 @@ Protocol: `docs/preregistration-repair.md`.
 | `agents_demo_repo` | the workflow on the demo project: one review vs the full workflow |
 | `agents_api_tests` | integration and API tests on the demo project |
 | `agents_runE` | **base vs run D vs run E on the demo project** |
+| `repair_step_runE` | the repair step after 2026-11-11 on the laptop: 95, 102, 106 of 164 bugs within 1, 2, 3 attempts |
 | `context_agents` | how much code the agents show the model |
 | `feedback_repair` | the repair agent's runs with test feedback, laptop |
 | `redteam` | my attack cases against the controls |
+
+## 8_improve: what could still be gained without new data
+
+Rules in `docs/preregistration-runs-fg.md`.
+
+| Folder | What it is |
+|---|---|
+| `quant` | **run E at 16, 8, 5 and 4 bits**: the 4-bit laptop file loses 10 repair fixes, the 5-bit one keeps them |
+| `scaling` | run E's adapter at lower strength and the D/E average: nothing to adopt |
 
 ## archive
 

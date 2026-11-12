@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from security.commands import CommandNotAllowed, run
+from security.commands import CommandNotAllowed, run, start_model_server
 
 ROOT = Path(__file__).resolve().parents[2]
 RUNTIME = ["backend", "mcp_servers", "security"]
@@ -32,6 +32,26 @@ def test_everything_else_is_refused(cmd):
 def test_shell_mode_cannot_be_requested():
     with pytest.raises(TypeError):
         run(["git", "--version"], shell=True)
+
+
+@pytest.mark.parametrize("cmd", [
+    ["sh", "-c", "llama-server"],
+    ["/opt/llama-server", "--help"],
+    ["/opt/llama-server", "-m", "/etc/passwd"],
+    ["/opt/other", "-m", "model.gguf"],
+])
+def test_only_a_llama_server_with_a_gguf_file_is_started(cmd):
+    with pytest.raises(CommandNotAllowed):
+        start_model_server(cmd)
+
+
+def test_model_server_output_goes_to_the_log(tmp_path):
+    server = tmp_path / "llama-server"
+    server.write_text("#!/bin/sh\necho started \"$2\"\n")
+    server.chmod(0o755)
+    process = start_model_server([str(server), "-m", "model.gguf"], log=tmp_path / "logs" / "server.log")
+    assert process.wait(timeout=10) == 0
+    assert (tmp_path / "logs" / "server.log").read_text() == "started model.gguf\n"
 
 
 def test_runtime_code_runs_commands_only_through_the_guard():

@@ -16,13 +16,14 @@ import json
 import os
 import secrets
 import socket
-import subprocess
 import threading
 import time
 import urllib.request
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
+
+from security import commands
 
 # the free RAM a model needs on top of its file: context cache and buffers (measured: 3B Q4 file 1.9 GB, 2.2 GB RAM)
 RAM_MARGIN_GIB = 0.6
@@ -62,7 +63,7 @@ def _serving(url: str, key: str) -> str | None:
 class ModelServer:
     def __init__(self, registry: list[dict], models_dir: str | Path, port: int, binary: str | Path,
                  client: Callable[[str, str], Any], exclude: str | None = None, key: str | None = None,
-                 log_file: str | Path | None = None, launch: Callable[..., Any] = subprocess.Popen,
+                 log_file: str | Path | None = None, launch: Callable[..., Any] = commands.start_model_server,
                  serving: Callable[[str, str], str | None] = _serving, port_in_use: Callable[[int], bool] = _port_in_use,
                  free_gib: Callable[[], float | None] = available_gib, timeout_s: float = 180.0):
         """registry is the "models" list of models.json; client(url, key) returns the playground model
@@ -116,7 +117,7 @@ class ModelServer:
                                        "(an old 'scripts/run.sh compare'?)")
             self.starting = model_id
             try:
-                self._process = self._launch(self._command(entry), **self._output())
+                self._process = self._launch(self._command(entry), log=self.log_file)
                 self._wait(model_id)
             except BaseException:
                 self._stop()
@@ -135,13 +136,6 @@ class ModelServer:
                "--port", str(self.port), "--api-key", self.key]
         spec = os.environ.get("LOCALI_SPEC", "ngram-simple")  # same default as scripts/run.sh
         return cmd + (["--spec-type", spec] if spec != "none" else [])
-
-    def _output(self) -> dict:
-        if not self.log_file:
-            return {"stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL}
-        self.log_file.parent.mkdir(parents=True, exist_ok=True)
-        log = self.log_file.open("ab")
-        return {"stdout": log, "stderr": subprocess.STDOUT}
 
     def _alive(self) -> bool:
         return self._process is not None and self._process.poll() is None
@@ -167,6 +161,6 @@ class ModelServer:
         process.terminate()
         try:
             process.wait(timeout=10)
-        except subprocess.TimeoutExpired:
+        except commands.TimeoutExpired:
             process.kill()
             process.wait(timeout=5)

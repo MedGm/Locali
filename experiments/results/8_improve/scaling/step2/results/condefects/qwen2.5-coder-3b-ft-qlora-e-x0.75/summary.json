@@ -37,7 +37,8 @@
   "metrics": {
     "n": 382,
     "status_counts": {
-      "unscored": 382
+      "failed": 331,
+      "passed": 51
     },
     "truncated": 18,
     "mean_input_tokens": 820.5916,
@@ -47,12 +48,32 @@
     "mean_total_s": 39.654,
     "mean_decode_tok_per_s": 6.52,
     "total_energy_j": null,
-    "mean_energy_j_per_task": null
+    "mean_energy_j_per_task": null,
+    "pass@1": 0.1335
   },
   "excluded": {},
   "this_session": {
     "generated": 382,
     "resumed": 0,
     "wall_s": 993.7
+  },
+  "rescored": {
+    "at": "2026-11-12T03:36:17+00:00",
+    "harness_commit": "7744ac87c9a0dd3f571f8658d5a00e0910cc1a66",
+    "previous_metrics": {
+      "n": 382,
+      "status_counts": {
+        "unscored": 382
+      },
+      "truncated": 18,
+      "mean_input_tokens": 820.5916,
+      "mean_output_tokens": 222.9267,
+      "mean_ttft_s": 1.7876,
+      "median_ttft_s": 0.6462,
+      "mean_total_s": 39.654,
+      "mean_decode_tok_per_s": 6.52,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
   }
 }

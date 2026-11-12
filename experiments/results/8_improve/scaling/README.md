@@ -50,9 +50,9 @@ The control gives run E's test-generation score again (136 against 135 in the tr
 At three-quarter strength a few more bugs are caught, not significantly, and significantly more
 answers contain a wrong test. This is not a gain: run E stays as it is.
 
-ConDefects: the 382 answers of both adapters are in `step2/results/condefects` (18 cut off at
-1,024 tokens for each). They are not scored yet: the tests are in ConDefects' `Test.zip`, which is
-not on this disk. `CONDEFECTS_TESTS=<dir>/Test uv run python -m evaluation.rescore <the two folders>`.
+ConDefects (382 real bugs, scored in the laptop sandbox): run E unchanged fixes 55 (56 in the
+registered check), run E × 0.75 fixes 51; 6 won, 10 lost, p = 0.45. 18 answers of each are cut off
+at 1,024 tokens. No gain there either.
 
 `adapters/` (the built variants, 615 MB) is not in the repository; the job rebuilds them.
 

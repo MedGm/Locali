@@ -1,0 +1,58 @@
+{
+  "config": {
+    "benchmark": "condefects",
+    "model_id": "qwen2.5-coder-3b-ft-qlora-e-x1.0",
+    "runtime": "vllm",
+    "max_tokens": 1024,
+    "model_revision": null,
+    "quantization": null,
+    "base_url": "http://127.0.0.1:8000/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "appmlk/ConDefects",
+    "dataset_revision": "43f0834a82c5",
+    "notes": "kaggle T4, vLLM 0.29; adapter scaling, second step",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-11-12T01:25:22+00:00",
+    "git_commit": "",
+    "git_dirty": false,
+    "host": "ade8571638ac",
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 382,
+    "status_counts": {
+      "unscored": 382
+    },
+    "truncated": 18,
+    "mean_input_tokens": 820.5916,
+    "mean_output_tokens": 225.1335,
+    "mean_ttft_s": 1.7662,
+    "median_ttft_s": 0.6398,
+    "mean_total_s": 39.8776,
+    "mean_decode_tok_per_s": 6.58,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "excluded": {},
+  "this_session": {
+    "generated": 382,
+    "resumed": 0,
+    "wall_s": 998.6
+  }
+}

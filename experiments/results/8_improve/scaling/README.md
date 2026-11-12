@@ -36,6 +36,24 @@ For reference, the 3B base: HumanEval+ 81 %, HumanEvalFix 50 %.
 - Averaging D and E changes nothing that can be measured. Its MBPP+ answers are much shorter
   (51 tokens against 123), as run D's are.
 
+## Second step: run E × 0.75 on tasks not used to choose it (`step2/`)
+
+Same job at commit eda5239 with `TASKS="testgen condefects" SCALES=0.75 AVERAGE=0`, the unchanged
+adapter served next to it again; test generation scored in the laptop sandbox, 2026-11-12.
+
+| Test generation (164) | run E, unchanged | run E × 0.75 | won / lost | p |
+|---|---|---|---|---|
+| planted bug caught | 136 (82.9 %) | 141 (86.0 %) | 6 / 1 | 0.125 |
+| every written test passes on the correct code | 132 (80.5 %) | 119 (72.6 %) | 6 / 19 | 0.015 |
+
+The control gives run E's test-generation score again (136 against 135 in the training job).
+At three-quarter strength a few more bugs are caught, not significantly, and significantly more
+answers contain a wrong test. This is not a gain: run E stays as it is.
+
+ConDefects: the 382 answers of both adapters are in `step2/results/condefects` (18 cut off at
+1,024 tokens for each). They are not scored yet: the tests are in ConDefects' `Test.zip`, which is
+not on this disk. `CONDEFECTS_TESTS=<dir>/Test uv run python -m evaluation.rescore <the two folders>`.
+
 `adapters/` (the built variants, 615 MB) is not in the repository; the job rebuilds them.
 
 Code and text written with AI help (Claude).

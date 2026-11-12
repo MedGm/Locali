@@ -1,8 +1,53 @@
 {
-  "note": "Models the assistant can run on the laptop with llama.cpp. For the 1.5B models, quality, speed, RAM and energy come from the quantization ladder (experiments/results/summary.json); the 3B was measured separately (experiments/results/3_finetune_3b/finetune_qwen25_3b_qlora_mixv3s, laptop_3b_energy_runE, laptop_3b_check).",
+  "note": "Models the assistant can run on the laptop with llama.cpp. For the 1.5B models, quality, speed, RAM and energy come from the quantization ladder (experiments/results/summary.json); the 3B was measured separately (experiments/results/3_finetune_3b/finetune_qwen25_3b_qlora_mixv3r, 5_laptop/laptop_3b_energy_runG; run E: finetune_qwen25_3b_qlora_mixv3s, laptop_3b_energy_runE).",
   "models": [
     {
       "id": "ft3b-q4",
+      "label": "Qwen2.5-Coder-3B fine-tuned (run G) · Q4_K_M",
+      "name": "Locali Qwen2.5-Coder-3B, fine-tuned (QLoRA run G, mixture v3r, real bugs added), Q4_K_M",
+      "base": "Qwen/Qwen2.5-Coder-3B-Instruct",
+      "fine_tuned": true,
+      "quant": "Q4_K_M",
+      "file": "qwen2.5-coder-3b-locali-mixv3r-q4_k_m.gguf (built by training/kaggle/deploy/gguf)",
+      "gguf": [
+        "qwen2.5-coder-3b-locali-mixv3r-q4_k_m.gguf",
+        "llama-locali-qwen2.5-coder-3b-run-g-q4_k_m.gguf"
+      ],
+      "size_gib": 1.8,
+      "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF",
+      "recommended": "default",
+      "ladder": null,
+      "highlights": [
+        "Real bugs (ConDefects): 106 of 382 fixed, against 54 for the base and 56 for run E",
+        "HumanEvalFix 62.8 % (base 50.0 %); tests that catch the bug 82.9 %; code writing and explaining as run E",
+        "Laptop CPU: 93 of 164 bugs fixed, 17.6 s per problem, 2.2 GB RAM, 410 J per fixed bug",
+        "Base model under the Qwen research licence (non-commercial)"
+      ]
+    },
+    {
+      "id": "ft3b-q5",
+      "label": "Qwen2.5-Coder-3B fine-tuned (run G) · Q5_K_M",
+      "name": "Locali Qwen2.5-Coder-3B, fine-tuned (QLoRA run G, mixture v3r, real bugs added), Q5_K_M",
+      "base": "Qwen/Qwen2.5-Coder-3B-Instruct",
+      "fine_tuned": true,
+      "quant": "Q5_K_M",
+      "file": "qwen2.5-coder-3b-locali-mixv3r-q5_k_m.gguf (built by training/kaggle/deploy/gguf)",
+      "gguf": [
+        "qwen2.5-coder-3b-locali-mixv3r-q5_k_m.gguf",
+        "llama-locali-qwen2.5-coder-3b-run-g-q5_k_m.gguf"
+      ],
+      "size_gib": 2.1,
+      "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF",
+      "recommended": null,
+      "ladder": null,
+      "highlights": [
+        "The same model in 5 bits: more accurate and slower than the default",
+        "Laptop CPU: 102 of 164 bugs fixed (4-bit: 93, p = 0.02), 30.8 s per problem, 2.5 GB RAM, 647 J per fixed bug",
+        "Base model under the Qwen research licence (non-commercial)"
+      ]
+    },
+    {
+      "id": "ft3b-e-q4",
       "label": "Qwen2.5-Coder-3B fine-tuned (run E) · Q4_K_M",
       "name": "Locali Qwen2.5-Coder-3B, fine-tuned (QLoRA run E, mixture v3s, self-distilled replay), Q4_K_M",
       "base": "Qwen/Qwen2.5-Coder-3B-Instruct",
@@ -15,9 +60,10 @@
       ],
       "size_gib": 1.8,
       "hf_repo": "MedGm/Llama-Locali-Qwen2.5-Coder-3B-GGUF",
-      "recommended": "default",
+      "recommended": null,
       "ladder": null,
       "highlights": [
+        "The default from 5 to 12 November 2026; run G replaces it",
         "HumanEvalFix 63.4 % (base 50.0 %); tests that catch the bug 82.3 % (base 62.2 %)",
         "No general skill significantly below the base after correction; explaining code 68.3 % (same as the base)",
         "Laptop CPU: 95 of 164 bugs fixed, 15.2 s per problem, 2.2 GB RAM, 478 J per fixed bug",

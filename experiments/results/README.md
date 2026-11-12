@@ -40,9 +40,9 @@ from scratch and whether they matched.
 | Folder | What it is |
 |---|---|
 | `v3_bugs` | the 3,271 realistic bugs written by the teacher model |
-| `finetune_qwen25_3b_qlora_mixv2` … `_mixv3b_diag`, `_mixv3s` | runs A, B, C, D and **E (the default)** |
+| `finetune_qwen25_3b_qlora_mixv2` … `_mixv3b_diag`, `_mixv3s` | runs A, B, C, D and E (the default until 12 November) |
 | `finetune_qwen25_3b_qlora_mixv3f` | run F: the fix asked before the diagnosis (96 against 59 of 164 in the repair format) |
-| `finetune_qwen25_3b_qlora_mixv3r` | run G: 1,441 real bugs added; 106 of 382 real bugs fixed against 54 for the base and 56 for run E |
+| `finetune_qwen25_3b_qlora_mixv3r` | **run G (the default)**: 1,441 real bugs added; 106 of 382 real bugs fixed against 54 for the base and 56 for run E |
 | `multiple_comparisons` | **every base vs fine-tuned comparison**, with the correction for many tests |
 | `capability_study` | why fine-tuning costs some code writing, in four steps |
 | `epoch1_t4`, `keepdoc_t4`, `plan_t4` | three attempts to win the code writing back |
@@ -66,6 +66,8 @@ Protocol: `docs/preregistration-repair.md`.
 | `ladder_laptop` | 16, 8 and 4 bits: memory, speed, quality, energy (1.5B) |
 | `laptop_3b_check` | can the 3B run on the laptop at all |
 | `laptop_3b_energy`, `laptop_3b_energy_runD`, `laptop_3b_energy_runE` | energy per fixed bug, runs C, D and E |
+| `laptop_3b_energy_runG` | **run G (the default) at 4 and 5 bits**: 93 and 102 of 164 fixed, 17.6 and 30.8 s per problem |
+| `laptop_3b_energy_runE_q5` | run E at 5 bits, answers only (102 of 164) |
 | `speculative_laptop`, `speculative_3b_laptop` | guessing ahead (speculative decoding) |
 
 ## 6_gpu_serving: on a GPU, for comparison

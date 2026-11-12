@@ -1,0 +1,2 @@
+qwen2.5-coder-3b-ft-qlora-mixv3r q4_k_m ngram-simple peak_rss_kb 2225388
+qwen2.5-coder-3b-ft-qlora-mixv3r q5_k_m ngram-simple peak_rss_kb 2508964

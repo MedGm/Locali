@@ -1,0 +1,82 @@
+{
+  "config": {
+    "benchmark": "humanevalexplain",
+    "model_id": "qwen2.5-coder-3b-ft-qlora-mixv3r",
+    "runtime": "vllm",
+    "max_tokens": 768,
+    "model_revision": null,
+    "quantization": null,
+    "base_url": "http://127.0.0.1:8000/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "bigcode/humanevalpack",
+    "dataset_revision": "9a41762f73a8cb23bb5811b73d5aab164efcf378",
+    "notes": "kaggle T4, vLLM 0.29",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-11-12T22:40:25+00:00",
+    "git_commit": "",
+    "git_dirty": false,
+    "host": "83aeed01d41d",
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 164,
+    "status_counts": {
+      "passed": 116,
+      "failed": 46,
+      "timeout": 2
+    },
+    "truncated": 1,
+    "mean_input_tokens": 243.811,
+    "mean_output_tokens": 201.4146,
+    "mean_ttft_s": 2.6061,
+    "median_ttft_s": 0.3471,
+    "mean_total_s": 24.3194,
+    "mean_decode_tok_per_s": 9.28,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "pass@1": 0.7073,
+    "explanations_with_copied_code": 0,
+    "mean_explanation_chars": 295.3
+  },
+  "excluded": {},
+  "this_session": {
+    "generated": 164,
+    "resumed": 0,
+    "wall_s": 281.2
+  },
+  "rescored": {
+    "at": "2026-11-12T22:47:26+00:00",
+    "harness_commit": "cfc6b299c50680a37737981bc9ad4a0be1da9293",
+    "previous_metrics": {
+      "n": 164,
+      "status_counts": {
+        "unscored": 164
+      },
+      "truncated": 1,
+      "mean_input_tokens": 243.811,
+      "mean_output_tokens": 201.4146,
+      "mean_ttft_s": 2.6061,
+      "median_ttft_s": 0.3471,
+      "mean_total_s": 24.3194,
+      "mean_decode_tok_per_s": 9.28,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
+  }
+}

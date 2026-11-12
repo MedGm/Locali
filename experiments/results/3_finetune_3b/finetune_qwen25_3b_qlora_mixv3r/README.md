@@ -52,8 +52,12 @@ Not registered: completion 107 → 101 (8 only E, 2 only G, p = 0.11), CRUXEval-
 (p = 0.87), test generation with every test valid 131 → 124 (p = 0.23), HumanEvalFix in the
 repair format 59 → 54 (p = 0.41) and 106 with the code asked first. Unpaired: bug detection
 66.5 → 67.4 %, vulnerability detection 54.5 → 55.2 %, refactoring behaviour preserved 87.7 → 90.2 %
-and improved 30.7 → 26.4 %, insecure code 17.4 → 20.7 %. Explaining code has not been run for G.
-The internal held-out sets are not scored here.
+and improved 30.7 → 26.4 %, insecure code 17.4 → 20.7 %. The internal held-out sets are not
+scored here.
+
+Explaining code (`explain/`, `training/kaggle/evaluate/explain` with the same two variables,
+commit cfc6b29): 116 of 164 (70.7 %) against 112 for run E (6 only E, 10 only G, p = 0.45)
+and 112 for the base (p = 0.54). Run E's point over run D is kept.
 
 ## What it shows
 
@@ -63,6 +67,7 @@ The internal held-out sets are not scored here.
   The data was the limit, not the recipe.
 - The planted-bug benchmarks do not see the difference: HumanEvalFix is the same for E and G.
 
-Run G is not the default yet: that needs the 4-bit file and the laptop measurement, as for run E.
+Run G is the default since 2026-11-12, as a 4-bit file; the laptop measurement of the 4-bit and
+5-bit files is in `../../5_laptop/laptop_3b_energy_runG`.
 
 Code and text written with AI help (Claude).

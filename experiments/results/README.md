@@ -41,6 +41,8 @@ from scratch and whether they matched.
 |---|---|
 | `v3_bugs` | the 3,271 realistic bugs written by the teacher model |
 | `finetune_qwen25_3b_qlora_mixv2` … `_mixv3b_diag`, `_mixv3s` | runs A, B, C, D and **E (the default)** |
+| `finetune_qwen25_3b_qlora_mixv3f` | run F: the fix asked before the diagnosis (96 against 59 of 164 in the repair format) |
+| `finetune_qwen25_3b_qlora_mixv3r` | run G: 1,441 real bugs added; 106 of 382 real bugs fixed against 54 for the base and 56 for run E |
 | `multiple_comparisons` | **every base vs fine-tuned comparison**, with the correction for many tests |
 | `capability_study` | why fine-tuning costs some code writing, in four steps |
 | `epoch1_t4`, `keepdoc_t4`, `plan_t4` | three attempts to win the code writing back |

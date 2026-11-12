@@ -1,0 +1,79 @@
+{
+  "config": {
+    "benchmark": "quixbugs",
+    "model_id": "qwen2.5-coder-3b-ft-qlora-mixv3r",
+    "runtime": "vllm",
+    "max_tokens": 1024,
+    "model_revision": null,
+    "quantization": null,
+    "base_url": "http://127.0.0.1:8000/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": "jkoppel/QuixBugs",
+    "dataset_revision": "4257f44b0ff1",
+    "notes": "kaggle T4, vLLM 0.29; pre-registered repair check",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-11-12T12:40:12+00:00",
+    "git_commit": "",
+    "git_dirty": false,
+    "host": "5ac15cc15aa4",
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 40,
+    "status_counts": {
+      "passed": 29,
+      "failed": 11
+    },
+    "truncated": 0,
+    "mean_input_tokens": 357.75,
+    "mean_output_tokens": 198.925,
+    "mean_ttft_s": 1.2864,
+    "median_ttft_s": 0.7087,
+    "mean_total_s": 24.5715,
+    "mean_decode_tok_per_s": 8.56,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null,
+    "pass@1": 0.725
+  },
+  "excluded": {},
+  "this_session": {
+    "generated": 40,
+    "resumed": 0,
+    "wall_s": 79.7
+  },
+  "rescored": {
+    "at": "2026-11-12T12:45:53+00:00",
+    "harness_commit": "b6f3ccb6fe9e3ad3e3d777ffd923a55fa5b3cd5d",
+    "previous_metrics": {
+      "n": 40,
+      "status_counts": {
+        "unscored": 40
+      },
+      "truncated": 0,
+      "mean_input_tokens": 357.75,
+      "mean_output_tokens": 198.925,
+      "mean_ttft_s": 1.2864,
+      "median_ttft_s": 0.7087,
+      "mean_total_s": 24.5715,
+      "mean_decode_tok_per_s": 8.56,
+      "total_energy_j": null,
+      "mean_energy_j_per_task": null
+    }
+  }
+}

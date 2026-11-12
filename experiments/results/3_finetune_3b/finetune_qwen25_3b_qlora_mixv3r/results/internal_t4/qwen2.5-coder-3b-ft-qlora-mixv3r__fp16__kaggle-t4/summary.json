@@ -1,0 +1,68 @@
+{
+  "config": {
+    "benchmark": "internal_t4",
+    "model_id": "qwen2.5-coder-3b-ft-qlora-mixv3r",
+    "runtime": "vLLM T4x1 eager + LoRA adapter",
+    "max_tokens": 768,
+    "model_revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5",
+    "quantization": "fp16",
+    "base_url": "http://127.0.0.1:8000/v1",
+    "thinking": false,
+    "temperature": 0.0,
+    "seed": 3407,
+    "limit": null,
+    "workers": 16,
+    "eval_timeout_s": 60,
+    "prompt_variant": "evalplus-instruct",
+    "dataset": null,
+    "dataset_revision": null,
+    "notes": "fine-tuned (qlora, seed 3407) adapter at commit d9f08fe28964d09fee34638d37be4de66cae53fa",
+    "generate_only": true
+  },
+  "environment": {
+    "started_at": "2026-11-12T11:58:08+00:00",
+    "git_commit": "d9f08fe28964d09fee34638d37be4de66cae53fa",
+    "git_dirty": false,
+    "host": "a55711aafd41",
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "ram_gb": 31.3,
+    "gpus": [
+      "Tesla T4, 15360 MiB",
+      "Tesla T4, 15360 MiB"
+    ],
+    "rapl_energy_available": false
+  },
+  "metrics": {
+    "n": 96,
+    "status_counts": {
+      "unscored": 96
+    },
+    "truncated": 0,
+    "mean_input_tokens": 242.125,
+    "mean_output_tokens": 25.9271,
+    "mean_ttft_s": 0.8674,
+    "median_ttft_s": 0.5742,
+    "mean_total_s": 4.6062,
+    "mean_decode_tok_per_s": 7.19,
+    "total_energy_j": null,
+    "mean_energy_j_per_task": null
+  },
+  "excluded": {},
+  "this_session": {
+    "generated": 96,
+    "resumed": 0,
+    "wall_s": 29.2
+  },
+  "gpu_energy": {
+    "gpus": [
+      1
+    ],
+    "window_s": 29.5,
+    "total_j": 1854.5,
+    "j_per_task": 19.32,
+    "peak_memory_mib_per_gpu": 13603.0,
+    "method": "trapezoidal integral of nvidia-smi power.draw at 1 s, whole board"
+  }
+}

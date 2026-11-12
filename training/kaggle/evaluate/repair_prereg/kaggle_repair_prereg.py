@@ -82,7 +82,12 @@ def setup() -> None:
 
 
 def adapter_paths() -> dict[str, Path]:
-    found = {p.parent.name: p.parent for p in Path("/kaggle/input").rglob("adapter_config.json")}
+    folders = [p.parent for p in Path("/kaggle/input").rglob("adapter_config.json")]
+    found = {p.name: p for p in folders}
+    for name in ADAPTERS:  # a dataset that holds one adapter at its root: the name is in the dataset's name
+        own = [p for p in folders if any(part.endswith(f"-{name}") for part in p.parts)]
+        if name not in found and own:
+            found[name] = own[0]
     missing = set(ADAPTERS) - set(found)
     assert not missing, f"adapters not found: {missing}; have {sorted(found)}"
     return {name: found[name] for name in ADAPTERS}

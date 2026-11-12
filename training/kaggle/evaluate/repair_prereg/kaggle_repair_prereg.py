@@ -9,6 +9,9 @@ and the 1.5B base on GPU 1. This job only generates; scoring is in the local Doc
 PILOT=1: only the three format-check programs from before 2023
 (experiments/results/4_final_checks/condefects/format_check.jsonl), to check that prompts are well formed and
 answers can be extracted. Those answers are not scored.
+
+ADAPTERS=mixv3r ONLY=qwen2.5-coder-3b-ft-qlora-mixv3r: another adapter folder from the attached
+datasets, and only the listed models (run G, docs/preregistration-runs-fg.md).
 """
 
 import json
@@ -33,7 +36,7 @@ MAX_TOKENS = 1024
 BENCHMARKS = {"condefects": "experiments/results/4_final_checks/condefects/format_check.jsonl" if os.environ.get("PILOT") == "1"
               else "experiments/results/4_final_checks/condefects/items.jsonl",
               "quixbugs": None if os.environ.get("PILOT") == "1" else "experiments/results/4_final_checks/quixbugs/items.jsonl"}
-ADAPTERS = ("mixv3b", "mixv3b-diag", "mixv3s")
+ADAPTERS = tuple(os.environ.get("ADAPTERS", "mixv3b,mixv3b-diag,mixv3s").split(","))
 SERVERS = {  # name: (repo, revision, gpu, port, memory share)
     "3b": ("Qwen/Qwen2.5-Coder-3B-Instruct", "488639f1ff808d1d3d0ba301aef8c11461451ec5", 0, 8000, 0.90),
     "1.5b-ft": ("MedGm/Llama-Locali-Qwen2.5-Coder-1.5B", "a1b0b1189d2050dd20013371fc327362ea6b2964", 1, 8001, 0.90),
@@ -41,12 +44,12 @@ SERVERS = {  # name: (repo, revision, gpu, port, memory share)
 }
 MODELS = {  # model id: (server, served name)
     "qwen2.5-coder-3b": ("3b", "local"),
-    "qwen2.5-coder-3b-ft-qlora-mixv3b": ("3b", "mixv3b"),
-    "qwen2.5-coder-3b-ft-qlora-mixv3b-diag": ("3b", "mixv3b-diag"),
-    "qwen2.5-coder-3b-ft-qlora-mixv3s": ("3b", "mixv3s"),
+    **{f"qwen2.5-coder-3b-ft-qlora-{name}": ("3b", name) for name in ADAPTERS},
     "qwen2.5-coder-1.5b-ft-qlora-v2": ("1.5b-ft", "local"),
     "qwen2.5-coder-1.5b": ("1.5b", "local"),
 }
+if os.environ.get("ONLY"):
+    MODELS = {m: MODELS[m] for m in os.environ["ONLY"].split(",")}
 
 
 def log(msg: str) -> None:
@@ -91,7 +94,7 @@ def start(name: str, adapters: dict[str, Path]) -> subprocess.Popen:
            "--port", str(port), "--dtype", "half", "--max-model-len", "16384", "--gpu-memory-utilization", str(share),
            "--enforce-eager", "--seed", "3407"]
     if name == "3b" and adapters:
-        cmd += ["--enable-lora", "--max-lora-rank", "16", "--max-loras", "3",
+        cmd += ["--enable-lora", "--max-lora-rank", "16", "--max-loras", str(len(adapters)),
                 "--lora-modules", *(f"{n}={p}" for n, p in adapters.items())]
     fh = open(LOGS / f"vllm-{name}.log", "w")  # noqa: SIM115 - stays open while the server runs
     return subprocess.Popen(cmd, stdout=fh, stderr=subprocess.STDOUT, env={**os.environ, "CUDA_VISIBLE_DEVICES": str(gpu)})
@@ -156,14 +159,14 @@ def run_gpu(gpu: int, adapters: dict[str, Path]) -> None:
     """The servers of one GPU one after the other: two vLLM engines starting together on one T4
     both failed to find memory for their cache."""
     for name, (*_, server_gpu, port, _share) in SERVERS.items():
-        if server_gpu != gpu:
+        models = [m for m, (srv, _) in MODELS.items() if srv == name]
+        if server_gpu != gpu or not models:
             continue
         server = start(name, adapters)
         try:
             if not wait_healthy(port, server):
                 raise RuntimeError(f"server {name} failed to start, see logs/vllm-{name}.log")
             log(f"server {name} ready")
-            models = [m for m, (srv, _) in MODELS.items() if srv == name]
             with ThreadPoolExecutor(max_workers=len(models)) as pool:
                 list(pool.map(evaluate, models))
         finally:

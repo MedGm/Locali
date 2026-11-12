@@ -5,8 +5,9 @@
    then llama-quantize Q4_K_M
 Only the quantized file and the merge report are kept as outputs, to keep the download small.
 
-Environment: ADAPTER=mixv3 (folder name in the Kaggle dataset locali-adapters-3b); QUANT=Q5_K_M for
-another size (experiments/results/8_improve/quant: the 4-bit file loses repair fixes, the 5-bit one does not).
+Environment: ADAPTER=mixv3 (folder name in the Kaggle dataset locali-adapters-3b, or the end of the
+name of a dataset that holds one adapter); QUANT=Q5_K_M for another size, QUANT=Q4_K_M,Q5_K_M for both
+(experiments/results/8_improve/quant: the 4-bit file loses repair fixes, the 5-bit one does not).
 """
 
 import os
@@ -41,7 +42,8 @@ def main() -> None:
     if not CODE.exists():
         run(["git", "clone", "-q", REPO, str(CODE)])
     run(["git", "-C", str(CODE), "checkout", "-q", COMMIT])
-    adapter = next(p.parent for p in Path("/kaggle/input").rglob("adapter_config.json") if p.parent.name == ADAPTER)
+    adapter = next(p.parent for p in Path("/kaggle/input").rglob("adapter_config.json")
+                   if p.parent.name == ADAPTER or any(part.endswith(f"-{ADAPTER}") for part in p.parts))
     merged = TMP / "merged"
     run([sys.executable, "-m", "pip", "install", "-q", "peft"])
     # Kaggle's preinstalled torchao is too old for peft's import check; the merge does not use it
@@ -59,9 +61,10 @@ def main() -> None:
     run(["cmake", "-S", str(llama), "-B", str(llama / "build"), "-DGGML_CUDA=OFF", "-DLLAMA_CURL=OFF"],
         stdout=subprocess.DEVNULL)
     run(["cmake", "--build", str(llama / "build"), "--target", "llama-quantize", "-j", "4"], stdout=subprocess.DEVNULL)
-    out = WORK / f"{NAME}-{QUANT.lower()}.gguf"
-    run([str(llama / "build" / "bin" / "llama-quantize"), str(f16), str(out), QUANT])
-    log(f"done: {out} ({out.stat().st_size / 1e9:.2f} GB)")
+    for quant in QUANT.split(","):
+        out = WORK / f"{NAME}-{quant.lower()}.gguf"
+        run([str(llama / "build" / "bin" / "llama-quantize"), str(f16), str(out), quant])
+        log(f"done: {out} ({out.stat().st_size / 1e9:.2f} GB)")
 
 
 if __name__ == "__main__":

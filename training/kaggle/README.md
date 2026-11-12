@@ -20,6 +20,7 @@ The answers come back to the laptop, where they are scored in the sandbox; the r
 | `train` | `finetune` | the fine-tuning job (Unsloth, one T4), then every benchmark answer |
 | | `finetune-3b-v2` … `finetune-3b-v3s` | the same job for 3B runs A to E |
 | | `finetune-3b-v3f` | run F: run E's data with the fix before the diagnosis |
+| | `finetune-3b-v3r` | run G: run E's data plus real bugs from ConDefects contests before 2024-02 |
 | | `finetune-seed` | the 1.5B run again with another seed |
 | `deploy` | `gguf` | merge an adapter into its base and build the 4-bit GGUF for the laptop |
 | `evaluate` | `baselines` | every benchmark, base models |

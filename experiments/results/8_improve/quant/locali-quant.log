@@ -1,0 +1,655 @@
+[{"stream_name":"stderr","time":12.66761659,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":12.667670182,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":12.667674437,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":12.667677015,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":13.385558645,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":13.385611953,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":13.385618601000001,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":13.385623901,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":14.785831429,"data":"Writing /kaggle/working/kaggle_quant.py\n"}
+,{"stream_name":"stdout","time":14.888550283,"data":"[23:54:16] git clone -q https://github.com/MedGm/Locali.git /tmp/locali\n"}
+,{"stream_name":"stdout","time":20.335924713,"data":"[23:54:22] git -C /tmp/locali checkout -q f28df7d4b9e1ca28738f14b8c962351cb346af5e\n"}
+,{"stream_name":"stdout","time":21.166452217,"data":"[23:54:23] /usr/bin/python3 -m pip install -q peft datasets radon bandit\n"}
+,{"stream_name":"stdout","time":26.269001892,"data":"[23:54:28] /usr/bin/python3 -m pip uninstall -y -q torchao\n"}
+,{"stream_name":"stdout","time":27.47760311,"data":"[23:54:29] /usr/bin/python3 -m training.merge_adapter /kaggle/input/datasets/elgorrimmohamed/locali-adapters-3b/mixv3s /tmp/gguf/merged\n"}
+,{"stream_name":"stdout","time":77.116483229,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stdout","time":78.796114334,"data":"\n"}
+,{"stream_name":"stdout","time":112.646423498,"data":"Fetching 2 files:   0%|          | 0/2 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":112.647425911,"data":"Fetching 2 files:  50%|█████     | 1/2 [00:33\u003c00:33, 33.85s/it]\n"}
+,{"stream_name":"stdout","time":112.648404978,"data":"Fetching 2 files: 100%|██████████| 2/2 [00:33\u003c00:00, 16.92s/it]\n"}
+,{"stream_name":"stdout","time":113.021096725,"data":"\n"}
+,{"stream_name":"stdout","time":114.049414143,"data":"Loading weights:   0%|          | 0/434 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":114.157545358,"data":"Loading weights:   0%|          | 1/434 [00:01\u003c07:29,  1.04s/it]\n"}
+,{"stream_name":"stdout","time":114.623324651,"data":"Loading weights:  28%|██▊       | 123/434 [00:01\u003c00:02, 147.23it/s]\n"}
+,{"stream_name":"stdout","time":114.957166752,"data":"Loading weights:  44%|████▍     | 191/434 [00:01\u003c00:01, 146.43it/s]\n"}
+,{"stream_name":"stdout","time":115.180070472,"data":"Loading weights:  54%|█████▍    | 235/434 [00:01\u003c00:01, 141.89it/s]\n"}
+,{"stream_name":"stdout","time":115.384639199,"data":"Loading weights:  62%|██████▏   | 267/434 [00:02\u003c00:01, 142.25it/s]\n"}
+,{"stream_name":"stdout","time":115.537919355,"data":"Loading weights:  68%|██████▊   | 293/434 [00:02\u003c00:01, 139.35it/s]\n"}
+,{"stream_name":"stdout","time":115.657329477,"data":"Loading weights:  73%|███████▎  | 315/434 [00:02\u003c00:00, 139.87it/s]\n"}
+,{"stream_name":"stdout","time":115.788358716,"data":"Loading weights:  78%|███████▊  | 339/434 [00:02\u003c00:00, 150.98it/s]\n"}
+,{"stream_name":"stdout","time":115.967222563,"data":"Loading weights:  83%|████████▎ | 359/434 [00:02\u003c00:00, 150.76it/s]\n"}
+,{"stream_name":"stdout","time":116.132017966,"data":"Loading weights:  87%|████████▋ | 377/434 [00:02\u003c00:00, 136.16it/s]\n"}
+,{"stream_name":"stdout","time":116.283811448,"data":"Loading weights:  92%|█████████▏| 399/434 [00:03\u003c00:00, 136.25it/s]\n"}
+,{"stream_name":"stdout","time":116.297683688,"data":"Loading weights:  97%|█████████▋| 423/434 [00:03\u003c00:00, 140.71it/s]\n"}
+,{"stream_name":"stdout","time":116.299463074,"data":"Loading weights: 100%|██████████| 434/434 [00:03\u003c00:00, 131.98it/s]\n"}
+,{"stream_name":"stdout","time":176.211191994,"data":"{\n"}
+,{"stream_name":"stdout","time":176.212234392,"data":"  \"base\": \"Qwen/Qwen2.5-Coder-3B-Instruct\",\n"}
+,{"stream_name":"stdout","time":176.213188037,"data":"  \"revision\": \"488639f1ff808d1d3d0ba301aef8c11461451ec5\",\n"}
+,{"stream_name":"stdout","time":176.214168813,"data":"  \"adapter\": \"/kaggle/input/datasets/elgorrimmohamed/locali-adapters-3b/mixv3s\",\n"}
+,{"stream_name":"stdout","time":176.215230488,"data":"  \"max_abs_logit_diff_adapter_vs_bare_base\": 11.979187965393066,\n"}
+,{"stream_name":"stdout","time":176.215957652,"data":"  \"max_abs_logit_diff_merged_vs_unmerged_fp32\": 4.673004150390625e-05,\n"}
+,{"stream_name":"stdout","time":176.216664406,"data":"  \"fp16_top1_agreement_with_fp32\": [\n"}
+,{"stream_name":"stdout","time":176.217445032,"data":"    1.0,\n"}
+,{"stream_name":"stdout","time":176.218185547,"data":"    1.0,\n"}
+,{"stream_name":"stdout","time":176.21892322,"data":"    1.0\n"}
+,{"stream_name":"stdout","time":176.219643946,"data":"  ]\n"}
+,{"stream_name":"stdout","time":176.220448391,"data":"}\n"}
+,{"stream_name":"stdout","time":176.221142441,"data":"\n"}
+,{"stream_name":"stdout","time":188.727073238,"data":"Writing model shards:   0%|          | 0/1 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":188.727777754,"data":"Writing model shards: 100%|██████████| 1/1 [00:12\u003c00:00, 12.52s/it]\n"}
+,{"stream_name":"stdout","time":188.728574071,"data":"Writing model shards: 100%|██████████| 1/1 [00:12\u003c00:00, 12.52s/it]\n"}
+,{"stream_name":"stdout","time":206.178038147,"data":"[23:57:28] git clone -q https://github.com/ggml-org/llama.cpp.git /tmp/gguf/llama.cpp\n"}
+,{"stream_name":"stdout","time":242.787573977,"data":"[23:58:04] git -C /tmp/gguf/llama.cpp checkout -q 987498f\n"}
+,{"stream_name":"stdout","time":243.658446983,"data":"[23:58:05] /usr/bin/python3 -m pip install -q gguf sentencepiece\n"}
+,{"stream_name":"stdout","time":245.89616088,"data":"[23:58:07] /usr/bin/python3 /tmp/gguf/llama.cpp/convert_hf_to_gguf.py /tmp/gguf/merged --outtype f16 --outfile /tmp/gguf/qwen2.5-coder-3b-locali-mixv3s-f16.gguf\n"}
+,{"stream_name":"stdout","time":253.90347806,"data":"INFO:hf-to-gguf:Loading model: merged\n"}
+,{"stream_name":"stdout","time":257.016059754,"data":"INFO:numexpr.utils:NumExpr defaulting to 4 threads.\n"}
+,{"stream_name":"stdout","time":257.9298756,"data":"INFO:hf-to-gguf:Model architecture: Qwen2ForCausalLM\n"}
+,{"stream_name":"stdout","time":257.942685782,"data":"INFO:hf-to-gguf:gguf: indexing model part 'model.safetensors'\n"}
+,{"stream_name":"stdout","time":257.945138086,"data":"INFO:gguf.gguf_writer:gguf: This GGUF file is for Little Endian only\n"}
+,{"stream_name":"stdout","time":257.95783534,"data":"INFO:hf-to-gguf:Exporting model...\n"}
+,{"stream_name":"stdout","time":257.960716799,"data":"INFO:hf-to-gguf:token_embd.weight,         torch.float16 --\u003e F16, shape = {2048, 151936}\n"}
+,{"stream_name":"stdout","time":257.960907111,"data":"INFO:hf-to-gguf:blk.0.attn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":257.961877958,"data":"INFO:hf-to-gguf:blk.0.ffn_down.weight,     torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":257.962784189,"data":"INFO:hf-to-gguf:blk.0.ffn_gate.weight,     torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":257.963695828,"data":"INFO:hf-to-gguf:blk.0.ffn_up.weight,       torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":257.964649304,"data":"INFO:hf-to-gguf:blk.0.ffn_norm.weight,     torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":257.965567761,"data":"INFO:hf-to-gguf:blk.0.attn_k.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":257.966534935,"data":"INFO:hf-to-gguf:blk.0.attn_k.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":257.967443821,"data":"INFO:hf-to-gguf:blk.0.attn_output.weight,  torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":257.968425483,"data":"INFO:hf-to-gguf:blk.0.attn_q.bias,         torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":257.969422859,"data":"INFO:hf-to-gguf:blk.0.attn_q.weight,       torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":257.970301523,"data":"INFO:hf-to-gguf:blk.0.attn_v.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":257.971280011,"data":"INFO:hf-to-gguf:blk.0.attn_v.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":257.972226256,"data":"INFO:hf-to-gguf:blk.1.attn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":257.973097103,"data":"INFO:hf-to-gguf:blk.1.ffn_down.weight,     torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":257.974118431,"data":"INFO:hf-to-gguf:blk.1.ffn_gate.weight,     torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":257.974865407,"data":"INFO:hf-to-gguf:blk.1.ffn_up.weight,       torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":257.975876661,"data":"INFO:hf-to-gguf:blk.1.ffn_norm.weight,     torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":257.976675736,"data":"INFO:hf-to-gguf:blk.1.attn_k.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":257.977700806,"data":"INFO:hf-to-gguf:blk.1.attn_k.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":257.978494385,"data":"INFO:hf-to-gguf:blk.1.attn_output.weight,  torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":257.979406042,"data":"INFO:hf-to-gguf:blk.1.attn_q.bias,         torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":257.980307358,"data":"INFO:hf-to-gguf:blk.1.attn_q.weight,       torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":257.981211492,"data":"INFO:hf-to-gguf:blk.1.attn_v.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":257.982110855,"data":"INFO:hf-to-gguf:blk.1.attn_v.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":257.98299048,"data":"INFO:hf-to-gguf:blk.10.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":257.983913925,"data":"INFO:hf-to-gguf:blk.10.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":257.984810876,"data":"INFO:hf-to-gguf:blk.10.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":257.985926396,"data":"INFO:hf-to-gguf:blk.10.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":257.986682736,"data":"INFO:hf-to-gguf:blk.10.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":257.987640204,"data":"INFO:hf-to-gguf:blk.10.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":257.988480213,"data":"INFO:hf-to-gguf:blk.10.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":257.989363576,"data":"INFO:hf-to-gguf:blk.10.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":257.990254503,"data":"INFO:hf-to-gguf:blk.10.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":257.991195515,"data":"INFO:hf-to-gguf:blk.10.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":257.992213942,"data":"INFO:hf-to-gguf:blk.10.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":257.993287839,"data":"INFO:hf-to-gguf:blk.10.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":257.994119949,"data":"INFO:hf-to-gguf:blk.11.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":257.995224906,"data":"INFO:hf-to-gguf:blk.11.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":257.996237116,"data":"INFO:hf-to-gguf:blk.11.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":257.997220555,"data":"INFO:hf-to-gguf:blk.11.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":257.998249886,"data":"INFO:hf-to-gguf:blk.11.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":257.999144524,"data":"INFO:hf-to-gguf:blk.11.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":257.999938764,"data":"INFO:hf-to-gguf:blk.11.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.000795313,"data":"INFO:hf-to-gguf:blk.11.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.001754801,"data":"INFO:hf-to-gguf:blk.11.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.002621027,"data":"INFO:hf-to-gguf:blk.11.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.003618016,"data":"INFO:hf-to-gguf:blk.11.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.00447283,"data":"INFO:hf-to-gguf:blk.11.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.005480423,"data":"INFO:hf-to-gguf:blk.12.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.006402902,"data":"INFO:hf-to-gguf:blk.12.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.007368737,"data":"INFO:hf-to-gguf:blk.12.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.008228117,"data":"INFO:hf-to-gguf:blk.12.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.00920479,"data":"INFO:hf-to-gguf:blk.12.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.009994741,"data":"INFO:hf-to-gguf:blk.12.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.01092182,"data":"INFO:hf-to-gguf:blk.12.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.011824317,"data":"INFO:hf-to-gguf:blk.12.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.012804373,"data":"INFO:hf-to-gguf:blk.12.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.013686717,"data":"INFO:hf-to-gguf:blk.12.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.014625569,"data":"INFO:hf-to-gguf:blk.12.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.015629557,"data":"INFO:hf-to-gguf:blk.12.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.016467641,"data":"INFO:hf-to-gguf:blk.13.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.01744047,"data":"INFO:hf-to-gguf:blk.13.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.018318413,"data":"INFO:hf-to-gguf:blk.13.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.019282259,"data":"INFO:hf-to-gguf:blk.13.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.020104101,"data":"INFO:hf-to-gguf:blk.13.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.021089352,"data":"INFO:hf-to-gguf:blk.13.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.02193914,"data":"INFO:hf-to-gguf:blk.13.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.022941833,"data":"INFO:hf-to-gguf:blk.13.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.023880345,"data":"INFO:hf-to-gguf:blk.13.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.024849637,"data":"INFO:hf-to-gguf:blk.13.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.025914824,"data":"INFO:hf-to-gguf:blk.13.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.026852676,"data":"INFO:hf-to-gguf:blk.13.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.027818137,"data":"INFO:hf-to-gguf:blk.14.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.02871225,"data":"INFO:hf-to-gguf:blk.14.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.029717525,"data":"INFO:hf-to-gguf:blk.14.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.030733752,"data":"INFO:hf-to-gguf:blk.14.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.031820808,"data":"INFO:hf-to-gguf:blk.14.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.032887242,"data":"INFO:hf-to-gguf:blk.14.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.033871875,"data":"INFO:hf-to-gguf:blk.14.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.03489642,"data":"INFO:hf-to-gguf:blk.14.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.03579088,"data":"INFO:hf-to-gguf:blk.14.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.036788414,"data":"INFO:hf-to-gguf:blk.14.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.03774178,"data":"INFO:hf-to-gguf:blk.14.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.038731554,"data":"INFO:hf-to-gguf:blk.14.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.039714945,"data":"INFO:hf-to-gguf:blk.15.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.040572552,"data":"INFO:hf-to-gguf:blk.15.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.041541427,"data":"INFO:hf-to-gguf:blk.15.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.042390314,"data":"INFO:hf-to-gguf:blk.15.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.043494128,"data":"INFO:hf-to-gguf:blk.15.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.044635483,"data":"INFO:hf-to-gguf:blk.15.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.045561824,"data":"INFO:hf-to-gguf:blk.15.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.04659636,"data":"INFO:hf-to-gguf:blk.15.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.047552926,"data":"INFO:hf-to-gguf:blk.15.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.048487275,"data":"INFO:hf-to-gguf:blk.15.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.049417415,"data":"INFO:hf-to-gguf:blk.15.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.050467904,"data":"INFO:hf-to-gguf:blk.15.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.051313837,"data":"INFO:hf-to-gguf:blk.16.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.052321845,"data":"INFO:hf-to-gguf:blk.16.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.053186814,"data":"INFO:hf-to-gguf:blk.16.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.054243406,"data":"INFO:hf-to-gguf:blk.16.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.055120402,"data":"INFO:hf-to-gguf:blk.16.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.055971201,"data":"INFO:hf-to-gguf:blk.16.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.056863578,"data":"INFO:hf-to-gguf:blk.16.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.057725695,"data":"INFO:hf-to-gguf:blk.16.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.05879847,"data":"INFO:hf-to-gguf:blk.16.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.059591287,"data":"INFO:hf-to-gguf:blk.16.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.060606601,"data":"INFO:hf-to-gguf:blk.16.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.061604279,"data":"INFO:hf-to-gguf:blk.16.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.062415698,"data":"INFO:hf-to-gguf:blk.17.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.063433342,"data":"INFO:hf-to-gguf:blk.17.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.06421682,"data":"INFO:hf-to-gguf:blk.17.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.065243969,"data":"INFO:hf-to-gguf:blk.17.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.066007238,"data":"INFO:hf-to-gguf:blk.17.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.067176099,"data":"INFO:hf-to-gguf:blk.17.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.067925486,"data":"INFO:hf-to-gguf:blk.17.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.068781684,"data":"INFO:hf-to-gguf:blk.17.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.069759727,"data":"INFO:hf-to-gguf:blk.17.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.070677484,"data":"INFO:hf-to-gguf:blk.17.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.071912703,"data":"INFO:hf-to-gguf:blk.17.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.073124971,"data":"INFO:hf-to-gguf:blk.17.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.074512203,"data":"INFO:hf-to-gguf:blk.18.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.075720714,"data":"INFO:hf-to-gguf:blk.18.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.07710016,"data":"INFO:hf-to-gguf:blk.18.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.07822047,"data":"INFO:hf-to-gguf:blk.18.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.079300227,"data":"INFO:hf-to-gguf:blk.18.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.080247675,"data":"INFO:hf-to-gguf:blk.18.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.081281474,"data":"INFO:hf-to-gguf:blk.18.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.082184719,"data":"INFO:hf-to-gguf:blk.18.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.083199404,"data":"INFO:hf-to-gguf:blk.18.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.084200589,"data":"INFO:hf-to-gguf:blk.18.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.085242958,"data":"INFO:hf-to-gguf:blk.18.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.086233673,"data":"INFO:hf-to-gguf:blk.18.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.087215422,"data":"INFO:hf-to-gguf:blk.19.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.088105305,"data":"INFO:hf-to-gguf:blk.19.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.089120227,"data":"INFO:hf-to-gguf:blk.19.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.090106791,"data":"INFO:hf-to-gguf:blk.19.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.090982409,"data":"INFO:hf-to-gguf:blk.19.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.091892972,"data":"INFO:hf-to-gguf:blk.19.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.092916776,"data":"INFO:hf-to-gguf:blk.19.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.093964458,"data":"INFO:hf-to-gguf:blk.19.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.09481122,"data":"INFO:hf-to-gguf:blk.19.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.095884671,"data":"INFO:hf-to-gguf:blk.19.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.09683507,"data":"INFO:hf-to-gguf:blk.19.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.097855517,"data":"INFO:hf-to-gguf:blk.19.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.098827452,"data":"INFO:hf-to-gguf:blk.2.attn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.099806046,"data":"INFO:hf-to-gguf:blk.2.ffn_down.weight,     torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.100781125,"data":"INFO:hf-to-gguf:blk.2.ffn_gate.weight,     torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.101874267,"data":"INFO:hf-to-gguf:blk.2.ffn_up.weight,       torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.102912385,"data":"INFO:hf-to-gguf:blk.2.ffn_norm.weight,     torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.103907351,"data":"INFO:hf-to-gguf:blk.2.attn_k.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.104900848,"data":"INFO:hf-to-gguf:blk.2.attn_k.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.105897919,"data":"INFO:hf-to-gguf:blk.2.attn_output.weight,  torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.107208029,"data":"INFO:hf-to-gguf:blk.2.attn_q.bias,         torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.107807617,"data":"INFO:hf-to-gguf:blk.2.attn_q.weight,       torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.108726931,"data":"INFO:hf-to-gguf:blk.2.attn_v.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.109719377,"data":"INFO:hf-to-gguf:blk.2.attn_v.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.110620922,"data":"INFO:hf-to-gguf:blk.20.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.111603819,"data":"INFO:hf-to-gguf:blk.20.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.112714209,"data":"INFO:hf-to-gguf:blk.20.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.113738147,"data":"INFO:hf-to-gguf:blk.20.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.11452726,"data":"INFO:hf-to-gguf:blk.20.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.115450727,"data":"INFO:hf-to-gguf:blk.20.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.116321005,"data":"INFO:hf-to-gguf:blk.20.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.117185704,"data":"INFO:hf-to-gguf:blk.20.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.1180989,"data":"INFO:hf-to-gguf:blk.20.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.118921576,"data":"INFO:hf-to-gguf:blk.20.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.119785577,"data":"INFO:hf-to-gguf:blk.20.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.120700117,"data":"INFO:hf-to-gguf:blk.20.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.121561601,"data":"INFO:hf-to-gguf:blk.21.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.122478164,"data":"INFO:hf-to-gguf:blk.21.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.123466464,"data":"INFO:hf-to-gguf:blk.21.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.124226103,"data":"INFO:hf-to-gguf:blk.21.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.125147945,"data":"INFO:hf-to-gguf:blk.21.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.126023375,"data":"INFO:hf-to-gguf:blk.21.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.126857579,"data":"INFO:hf-to-gguf:blk.21.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.127775637,"data":"INFO:hf-to-gguf:blk.21.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.12859974,"data":"INFO:hf-to-gguf:blk.21.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.12952855,"data":"INFO:hf-to-gguf:blk.21.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.130371402,"data":"INFO:hf-to-gguf:blk.21.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.131274991,"data":"INFO:hf-to-gguf:blk.21.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.132082748,"data":"INFO:hf-to-gguf:blk.22.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.133081163,"data":"INFO:hf-to-gguf:blk.22.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.133864047,"data":"INFO:hf-to-gguf:blk.22.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.13480613,"data":"INFO:hf-to-gguf:blk.22.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.135704205,"data":"INFO:hf-to-gguf:blk.22.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.136502555,"data":"INFO:hf-to-gguf:blk.22.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.13747315,"data":"INFO:hf-to-gguf:blk.22.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.138252837,"data":"INFO:hf-to-gguf:blk.22.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.139166061,"data":"INFO:hf-to-gguf:blk.22.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.139955954,"data":"INFO:hf-to-gguf:blk.22.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.140899713,"data":"INFO:hf-to-gguf:blk.22.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.141691096,"data":"INFO:hf-to-gguf:blk.22.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.142703125,"data":"INFO:hf-to-gguf:blk.23.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.143470176,"data":"INFO:hf-to-gguf:blk.23.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.144410777,"data":"INFO:hf-to-gguf:blk.23.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.145440987,"data":"INFO:hf-to-gguf:blk.23.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.146268421,"data":"INFO:hf-to-gguf:blk.23.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.147241054,"data":"INFO:hf-to-gguf:blk.23.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.147994575,"data":"INFO:hf-to-gguf:blk.23.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.148928118,"data":"INFO:hf-to-gguf:blk.23.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.149739225,"data":"INFO:hf-to-gguf:blk.23.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.150627098,"data":"INFO:hf-to-gguf:blk.23.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.151462252,"data":"INFO:hf-to-gguf:blk.23.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.152431122,"data":"INFO:hf-to-gguf:blk.23.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.15319355,"data":"INFO:hf-to-gguf:blk.24.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.154070203,"data":"INFO:hf-to-gguf:blk.24.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.154936139,"data":"INFO:hf-to-gguf:blk.24.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.155813336,"data":"INFO:hf-to-gguf:blk.24.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.156722155,"data":"INFO:hf-to-gguf:blk.24.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.157555286,"data":"INFO:hf-to-gguf:blk.24.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.158491009,"data":"INFO:hf-to-gguf:blk.24.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.159303889,"data":"INFO:hf-to-gguf:blk.24.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.160276889,"data":"INFO:hf-to-gguf:blk.24.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.161374261,"data":"INFO:hf-to-gguf:blk.24.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.161915884,"data":"INFO:hf-to-gguf:blk.24.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.162819714,"data":"INFO:hf-to-gguf:blk.24.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.163736534,"data":"INFO:hf-to-gguf:blk.25.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.164564813,"data":"INFO:hf-to-gguf:blk.25.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.165437787,"data":"INFO:hf-to-gguf:blk.25.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.166330895,"data":"INFO:hf-to-gguf:blk.25.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.167229797,"data":"INFO:hf-to-gguf:blk.25.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.168034038,"data":"INFO:hf-to-gguf:blk.25.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.168944231,"data":"INFO:hf-to-gguf:blk.25.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.169843773,"data":"INFO:hf-to-gguf:blk.25.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.170823835,"data":"INFO:hf-to-gguf:blk.25.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.171626537,"data":"INFO:hf-to-gguf:blk.25.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.172559459,"data":"INFO:hf-to-gguf:blk.25.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.173409838,"data":"INFO:hf-to-gguf:blk.25.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.174396659,"data":"INFO:hf-to-gguf:blk.26.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.175168263,"data":"INFO:hf-to-gguf:blk.26.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.176142199,"data":"INFO:hf-to-gguf:blk.26.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.177148722,"data":"INFO:hf-to-gguf:blk.26.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.178299424,"data":"INFO:hf-to-gguf:blk.26.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.17941683,"data":"INFO:hf-to-gguf:blk.26.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.180533831,"data":"INFO:hf-to-gguf:blk.26.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.181624548,"data":"INFO:hf-to-gguf:blk.26.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.182833242,"data":"INFO:hf-to-gguf:blk.26.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.183976247,"data":"INFO:hf-to-gguf:blk.26.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.185194558,"data":"INFO:hf-to-gguf:blk.26.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.186276729,"data":"INFO:hf-to-gguf:blk.26.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.187452505,"data":"INFO:hf-to-gguf:blk.27.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.188820536,"data":"INFO:hf-to-gguf:blk.27.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.190264546,"data":"INFO:hf-to-gguf:blk.27.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.19153081,"data":"INFO:hf-to-gguf:blk.27.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.192605781,"data":"INFO:hf-to-gguf:blk.27.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.1938705,"data":"INFO:hf-to-gguf:blk.27.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.195025358,"data":"INFO:hf-to-gguf:blk.27.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.196271143,"data":"INFO:hf-to-gguf:blk.27.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.197489654,"data":"INFO:hf-to-gguf:blk.27.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.19849184,"data":"INFO:hf-to-gguf:blk.27.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.199492142,"data":"INFO:hf-to-gguf:blk.27.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.200497994,"data":"INFO:hf-to-gguf:blk.27.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.201415878,"data":"INFO:hf-to-gguf:blk.28.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.20246515,"data":"INFO:hf-to-gguf:blk.28.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.203305429,"data":"INFO:hf-to-gguf:blk.28.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.204343444,"data":"INFO:hf-to-gguf:blk.28.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.205261051,"data":"INFO:hf-to-gguf:blk.28.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.206200927,"data":"INFO:hf-to-gguf:blk.28.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.207032648,"data":"INFO:hf-to-gguf:blk.28.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.20814683,"data":"INFO:hf-to-gguf:blk.28.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.208987726,"data":"INFO:hf-to-gguf:blk.28.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.210002332,"data":"INFO:hf-to-gguf:blk.28.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.210762981,"data":"INFO:hf-to-gguf:blk.28.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.211732362,"data":"INFO:hf-to-gguf:blk.28.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.212580854,"data":"INFO:hf-to-gguf:blk.29.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.213575025,"data":"INFO:hf-to-gguf:blk.29.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.214418852,"data":"INFO:hf-to-gguf:blk.29.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.215477885,"data":"INFO:hf-to-gguf:blk.29.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.216502464,"data":"INFO:hf-to-gguf:blk.29.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.217450072,"data":"INFO:hf-to-gguf:blk.29.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.218299995,"data":"INFO:hf-to-gguf:blk.29.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.21925951,"data":"INFO:hf-to-gguf:blk.29.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.220110675,"data":"INFO:hf-to-gguf:blk.29.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.22097939,"data":"INFO:hf-to-gguf:blk.29.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.221890545,"data":"INFO:hf-to-gguf:blk.29.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.222864857,"data":"INFO:hf-to-gguf:blk.29.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.223730124,"data":"INFO:hf-to-gguf:blk.3.attn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.224669804,"data":"INFO:hf-to-gguf:blk.3.ffn_down.weight,     torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.225659934,"data":"INFO:hf-to-gguf:blk.3.ffn_gate.weight,     torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.226476765,"data":"INFO:hf-to-gguf:blk.3.ffn_up.weight,       torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.227436597,"data":"INFO:hf-to-gguf:blk.3.ffn_norm.weight,     torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.228304099,"data":"INFO:hf-to-gguf:blk.3.attn_k.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.229295608,"data":"INFO:hf-to-gguf:blk.3.attn_k.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.230268008,"data":"INFO:hf-to-gguf:blk.3.attn_output.weight,  torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.231406151,"data":"INFO:hf-to-gguf:blk.3.attn_q.bias,         torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.232382583,"data":"INFO:hf-to-gguf:blk.3.attn_q.weight,       torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.233391421,"data":"INFO:hf-to-gguf:blk.3.attn_v.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.234272325,"data":"INFO:hf-to-gguf:blk.3.attn_v.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.235224543,"data":"INFO:hf-to-gguf:blk.30.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.236281316,"data":"INFO:hf-to-gguf:blk.30.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.236892314,"data":"INFO:hf-to-gguf:blk.30.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.23779823,"data":"INFO:hf-to-gguf:blk.30.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.238682118,"data":"INFO:hf-to-gguf:blk.30.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.239598922,"data":"INFO:hf-to-gguf:blk.30.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.240487879,"data":"INFO:hf-to-gguf:blk.30.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.241393381,"data":"INFO:hf-to-gguf:blk.30.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.242343384,"data":"INFO:hf-to-gguf:blk.30.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.243173799,"data":"INFO:hf-to-gguf:blk.30.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.244080344,"data":"INFO:hf-to-gguf:blk.30.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.245003944,"data":"INFO:hf-to-gguf:blk.30.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.245940874,"data":"INFO:hf-to-gguf:blk.31.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.24685419,"data":"INFO:hf-to-gguf:blk.31.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.247789647,"data":"INFO:hf-to-gguf:blk.31.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.248710236,"data":"INFO:hf-to-gguf:blk.31.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.24961484,"data":"INFO:hf-to-gguf:blk.31.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.250586524,"data":"INFO:hf-to-gguf:blk.31.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.251461771,"data":"INFO:hf-to-gguf:blk.31.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.252369109,"data":"INFO:hf-to-gguf:blk.31.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.253313513,"data":"INFO:hf-to-gguf:blk.31.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.254168737,"data":"INFO:hf-to-gguf:blk.31.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.255101431,"data":"INFO:hf-to-gguf:blk.31.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.255955005,"data":"INFO:hf-to-gguf:blk.31.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.257105013,"data":"INFO:hf-to-gguf:blk.32.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.258562979,"data":"INFO:hf-to-gguf:blk.32.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.25944651,"data":"INFO:hf-to-gguf:blk.32.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.260457376,"data":"INFO:hf-to-gguf:blk.32.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.261472542,"data":"INFO:hf-to-gguf:blk.32.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.262640395,"data":"INFO:hf-to-gguf:blk.32.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.263671043,"data":"INFO:hf-to-gguf:blk.32.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.264654957,"data":"INFO:hf-to-gguf:blk.32.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.265614842,"data":"INFO:hf-to-gguf:blk.32.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.266794867,"data":"INFO:hf-to-gguf:blk.32.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.267914373,"data":"INFO:hf-to-gguf:blk.32.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.268879443,"data":"INFO:hf-to-gguf:blk.32.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.269827861,"data":"INFO:hf-to-gguf:blk.33.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.270873634,"data":"INFO:hf-to-gguf:blk.33.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.271776449,"data":"INFO:hf-to-gguf:blk.33.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.272710339,"data":"INFO:hf-to-gguf:blk.33.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.273640707,"data":"INFO:hf-to-gguf:blk.33.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.274500082,"data":"INFO:hf-to-gguf:blk.33.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.275471753,"data":"INFO:hf-to-gguf:blk.33.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.276288758,"data":"INFO:hf-to-gguf:blk.33.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.277202967,"data":"INFO:hf-to-gguf:blk.33.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.278070488,"data":"INFO:hf-to-gguf:blk.33.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.278999175,"data":"INFO:hf-to-gguf:blk.33.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.279844752,"data":"INFO:hf-to-gguf:blk.33.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.280770609,"data":"INFO:hf-to-gguf:blk.34.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.281656765,"data":"INFO:hf-to-gguf:blk.34.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.282610068,"data":"INFO:hf-to-gguf:blk.34.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.283439126,"data":"INFO:hf-to-gguf:blk.34.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.284427087,"data":"INFO:hf-to-gguf:blk.34.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.285291412,"data":"INFO:hf-to-gguf:blk.34.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.286133863,"data":"INFO:hf-to-gguf:blk.34.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.287050573,"data":"INFO:hf-to-gguf:blk.34.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.28798775,"data":"INFO:hf-to-gguf:blk.34.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.288965875,"data":"INFO:hf-to-gguf:blk.34.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.289840866,"data":"INFO:hf-to-gguf:blk.34.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.290768705,"data":"INFO:hf-to-gguf:blk.34.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.291866917,"data":"INFO:hf-to-gguf:blk.35.attn_norm.weight,   torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.292902062,"data":"INFO:hf-to-gguf:blk.35.ffn_down.weight,    torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.293967356,"data":"INFO:hf-to-gguf:blk.35.ffn_gate.weight,    torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.294985751,"data":"INFO:hf-to-gguf:blk.35.ffn_up.weight,      torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.296026444,"data":"INFO:hf-to-gguf:blk.35.ffn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.297100763,"data":"INFO:hf-to-gguf:blk.35.attn_k.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.298124318,"data":"INFO:hf-to-gguf:blk.35.attn_k.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.299169204,"data":"INFO:hf-to-gguf:blk.35.attn_output.weight, torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.300270503,"data":"INFO:hf-to-gguf:blk.35.attn_q.bias,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.30111224,"data":"INFO:hf-to-gguf:blk.35.attn_q.weight,      torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.3020199,"data":"INFO:hf-to-gguf:blk.35.attn_v.bias,        torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.302941377,"data":"INFO:hf-to-gguf:blk.35.attn_v.weight,      torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.303914852,"data":"INFO:hf-to-gguf:blk.4.attn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.304854961,"data":"INFO:hf-to-gguf:blk.4.ffn_down.weight,     torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.305755895,"data":"INFO:hf-to-gguf:blk.4.ffn_gate.weight,     torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.306648943,"data":"INFO:hf-to-gguf:blk.4.ffn_up.weight,       torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.307568098,"data":"INFO:hf-to-gguf:blk.4.ffn_norm.weight,     torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.308521701,"data":"INFO:hf-to-gguf:blk.4.attn_k.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.309459318,"data":"INFO:hf-to-gguf:blk.4.attn_k.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.310407928,"data":"INFO:hf-to-gguf:blk.4.attn_output.weight,  torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.311322686,"data":"INFO:hf-to-gguf:blk.4.attn_q.bias,         torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.312251335,"data":"INFO:hf-to-gguf:blk.4.attn_q.weight,       torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.313194832,"data":"INFO:hf-to-gguf:blk.4.attn_v.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.314063192,"data":"INFO:hf-to-gguf:blk.4.attn_v.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.314948731,"data":"INFO:hf-to-gguf:blk.5.attn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.315936072,"data":"INFO:hf-to-gguf:blk.5.ffn_down.weight,     torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.316812454,"data":"INFO:hf-to-gguf:blk.5.ffn_gate.weight,     torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.317727723,"data":"INFO:hf-to-gguf:blk.5.ffn_up.weight,       torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.318645935,"data":"INFO:hf-to-gguf:blk.5.ffn_norm.weight,     torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.31961727,"data":"INFO:hf-to-gguf:blk.5.attn_k.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.320526202,"data":"INFO:hf-to-gguf:blk.5.attn_k.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.321428561,"data":"INFO:hf-to-gguf:blk.5.attn_output.weight,  torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.322317386,"data":"INFO:hf-to-gguf:blk.5.attn_q.bias,         torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.32320958,"data":"INFO:hf-to-gguf:blk.5.attn_q.weight,       torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.324080357,"data":"INFO:hf-to-gguf:blk.5.attn_v.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.325003915,"data":"INFO:hf-to-gguf:blk.5.attn_v.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.325902218,"data":"INFO:hf-to-gguf:blk.6.attn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.326820037,"data":"INFO:hf-to-gguf:blk.6.ffn_down.weight,     torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.327702778,"data":"INFO:hf-to-gguf:blk.6.ffn_gate.weight,     torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.328622735,"data":"INFO:hf-to-gguf:blk.6.ffn_up.weight,       torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.329597825,"data":"INFO:hf-to-gguf:blk.6.ffn_norm.weight,     torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.330501809,"data":"INFO:hf-to-gguf:blk.6.attn_k.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.331379257,"data":"INFO:hf-to-gguf:blk.6.attn_k.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.332295991,"data":"INFO:hf-to-gguf:blk.6.attn_output.weight,  torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.333179106,"data":"INFO:hf-to-gguf:blk.6.attn_q.bias,         torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.334085447,"data":"INFO:hf-to-gguf:blk.6.attn_q.weight,       torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.33496264,"data":"INFO:hf-to-gguf:blk.6.attn_v.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.3358675,"data":"INFO:hf-to-gguf:blk.6.attn_v.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.336769962,"data":"INFO:hf-to-gguf:blk.7.attn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.3376784,"data":"INFO:hf-to-gguf:blk.7.ffn_down.weight,     torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.338586264,"data":"INFO:hf-to-gguf:blk.7.ffn_gate.weight,     torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.339396537,"data":"INFO:hf-to-gguf:blk.7.ffn_up.weight,       torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.340111303,"data":"INFO:hf-to-gguf:blk.7.ffn_norm.weight,     torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.340798234,"data":"INFO:hf-to-gguf:blk.7.attn_k.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.341633369,"data":"INFO:hf-to-gguf:blk.7.attn_k.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.342385514,"data":"INFO:hf-to-gguf:blk.7.attn_output.weight,  torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.34312269,"data":"INFO:hf-to-gguf:blk.7.attn_q.bias,         torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.343825812,"data":"INFO:hf-to-gguf:blk.7.attn_q.weight,       torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.344704251,"data":"INFO:hf-to-gguf:blk.7.attn_v.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.345586432,"data":"INFO:hf-to-gguf:blk.7.attn_v.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.346418432,"data":"INFO:hf-to-gguf:blk.8.attn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.347083818,"data":"INFO:hf-to-gguf:blk.8.ffn_down.weight,     torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.347791055,"data":"INFO:hf-to-gguf:blk.8.ffn_gate.weight,     torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.348581554,"data":"INFO:hf-to-gguf:blk.8.ffn_up.weight,       torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.349367149,"data":"INFO:hf-to-gguf:blk.8.ffn_norm.weight,     torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.350060719,"data":"INFO:hf-to-gguf:blk.8.attn_k.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.35083137,"data":"INFO:hf-to-gguf:blk.8.attn_k.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.35162886,"data":"INFO:hf-to-gguf:blk.8.attn_output.weight,  torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.352376405,"data":"INFO:hf-to-gguf:blk.8.attn_q.bias,         torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.3531641,"data":"INFO:hf-to-gguf:blk.8.attn_q.weight,       torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.353918953,"data":"INFO:hf-to-gguf:blk.8.attn_v.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.354688956,"data":"INFO:hf-to-gguf:blk.8.attn_v.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.355498463,"data":"INFO:hf-to-gguf:blk.9.attn_norm.weight,    torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.356303684,"data":"INFO:hf-to-gguf:blk.9.ffn_down.weight,     torch.float16 --\u003e F16, shape = {11008, 2048}\n"}
+,{"stream_name":"stdout","time":258.357012994,"data":"INFO:hf-to-gguf:blk.9.ffn_gate.weight,     torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.357736162,"data":"INFO:hf-to-gguf:blk.9.ffn_up.weight,       torch.float16 --\u003e F16, shape = {2048, 11008}\n"}
+,{"stream_name":"stdout","time":258.358537385,"data":"INFO:hf-to-gguf:blk.9.ffn_norm.weight,     torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.359333756,"data":"INFO:hf-to-gguf:blk.9.attn_k.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.360045415,"data":"INFO:hf-to-gguf:blk.9.attn_k.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.360773951,"data":"INFO:hf-to-gguf:blk.9.attn_output.weight,  torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.361573992,"data":"INFO:hf-to-gguf:blk.9.attn_q.bias,         torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.36231286,"data":"INFO:hf-to-gguf:blk.9.attn_q.weight,       torch.float16 --\u003e F16, shape = {2048, 2048}\n"}
+,{"stream_name":"stdout","time":258.36307778,"data":"INFO:hf-to-gguf:blk.9.attn_v.bias,         torch.float16 --\u003e F32, shape = {256}\n"}
+,{"stream_name":"stdout","time":258.363780429,"data":"INFO:hf-to-gguf:blk.9.attn_v.weight,       torch.float16 --\u003e F16, shape = {2048, 256}\n"}
+,{"stream_name":"stdout","time":258.364531168,"data":"INFO:hf-to-gguf:output_norm.weight,        torch.float16 --\u003e F32, shape = {2048}\n"}
+,{"stream_name":"stdout","time":258.365356935,"data":"INFO:hf-to-gguf:Set meta model\n"}
+,{"stream_name":"stdout","time":258.366127965,"data":"INFO:hf-to-gguf:Set model parameters\n"}
+,{"stream_name":"stdout","time":258.366824212,"data":"INFO:hf-to-gguf:gguf: context length = 32768\n"}
+,{"stream_name":"stdout","time":258.367590382,"data":"INFO:hf-to-gguf:gguf: embedding length = 2048\n"}
+,{"stream_name":"stdout","time":258.368418983,"data":"INFO:hf-to-gguf:gguf: feed forward length = 11008\n"}
+,{"stream_name":"stdout","time":258.369117164,"data":"INFO:hf-to-gguf:gguf: head count = 16\n"}
+,{"stream_name":"stdout","time":258.369848535,"data":"INFO:hf-to-gguf:gguf: key-value head count = 2\n"}
+,{"stream_name":"stdout","time":258.370658175,"data":"WARNING:hf-to-gguf:Unknown RoPE type: default\n"}
+,{"stream_name":"stdout","time":258.371415377,"data":"INFO:hf-to-gguf:gguf: rope scaling type = NONE\n"}
+,{"stream_name":"stdout","time":258.37218329,"data":"INFO:hf-to-gguf:gguf: rope theta = 1000000.0\n"}
+,{"stream_name":"stdout","time":258.372960659,"data":"INFO:hf-to-gguf:gguf: rms norm epsilon = 1e-06\n"}
+,{"stream_name":"stdout","time":258.373639128,"data":"INFO:hf-to-gguf:gguf: file type = 1\n"}
+,{"stream_name":"stdout","time":258.374427111,"data":"INFO:hf-to-gguf:Set model quantization version\n"}
+,{"stream_name":"stdout","time":258.375208426,"data":"INFO:hf-to-gguf:Set model tokenizer\n"}
+,{"stream_name":"stdout","time":259.934205514,"data":"INFO:gguf.vocab:Adding 151387 merge(s).\n"}
+,{"stream_name":"stdout","time":259.934515118,"data":"INFO:gguf.vocab:Setting special token type eos to 151645\n"}
+,{"stream_name":"stdout","time":259.935577289,"data":"INFO:gguf.vocab:Setting special token type pad to 151643\n"}
+,{"stream_name":"stdout","time":259.936669578,"data":"INFO:gguf.vocab:Setting special token type bos to 151643\n"}
+,{"stream_name":"stdout","time":259.937709692,"data":"INFO:gguf.vocab:Setting chat_template to {%- if tools %}\n"}
+,{"stream_name":"stdout","time":259.938735473,"data":"    {{- '\u003c|im_start|\u003esystem\\n' }}\n"}
+,{"stream_name":"stdout","time":259.939784185,"data":"    {%- if messages[0]['role'] == 'system' %}\n"}
+,{"stream_name":"stdout","time":259.940804041,"data":"        {{- messages[0]['content'] }}\n"}
+,{"stream_name":"stdout","time":259.941847151,"data":"    {%- else %}\n"}
+,{"stream_name":"stdout","time":259.942935861,"data":"        {{- 'You are Qwen, created by Alibaba Cloud. You are a helpful assistant.' }}\n"}
+,{"stream_name":"stdout","time":259.943939108,"data":"    {%- endif %}\n"}
+,{"stream_name":"stdout","time":259.945886082,"data":"    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within \u003ctools\u003e\u003c/tools\u003e XML tags:\\n\u003ctools\u003e\" }}\n"}
+,{"stream_name":"stdout","time":259.946066048,"data":"    {%- for tool in tools %}\n"}
+,{"stream_name":"stdout","time":259.946905148,"data":"        {{- \"\\n\" }}\n"}
+,{"stream_name":"stdout","time":259.947778047,"data":"        {{- tool | tojson }}\n"}
+,{"stream_name":"stdout","time":259.948700367,"data":"    {%- endfor %}\n"}
+,{"stream_name":"stdout","time":259.949540072,"data":"    {{- \"\\n\u003c/tools\u003e\\n\\nFor each function call, return a json object with function name and arguments within \u003ctool_call\u003e\u003c/tool_call\u003e XML tags:\\n\u003ctool_call\u003e\\n{\\\"name\\\": \u003cfunction-name\u003e, \\\"arguments\\\": \u003cargs-json-object\u003e}\\n\u003c/tool_call\u003e\u003c|im_end|\u003e\\n\" }}\n"}
+,{"stream_name":"stdout","time":259.950526908,"data":"{%- else %}\n"}
+,{"stream_name":"stdout","time":259.951436276,"data":"    {%- if messages[0]['role'] == 'system' %}\n"}
+,{"stream_name":"stdout","time":259.952144432,"data":"        {{- '\u003c|im_start|\u003esystem\\n' + messages[0]['content'] + '\u003c|im_end|\u003e\\n' }}\n"}
+,{"stream_name":"stdout","time":259.953035881,"data":"    {%- else %}\n"}
+,{"stream_name":"stdout","time":259.953865993,"data":"        {{- '\u003c|im_start|\u003esystem\\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.\u003c|im_end|\u003e\\n' }}\n"}
+,{"stream_name":"stdout","time":259.954793269,"data":"    {%- endif %}\n"}
+,{"stream_name":"stdout","time":259.955529131,"data":"{%- endif %}\n"}
+,{"stream_name":"stdout","time":259.956423017,"data":"{%- for message in messages %}\n"}
+,{"stream_name":"stdout","time":259.957372784,"data":"    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) or (message.role == \"assistant\" and not message.tool_calls) %}\n"}
+,{"stream_name":"stdout","time":259.958177571,"data":"        {{- '\u003c|im_start|\u003e' + message.role + '\\n' + message.content + '\u003c|im_end|\u003e' + '\\n' }}\n"}
+,{"stream_name":"stdout","time":259.958975666,"data":"    {%- elif message.role == \"assistant\" %}\n"}
+,{"stream_name":"stdout","time":259.959915011,"data":"        {{- '\u003c|im_start|\u003e' + message.role }}\n"}
+,{"stream_name":"stdout","time":259.960883017,"data":"        {%- if message.content %}\n"}
+,{"stream_name":"stdout","time":259.961593322,"data":"            {{- '\\n' + message.content }}\n"}
+,{"stream_name":"stdout","time":259.962409177,"data":"        {%- endif %}\n"}
+,{"stream_name":"stdout","time":259.963407231,"data":"        {%- for tool_call in message.tool_calls %}\n"}
+,{"stream_name":"stdout","time":259.964129067,"data":"            {%- if tool_call.function is defined %}\n"}
+,{"stream_name":"stdout","time":259.964986315,"data":"                {%- set tool_call = tool_call.function %}\n"}
+,{"stream_name":"stdout","time":259.965808428,"data":"            {%- endif %}\n"}
+,{"stream_name":"stdout","time":259.966726424,"data":"            {{- '\\n\u003ctool_call\u003e\\n{\"name\": \"' }}\n"}
+,{"stream_name":"stdout","time":259.967645073,"data":"            {{- tool_call.name }}\n"}
+,{"stream_name":"stdout","time":259.968453189,"data":"            {{- '\", \"arguments\": ' }}\n"}
+,{"stream_name":"stdout","time":259.969253284,"data":"            {{- tool_call.arguments | tojson }}\n"}
+,{"stream_name":"stdout","time":259.970241841,"data":"            {{- '}\\n\u003c/tool_call\u003e' }}\n"}
+,{"stream_name":"stdout","time":259.970931004,"data":"        {%- endfor %}\n"}
+,{"stream_name":"stdout","time":259.971768814,"data":"        {{- '\u003c|im_end|\u003e\\n' }}\n"}
+,{"stream_name":"stdout","time":259.972607281,"data":"    {%- elif message.role == \"tool\" %}\n"}
+,{"stream_name":"stdout","time":259.973439028,"data":"        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}\n"}
+,{"stream_name":"stdout","time":259.974186045,"data":"            {{- '\u003c|im_start|\u003euser' }}\n"}
+,{"stream_name":"stdout","time":259.975000723,"data":"        {%- endif %}\n"}
+,{"stream_name":"stdout","time":259.975770741,"data":"        {{- '\\n\u003ctool_response\u003e\\n' }}\n"}
+,{"stream_name":"stdout","time":259.976577426,"data":"        {{- message.content }}\n"}
+,{"stream_name":"stdout","time":259.977386413,"data":"        {{- '\\n\u003c/tool_response\u003e' }}\n"}
+,{"stream_name":"stdout","time":259.978226525,"data":"        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n"}
+,{"stream_name":"stdout","time":259.979035883,"data":"            {{- '\u003c|im_end|\u003e\\n' }}\n"}
+,{"stream_name":"stdout","time":259.979882119,"data":"        {%- endif %}\n"}
+,{"stream_name":"stdout","time":259.980747544,"data":"    {%- endif %}\n"}
+,{"stream_name":"stdout","time":259.981534078,"data":"{%- endfor %}\n"}
+,{"stream_name":"stdout","time":259.982332654,"data":"{%- if add_generation_prompt %}\n"}
+,{"stream_name":"stdout","time":259.98311562,"data":"    {{- '\u003c|im_start|\u003eassistant\\n' }}\n"}
+,{"stream_name":"stdout","time":259.983912747,"data":"{%- endif %}\n"}
+,{"stream_name":"stdout","time":259.984702206,"data":"\n"}
+,{"stream_name":"stdout","time":259.985527139,"data":"INFO:gguf.gguf_writer:Writing the following files:\n"}
+,{"stream_name":"stdout","time":259.986364003,"data":"INFO:gguf.gguf_writer:/tmp/gguf/qwen2.5-coder-3b-locali-mixv3s-f16.gguf: n_tensors = 434, total_size = 6.2G\n"}
+,{"stream_name":"stdout","time":260.514606859,"data":"\n"}
+,{"stream_name":"stdout","time":260.876206823,"data":"Writing:   0%|          | 0.00/6.17G [00:00\u003c?, ?byte/s]\n"}
+,{"stream_name":"stdout","time":261.006703285,"data":"Writing:  10%|█         | 622M/6.17G [00:00\u003c00:03, 1.72Gbyte/s]\n"}
+,{"stream_name":"stdout","time":261.128062578,"data":"Writing:  13%|█▎        | 822M/6.17G [00:00\u003c00:03, 1.66Gbyte/s]\n"}
+,{"stream_name":"stdout","time":261.273458827,"data":"Writing:  17%|█▋        | 1.02G/6.17G [00:00\u003c00:03, 1.65Gbyte/s]\n"}
+,{"stream_name":"stdout","time":261.37730605,"data":"Writing:  20%|█▉        | 1.22G/6.17G [00:00\u003c00:03, 1.55Gbyte/s]\n"}
+,{"stream_name":"stdout","time":261.479607256,"data":"Writing:  22%|██▏       | 1.37G/6.17G [00:00\u003c00:03, 1.54Gbyte/s]\n"}
+,{"stream_name":"stdout","time":261.580208623,"data":"Writing:  25%|██▍       | 1.54G/6.17G [00:00\u003c00:02, 1.55Gbyte/s]\n"}
+,{"stream_name":"stdout","time":261.704094914,"data":"Writing:  28%|██▊       | 1.70G/6.17G [00:01\u003c00:02, 1.57Gbyte/s]\n"}
+,{"stream_name":"stdout","time":261.824454774,"data":"Writing:  31%|███       | 1.90G/6.17G [00:01\u003c00:02, 1.58Gbyte/s]\n"}
+,{"stream_name":"stdout","time":261.94649392,"data":"Writing:  34%|███▍      | 2.10G/6.17G [00:01\u003c00:02, 1.61Gbyte/s]\n"}
+,{"stream_name":"stdout","time":262.050513782,"data":"Writing:  37%|███▋      | 2.30G/6.17G [00:01\u003c00:02, 1.62Gbyte/s]\n"}
+,{"stream_name":"stdout","time":262.158042037,"data":"Writing:  40%|███▉      | 2.46G/6.17G [00:01\u003c00:02, 1.60Gbyte/s]\n"}
+,{"stream_name":"stdout","time":262.285975577,"data":"Writing:  43%|████▎     | 2.63G/6.17G [00:01\u003c00:02, 1.58Gbyte/s]\n"}
+,{"stream_name":"stdout","time":262.436143211,"data":"Writing:  46%|████▌     | 2.83G/6.17G [00:01\u003c00:02, 1.57Gbyte/s]\n"}
+,{"stream_name":"stdout","time":262.541615006,"data":"Writing:  49%|████▉     | 3.03G/6.17G [00:01\u003c00:02, 1.49Gbyte/s]\n"}
+,{"stream_name":"stdout","time":262.646684415,"data":"Writing:  52%|█████▏    | 3.18G/6.17G [00:02\u003c00:02, 1.48Gbyte/s]\n"}
+,{"stream_name":"stdout","time":263.062279808,"data":"Writing:  54%|█████▍    | 3.33G/6.17G [00:02\u003c00:01, 1.48Gbyte/s]\n"}
+,{"stream_name":"stdout","time":263.174339473,"data":"Writing:  57%|█████▋    | 3.49G/6.17G [00:02\u003c00:03, 806Mbyte/s] \n"}
+,{"stream_name":"stdout","time":263.28309863,"data":"Writing:  59%|█████▉    | 3.64G/6.17G [00:02\u003c00:02, 914Mbyte/s]\n"}
+,{"stream_name":"stdout","time":263.390795008,"data":"Writing:  61%|██████▏   | 3.80G/6.17G [00:02\u003c00:02, 1.02Gbyte/s]\n"}
+,{"stream_name":"stdout","time":263.506544571,"data":"Writing:  64%|██████▍   | 3.95G/6.17G [00:02\u003c00:01, 1.11Gbyte/s]\n"}
+,{"stream_name":"stdout","time":263.614195689,"data":"Writing:  66%|██████▋   | 4.10G/6.17G [00:02\u003c00:01, 1.17Gbyte/s]\n"}
+,{"stream_name":"stdout","time":263.718445729,"data":"Writing:  69%|██████▉   | 4.26G/6.17G [00:03\u003c00:01, 1.23Gbyte/s]\n"}
+,{"stream_name":"stdout","time":263.818967738,"data":"Writing:  71%|███████▏  | 4.41G/6.17G [00:03\u003c00:01, 1.30Gbyte/s]\n"}
+,{"stream_name":"stdout","time":264.157901805,"data":"Writing:  74%|███████▍  | 4.57G/6.17G [00:03\u003c00:01, 1.36Gbyte/s]\n"}
+,{"stream_name":"stdout","time":264.939806897,"data":"Writing:  76%|███████▋  | 4.72G/6.17G [00:03\u003c00:01, 855Mbyte/s] \n"}
+,{"stream_name":"stdout","time":265.815173459,"data":"Writing:  79%|███████▉  | 4.88G/6.17G [00:04\u003c00:03, 428Mbyte/s]\n"}
+,{"stream_name":"stdout","time":265.918690509,"data":"Writing:  81%|████████  | 4.98G/6.17G [00:05\u003c00:04, 273Mbyte/s]\n"}
+,{"stream_name":"stdout","time":266.24687294,"data":"Writing:  83%|████████▎ | 5.14G/6.17G [00:05\u003c00:02, 370Mbyte/s]\n"}
+,{"stream_name":"stdout","time":266.658234899,"data":"Writing:  85%|████████▍ | 5.23G/6.17G [00:05\u003c00:02, 345Mbyte/s]\n"}
+,{"stream_name":"stdout","time":275.536027215,"data":"Writing:  86%|████████▋ | 5.34G/6.17G [00:06\u003c00:02, 319Mbyte/s]\n"}
+,{"stream_name":"stdout","time":279.828175312,"data":"Writing:  87%|████████▋ | 5.40G/6.17G [00:15\u003c00:21, 35.8Mbyte/s]\n"}
+,{"stream_name":"stdout","time":279.936873606,"data":"Writing:  88%|████████▊ | 5.45G/6.17G [00:19\u003c00:27, 26.1Mbyte/s]\n"}
+,{"stream_name":"stdout","time":280.675141876,"data":"Writing:  90%|████████▉ | 5.55G/6.17G [00:19\u003c00:15, 39.4Mbyte/s]\n"}
+,{"stream_name":"stdout","time":280.784471624,"data":"Writing:  91%|█████████▏| 5.65G/6.17G [00:20\u003c00:10, 49.3Mbyte/s]\n"}
+,{"stream_name":"stdout","time":280.890505374,"data":"Writing:  94%|█████████▍| 5.80G/6.17G [00:20\u003c00:04, 82.3Mbyte/s]\n"}
+,{"stream_name":"stdout","time":281.000741485,"data":"Writing:  96%|█████████▋| 5.95G/6.17G [00:20\u003c00:01, 127Mbyte/s] \n"}
+,{"stream_name":"stdout","time":281.049737728,"data":"Writing:  99%|█████████▉| 6.11G/6.17G [00:20\u003c00:00, 186Mbyte/s]\n"}
+,{"stream_name":"stdout","time":281.050754418,"data":"Writing: 100%|██████████| 6.17G/6.17G [00:20\u003c00:00, 301Mbyte/s]\n"}
+,{"stream_name":"stdout","time":281.051573242,"data":"INFO:hf-to-gguf:Model successfully exported to /tmp/gguf/qwen2.5-coder-3b-locali-mixv3s-f16.gguf\n"}
+,{"stream_name":"stdout","time":287.03913723,"data":"[23:58:49] cuda driver library: /usr/local/nvidia/lib64/libcuda.so\n"}
+,{"stream_name":"stdout","time":287.039940409,"data":"[23:58:49] cmake -S /tmp/gguf/llama.cpp -B /tmp/gguf/llama.cpp/build -DGGML_CUDA=ON -DLLAMA_CURL=OFF -DCUDA_cuda_driver_LIBRARY=/usr/local/nvidia/lib64/libcuda.so\n"}
+,{"stream_name":"stdout","time":305.065794786,"data":"[23:59:07] cmake --build /tmp/gguf/llama.cpp/build --target llama-quantize llama-imatrix llama-server -j 4\n"}
+,{"stream_name":"stdout","time":1778.558954487,"data":"[00:23:40] /tmp/gguf/llama.cpp/build/bin/llama-quantize /tmp/gguf/qwen2.5-coder-3b-locali-mixv3s-f16.gguf /tmp/gguf/qwen2.5-coder-3b-locali-mixv3s-q8_0.gguf Q8_0\n"}
+,{"stream_name":"stdout","time":1810.398121782,"data":"[00:24:12] q8_0: 3.29 GB\n"}
+,{"stream_name":"stdout","time":1810.399159631,"data":"[00:24:12] /tmp/gguf/llama.cpp/build/bin/llama-quantize /tmp/gguf/qwen2.5-coder-3b-locali-mixv3s-f16.gguf /tmp/gguf/qwen2.5-coder-3b-locali-mixv3s-q5_k_m.gguf Q5_K_M\n"}
+,{"stream_name":"stdout","time":1938.136790571,"data":"[00:26:20] q5_k_m: 2.22 GB\n"}
+,{"stream_name":"stdout","time":1938.137845747,"data":"[00:26:20] /tmp/gguf/llama.cpp/build/bin/llama-quantize /tmp/gguf/qwen2.5-coder-3b-locali-mixv3s-f16.gguf /tmp/gguf/qwen2.5-coder-3b-locali-mixv3s-q4_k_m.gguf Q4_K_M\n"}
+,{"stream_name":"stdout","time":2081.201852949,"data":"[00:28:43] q4_k_m: 1.93 GB\n"}
+,{"stream_name":"stdout","time":2081.789471331,"data":"[00:28:43] /tmp/gguf/llama.cpp/build/bin/llama-imatrix -m /tmp/gguf/qwen2.5-coder-3b-locali-mixv3s-f16.gguf -f /tmp/gguf/calibration.txt -o /tmp/gguf/imatrix.dat -ngl 99 -c 512\n"}
+,{"stream_name":"stdout","time":2221.593704434,"data":"[00:31:03] /tmp/gguf/llama.cpp/build/bin/llama-quantize --imatrix /tmp/gguf/imatrix.dat /tmp/gguf/qwen2.5-coder-3b-locali-mixv3s-f16.gguf /tmp/gguf/qwen2.5-coder-3b-locali-mixv3s-q4_k_m-imatrix.gguf Q4_K_M\n"}
+,{"stream_name":"stdout","time":2452.219307895,"data":"[00:34:54] q4_k_m-imatrix: 1.93 GB\n"}
+,{"stream_name":"stdout","time":2452.291884952,"data":"[00:34:54] network isolation guard\n"}
+,{"stream_name":"stdout","time":2458.387575237,"data":"[00:35:00] /usr/bin/python3 -m evaluation.run --benchmark humanevalfix --generate-only --workers 4 --model-id qwen2.5-coder-3b-ft-qlora-mixv3s --model-revision 488639f1ff808d1d3d0ba301aef8c11461451ec5 --quantiza\n"}
+,{"stream_name":"stdout","time":2604.553418306,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stdout","time":2669.866138273,"data":"[00:38:31] humanevalfix/f16: pass@1 0.628\n"}
+,{"stream_name":"stdout","time":2669.867154997,"data":"[00:38:31] /usr/bin/python3 -m evaluation.run --benchmark humaneval_plus --generate-only --workers 4 --model-id qwen2.5-coder-3b-ft-qlora-mixv3s --model-revision 488639f1ff808d1d3d0ba301aef8c11461451ec5 --quanti\n"}
+,{"stream_name":"stdout","time":3036.771093014,"data":"[00:44:38] humaneval_plus/f16: pass@1 0.7607\n"}
+,{"stream_name":"stdout","time":3052.475310105,"data":"[00:44:54] /usr/bin/python3 -m evaluation.run --benchmark humanevalfix --generate-only --workers 4 --model-id qwen2.5-coder-3b-ft-qlora-mixv3s --model-revision 488639f1ff808d1d3d0ba301aef8c11461451ec5 --quantiza\n"}
+,{"stream_name":"stdout","time":3228.096546341,"data":"[00:47:50] humanevalfix/q8_0: pass@1 0.628\n"}
+,{"stream_name":"stdout","time":3228.097585433,"data":"[00:47:50] /usr/bin/python3 -m evaluation.run --benchmark humaneval_plus --generate-only --workers 4 --model-id qwen2.5-coder-3b-ft-qlora-mixv3s --model-revision 488639f1ff808d1d3d0ba301aef8c11461451ec5 --quanti\n"}
+,{"stream_name":"stdout","time":3557.048190775,"data":"[00:53:19] humaneval_plus/q8_0: pass@1 0.7669\n"}
+,{"stream_name":"stdout","time":3569.777156849,"data":"[00:53:31] /usr/bin/python3 -m evaluation.run --benchmark humanevalfix --generate-only --workers 4 --model-id qwen2.5-coder-3b-ft-qlora-mixv3s --model-revision 488639f1ff808d1d3d0ba301aef8c11461451ec5 --quantiza\n"}
+,{"stream_name":"stdout","time":3739.772474316,"data":"[00:56:21] humanevalfix/q5_k_m: pass@1 0.622\n"}
+,{"stream_name":"stdout","time":3739.773465982,"data":"[00:56:21] /usr/bin/python3 -m evaluation.run --benchmark humaneval_plus --generate-only --workers 4 --model-id qwen2.5-coder-3b-ft-qlora-mixv3s --model-revision 488639f1ff808d1d3d0ba301aef8c11461451ec5 --quanti\n"}
+,{"stream_name":"stdout","time":4047.603835408,"data":"[01:01:29] humaneval_plus/q5_k_m: pass@1 0.7669\n"}
+,{"stream_name":"stdout","time":4054.321120308,"data":"[01:01:36] /usr/bin/python3 -m evaluation.run --benchmark humanevalfix --generate-only --workers 4 --model-id qwen2.5-coder-3b-ft-qlora-mixv3s --model-revision 488639f1ff808d1d3d0ba301aef8c11461451ec5 --quantiza\n"}
+,{"stream_name":"stdout","time":4220.919733487,"data":"[01:04:22] humanevalfix/q4_k_m: pass@1 0.5671\n"}
+,{"stream_name":"stdout","time":4220.921018569,"data":"[01:04:22] /usr/bin/python3 -m evaluation.run --benchmark humaneval_plus --generate-only --workers 4 --model-id qwen2.5-coder-3b-ft-qlora-mixv3s --model-revision 488639f1ff808d1d3d0ba301aef8c11461451ec5 --quanti\n"}
+,{"stream_name":"stdout","time":4509.030618309,"data":"[01:09:11] humaneval_plus/q4_k_m: pass@1 0.7423\n"}
+,{"stream_name":"stdout","time":4512.798889619,"data":"[01:09:14] /usr/bin/python3 -m evaluation.run --benchmark humanevalfix --generate-only --workers 4 --model-id qwen2.5-coder-3b-ft-qlora-mixv3s --model-revision 488639f1ff808d1d3d0ba301aef8c11461451ec5 --quantiza\n"}
+,{"stream_name":"stdout","time":4679.825449092,"data":"[01:12:01] humanevalfix/q4_k_m-imatrix: pass@1 0.5854\n"}
+,{"stream_name":"stdout","time":4679.826366709,"data":"[01:12:01] /usr/bin/python3 -m evaluation.run --benchmark humaneval_plus --generate-only --workers 4 --model-id qwen2.5-coder-3b-ft-qlora-mixv3s --model-revision 488639f1ff808d1d3d0ba301aef8c11461451ec5 --quanti\n"}
+,{"stream_name":"stdout","time":4964.561792691,"data":"[01:16:46] humaneval_plus/q4_k_m-imatrix: pass@1 0.7546\n"}
+,{"stream_name":"stdout","time":4965.352753049,"data":"[01:16:47] all done\n"}
+,{"stream_name":"stdout","time":4965.588250804,"data":"exit code 0\n"}
+,{"stream_name":"stderr","time":4968.90574654,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":4968.905775606,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":4969.309313051,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":4969.309340818,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":4970.37451824,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":4970.525100665,"data":"[NbConvertApp] Writing 72028 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":4973.087396103,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":4974.31289157,"data":"[NbConvertApp] Writing 375055 bytes to __results__.html\n"}
+]

@@ -3,9 +3,10 @@
 1. training/merge_adapter.py: merge in FP32 with its logit checks, save FP16 safetensors
 2. llama.cpp 987498f (the commit of every laptop run): convert_hf_to_gguf.py --outtype f16,
    then llama-quantize Q4_K_M
-Only the Q4_K_M file and the merge report are kept as outputs, to keep the download small.
+Only the quantized file and the merge report are kept as outputs, to keep the download small.
 
-Environment: ADAPTER=mixv3 (folder name in the Kaggle dataset locali-adapters-3b).
+Environment: ADAPTER=mixv3 (folder name in the Kaggle dataset locali-adapters-3b); QUANT=Q5_K_M for
+another size (experiments/results/8_improve/quant: the 4-bit file loses repair fixes, the 5-bit one does not).
 """
 
 import os
@@ -22,6 +23,7 @@ WORK = Path("/kaggle/working")
 CODE = Path("/tmp/locali")
 TMP = Path("/tmp/gguf")
 ADAPTER = os.environ.get("ADAPTER", "mixv3")
+QUANT = os.environ.get("QUANT", "Q4_K_M")
 NAME = f"qwen2.5-coder-3b-locali-{ADAPTER}"
 
 
@@ -57,9 +59,9 @@ def main() -> None:
     run(["cmake", "-S", str(llama), "-B", str(llama / "build"), "-DGGML_CUDA=OFF", "-DLLAMA_CURL=OFF"],
         stdout=subprocess.DEVNULL)
     run(["cmake", "--build", str(llama / "build"), "--target", "llama-quantize", "-j", "4"], stdout=subprocess.DEVNULL)
-    q4 = WORK / f"{NAME}-q4_k_m.gguf"
-    run([str(llama / "build" / "bin" / "llama-quantize"), str(f16), str(q4), "Q4_K_M"])
-    log(f"done: {q4} ({q4.stat().st_size / 1e9:.2f} GB)")
+    out = WORK / f"{NAME}-{QUANT.lower()}.gguf"
+    run([str(llama / "build" / "bin" / "llama-quantize"), str(f16), str(out), QUANT])
+    log(f"done: {out} ({out.stat().st_size / 1e9:.2f} GB)")
 
 
 if __name__ == "__main__":

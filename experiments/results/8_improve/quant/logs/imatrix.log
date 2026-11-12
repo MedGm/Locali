@@ -1,0 +1,83 @@
+0.01.200.169 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.03.037.020 I cmn          init: llama threadpool init, n_threads = 2
+0.03.037.067 I 
+0.03.037.182 I system_info: n_threads = 2 (n_threads_batch = 2) / 4 | CUDA : ARCHS = 750 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.03.037.199 I compute_imatrix: tokenizing the input ..
+0.03.219.515 I compute_imatrix: tokenization took 182.306 ms
+0.03.219.673 I compute_imatrix: computing over 170 chunks, n_ctx=512, batch_size=2048, n_seq=4
+0.07.425.100 I compute_imatrix: 4.21 seconds per pass - ETA 2.97 minutes
+[1]4.2149,[2]4.7230,[3]3.2985,[4]2.7078,[5]3.0763,[6]3.5614,[7]3.6665,[8]4.1570,0.11.871.698 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+0.11.871.720 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[9]4.0135,[10]4.3107,[11]3.9728,[12]3.8958,[13]3.6436,[14]3.6199,[15]3.5635,[16]3.4715,0.19.462.714 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+0.19.462.720 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[17]3.4136,[18]3.3640,[19]3.4360,[20]3.4368,[21]3.3900,[22]3.4171,[23]3.3251,[24]3.1798,[25]3.1717,[26]3.0812,[27]3.1414,[28]3.2388,0.27.577.535 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+0.27.577.542 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[29]3.2723,[30]3.2233,[31]3.2571,[32]3.3124,[33]3.2867,[34]3.2652,[35]3.2446,[36]3.1853,0.35.190.049 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+0.35.190.055 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[37]3.1204,[38]3.0794,[39]3.0527,[40]3.0068,[41]2.9516,[42]2.9805,[43]3.0146,[44]3.0504,[45]3.0019,[46]2.9708,[47]2.9513,[48]2.9313,0.43.441.676 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+0.43.441.694 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[49]2.9785,[50]2.9903,[51]2.9733,[52]2.9822,[53]2.9622,[54]2.9322,[55]2.8914,[56]2.8885,0.51.082.243 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+0.51.082.253 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[57]2.8460,[58]2.8209,[59]2.8508,[60]2.8498,[61]2.8778,[62]2.8862,[63]2.8526,[64]2.8532,[65]2.8281,[66]2.8105,[67]2.7810,[68]2.7572,0.59.165.315 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+0.59.165.346 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[69]2.7676,[70]2.7309,[71]2.7162,[72]2.7191,[73]2.6967,[74]2.6733,[75]2.6500,[76]2.6364,1.06.708.875 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+1.06.708.902 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[77]2.6453,[78]2.6459,[79]2.6347,[80]2.6162,[81]2.6220,[82]2.6138,[83]2.6079,[84]2.5984,[85]2.5913,[86]2.5831,[87]2.5790,[88]2.5969,1.14.790.851 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+1.14.790.878 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[89]2.5855,[90]2.5759,[91]2.5596,[92]2.5409,[93]2.5182,[94]2.5100,[95]2.5128,[96]2.5045,1.22.288.884 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+1.22.288.890 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[97]2.4903,[98]2.4752,[99]2.4685,[100]2.4641,[101]2.4558,[102]2.4576,[103]2.4480,[104]2.4486,[105]2.4456,[106]2.4330,[107]2.4299,[108]2.4137,1.30.418.369 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+1.30.418.399 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[109]2.4090,[110]2.4058,[111]2.4013,[112]2.3905,[113]2.3918,[114]2.4027,[115]2.4025,[116]2.3891,1.38.069.089 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+1.38.069.118 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[117]2.3842,[118]2.3809,[119]2.3793,[120]2.3881,[121]2.3786,[122]2.3944,[123]2.3876,[124]2.3856,[125]2.3777,[126]2.3689,[127]2.3623,[128]2.3625,1.46.406.859 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+1.46.406.865 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[129]2.3574,[130]2.3712,[131]2.3755,[132]2.3656,[133]2.3820,[134]2.3754,[135]2.3869,[136]2.3792,1.54.086.168 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+1.54.086.176 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[137]2.3721,[138]2.3589,[139]2.3644,[140]2.3610,[141]2.3532,[142]2.3546,[143]2.3508,[144]2.3429,[145]2.3398,[146]2.3345,[147]2.3335,[148]2.3332,2.02.346.982 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+2.02.347.008 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[149]2.3335,[150]2.3298,[151]2.3435,[152]2.3326,[153]2.3273,[154]2.3290,[155]2.3182,[156]2.3235,2.09.949.362 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+2.09.949.391 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[157]2.3221,[158]2.3205,[159]2.3087,[160]2.3057,[161]2.2957,[162]2.2949,[163]2.2953,[164]2.2929,[165]2.2867,[166]2.2812,[167]2.2765,[168]2.2720,2.18.044.160 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+2.18.044.190 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+[169]2.2699,[170]2.2679,
+Final estimate: PPL = 2.2679 +/- 0.02558
+2.18.969.039 W 
+save_imatrix: saving imatrix using GGUF format with a different suffix than .gguf
+2.18.969.063 W save_imatrix: if you want the previous imatrix format, use --output-format dat
+
+

@@ -1,0 +1,12 @@
+diff --git a/tests/test_locali_integration_best_seller.py b/tests/test_locali_integration_best_seller.py
+new file mode 100644
+index 0000000..d93f695
+--- /dev/null
++++ b/tests/test_locali_integration_best_seller.py
+@@ -0,0 +1,6 @@
++from tinyshop.reports import best_seller
++from tinyshop.db import connect
++
++def test_no_sales():
++    conn = connect(':memory:')
++    assert best_seller(conn, '2023-10-01') is None

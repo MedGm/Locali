@@ -1,0 +1,40 @@
+{
+ "id": "5575cf153ef2",
+ "run_id": "demo_repo",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tests/test_locali_integration_best_seller.py b/tests/test_locali_integration_best_seller.py\nnew file mode 100644\nindex 0000000..d93f695\n--- /dev/null\n+++ b/tests/test_locali_integration_best_seller.py\n@@ -0,0 +1,6 @@\n+from tinyshop.reports import best_seller\n+from tinyshop.db import connect\n+\n+def test_no_sales():\n+    conn = connect(':memory:')\n+    assert best_seller(conn, '2023-10-01') is None\n",
+ "sha256": "d5088f7f3ebefe4c111f30aa4a97fc6c49d343567c9db7817490188f5d814238",
+ "files": [
+  "tests/test_locali_integration_best_seller.py"
+ ],
+ "baseline": {
+  "tests/test_locali_integration_best_seller.py": null
+ },
+ "head": "9d0c2b374832f11df3df58df2fc54d2bdf1ae92e",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 6,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 39.9,
+   "output_tail": "......F                                                                  [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 6 passed in 0.11s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "6599a4d289c192ac7ff73c026ed22fcdfd7f16d0f9abf638abc6aa3c567e7488",
+ "title": "Integration tests for best_seller",
+ "kind": "tests",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

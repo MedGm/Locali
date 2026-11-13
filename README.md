@@ -161,19 +161,20 @@ the share of code that tests run from 28 to 45 %
 
 **The same check with each model.** Before changing the default model, I ran the whole assistant
 on the demo project (with its web API) three times on the laptop, once with each model, same code
-and settings ([results](experiments/results/7_assistant/agents_runE/README.md)):
+and settings ([results](experiments/results/7_assistant/agents_runE/README.md)). Run G, the
+default since 12 November, was added the same way ([run G](experiments/results/7_assistant/agents_runG/README.md)):
 
-| Whole assistant on the demo project | 3B base | Run D | **Run E** |
-|---|---|---|---|
-| Bugs: fixed / found by the review / suspected by a test / missed (of 6) | 1 / 1 / 3 / 1 | 1 / 3 / 2 / 0 | 1 / 3 / 1 / 1 |
-| Review warnings that point at nothing planted | 9 | 18 | 17 |
-| Security holes, key and hidden instructions found (of 8) | 8 | 8 | 8 |
-| Tests kept, and share of code they run (before: 28 %) | 2, 60 % | 2, 45 % | **4, 72 %** |
-| Time for the whole run | 36 min | 20 min | **19 min** |
+| Whole assistant on the demo project | 3B base | Run D | Run E | **Run G** |
+|---|---|---|---|---|
+| Bugs: fixed / found by the review / suspected by a test / missed (of 6) | 1 / 1 / 3 / 1 | 1 / 3 / 2 / 0 | 1 / 3 / 1 / 1 | 1 / 3 / 2 / 0 |
+| Review warnings that point at nothing planted | 9 | 18 | 17 | 21 |
+| Security holes, key and hidden instructions found (of 8) | 8 | 8 | 8 | 8 |
+| Tests kept, and share of code they run (before: 28 %) | 2, 60 % | 2, 45 % | 4, 72 % | 2, 45 % |
+| Time for the whole run | 36 min | 20 min | 19 min | 22 min |
 
 The fine-tuned models name three times more planted problems in their review, but also raise
-twice as many wrong warnings. Through its tests, the base catches 3 planted bugs, run D 2 and run
-E 1. The security results come from the tools, so they are the same for every model. The base takes longest because it writes long test files (10,516 words against about
+twice as many wrong warnings. Through its tests, the base catches 3 planted bugs, runs D and G 2 and run
+E 1. Run G misses no planted bug but keeps two tests where run E kept four. The security results come from the tools, so they are the same for every model. The base takes longest because it writes long test files (10,516 words against about
 4,100). One run each: this shows how the models behave, it does not prove a difference.
 
 This is one project I built myself, with bugs I placed; it shows how the workflow behaves, not how

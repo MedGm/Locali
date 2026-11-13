@@ -1,0 +1,40 @@
+{
+ "id": "dbc8f19d59e2",
+ "run_id": "demo_repo",
+ "repo": "/home/medgm/vsc/deep_learning/demo_repo",
+ "diff": "diff --git a/tinyshop/db.py b/tinyshop/db.py\nindex e303b96..ed0d7be 100644\n--- a/tinyshop/db.py\n+++ b/tinyshop/db.py\n@@ -21,12 +21,14 @@ CREATE TABLE IF NOT EXISTS staff (\n \n \n def connect(path):\n+    \"\"\"Connects to a SQLite database at the specified path, executes the schema script, and returns the connection object.\"\"\"\n     conn = sqlite3.connect(path)\n     conn.executescript(SCHEMA)\n     return conn\n \n \n def add_product(conn, name, price, stock=0):\n+    \"\"\"Adds a new product to the database with the given name, price, and stock quantity (defaulting to 0), commits the transaction, and returns the ID of the newly inserted product.\"\"\"\n     cur = conn.execute(\"INSERT INTO products (name, price, stock) VALUES (?, ?, ?)\", (name, price, stock))\n     conn.commit()\n     return cur.lastrowid\n@@ -38,12 +40,14 @@ def find_products(conn, name):\n \n \n def record_sale(conn, product_id, qty, day):\n+    \"\"\"Records a sale in the database by inserting a new row into the `sales` table and updating the `stock` of the corresponding product in the `products` table.\"\"\"\n     conn.execute(\"INSERT INTO sales (product_id, qty, day) VALUES (?, ?, ?)\", (product_id, qty, day))\n     conn.execute(\"UPDATE products SET stock = stock - ? WHERE id = ?\", (qty, product_id))\n     conn.commit()\n \n \n def sales_for_day(conn, day):\n+    \"\"\"Executes a SQL query to retrieve the names of products, their quantities sold, and prices for a given day from the database, returning a list of tuples containing this information.\"\"\"\n     return conn.execute(\n         \"SELECT p.name, s.qty, p.price FROM sales s JOIN products p ON p.id = s.product_id WHERE s.day = ?\",\n         (day,),\n",
+ "sha256": "7b3cbdf6b7ba97b2dbb0cebd69710886bbc50e90fa04f9c9ef1e7bf799f9681c",
+ "files": [
+  "tinyshop/db.py"
+ ],
+ "baseline": {
+  "tinyshop/db.py": "cdef46901dc0fe8566ed0f95cfadc9322512311e78c40317fb6835e6f800bb40"
+ },
+ "head": "9d0c2b374832f11df3df58df2fc54d2bdf1ae92e",
+ "validation": {
+  "ok": true,
+  "tests": {
+   "passed": 5,
+   "failed": [
+    "tests/test_pricing.py::test_discount"
+   ],
+   "errors": 0,
+   "timed_out": false,
+   "coverage_percent": 27.7,
+   "output_tail": ".....F                                                                   [100%]\n=================================== FAILURES ===================================\n________________________________ test_discount _________________________________\n\n    def test_discount():\n>       assert apply_discount(50.0, 10) == 45.0\nE       assert 55.0 == 45.0\nE        +  where 55.0 = apply_discount(50.0, 10)\n\ntests/test_pricing.py:13: AssertionError\n================================ tests coverage ================================\n_______________ coverage: platform linux, python 3.12.14-final-0 _______________\n\nCoverage JSON written to file /out/coverage.json\n=========================== short test summary info ============================\nFAILED tests/test_pricing.py::test_discount - assert 55.0 == 45.0\n1 failed, 5 passed in 0.11s\n"
+  },
+  "newly_failing": [],
+  "now_passing": [],
+  "new_security_findings": [],
+  "secrets_added": []
+ },
+ "validation_sha256": "3efd35a12bb5343661184b844ecf3e394086d7e5d428174dfd27e032baa8ebe6",
+ "title": "Docstrings for connect, add_product, record_sale, sales_for_day in tinyshop/db.py",
+ "kind": "docs",
+ "applied_hashes": {},
+ "status": "proposed",
+ "reviewer": null,
+ "history": [
+  "patch.proposed"
+ ]
+}

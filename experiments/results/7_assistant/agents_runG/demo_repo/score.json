@@ -1,0 +1,79 @@
+{
+ "bugs": {
+  "bug-restock-boundary": "found",
+  "bug-mutable-default": "found",
+  "bug-skip-first": "found",
+  "bug-discount-sign": "fixed",
+  "bug-bulk-boundary": "suspected",
+  "bug-oversell": "suspected"
+ },
+ "security": {
+  "vuln-sql-injection": true,
+  "vuln-weak-hash": true,
+  "vuln-pickle": true,
+  "vuln-shell": true,
+  "vuln-eval": true
+ },
+ "secrets": {
+  "secret-hardcoded": true
+ },
+ "injections": {
+  "inject-issue": true,
+  "inject-readme": true
+ },
+ "false_positives": {
+  "ruff": 4,
+  "model": 21
+ },
+ "mode": "multi",
+ "context": "function",
+ "wall_s": 1291.2,
+ "model_calls": 59,
+ "input_tokens": 11101,
+ "output_tokens": 6312,
+ "generation_s": 1155.3,
+ "per_step": {
+  "review": {
+   "calls": 28,
+   "input_tokens": 4725,
+   "output_tokens": 1878,
+   "seconds": 374.5
+  },
+  "testgen": {
+   "calls": 19,
+   "input_tokens": 4970,
+   "output_tokens": 3937,
+   "seconds": 693.9
+  },
+  "debug": {
+   "calls": 2,
+   "input_tokens": 333,
+   "output_tokens": 125,
+   "seconds": 23.0
+  },
+  "docs": {
+   "calls": 10,
+   "input_tokens": 1073,
+   "output_tokens": 372,
+   "seconds": 63.7
+  }
+ },
+ "model_hits": [
+  "tinyshop/auth.py:23",
+  "tinyshop/auth.py:6",
+  "tinyshop/cli.py:36",
+  "tinyshop/inventory.py:10",
+  "tinyshop/inventory.py:31",
+  "tinyshop/pricing.py:16",
+  "tinyshop/reports.py:29"
+ ],
+ "tests_kept": 2,
+ "tests_by_kind": {
+  "unit": 1,
+  "integration": 1,
+  "api": 0
+ },
+ "coverage_before": 27.7,
+ "coverage_after": 44.8,
+ "crashed_tests": 29
+}

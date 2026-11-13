@@ -84,6 +84,7 @@ Protocol: `docs/preregistration-repair.md`.
 | `agents_demo_repo` | the workflow on the demo project: one review vs the full workflow |
 | `agents_api_tests` | integration and API tests on the demo project |
 | `agents_runE` | **base vs run D vs run E on the demo project** |
+| `agents_runG` | run G, the default, on the demo project |
 | `repair_step_runE` | the repair step after 2026-11-11 on the laptop: 95, 102, 106 of 164 bugs within 1, 2, 3 attempts |
 | `context_agents` | how much code the agents show the model |
 | `feedback_repair` | the repair agent's runs with test feedback, laptop |
